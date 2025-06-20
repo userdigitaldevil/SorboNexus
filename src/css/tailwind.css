@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-color: #1a1a1a; /* Dark background */
+    color: #f5f5f5; /* Light text color */
+}
+
+.navbar {
+    @apply bg-gray-300 text-white p-4;
+}
+
+.navbar a {
+    @apply text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium;
+}
+
+.navbar a.active {
+    @apply text-white bg-gray-700;
+}
+
+.section {
+    @apply p-6;
+}
+
+.footer {
+    @apply bg-gray-800 text-gray-400 p-4 text-center;
+}

@@ -1,0 +1,22 @@
+{
+  "name": "SorboNexus",
+  "version": "1.0.0",
+  "description": "La plateforme qui connecte les étudiants et anciens du campus Sciences de Sorbonne Université. Partage de conseils, parcours, ressources et entraide pour réussir ensemble.",
+  "main": "index.html",
+  "scripts": {
+    "build": "tailwindcss build src/css/tailwind.css -o public/styles.css",
+    "watch": "tailwindcss build src/css/tailwind.css -o public/styles.css --watch"
+  },
+  "dependencies": {
+    "tailwindcss": "^2.2.19"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "static",
+    "website",
+    "tailwindcss",
+    "dark-theme"
+  ],
+  "author": "Seth Aguila",
+  "license": "MIT"
+}
