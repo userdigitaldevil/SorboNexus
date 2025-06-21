@@ -8,16 +8,46 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <style>
+      html,
+      body {
+        height: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-attachment: fixed !important;
+      }
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 50;
+      }
+      main {
+        margin-top: 64px; /* Adjust if navbar height changes */
+      }
+      footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: 50;
+        background: linear-gradient(90deg, #0f0f0f 0%, #18181b 100%);
+      }
+    </style>
   </head>
   <body
     class="min-h-screen text-white bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900"
   >
-    <nav class="bg-gray-800 p-4">
+    <nav class="bg-gray-800 p-4 shadow-lg">
       <ul class="flex space-x-4">
         <li>
           <a
             href="index.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 font-semibold text-blue-400 transform transition-transform duration-200 hover:scale-110"
+            class="inline-block px-4 py-1 hover:text-gray-400 bg-gradient-to-br font-semibold from-blue-300 to-blue-600 bg-clip-text text-transparent transform transition-transform duration-200 hover:scale-110"
             >Accueil</a
           >
         </li>
@@ -31,7 +61,7 @@
         <li>
           <a
             href="liens-utiles.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
+            class="inline-block px-4 py-1 hover:text-blue-550 transform transition-transform duration-200 hover:scale-110"
             >Liens Utiles</a
           >
         </li>
@@ -72,6 +102,67 @@
         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300"
         >Découvrez nos ressources</a
       >
+      <div style="height: 600px"></div>
     </main>
+    <footer class="text-gray-400 text-sm">
+      <div
+        class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3"
+      >
+        <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+          <span>
+            MIT License &mdash; Contact :
+            <a
+              href="mailto:sethaguila@icloud.com"
+              class="underline hover:text-blue-400"
+              >sethaguila@icloud.com</a
+            >
+          </span>
+          <span
+            class="italic text-gray-300 text-center sm:text-left mt-1 sm:mt-0"
+          >
+            Connecter, Inspirer, Évoluer. Site développé par Seth Aguila -
+            Projet Perso
+          </span>
+        </div>
+        <div class="flex flex-col items-center space-y-2">
+          <div class="flex space-x-4 items-center">
+            <a
+              href="https://www.linkedin.com/in/sethaguila/"
+              target="_blank"
+              aria-label="LinkedIn"
+              class="hover:text-blue-400 transition-colors duration-200"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="white"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.966 0-1.75-.79-1.75-1.76s.784-1.76 1.75-1.76 1.75.79 1.75 1.76-.784 1.76-1.75 1.76zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.38v4.59h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://github.com/userdigitaldevil"
+              target="_blank"
+              aria-label="GitHub"
+              class="hover:text-blue-400 transition-colors duration-200"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="white"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.089 2.91.833.091-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.337 4.695-4.566 4.944.359.309.678.919.678 1.852 0 1.336-.012 2.417-.012 2.747 0 .267.18.577.688.479C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
