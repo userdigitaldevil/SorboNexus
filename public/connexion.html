@@ -8,126 +8,469 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
       html,
       body {
         height: 100%;
-        min-height: 100%;
         margin: 0;
         padding: 0;
+        scroll-behavior: smooth;
       }
-      html {
-        /* Make the gradient extremely tall to avoid white borders on long scroll */
-        background: linear-gradient(
-          135deg,
-          #374151 0%,
-          #1f2937 60%,
-          #111827 100%
-        );
-        background-attachment: fixed !important;
-        background-repeat: no-repeat;
-        background-size: 100% 2000vh; /* 20x viewport height for a VERY long gradient */
-      }
+
       body {
-        background: transparent;
+        background-attachment: fixed !important;
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        font-family: "Segoe UI", system-ui, sans-serif;
       }
-      nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 50;
+
+      .mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
       }
-      main {
-        margin-top: 64px; /* Adjust if navbar height changes */
-        min-height: calc(100vh - 64px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+
+      .mobile-menu.open {
+        max-height: 500px;
+      }
+
+      .login-form {
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(76, 81, 109, 0.3);
+      }
+
+      .login-btn {
+        background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+        transition: all 0.3s ease;
+      }
+
+      .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+      }
+
+      .social-btn {
+        transition: all 0.3s ease;
+      }
+
+      .social-btn:hover {
+        transform: translateY(-3px);
+      }
+
+      @media (max-width: 768px) {
+        .login-container {
+          padding: 1.5rem;
+        }
+
+        .login-title {
+          font-size: 2rem;
+        }
       }
     </style>
   </head>
   <body class="min-h-screen text-white">
-    <nav class="bg-gray-800 p-4 shadow-lg">
-      <ul class="flex space-x-4">
-        <li>
-          <a
-            href="index.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Accueil</a
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-800 p-4 shadow-lg sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <div
+            class="bg-gradient-to-br from-blue-400 to-blue-600 w-8 h-8 rounded-lg"
+          ></div>
+          <span
+            class="text-xl font-bold bg-gradient-to-br from-blue-300 to-blue-600 bg-clip-text text-transparent"
+            >SorboNexus</span
           >
-        </li>
-        <li>
-          <a
-            href="ressources.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Ressources</a
-          >
-        </li>
-        <li>
-          <a
-            href="liens-utiles.html"
-            class="inline-block px-4 py-1 hover:text-blue-550 transform transition-transform duration-200 hover:scale-110"
-            >Liens Utiles</a
-          >
-        </li>
-        <li>
-          <a
-            href="conseils.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Conseils</a
-          >
-        </li>
-        <li>
-          <a
-            href="alumnis.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Alumnis</a
-          >
-        </li>
-        <li>
-          <a
-            href="connexion.html"
-            class="inline-block px-4 py-1 hover:text-blue-550 bg-gradient-to-tl font-semibold from-blue-300 to-blue-600 bg-clip-text text-transparent transform transition-transform duration-200 hover:scale-110"
-            >Connexion</a
-          >
-        </li>
-      </ul>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <ul class="hidden md:flex space-x-4">
+          <li>
+            <a
+              href="index.html"
+              class="inline-block px-4 py-1 hover:text-blue-400 transform transition-transform duration-200 hover:scale-110"
+              >Accueil</a
+            >
+          </li>
+          <li>
+            <a
+              href="ressources.html"
+              class="inline-block px-4 py-1 hover:text-blue-400 transform transition-transform duration-200 hover:scale-110"
+              >Ressources</a
+            >
+          </li>
+          <li>
+            <a
+              href="liens-utiles.html"
+              class="inline-block px-4 py-1 hover:text-blue-400 transform transition-transform duration-200 hover:scale-110"
+              >Liens Utiles</a
+            >
+          </li>
+          <li>
+            <a
+              href="conseils.html"
+              class="inline-block px-4 py-1 hover:text-blue-400 transform transition-transform duration-200 hover:scale-110"
+              >Conseils</a
+            >
+          </li>
+          <li>
+            <a
+              href="alumnis.html"
+              class="inline-block px-4 py-1 hover:text-blue-400 transform transition-transform duration-200 hover:scale-110"
+              >Alumnis</a
+            >
+          </li>
+          <!-- Élément actif - Connexion -->
+          <li>
+            <a
+              href="connexion.html"
+              class="inline-block px-4 py-1 hover:text-blue-550 bg-gradient-to-bl font-semibold from-blue-300 to-blue-600 bg-clip-text text-transparent transform transition-transform duration-200 hover:scale-110"
+              >Connexion</a
+            >
+          </li>
+        </ul>
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-button"
+          class="md:hidden text-white focus:outline-none"
+        >
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="mobile-menu md:hidden bg-gray-800">
+        <ul class="flex flex-col space-y-3 px-4 py-5">
+          <li>
+            <a
+              href="index.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Accueil</a
+            >
+          </li>
+          <li>
+            <a
+              href="ressources.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Ressources</a
+            >
+          </li>
+          <li>
+            <a
+              href="liens-utiles.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Liens Utiles</a
+            >
+          </li>
+          <li>
+            <a
+              href="conseils.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Conseils</a
+            >
+          </li>
+          <li>
+            <a
+              href="alumnis.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Alumnis</a
+            >
+          </li>
+          <!-- Élément actif - Connexion -->
+          <li>
+            <a
+              href="connexion.html"
+              class="block py-2 px-4 bg-gradient-to-r from-blue-800 to-blue-600 rounded-lg font-medium"
+              >Connexion</a
+            >
+          </li>
+        </ul>
+      </div>
     </nav>
-    <main>
-      <div class="bg-gray-800 px-8 py-4 rounded-lg shadow-lg w-full max-w-sm">
-        <h1 class="text-2xl font-bold mb-6 text-center text-blue-400">
-          Connexion
-        </h1>
-        <form id="loginForm" class="space-y-4">
-          <div>
-            <label for="username" class="block mb-1">Nom d'utilisateur</label>
-            <input
-              type="text"
-              id="username"
-              class="w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none"
-              required
-            />
+
+    <!-- Page de connexion -->
+    <main class="min-h-screen flex items-center justify-center py-12 px-4">
+      <div class="login-container max-w-md w-full">
+        <div class="login-form p-8">
+          <div class="text-center mb-10">
+            <div
+              class="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-4"
+            >
+              <i class="fas fa-user-lock text-white text-3xl"></i>
+            </div>
+            <h1 class="login-title text-3xl font-bold mb-2">
+              Connexion à SorboNexus
+            </h1>
+            <p class="text-gray-400">Accédez à votre espace étudiant</p>
           </div>
-          <div>
-            <label for="password" class="block mb-1">Mot de passe</label>
-            <input
-              type="password"
-              id="password"
-              class="w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none"
-              required
-            />
+
+          <form class="space-y-6">
+            <div>
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-300 mb-2"
+                >Adresse email universitaire</label
+              >
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <i class="fas fa-envelope text-gray-500"></i>
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  class="w-full pl-10 pr-3 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="prenom.nom@etu.univ.fr"
+                />
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label
+                  for="password"
+                  class="block text-sm font-medium text-gray-300"
+                  >Mot de passe</label
+                >
+                <a href="#" class="text-sm text-blue-400 hover:text-blue-300"
+                  >Mot de passe oublié?</a
+                >
+              </div>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <i class="fas fa-lock text-gray-500"></i>
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  required
+                  class="w-full pl-10 pr-3 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            <div class="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded bg-gray-800"
+              />
+              <label for="remember-me" class="ml-2 block text-sm text-gray-300">
+                Se souvenir de moi
+              </label>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                class="login-btn w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <i class="fas fa-sign-in-alt mr-2"></i> Se connecter
+              </button>
+            </div>
+          </form>
+
+          <div class="mt-8">
+            <div class="relative">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-700"></div>
+              </div>
+              <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-gray-800 text-gray-400">
+                  Ou continuer avec
+                </span>
+              </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-2 gap-3">
+              <a
+                href="#"
+                class="social-btn bg-gray-800 hover:bg-gray-700 w-full inline-flex justify-center py-3 px-4 border border-gray-700 rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none"
+              >
+                <i class="fab fa-google text-red-400 mr-2"></i> Google
+              </a>
+              <a
+                href="#"
+                class="social-btn bg-gray-800 hover:bg-gray-700 w-full inline-flex justify-center py-3 px-4 border border-gray-700 rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none"
+              >
+                <i class="fab fa-microsoft text-blue-400 mr-2"></i> Microsoft
+              </a>
+            </div>
           </div>
-          <button
-            type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-400 text-white font-bold py-2 rounded transition"
-          >
-            Se connecter
-          </button>
-          <p id="loginMessage" class="text-center text-red-400 mt-2"></p>
-        </form>
+
+          <div class="mt-8 text-center">
+            <p class="text-sm text-gray-400">
+              Vous n'avez pas de compte?
+              <a href="#" class="font-medium text-blue-400 hover:text-blue-300">
+                Créer un compte étudiant
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8 text-center text-sm text-gray-500">
+          <p>
+            En vous connectant, vous acceptez nos
+            <a href="#" class="text-blue-400 hover:text-blue-300"
+              >Conditions d'utilisation</a
+            >
+            et notre
+            <a href="#" class="text-blue-400 hover:text-blue-300"
+              >Politique de confidentialité</a
+            >.
+          </p>
+        </div>
       </div>
     </main>
-    <script src="../src/js/main.js"></script>
+
+    <!-- Footer -->
+    <footer class="text-gray-400 text-sm py-8 bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="mb-6 md:mb-0">
+            <div class="flex items-center space-x-2 mb-4">
+              <div
+                class="bg-gradient-to-br from-blue-400 to-teal-400 w-8 h-8 rounded-lg"
+              ></div>
+              <span
+                class="text-xl font-bold bg-gradient-to-br from-blue-300 to-blue-600 bg-clip-text text-transparent"
+                >SorboNexus</span
+              >
+            </div>
+            <p class="italic text-gray-300 max-w-md">
+              Connecter, Inspirer, Évoluer. Site développé par Seth Aguila -
+              Projet Perso
+            </p>
+          </div>
+
+          <div class="mb-6 md:mb-0">
+            <h3 class="text-white font-medium mb-4">Liens rapides</h3>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="index.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Accueil</a
+                >
+              </li>
+              <li>
+                <a
+                  href="ressources.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Ressources</a
+                >
+              </li>
+              <li>
+                <a
+                  href="conseils.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Conseils</a
+                >
+              </li>
+              <li>
+                <a
+                  href="alumnis.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Alumnis</a
+                >
+              </li>
+              <li>
+                <a
+                  href="connexion.html"
+                  class="hover:text-blue-400 transition-colors font-medium"
+                  >Connexion</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-white font-medium mb-4">Contact</h3>
+            <p class="mb-4">
+              <a
+                href="mailto:sethaguila@icloud.com"
+                class="underline hover:text-blue-400"
+                >sethaguila@icloud.com</a
+              >
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="https://www.linkedin.com/in/sethaguila/"
+                target="_blank"
+                aria-label="LinkedIn"
+                class="hover:text-blue-400 transition-colors duration-200"
+              >
+                <i class="fab fa-linkedin-in text-xl"></i>
+              </a>
+              <a
+                href="https://github.com/userdigitaldevil"
+                target="_blank"
+                aria-label="GitHub"
+                class="hover:text-blue-400 transition-colors duration-200"
+              >
+                <i class="fab fa-github text-xl"></i>
+              </a>
+              <a
+                href="#"
+                aria-label="Twitter"
+                class="hover:text-blue-400 transition-colors duration-200"
+              >
+                <i class="fab fa-twitter text-xl"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-gray-800 text-center">
+          <p>MIT License © 2023 SorboNexus. Tous droits réservés.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("open");
+      });
+
+      // Close mobile menu when clicking a link
+      const mobileLinks = mobileMenu.querySelectorAll("a");
+      mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.remove("open");
+        });
+      });
+
+      // Form submission
+      const loginForm = document.querySelector("form");
+      if (loginForm) {
+        loginForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          // Simulate login process
+          const email = document.getElementById("email").value;
+          alert(`Connexion en cours avec l'adresse: ${email}`);
+          // Here you would normally handle the actual login
+        });
+      }
+    </script>
   </body>
 </html>
