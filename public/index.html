@@ -8,161 +8,641 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
       html,
       body {
         height: 100%;
-        min-height: 100%;
         margin: 0;
         padding: 0;
+        scroll-behavior: smooth;
       }
+
       body {
         background-attachment: fixed !important;
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        font-family: "Segoe UI", system-ui, sans-serif;
       }
-      nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 50;
+
+      .mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
       }
-      main {
-        margin-top: 64px; /* Adjust if navbar height changes */
+
+      .mobile-menu.open {
+        max-height: 500px;
       }
-      footer {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        z-index: 50;
-        background: linear-gradient(90deg, #0f0f0f 0%, #18181b 100%);
+
+      .feature-card {
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .testimonial-card {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+      }
+
+      .testimonial-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .scroll-down {
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-15px);
+        }
+        60% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-text {
+          font-size: 2.5rem;
+        }
+
+        .hero-description {
+          font-size: 1rem;
+        }
+
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
-  <body
-    class="min-h-screen text-white bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900"
-  >
-    <nav class="bg-gray-800 p-4 shadow-lg">
-      <ul class="flex space-x-4">
-        <li>
-          <a
-            href="index.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 bg-gradient-to-br font-semibold from-blue-300 to-blue-600 bg-clip-text text-transparent transform transition-transform duration-200 hover:scale-110"
-            >Accueil</a
-          >
-        </li>
-        <li>
-          <a
-            href="ressources.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Ressources</a
-          >
-        </li>
-        <li>
-          <a
-            href="liens-utiles.html"
-            class="inline-block px-4 py-1 hover:text-blue-550 transform transition-transform duration-200 hover:scale-110"
-            >Liens Utiles</a
-          >
-        </li>
-        <li>
-          <a
-            href="conseils.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Conseils</a
-          >
-        </li>
-        <li>
-          <a
-            href="alumnis.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Alumnis</a
-          >
-        </li>
-        <li>
-          <a
-            href="connexion.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Connexion</a
-          >
-        </li>
-      </ul>
-    </nav>
-    <main class="flex flex-col items-center justify-center py-24 px-6">
-      <h1 class="text-5xl font-extrabold mb-6 text-blue-400 drop-shadow-lg">
-        Bienvenue sur SorboNexus
-      </h1>
-      <p class="text-lg text-gray-300 mb-8 max-w-2xl text-center">
-        SorboNexus est votre portail vers les ressources, conseils, liens utiles
-        et le réseau des alumnis de la communauté Sorbonne. Explorez, apprenez
-        et connectez-vous !
-      </p>
-      <a
-        href="ressources.html"
-        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300"
-        >Découvrez nos ressources</a
-      >
-      <div style="height: 600px"></div>
-    </main>
-    <footer class="text-gray-400 text-sm">
-      <div
-        class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3"
-      >
-        <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-          <span>
-            MIT License &mdash; Contact :
-            <a
-              href="mailto:sethaguila@icloud.com"
-              class="underline hover:text-blue-400"
-              >sethaguila@icloud.com</a
-            >
-          </span>
+  <body class="min-h-screen text-white">
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-800 p-4 shadow-lg sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <div
+            class="bg-gradient-to-br from-blue-400 to-blue-600 w-8 h-8 rounded-lg"
+          ></div>
           <span
-            class="italic text-gray-300 text-center sm:text-left mt-1 sm:mt-0"
+            class="text-xl font-bold bg-gradient-to-br from-blue-300 to-blue-600 bg-clip-text text-transparent"
+            >SorboNexus</span
           >
-            Connecter, Inspirer, Évoluer. Site développé par Seth Aguila -
-            Projet Perso
-          </span>
         </div>
-        <div class="flex flex-col items-center space-y-2">
-          <div class="flex space-x-4 items-center">
+
+        <!-- Desktop Navigation -->
+        <ul class="hidden md:flex space-x-4">
+          <li>
             <a
-              href="https://www.linkedin.com/in/sethaguila/"
-              target="_blank"
-              aria-label="LinkedIn"
-              class="hover:text-blue-400 transition-colors duration-200"
+              href="index.html"
+              class="inline-block px-4 py-1 hover:text-blue-550 bg-gradient-to-br font-semibold from-blue-300 to-blue-600 bg-clip-text text-transparent transform transition-transform duration-200 hover:scale-110"
+              >Accueil</a
             >
-              <svg
-                class="w-6 h-6"
-                fill="white"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.966 0-1.75-.79-1.75-1.76s.784-1.76 1.75-1.76 1.75.79 1.75 1.76-.784 1.76-1.75 1.76zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.38v4.59h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"
-                />
-              </svg>
+          </li>
+          <li>
+            <a
+              href="ressources.html"
+              class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
+              >Ressources</a
+            >
+          </li>
+          <li>
+            <a
+              href="liens-utiles.html"
+              class="inline-block px-4 py-1 hover:text-blue-550 transform transition-transform duration-200 hover:scale-110"
+              >Liens Utiles</a
+            >
+          </li>
+          <li>
+            <a
+              href="conseils.html"
+              class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
+              >Conseils</a
+            >
+          </li>
+          <li>
+            <a
+              href="alumnis.html"
+              class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
+              >Alumnis</a
+            >
+          </li>
+        </ul>
+
+        <!-- Login Button Desktop -->
+        <a
+          href="connexion.html"
+          class="hidden md:block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300"
+          >Connexion</a
+        >
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-button"
+          class="md:hidden text-white focus:outline-none"
+        >
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="mobile-menu md:hidden bg-gray-800">
+        <ul class="flex flex-col space-y-3 px-4 py-5">
+          <li>
+            <a
+              href="index.html"
+              class="block py-2 px-4 bg-gradient-to-r from-blue-800 to-blue-600 rounded-lg font-medium"
+              >Accueil</a
+            >
+          </li>
+          <li>
+            <a
+              href="ressources.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Ressources</a
+            >
+          </li>
+          <li>
+            <a
+              href="liens-utiles.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Liens Utiles</a
+            >
+          </li>
+          <li>
+            <a
+              href="conseils.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Conseils</a
+            >
+          </li>
+          <li>
+            <a
+              href="alumnis.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Alumnis</a
+            >
+          </li>
+          <li>
+            <a
+              href="connexion.html"
+              class="block py-2 px-4 bg-blue-600 text-white text-center rounded-lg font-medium mt-3"
+              >Connexion</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="pt-24 pb-16 px-6 md:py-32">
+        <div class="max-w-6xl mx-auto text-center">
+          <h1
+            class="hero-text text-4xl md:text-5xl font-extrabold mb-6 text-blue-400 drop-shadow-lg"
+          >
+            Bienvenue sur
+            <span
+              class="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent"
+              >SorboNexus</span
+            >
+          </h1>
+          <p
+            class="hero-description text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto"
+          >
+            Votre portail vers les ressources, conseils, liens utiles et le
+            réseau des alumnis de la communauté Sorbonne. Explorez, apprenez et
+            connectez-vous !
+          </p>
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a
+              href="ressources.html"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Découvrez nos ressources
             </a>
             <a
-              href="https://github.com/userdigitaldevil"
-              target="_blank"
-              aria-label="GitHub"
-              class="hover:text-blue-400 transition-colors duration-200"
+              href="#features"
+              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
             >
-              <svg
-                class="w-6 h-6"
-                fill="white"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.089 2.91.833.091-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.337 4.695-4.566 4.944.359.309.678.919.678 1.852 0 1.336-.012 2.417-.012 2.747 0 .267.18.577.688.479C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"
-                />
-              </svg>
+              En savoir plus
+            </a>
+          </div>
+
+          <div class="mt-16 scroll-down">
+            <a
+              href="#features"
+              class="text-blue-400 animate-bounce inline-block"
+            >
+              <i class="fas fa-chevron-down text-2xl"></i>
             </a>
           </div>
         </div>
+      </section>
+
+      <!-- Features Section -->
+      <section id="features" class="py-16 px-6 bg-gray-800/50">
+        <div class="max-w-6xl mx-auto">
+          <h2
+            class="text-3xl md:text-4xl font-bold text-center mb-16 text-blue-400"
+          >
+            Notre plateforme vous offre
+          </h2>
+
+          <div
+            class="feature-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            <!-- Feature 1 -->
+            <div
+              class="feature-card bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+            >
+              <div
+                class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-book-open text-white text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Ressources Complètes</h3>
+              <p class="text-gray-300">
+                Accédez à une bibliothèque de ressources pédagogiques, supports
+                de cours et documents de référence pour tous les niveaux.
+              </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div
+              class="feature-card bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+            >
+              <div
+                class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-users text-white text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Réseau Alumni</h3>
+              <p class="text-gray-300">
+                Connectez-vous avec les anciens étudiants pour des opportunités
+                de mentorat, de stage et de développement professionnel.
+              </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div
+              class="feature-card bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+            >
+              <div
+                class="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-lightbulb text-white text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Conseils Pratiques</h3>
+              <p class="text-gray-300">
+                Bénéficiez de conseils d'experts pour réussir vos études, gérer
+                votre temps et préparer votre avenir professionnel.
+              </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div
+              class="feature-card bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+            >
+              <div
+                class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-link text-white text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Liens Utiles</h3>
+              <p class="text-gray-300">
+                Trouvez tous les liens essentiels vers les services
+                universitaires, bibliothèques et plateformes pédagogiques.
+              </p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div
+              class="feature-card bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+            >
+              <div
+                class="w-12 h-12 rounded-lg bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-calendar-alt text-white text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Événements</h3>
+              <p class="text-gray-300">
+                Restez informé des événements universitaires, conférences,
+                ateliers et rencontres professionnelles.
+              </p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div
+              class="feature-card bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+            >
+              <div
+                class="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-comments text-white text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Communauté</h3>
+              <p class="text-gray-300">
+                Rejoignez une communauté active d'étudiants et diplômés pour
+                échanger, collaborer et s'entraider.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+          <h2
+            class="text-3xl md:text-4xl font-bold text-center mb-16 text-blue-400"
+          >
+            Ce que disent nos utilisateurs
+          </h2>
+
+          <div class="space-y-8">
+            <div
+              class="testimonial-card bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+            >
+              <div class="flex items-start">
+                <div
+                  class="bg-gradient-to-br from-blue-400 to-teal-400 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                >
+                  MJ
+                </div>
+                <div class="ml-4">
+                  <div class="flex justify-between items-start">
+                    <h4 class="font-bold text-lg">Marie Jeanne</h4>
+                    <div class="text-yellow-400">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                  </div>
+                  <p class="text-gray-300 mt-2 italic">
+                    "SorboNexus m'a permis de trouver des ressources
+                    essentielles pour mon mémoire. La communauté est
+                    incroyablement solidaire et les conseils des alumnis m'ont
+                    ouvert des portes pour mon stage."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="testimonial-card bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+            >
+              <div class="flex items-start">
+                <div
+                  class="bg-gradient-to-br from-purple-400 to-pink-400 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                >
+                  TL
+                </div>
+                <div class="ml-4">
+                  <div class="flex justify-between items-start">
+                    <h4 class="font-bold text-lg">Thomas Laurent</h4>
+                    <div class="text-yellow-400">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star-half-alt"></i>
+                    </div>
+                  </div>
+                  <p class="text-gray-300 mt-2 italic">
+                    "En tant qu'alumni, je trouve SorboNexus indispensable pour
+                    rester connecté avec l'université. C'est aussi une
+                    excellente plateforme pour partager mon expérience
+                    professionnelle avec les étudiants actuels."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="testimonial-card bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-700"
+            >
+              <div class="flex items-start">
+                <div
+                  class="bg-gradient-to-br from-green-400 to-emerald-400 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                >
+                  SA
+                </div>
+                <div class="ml-4">
+                  <div class="flex justify-between items-start">
+                    <h4 class="font-bold text-lg">Sophie Ahmed</h4>
+                    <div class="text-yellow-400">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                  </div>
+                  <p class="text-gray-300 mt-2 italic">
+                    "La section 'conseils' m'a beaucoup aidée dans mon
+                    orientation professionnelle. J'ai pu prendre contact avec
+                    des professionnels dans mon domaine grâce au réseau alumni."
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section
+        class="py-16 px-6 bg-gradient-to-r from-blue-900/40 to-teal-900/40"
+      >
+        <div class="max-w-6xl mx-auto">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div class="p-6">
+              <div class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">
+                1.5K+
+              </div>
+              <div class="text-gray-300">Étudiants actifs</div>
+            </div>
+            <div class="p-6">
+              <div class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">
+                850+
+              </div>
+              <div class="text-gray-300">Alumnis inscrits</div>
+            </div>
+            <div class="p-6">
+              <div class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">
+                2.7K+
+              </div>
+              <div class="text-gray-300">Ressources</div>
+            </div>
+            <div class="p-6">
+              <div class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">
+                98%
+              </div>
+              <div class="text-gray-300">Satisfaction</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-gray-400 text-sm py-8 bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="mb-6 md:mb-0">
+            <div class="flex items-center space-x-2 mb-4">
+              <div
+                class="bg-gradient-to-br from-blue-400 to-teal-400 w-8 h-8 rounded-lg"
+              ></div>
+              <span
+                class="text-xl font-bold bg-gradient-to-br from-blue-300 to-blue-600 bg-clip-text text-transparent"
+                >SorboNexus</span
+              >
+            </div>
+            <p class="italic text-gray-300 max-w-md">
+              Connecter, Inspirer, Évoluer. Site développé par Seth Aguila -
+              Projet Perso
+            </p>
+          </div>
+
+          <div class="mb-6 md:mb-0">
+            <h3 class="text-white font-medium mb-4">Liens rapides</h3>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="index.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Accueil</a
+                >
+              </li>
+              <li>
+                <a
+                  href="ressources.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Ressources</a
+                >
+              </li>
+              <li>
+                <a
+                  href="alumnis.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Alumnis</a
+                >
+              </li>
+              <li>
+                <a
+                  href="conseils.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Conseils</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-white font-medium mb-4">Contact</h3>
+            <p class="mb-4">
+              <a
+                href="mailto:sethaguila@icloud.com"
+                class="underline hover:text-blue-400"
+                >sethaguila@icloud.com</a
+              >
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="https://www.linkedin.com/in/sethaguila/"
+                target="_blank"
+                aria-label="LinkedIn"
+                class="hover:text-blue-400 transition-colors duration-200"
+              >
+                <i class="fab fa-linkedin-in text-xl"></i>
+              </a>
+              <a
+                href="https://github.com/userdigitaldevil"
+                target="_blank"
+                aria-label="GitHub"
+                class="hover:text-blue-400 transition-colors duration-200"
+              >
+                <i class="fab fa-github text-xl"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-gray-800 text-center">
+          <p>MIT License © 2023 SorboNexus. Tous droits réservés.</p>
+        </div>
       </div>
     </footer>
+
+    <script>
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("open");
+      });
+
+      // Close mobile menu when clicking a link
+      const mobileLinks = mobileMenu.querySelectorAll("a");
+      mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.remove("open");
+        });
+      });
+
+      // Testimonial animation on scroll
+      const testimonialCards = document.querySelectorAll(".testimonial-card");
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      testimonialCards.forEach((card) => {
+        observer.observe(card);
+      });
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop - 80,
+              behavior: "smooth",
+            });
+          }
+        });
+      });
+    </script>
   </body>
 </html>

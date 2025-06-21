@@ -8,100 +8,819 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
       html,
       body {
         height: 100%;
-        min-height: 100%;
         margin: 0;
         padding: 0;
+        scroll-behavior: smooth;
       }
+
       body {
         background-attachment: fixed !important;
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        font-family: "Segoe UI", system-ui, sans-serif;
       }
-      nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 50;
+
+      .mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
       }
-      main {
-        margin-top: 64px; /* Adjust if navbar height changes */
+
+      .mobile-menu.open {
+        max-height: 500px;
+      }
+
+      .advice-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(76, 81, 109, 0.3);
+      }
+
+      .advice-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        border-color: rgba(96, 165, 250, 0.5);
+      }
+
+      .category-btn {
+        transition: all 0.2s ease;
+      }
+
+      .category-btn.active {
+        background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+        color: white;
+      }
+
+      .tip-card {
+        transition: all 0.3s ease;
+      }
+
+      .tip-card:hover {
+        background: rgba(59, 130, 246, 0.1);
+      }
+
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+
+      .accordion.active .accordion-content {
+        max-height: 500px;
+      }
+
+      .accordion.active .accordion-icon {
+        transform: rotate(180deg);
+      }
+
+      @media (max-width: 768px) {
+        .advice-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-title {
+          font-size: 2.5rem;
+        }
+
+        .hero-description {
+          font-size: 1rem;
+        }
       }
     </style>
   </head>
-  <body
-    class="min-h-screen text-white bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900"
-  >
-    <nav class="bg-gray-800 p-4 shadow-lg">
-      <ul class="flex space-x-4">
-        <li>
-          <a
-            href="index.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Accueil</a
+  <body class="min-h-screen text-white">
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-800 p-4 shadow-lg sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <div
+            class="bg-gradient-to-br from-blue-400 to-blue-600 w-8 h-8 rounded-lg"
+          ></div>
+          <span
+            class="text-xl font-bold bg-gradient-to-br from-blue-300 to-blue-600 bg-clip-text text-transparent"
+            >SorboNexus</span
           >
-        </li>
-        <li>
-          <a
-            href="ressources.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Ressources</a
-          >
-        </li>
-        <li>
-          <a
-            href="liens-utiles.html"
-            class="inline-block px-4 py-1 hover:text-blue-550 transform transition-transform duration-200 hover:scale-110"
-            >Liens Utiles</a
-          >
-        </li>
-        <li>
-          <a
-            href="conseils.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 bg-gradient-to-bl font-semibold from-blue-300 to-blue-600 bg-clip-text text-transparent transform transition-transform duration-200 hover:scale-110"
-            >Conseils</a
-          >
-        </li>
-        <li>
-          <a
-            href="alumnis.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Alumnis</a
-          >
-        </li>
-        <li>
-          <a
-            href="connexion.html"
-            class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
-            >Connexion</a
-          >
-        </li>
-      </ul>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <ul class="hidden md:flex space-x-4">
+          <li>
+            <a
+              href="index.html"
+              class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
+              >Accueil</a
+            >
+          </li>
+          <li>
+            <a
+              href="ressources.html"
+              class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
+              >Ressources</a
+            >
+          </li>
+          <li>
+            <a
+              href="liens-utiles.html"
+              class="inline-block px-4 py-1 hover:text-blue-550 transform transition-transform duration-200 hover:scale-110"
+              >Liens Utiles</a
+            >
+          </li>
+          <li>
+            <a
+              href="conseils.html"
+              class="inline-block px-4 py-1 hover:text-blue-550 bg-gradient-to-bl font-semibold from-blue-300 to-blue-600 bg-clip-text text-transparent transform transition-transform duration-200 hover:scale-110"
+              >Conseils</a
+            >
+          </li>
+          <li>
+            <a
+              href="alumnis.html"
+              class="inline-block px-4 py-1 hover:text-gray-400 transform transition-transform duration-200 hover:scale-110"
+              >Alumnis</a
+            >
+          </li>
+        </ul>
+
+        <!-- Login Button Desktop -->
+        <a
+          href="connexion.html"
+          class="hidden md:block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300"
+          >Connexion</a
+        >
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-button"
+          class="md:hidden text-white focus:outline-none"
+        >
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="mobile-menu md:hidden bg-gray-800">
+        <ul class="flex flex-col space-y-3 px-4 py-5">
+          <li>
+            <a
+              href="index.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Accueil</a
+            >
+          </li>
+          <li>
+            <a
+              href="ressources.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Ressources</a
+            >
+          </li>
+          <li>
+            <a
+              href="liens-utiles.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Liens Utiles</a
+            >
+          </li>
+          <li>
+            <a
+              href="conseils.html"
+              class="block py-2 px-4 bg-gradient-to-r from-blue-800 to-blue-600 rounded-lg font-medium"
+              >Conseils</a
+            >
+          </li>
+          <li>
+            <a
+              href="alumnis.html"
+              class="block py-2 px-4 hover:bg-gray-700 rounded-lg transition-colors"
+              >Alumnis</a
+            >
+          </li>
+          <li>
+            <a
+              href="connexion.html"
+              class="block py-2 px-4 bg-blue-600 text-white text-center rounded-lg font-medium mt-3"
+              >Connexion</a
+            >
+          </li>
+        </ul>
+      </div>
     </nav>
 
-    <main class="p-6">
-      <h1 class="text-3xl font-bold mb-4">Conseils</h1>
-      <p class="mb-4">
-        Bienvenue dans la section Conseils. Ici, vous trouverez des
-        recommandations utiles pour votre parcours.
-      </p>
-      <ul class="list-disc list-inside">
-        <li>Restez organisé et planifiez vos tâches.</li>
-        <li>Équilibrez votre temps entre études, travail et détente.</li>
-        <li>Prenez soin de votre santé physique et mentale.</li>
-        <li>Ne hésitez pas à demander de l'aide ou des conseils.</li>
-        <li>Fixez-vous des objectifs clairs et atteignables.</li>
-        <li>
-          Ne hésitez pas à demander de l'aide lorsque vous en avez besoin.
-        </li>
-        <li>Participez à des groupes d'étude pour échanger des idées.</li>
-        <li>
-          Utilisez les ressources disponibles pour approfondir vos
-          connaissances.
-        </li>
-      </ul>
+    <main class="pb-16">
+      <!-- Hero Section -->
+      <section
+        class="py-16 px-6 bg-gradient-to-r from-blue-900/20 to-teal-900/20"
+      >
+        <div class="max-w-6xl mx-auto text-center">
+          <h1
+            class="hero-title text-4xl md:text-5xl font-extrabold mb-6 text-blue-400 drop-shadow-lg"
+          >
+            Conseils pour
+            <span
+              class="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent"
+              >Réussir</span
+            >
+          </h1>
+          <p
+            class="hero-description text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto"
+          >
+            Découvrez des conseils pratiques pour optimiser votre parcours
+            universitaire, gérer votre temps efficacement et prendre soin de
+            votre bien-être.
+          </p>
+
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a
+              href="#categories"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
+            >
+              Explorer les conseils
+            </a>
+            <a
+              href="#resources"
+              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
+            >
+              Ressources utiles
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Categories Section -->
+      <section id="categories" class="py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+          <h2
+            class="text-3xl md:text-4xl font-bold mb-10 text-center text-blue-400"
+          >
+            Catégories de Conseils
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Category 1 -->
+            <div
+              class="advice-card bg-gray-800/70 backdrop-blur-sm rounded-xl p-6 text-center"
+            >
+              <div
+                class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-clock text-white text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Gestion du Temps</h3>
+              <p class="text-gray-300 text-sm">
+                Optimisez votre emploi du temps pour concilier études et vie
+                personnelle
+              </p>
+            </div>
+
+            <!-- Category 2 -->
+            <div
+              class="advice-card bg-gray-800/70 backdrop-blur-sm rounded-xl p-6 text-center"
+            >
+              <div
+                class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-book text-white text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Méthodes d'Étude</h3>
+              <p class="text-gray-300 text-sm">
+                Découvrez des techniques d'apprentissage efficaces
+              </p>
+            </div>
+
+            <!-- Category 3 -->
+            <div
+              class="advice-card bg-gray-800/70 backdrop-blur-sm rounded-xl p-6 text-center"
+            >
+              <div
+                class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-heartbeat text-white text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Bien-Être</h3>
+              <p class="text-gray-300 text-sm">
+                Prenez soin de votre santé physique et mentale
+              </p>
+            </div>
+
+            <!-- Category 4 -->
+            <div
+              class="advice-card bg-gray-800/70 backdrop-blur-sm rounded-xl p-6 text-center"
+            >
+              <div
+                class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-briefcase text-white text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Carrière</h3>
+              <p class="text-gray-300 text-sm">
+                Préparez votre avenir professionnel dès maintenant
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tips Section -->
+      <section class="py-12 px-6 bg-gray-800/30">
+        <div class="max-w-4xl mx-auto">
+          <h2
+            class="text-3xl md:text-4xl font-bold mb-10 text-center text-blue-400"
+          >
+            Conseils Pratiques
+          </h2>
+
+          <!-- Accordion 1 -->
+          <div
+            class="accordion mb-4 bg-gray-800/70 backdrop-blur-sm rounded-xl overflow-hidden"
+          >
+            <button
+              class="accordion-header w-full p-6 text-left flex justify-between items-center"
+            >
+              <h3 class="text-xl font-bold flex items-center">
+                <i class="fas fa-clock text-blue-400 mr-3"></i>
+                Restez organisé et planifiez vos tâches
+              </h3>
+              <i
+                class="accordion-icon fas fa-chevron-down text-blue-400 transition-transform"
+              ></i>
+            </button>
+            <div class="accordion-content px-6 pb-6">
+              <p class="text-gray-300 mb-4">
+                La planification est essentielle pour réussir vos études.
+                Utilisez un agenda ou une application de gestion de tâches pour
+                :
+              </p>
+              <ul class="list-disc pl-6 space-y-2 text-gray-300">
+                <li>Définir vos objectifs hebdomadaires et mensuels</li>
+                <li>Allouer du temps spécifique pour chaque matière</li>
+                <li>Prévoir des plages de révision régulières</li>
+                <li>Ne pas oublier les dates importantes (examens, rendus)</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Accordion 2 -->
+          <div
+            class="accordion mb-4 bg-gray-800/70 backdrop-blur-sm rounded-xl overflow-hidden"
+          >
+            <button
+              class="accordion-header w-full p-6 text-left flex justify-between items-center"
+            >
+              <h3 class="text-xl font-bold flex items-center">
+                <i class="fas fa-balance-scale text-purple-400 mr-3"></i>
+                Équilibrez votre temps entre études, travail et détente
+              </h3>
+              <i
+                class="accordion-icon fas fa-chevron-down text-blue-400 transition-transform"
+              ></i>
+            </button>
+            <div class="accordion-content px-6 pb-6">
+              <p class="text-gray-300 mb-4">
+                Trouver le bon équilibre est crucial pour éviter le burnout.
+                Voici quelques stratégies :
+              </p>
+              <ul class="list-disc pl-6 space-y-2 text-gray-300">
+                <li>
+                  Appliquez la méthode Pomodoro (25 min travail / 5 min pause)
+                </li>
+                <li>
+                  Réservez des moments précis pour les loisirs et la
+                  socialisation
+                </li>
+                <li>
+                  Si vous travaillez, limitez vos heures à un maximum de
+                  15-20h/semaine
+                </li>
+                <li>Prenez au moins un jour complet de repos par semaine</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Accordion 3 -->
+          <div
+            class="accordion mb-4 bg-gray-800/70 backdrop-blur-sm rounded-xl overflow-hidden"
+          >
+            <button
+              class="accordion-header w-full p-6 text-left flex justify-between items-center"
+            >
+              <h3 class="text-xl font-bold flex items-center">
+                <i class="fas fa-heartbeat text-red-400 mr-3"></i>
+                Prenez soin de votre santé physique et mentale
+              </h3>
+              <i
+                class="accordion-icon fas fa-chevron-down text-blue-400 transition-transform"
+              ></i>
+            </button>
+            <div class="accordion-content px-6 pb-6">
+              <p class="text-gray-300 mb-4">
+                Votre santé est votre atout le plus précieux. Ne la négligez pas
+                :
+              </p>
+              <ul class="list-disc pl-6 space-y-2 text-gray-300">
+                <li>Dormez 7 à 8 heures par nuit</li>
+                <li>Mangez équilibré et hydratez-vous régulièrement</li>
+                <li>
+                  Pratiquez une activité physique au moins 30 min par jour
+                </li>
+                <li>Utilisez les services de santé universitaires si besoin</li>
+                <li>Pratiquez la méditation ou des exercices de respiration</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Accordion 4 -->
+          <div
+            class="accordion mb-4 bg-gray-800/70 backdrop-blur-sm rounded-xl overflow-hidden"
+          >
+            <button
+              class="accordion-header w-full p-6 text-left flex justify-between items-center"
+            >
+              <h3 class="text-xl font-bold flex items-center">
+                <i class="fas fa-hands-helping text-green-400 mr-3"></i>
+                Ne hésitez pas à demander de l'aide ou des conseils
+              </h3>
+              <i
+                class="accordion-icon fas fa-chevron-down text-blue-400 transition-transform"
+              ></i>
+            </button>
+            <div class="accordion-content px-6 pb-6">
+              <p class="text-gray-300 mb-4">
+                Demander de l'aide est un signe de force, non de faiblesse :
+              </p>
+              <ul class="list-disc pl-6 space-y-2 text-gray-300">
+                <li>Participez aux heures de bureau de vos professeurs</li>
+                <li>Rejoignez des groupes d'étude pour échanger des idées</li>
+                <li>Utilisez le tutorat proposé par l'université</li>
+                <li>Consultez les conseillers pédagogiques</li>
+                <li>Parlez à vos pairs des difficultés que vous rencontrez</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- More Tips Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+            <div class="tip-card bg-gray-800/50 p-6 rounded-xl">
+              <div class="flex items-start mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center text-white mr-4"
+                >
+                  <i class="fas fa-bullseye"></i>
+                </div>
+                <h3 class="text-lg font-bold">
+                  Fixez-vous des objectifs clairs et atteignables
+                </h3>
+              </div>
+              <p class="text-gray-300">
+                Décomposez vos grands objectifs en petites étapes réalisables.
+                Célébrez chaque réussite, même minime.
+              </p>
+            </div>
+
+            <div class="tip-card bg-gray-800/50 p-6 rounded-xl">
+              <div class="flex items-start mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white mr-4"
+                >
+                  <i class="fas fa-users"></i>
+                </div>
+                <h3 class="text-lg font-bold">
+                  Participez à des groupes d'étude
+                </h3>
+              </div>
+              <p class="text-gray-300">
+                L'apprentissage collaboratif améliore la compréhension et la
+                mémorisation. Formez des groupes réguliers.
+              </p>
+            </div>
+
+            <div class="tip-card bg-gray-800/50 p-6 rounded-xl">
+              <div class="flex items-start mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white mr-4"
+                >
+                  <i class="fas fa-book-open"></i>
+                </div>
+                <h3 class="text-lg font-bold">
+                  Utilisez les ressources disponibles
+                </h3>
+              </div>
+              <p class="text-gray-300">
+                Bibliothèques, ressources en ligne, logiciels éducatifs -
+                profitez de tout ce que votre université offre.
+              </p>
+            </div>
+
+            <div class="tip-card bg-gray-800/50 p-6 rounded-xl">
+              <div class="flex items-start mb-4">
+                <div
+                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white mr-4"
+                >
+                  <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3 class="text-lg font-bold">
+                  Revoyez régulièrement vos notes
+                </h3>
+              </div>
+              <p class="text-gray-300">
+                Une révision de 10 minutes après chaque cours et 30 minutes par
+                semaine améliore considérablement la rétention.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Resources Section -->
+      <section id="resources" class="py-16 px-6">
+        <div class="max-w-6xl mx-auto">
+          <h2
+            class="text-3xl md:text-4xl font-bold mb-10 text-center text-blue-400"
+          >
+            Ressources Complémentaires
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div
+              class="bg-gray-800/70 backdrop-blur-sm rounded-xl p-6 border border-gray-700"
+            >
+              <h3 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-book mr-3 text-blue-400"></i>
+                Guides d'Étude
+              </h3>
+              <ul class="space-y-3">
+                <li>
+                  <a
+                    href="#"
+                    class="text-blue-400 hover:text-blue-300 flex items-center"
+                  >
+                    <i class="fas fa-file-pdf mr-2"></i> Méthodes de prise de
+                    notes efficaces
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-blue-400 hover:text-blue-300 flex items-center"
+                  >
+                    <i class="fas fa-file-pdf mr-2"></i> Préparation aux examens
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-blue-400 hover:text-blue-300 flex items-center"
+                  >
+                    <i class="fas fa-file-pdf mr-2"></i> Gestion du stress
+                    académique
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div
+              class="bg-gray-800/70 backdrop-blur-sm rounded-xl p-6 border border-gray-700"
+            >
+              <h3 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-video mr-3 text-purple-400"></i>
+                Vidéos Utiles
+              </h3>
+              <ul class="space-y-3">
+                <li>
+                  <a
+                    href="#"
+                    class="text-blue-400 hover:text-blue-300 flex items-center"
+                  >
+                    <i class="fab fa-youtube mr-2"></i> Techniques de
+                    mémorisation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-blue-400 hover:text-blue-300 flex items-center"
+                  >
+                    <i class="fab fa-youtube mr-2"></i> Organisation du temps
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-blue-400 hover:text-blue-300 flex items-center"
+                  >
+                    <i class="fab fa-youtube mr-2"></i> Bien-être étudiant
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div
+              class="bg-gray-800/70 backdrop-blur-sm rounded-xl p-6 border border-gray-700"
+            >
+              <h3 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-link mr-3 text-green-400"></i>
+                Liens Recommandés
+              </h3>
+              <ul class="space-y-3">
+                <li>
+                  <a
+                    href="#"
+                    class="text-blue-400 hover:text-blue-300 flex items-center"
+                  >
+                    <i class="fas fa-external-link-alt mr-2"></i> Centre de
+                    santé universitaire
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-blue-400 hover:text-blue-300 flex items-center"
+                  >
+                    <i class="fas fa-external-link-alt mr-2"></i> Services de
+                    tutorat
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="text-blue-400 hover:text-blue-300 flex items-center"
+                  >
+                    <i class="fas fa-external-link-alt mr-2"></i> Bibliothèque
+                    en ligne
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Community Section -->
+      <section
+        class="py-16 px-6 bg-gradient-to-r from-blue-900/40 to-teal-900/40"
+      >
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6 text-blue-400">
+            Rejoignez notre communauté
+          </h2>
+          <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+            Échangez avec d'autres étudiants, partagez vos conseils et obtenez
+            du soutien dans votre parcours universitaire.
+          </p>
+          <a
+            href="connexion.html"
+            class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
+          >
+            Participer aux discussions
+          </a>
+        </div>
+      </section>
     </main>
+
+    <!-- Footer -->
+    <footer class="text-gray-400 text-sm py-8 bg-gray-900">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="mb-6 md:mb-0">
+            <div class="flex items-center space-x-2 mb-4">
+              <div
+                class="bg-gradient-to-br from-blue-400 to-teal-400 w-8 h-8 rounded-lg"
+              ></div>
+              <span
+                class="text-xl font-bold bg-gradient-to-br from-blue-300 to-blue-600 bg-clip-text text-transparent"
+                >SorboNexus</span
+              >
+            </div>
+            <p class="italic text-gray-300 max-w-md">
+              Connecter, Inspirer, Évoluer. Site développé par Seth Aguila -
+              Projet Perso
+            </p>
+          </div>
+
+          <div class="mb-6 md:mb-0">
+            <h3 class="text-white font-medium mb-4">Liens rapides</h3>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="index.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Accueil</a
+                >
+              </li>
+              <li>
+                <a
+                  href="ressources.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Ressources</a
+                >
+              </li>
+              <li>
+                <a
+                  href="conseils.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Conseils</a
+                >
+              </li>
+              <li>
+                <a
+                  href="alumnis.html"
+                  class="hover:text-blue-400 transition-colors"
+                  >Alumnis</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-white font-medium mb-4">Contact</h3>
+            <p class="mb-4">
+              <a
+                href="mailto:sethaguila@icloud.com"
+                class="underline hover:text-blue-400"
+                >sethaguila@icloud.com</a
+              >
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="https://www.linkedin.com/in/sethaguila/"
+                target="_blank"
+                aria-label="LinkedIn"
+                class="hover:text-blue-400 transition-colors duration-200"
+              >
+                <i class="fab fa-linkedin-in text-xl"></i>
+              </a>
+              <a
+                href="https://github.com/userdigitaldevil"
+                target="_blank"
+                aria-label="GitHub"
+                class="hover:text-blue-400 transition-colors duration-200"
+              >
+                <i class="fab fa-github text-xl"></i>
+              </a>
+              <a
+                href="#"
+                aria-label="Twitter"
+                class="hover:text-blue-400 transition-colors duration-200"
+              >
+                <i class="fab fa-twitter text-xl"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-gray-800 text-center">
+          <p>MIT License © 2023 SorboNexus. Tous droits réservés.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("open");
+      });
+
+      // Close mobile menu when clicking a link
+      const mobileLinks = mobileMenu.querySelectorAll("a");
+      mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.remove("open");
+        });
+      });
+
+      // Accordion functionality
+      const accordions = document.querySelectorAll(".accordion");
+
+      accordions.forEach((accordion) => {
+        const header = accordion.querySelector(".accordion-header");
+
+        header.addEventListener("click", () => {
+          accordion.classList.toggle("active");
+        });
+      });
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop - 80,
+              behavior: "smooth",
+            });
+          }
+        });
+      });
+    </script>
   </body>
 </html>
