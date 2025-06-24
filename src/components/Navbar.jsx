@@ -25,6 +25,8 @@ import {
   CardContent,
   Divider,
   ListItemIcon,
+  Grow,
+  Fade,
 } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import { alumni } from "../data/alumni";
@@ -496,12 +498,115 @@ const Navbar = () => {
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleProfileClose}
+              TransitionComponent={Grow}
+              PaperProps={{
+                sx: {
+                  borderRadius: 3,
+                  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
+                  minWidth: 180,
+                  mt: 1,
+                  background: "rgba(30, 41, 59, 0.98)",
+                  color: "#fff",
+                  p: 0.5,
+                },
+              }}
+              MenuListProps={{
+                sx: {
+                  p: 0,
+                },
+              }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               <MenuItem onClick={handleEditCard}>Modifier ma carte</MenuItem>
               <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
             </Menu>
           </Box>
-        ) : alumniUser ? null : (
+        ) : alumniUser ? (
+          <Box sx={{ display: "flex", alignItems: "center", ml: 3, mt: 2 }}>
+            <Button
+              onClick={handleProfileClick}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                background: "rgba(255,255,255,0.10)",
+                border: "1.5px solid #3b82f6",
+                color: "#fff",
+                fontWeight: 700,
+                px: 2.5,
+                py: 1.2,
+                borderRadius: 3,
+                boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": {
+                  background: "rgba(59,130,246,0.15)",
+                  borderColor: "#2563eb",
+                },
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  fontWeight: 700,
+                  background: alumniUser.color || "#3b82f6",
+                  color: "#fff",
+                  mr: 1,
+                }}
+              >
+                {alumniUser.avatar}
+              </Avatar>
+              {alumniUser.name.split(" ")[0]}
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleProfileClose}
+              TransitionComponent={Grow}
+              PaperProps={{
+                sx: {
+                  borderRadius: 3,
+                  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
+                  minWidth: 180,
+                  mt: 1,
+                  background: "rgba(30, 41, 59, 0.98)",
+                  color: "#fff",
+                  p: 0.5,
+                },
+              }}
+              MenuListProps={{
+                sx: {
+                  p: 0,
+                },
+              }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+              <MenuItem
+                onClick={() => {
+                  setIsAlumniProfileModalOpen(true);
+                  handleProfileClose();
+                }}
+              >
+                Voir ma carte
+              </MenuItem>
+              <MenuItem onClick={handleAlumniEditClick}>
+                Modifier ma carte
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("isAdmin");
+                  window.location.reload();
+                }}
+              >
+                Déconnexion
+              </MenuItem>
+            </Menu>
+          </Box>
+        ) : (
           <ListItem sx={{ mt: 2 }}>
             <Button
               variant="contained"
@@ -681,6 +786,25 @@ const Navbar = () => {
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleProfileClose}
+                    TransitionComponent={Grow}
+                    PaperProps={{
+                      sx: {
+                        borderRadius: 3,
+                        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
+                        minWidth: 180,
+                        mt: 1,
+                        background: "rgba(30, 41, 59, 0.98)",
+                        color: "#fff",
+                        p: 0.5,
+                      },
+                    }}
+                    MenuListProps={{
+                      sx: {
+                        p: 0,
+                      },
+                    }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
                   >
                     <MenuItem onClick={handleEditCard}>
                       Modifier ma carte
@@ -731,6 +855,25 @@ const Navbar = () => {
                       anchorEl={anchorEl}
                       open={Boolean(anchorEl)}
                       onClose={handleProfileClose}
+                      TransitionComponent={Grow}
+                      PaperProps={{
+                        sx: {
+                          borderRadius: 3,
+                          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
+                          minWidth: 180,
+                          mt: 1,
+                          background: "rgba(30, 41, 59, 0.98)",
+                          color: "#fff",
+                          p: 0.5,
+                        },
+                      }}
+                      MenuListProps={{
+                        sx: {
+                          p: 0,
+                        },
+                      }}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      transformOrigin={{ vertical: "top", horizontal: "right" }}
                     >
                       <MenuItem
                         onClick={() => {
