@@ -274,39 +274,35 @@ export default function Alumnis() {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    // Auto-generate avatar from name
-    const avatar = editForm.name ? editForm.name[0].toUpperCase() : "";
-    const formToSend = {
-      ...editForm,
-      avatar,
-    };
-    if (!isAdmin) {
-      // Remove restricted fields for normal alumni
-      delete formToSend.color;
-      delete formToSend.gradient;
-      delete formToSend.isAdmin;
-    }
-    const token = localStorage.getItem("token");
-    const res = await fetch(
-      `http://localhost:5001/api/alumni/${editAlumni._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formToSend),
-      }
-    );
-    if (res.ok) {
-      // Refresh alumni list
-      const updated = alumni.map((a) =>
-        a._id === editAlumni._id ? { ...a, ...formToSend } : a
+    try {
+      const response = await fetch(
+        `http://localhost:5001/api/alumni/${editAlumni._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(editForm),
+        }
       );
-      setAlumni(updated);
-      setEditModalOpen(false);
-    } else {
-      alert("Erreur lors de la mise à jour");
+
+      if (response.ok) {
+        // Refresh alumni data
+        const updatedResponse = await fetch("http://localhost:5001/api/alumni");
+        const updatedData = await updatedResponse.json();
+        setAlumni(updatedData);
+        setEditModalOpen(false);
+        setEditAlumni(null);
+
+        // Notify navbar to refresh user data
+        localStorage.setItem("profileUpdated", Date.now().toString());
+        window.dispatchEvent(new Event("profileUpdated"));
+      } else {
+        console.error("Failed to update alumni");
+      }
+    } catch (error) {
+      console.error("Error updating alumni:", error);
     }
   };
 

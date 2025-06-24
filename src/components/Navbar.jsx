@@ -29,7 +29,6 @@ import {
   Fade,
 } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
-import { alumni } from "../data/alumni";
 import { jwtDecode } from "jwt-decode";
 import EmailIcon from "@mui/icons-material/Email";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
@@ -66,49 +65,50 @@ const Navbar = () => {
   // Admin state and alumni
   const isAdmin =
     typeof window !== "undefined" && localStorage.getItem("isAdmin") === "true";
-  const adminAlumni = alumni.find((a) => a.isAdmin);
+  const [adminAlumni, setAdminAlumni] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleProfileClick = (event) => setAnchorEl(event.currentTarget);
   const handleProfileClose = () => setAnchorEl(null);
 
   // Admin edit modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editData, setEditData] = useState(() => {
-    if (adminAlumni) {
-      return {
-        ...adminAlumni,
-        profile: {
-          ...adminAlumni.profile,
-          grades: { ...adminAlumni.profile.grades },
-          schoolsApplied: [...adminAlumni.profile.schoolsApplied],
-        },
-      };
-    }
-    // Default structure if adminAlumni is not loaded yet
-    return {
-      name: "",
-      degree: "",
-      position: "",
-      field: "",
-      email: "",
-      linkedin: "",
-      avatar: "",
-      conseil: "",
-      profile: { grades: {}, currentPosition: "", schoolsApplied: [] },
-    };
+  const [editData, setEditData] = useState({
+    name: "",
+    degree: "",
+    position: "",
+    field: "",
+    email: "",
+    linkedin: "",
+    avatar: "",
+    conseil: "",
+    profile: { grades: {}, currentPosition: "", schoolsApplied: [] },
   });
+
+  // Fetch admin data from database
   useEffect(() => {
-    if (adminAlumni) {
-      setEditData({
-        ...adminAlumni,
-        profile: {
-          ...adminAlumni.profile,
-          grades: { ...adminAlumni.profile.grades },
-          schoolsApplied: [...adminAlumni.profile.schoolsApplied],
-        },
-      });
+    if (isAdmin) {
+      fetch("http://localhost:5001/api/alumni")
+        .then((res) => res.json())
+        .then((data) => {
+          const admin = data.find((a) => a.isAdmin);
+          if (admin) {
+            setAdminAlumni(admin);
+            setEditData({
+              ...admin,
+              profile: {
+                ...admin.profile,
+                grades: { ...admin.profile.grades },
+                schoolsApplied: [...admin.profile.schoolsApplied],
+              },
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching admin data:", error);
+        });
     }
-  }, [adminAlumni]);
+  }, [isAdmin]);
+
   const handleEditCard = () => {
     handleProfileClose();
     setIsEditModalOpen(true);
@@ -168,34 +168,77 @@ const Navbar = () => {
     });
   };
   const handleEditModalClose = () => setIsEditModalOpen(false);
-  const handleEditSave = () => {
-    // For now, just close modal. In real app, would persist to backend/localStorage.
-    setIsEditModalOpen(false);
-    alert("Modifications enregistrées (démo, non persisté)");
+
+  const handleEditSave = async () => {
+    if (!adminAlumni) return;
+
+    try {
+      const avatar = editData.name ? editData.name[0].toUpperCase() : "";
+      const formToSend = {
+        ...editData,
+        avatar,
+      };
+      delete formToSend.color;
+      delete formToSend.gradient;
+      delete formToSend.isAdmin;
+
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `http://localhost:5001/api/alumni/${adminAlumni._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formToSend),
+        }
+      );
+
+      if (res.ok) {
+        setIsEditModalOpen(false);
+        // Refresh admin data
+        const updatedRes = await fetch("http://localhost:5001/api/alumni");
+        const updatedData = await updatedRes.json();
+        const updatedAdmin = updatedData.find((a) => a.isAdmin);
+        if (updatedAdmin) {
+          setAdminAlumni(updatedAdmin);
+        }
+      } else {
+        alert("Erreur lors de la mise à jour");
+      }
+    } catch (error) {
+      console.error("Error updating admin:", error);
+      alert("Erreur lors de la mise à jour");
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("isAdmin");
+    localStorage.removeItem("token");
     window.location.reload();
   };
 
   // Alumni state
   const [alumniUser, setAlumniUser] = useState(null);
-  useEffect(() => {
+
+  // Function to fetch alumni user data
+  const fetchAlumniUser = async () => {
     if (!isAdmin && typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       if (token) {
         try {
           const decoded = jwtDecode(token);
           if (decoded.alumniId) {
-            // Fetch alumni data from backend
-            fetch(`http://localhost:5001/api/alumni/${decoded.alumniId}`)
-              .then((res) => {
-                if (!res.ok) throw new Error("Not found");
-                return res.json();
-              })
-              .then((data) => setAlumniUser(data))
-              .catch(() => setAlumniUser(null));
+            const res = await fetch(
+              `http://localhost:5001/api/alumni/${decoded.alumniId}`
+            );
+            if (res.ok) {
+              const data = await res.json();
+              setAlumniUser(data);
+            } else {
+              setAlumniUser(null);
+            }
           } else {
             setAlumniUser(null);
           }
@@ -208,7 +251,45 @@ const Navbar = () => {
     } else {
       setAlumniUser(null);
     }
+  };
+
+  useEffect(() => {
+    fetchAlumniUser();
   }, [isAdmin]);
+
+  // Listen for storage changes (when profile is updated from other pages)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === "profileUpdated") {
+        fetchAlumniUser();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also listen for custom events
+    const handleProfileUpdate = () => {
+      fetchAlumniUser();
+    };
+
+    window.addEventListener("profileUpdated", handleProfileUpdate);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("profileUpdated", handleProfileUpdate);
+    };
+  }, [isAdmin]);
+
+  // Periodic refresh every 30 seconds to ensure data is up to date
+  useEffect(() => {
+    if (!isAdmin && alumniUser) {
+      const interval = setInterval(() => {
+        fetchAlumniUser();
+      }, 30000); // 30 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [isAdmin, alumniUser]);
 
   // Add state for modals and edit form for alumni user
   const [isAlumniProfileModalOpen, setIsAlumniProfileModalOpen] =

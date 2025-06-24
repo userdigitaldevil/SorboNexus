@@ -277,6 +277,10 @@ export default function Conseils() {
         setAlumni(updatedData);
         setEditModalOpen(false);
         setEditAlumni(null);
+
+        // Notify navbar to refresh user data
+        localStorage.setItem("profileUpdated", Date.now().toString());
+        window.dispatchEvent(new Event("profileUpdated"));
       } else {
         console.error("Failed to update alumni");
       }
