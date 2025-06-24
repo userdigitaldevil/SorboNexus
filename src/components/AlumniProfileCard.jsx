@@ -47,28 +47,28 @@ export default function AlumniProfileCard({
           position: "relative",
         }}
       />
-      <CardContent sx={{ p: 4, pt: 8 }}>
-        <Box
+      <Box
+        sx={{
+          position: "absolute",
+          top: 80,
+          left: 24,
+          zIndex: 10,
+        }}
+      >
+        <Avatar
           sx={{
-            position: "absolute",
-            top: 80,
-            left: 24,
-            zIndex: 10,
+            width: 64,
+            height: 64,
+            background: alum.color,
+            border: "4px solid rgba(255, 255, 255, 0.1)",
+            fontSize: "1.5rem",
+            fontWeight: 700,
           }}
         >
-          <Avatar
-            sx={{
-              width: 64,
-              height: 64,
-              background: alum.color,
-              border: "4px solid rgba(255, 255, 255, 0.1)",
-              fontSize: "1.5rem",
-              fontWeight: 700,
-            }}
-          >
-            {alum.avatar}
-          </Avatar>
-        </Box>
+          {alum.avatar}
+        </Avatar>
+      </Box>
+      <CardContent sx={{ p: 4, pt: 8 }}>
         <Typography
           variant="h6"
           sx={{

@@ -38,6 +38,7 @@ import {
   CheckCircleOutline as CheckCircleOutlineIcon,
   Cancel as CancelIcon,
 } from "@mui/icons-material";
+import AlumniProfileCard from "../components/AlumniProfileCard";
 
 const tipsPerPage = 9;
 
@@ -623,264 +624,25 @@ export default function Conseils() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 50 }}
           transition={{ duration: 0.3 }}
+          style={{
+            maxHeight: "90vh",
+            overflowY: "auto",
+            maxWidth: 600,
+            width: "100%",
+            borderRadius: 16,
+          }}
         >
-          <Card
-            elevation={24}
-            sx={{
-              background: "rgba(15, 23, 42, 0.95)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              borderRadius: "24px",
-              maxWidth: 600,
-              width: "100%",
-              maxHeight: "90vh",
-              overflow: "auto",
-              position: "relative",
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: "3px",
-                background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                opacity: 0.8,
-              },
-            }}
-          >
-            {selectedProfile && (
-              <CardContent sx={{ p: 4 }}>
-                {/* Header */}
-                <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-                  <Avatar
-                    sx={{
-                      width: 80,
-                      height: 80,
-                      background: selectedProfile.color,
-                      mr: 3,
-                      fontSize: "1.5rem",
-                    }}
-                  >
-                    {selectedProfile.avatar}
-                  </Avatar>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        fontWeight: 700,
-                        color: "white",
-                        mb: 1,
-                      }}
-                    >
-                      {selectedProfile.author}
-                    </Typography>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: "#3b82f6",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {selectedProfile.position}
-                    </Typography>
-                  </Box>
-                  <IconButton
-                    onClick={closeProfileModal}
-                    sx={{
-                      color: "rgba(255, 255, 255, 0.7)",
-                      "&:hover": {
-                        color: "white",
-                        background: "rgba(255, 255, 255, 0.1)",
-                      },
-                    }}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </Box>
-
-                <Divider
-                  sx={{ mb: 3, borderColor: "rgba(255, 255, 255, 0.1)" }}
-                />
-
-                {/* Contact Information */}
-                <Box sx={{ mb: 4 }}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      color: "white",
-                      fontWeight: 600,
-                      mb: 2,
-                    }}
-                  >
-                    Contact
-                  </Typography>
-                  <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-                    <Button
-                      startIcon={<EmailIcon />}
-                      href={`mailto:${selectedProfile.profile.email}`}
-                      sx={{
-                        color: "#3b82f6",
-                        border: "1px solid rgba(59, 130, 246, 0.3)",
-                        "&:hover": {
-                          background: "rgba(59, 130, 246, 0.1)",
-                          border: "1px solid #3b82f6",
-                        },
-                      }}
-                    >
-                      Email
-                    </Button>
-                    <Button
-                      startIcon={<LinkedInIcon />}
-                      href={selectedProfile.profile.linkedin}
-                      target="_blank"
-                      sx={{
-                        color: "#0077b5",
-                        border: "1px solid rgba(0, 119, 181, 0.3)",
-                        "&:hover": {
-                          background: "rgba(0, 119, 181, 0.1)",
-                          border: "1px solid #0077b5",
-                        },
-                      }}
-                    >
-                      LinkedIn
-                    </Button>
-                  </Box>
-                </Box>
-
-                {/* Current Position */}
-                <Box sx={{ mb: 4 }}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      color: "white",
-                      fontWeight: 600,
-                      mb: 2,
-                    }}
-                  >
-                    Poste actuel
-                  </Typography>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <BusinessIcon sx={{ color: "#3b82f6" }} />
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: "rgba(255, 255, 255, 0.8)",
-                      }}
-                    >
-                      {selectedProfile.profile.currentPosition}
-                    </Typography>
-                  </Box>
-                </Box>
-
-                {/* Grades */}
-                <Box sx={{ mb: 4 }}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      color: "white",
-                      fontWeight: 600,
-                      mb: 2,
-                    }}
-                  >
-                    Notes obtenues
-                  </Typography>
-                  <List dense>
-                    {Object.entries(selectedProfile.profile.grades).map(
-                      ([program, grade]) => (
-                        <ListItem key={program} sx={{ px: 0 }}>
-                          <ListItemIcon sx={{ minWidth: 40 }}>
-                            <GradeIcon sx={{ color: "#3b82f6" }} />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={program}
-                            secondary={grade}
-                            primaryTypographyProps={{
-                              sx: { color: "white", fontWeight: 500 },
-                            }}
-                            secondaryTypographyProps={{
-                              sx: { color: "#3b82f6", fontWeight: 600 },
-                            }}
-                          />
-                        </ListItem>
-                      )
-                    )}
-                  </List>
-                </Box>
-
-                {/* Schools Applied */}
-                <Box sx={{ mb: 2 }}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      color: "white",
-                      fontWeight: 600,
-                      mb: 2,
-                    }}
-                  >
-                    Écoles demandées
-                  </Typography>
-                  <List dense>
-                    {selectedProfile.profile.schoolsApplied.map((school) => (
-                      <ListItem key={school.name} sx={{ px: 0 }}>
-                        <ListItemIcon sx={{ minWidth: 40 }}>
-                          {school.status === "accepted" ? (
-                            <CheckCircleOutlineIcon sx={{ color: "#10b981" }} />
-                          ) : (
-                            <CancelIcon sx={{ color: "#ef4444" }} />
-                          )}
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={school.name}
-                          secondary={
-                            school.status === "accepted" ? "Accepté" : "Refusé"
-                          }
-                          primaryTypographyProps={{
-                            sx: { color: "white", fontWeight: 500 },
-                          }}
-                          secondaryTypographyProps={{
-                            sx: {
-                              color:
-                                school.status === "accepted"
-                                  ? "#10b981"
-                                  : "#ef4444",
-                              fontWeight: 600,
-                            },
-                          }}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-
-                {/* Conseil */}
-                {selectedProfile.conseil && (
-                  <Box sx={{ mb: 2 }}>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: "white",
-                        fontWeight: 600,
-                        mb: 2,
-                      }}
-                    >
-                      Conseil de cet alumni
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: "rgba(255, 255, 255, 0.85)",
-                        fontStyle: "italic",
-                        fontSize: "1.1rem",
-                        whiteSpace: "pre-wrap",
-                      }}
-                    >
-                      {renderConseilWithLinks(selectedProfile.conseil)}
-                    </Typography>
-                  </Box>
-                )}
-              </CardContent>
-            )}
-          </Card>
+          {selectedProfile && (
+            <AlumniProfileCard
+              alum={{
+                ...selectedProfile,
+                name: selectedProfile.author,
+                degree: selectedProfile.title,
+              }}
+              isAdmin={false}
+              handleEditClick={() => {}}
+            />
+          )}
         </motion.div>
       </Modal>
     </Box>
