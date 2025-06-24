@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   AppBar,
@@ -274,11 +274,11 @@ const Navbar = () => {
   };
   const handleAlumniRemoveGrade = (key) => {
     setAlumniEditForm((prev) => {
-      const newGrades = { ...prev.profile.grades };
-      delete newGrades[key];
+      const grades = { ...prev.profile.grades };
+      delete grades[key];
       return {
         ...prev,
-        profile: { ...prev.profile, grades: newGrades },
+        profile: { ...prev.profile, grades: grades },
       };
     });
   };
@@ -382,28 +382,48 @@ const Navbar = () => {
   }
 
   const drawer = (
-    <Box sx={{ width: 250, pt: 2 }}>
+    <Box
+      sx={{
+        width: 280,
+        pt: 2,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "rgba(20, 30, 48, 0.85)",
+        backdropFilter: "blur(16px)",
+        borderTopRightRadius: 24,
+        borderBottomRightRadius: 24,
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        transition: "background 0.3s",
+      }}
+    >
       <Box
         sx={{
+          width: "100%",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          px: 2,
+          px: 3,
           mb: 2,
         }}
       >
         <Typography
           variant="h6"
           className="sorbonne-gradient"
-          sx={{ fontWeight: 700 }}
+          sx={{ fontWeight: 700, fontSize: 22 }}
         >
           SorboNexus
         </Typography>
-        <IconButton onClick={handleDrawerToggle} sx={{ color: "white" }}>
-          <CloseIcon />
+        <IconButton
+          onClick={handleDrawerToggle}
+          sx={{ color: "white", p: 1.5 }}
+        >
+          <CloseIcon sx={{ fontSize: 28 }} />
         </IconButton>
       </Box>
-      <List>
+      <List sx={{ width: "100%", flex: 1 }}>
         {navItems.map((item) => (
           <ListItem
             key={item.name}
@@ -412,16 +432,30 @@ const Navbar = () => {
             onClick={handleDrawerToggle}
             sx={{
               color: isActive(item.path) ? theme.palette.primary.main : "white",
+              borderRadius: 2,
+              mx: 2,
+              my: 0.5,
+              minHeight: 48,
               "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                backgroundColor: "rgba(255, 255, 255, 0.08)",
               },
             }}
+            button
           >
-            <ListItemText primary={item.name} />
+            <ListItemText
+              primary={item.name}
+              primaryTypographyProps={{
+                sx: {
+                  fontWeight: isActive(item.path) ? 700 : 500,
+                  fontSize: 18,
+                  letterSpacing: 0.5,
+                },
+              }}
+            />
           </ListItem>
         ))}
         {isAdmin && adminAlumni ? (
-          <Box sx={{ display: "flex", alignItems: "center", ml: 3 }}>
+          <Box sx={{ display: "flex", alignItems: "center", ml: 3, mt: 2 }}>
             <Button
               onClick={handleProfileClick}
               sx={{
@@ -456,7 +490,7 @@ const Navbar = () => {
               >
                 {adminAlumni.avatar}
               </Avatar>
-              {adminAlumni.name}
+              {adminAlumni.name.split(" ")[0]}
             </Button>
             <Menu
               anchorEl={anchorEl}
@@ -467,72 +501,7 @@ const Navbar = () => {
               <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
             </Menu>
           </Box>
-        ) : alumniUser ? (
-          <Box sx={{ display: "flex", alignItems: "center", ml: 3 }}>
-            <Button
-              onClick={handleProfileClick}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1.5,
-                background: "rgba(255,255,255,0.10)",
-                border: "1.5px solid #3b82f6",
-                color: "#fff",
-                fontWeight: 700,
-                px: 2.5,
-                py: 1.2,
-                borderRadius: 3,
-                boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
-                textTransform: "none",
-                fontSize: "1rem",
-                "&:hover": {
-                  background: "rgba(59,130,246,0.15)",
-                  borderColor: "#2563eb",
-                },
-              }}
-            >
-              <Avatar
-                sx={{
-                  width: 32,
-                  height: 32,
-                  fontWeight: 700,
-                  background: alumniUser.color || "#3b82f6",
-                  color: "#fff",
-                  mr: 1,
-                }}
-              >
-                {alumniUser.avatar}
-              </Avatar>
-              {alumniUser.name}
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleProfileClose}
-            >
-              <MenuItem
-                onClick={() => {
-                  setIsAlumniProfileModalOpen(true);
-                  handleProfileClose();
-                }}
-              >
-                Voir ma carte
-              </MenuItem>
-              <MenuItem onClick={handleAlumniEditClick}>
-                Modifier ma carte
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  localStorage.removeItem("token");
-                  localStorage.removeItem("isAdmin");
-                  window.location.reload();
-                }}
-              >
-                Déconnexion
-              </MenuItem>
-            </Menu>
-          </Box>
-        ) : (
+        ) : alumniUser ? null : (
           <ListItem sx={{ mt: 2 }}>
             <Button
               variant="contained"
@@ -541,6 +510,13 @@ const Navbar = () => {
               to="/connexion"
               sx={{
                 background: "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
+                fontWeight: 700,
+                fontSize: 18,
+                py: 1.5,
+                borderRadius: 2,
+                boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
+                textTransform: "none",
+                letterSpacing: 0.5,
                 "&:hover": {
                   background:
                     "linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)",
@@ -554,6 +530,53 @@ const Navbar = () => {
       </List>
     </Box>
   );
+
+  // Add before the component return:
+  const [editingGradeKeys, setEditingGradeKeys] = useState({});
+  const handleGradeKeyChange = (oldKey, newKey) => {
+    setEditingGradeKeys((prev) => ({ ...prev, [oldKey]: newKey }));
+  };
+  const handleGradeKeyBlur = (oldKey) => {
+    const newKey = editingGradeKeys[oldKey];
+    if (newKey && newKey !== oldKey) {
+      const val = editData.profile.grades[oldKey];
+      const newGrades = { ...editData.profile.grades };
+      delete newGrades[oldKey];
+      newGrades[newKey] = val;
+      setEditData((prev) => ({
+        ...prev,
+        profile: { ...prev.profile, grades: newGrades },
+      }));
+      setEditingGradeKeys((prev) => {
+        const copy = { ...prev };
+        delete copy[oldKey];
+        return copy;
+      });
+    }
+  };
+  // For alumni edit modal
+  const [alumniEditingGradeKeys, setAlumniEditingGradeKeys] = useState({});
+  const handleAlumniGradeKeyChange = (oldKey, newKey) => {
+    setAlumniEditingGradeKeys((prev) => ({ ...prev, [oldKey]: newKey }));
+  };
+  const handleAlumniGradeKeyBlur = (oldKey) => {
+    const newKey = alumniEditingGradeKeys[oldKey];
+    if (newKey && newKey !== oldKey) {
+      const val = alumniEditForm.profile.grades[oldKey];
+      const newGrades = { ...alumniEditForm.profile.grades };
+      delete newGrades[oldKey];
+      newGrades[newKey] = val;
+      setAlumniEditForm((prev) => ({
+        ...prev,
+        profile: { ...prev.profile, grades: newGrades },
+      }));
+      setAlumniEditingGradeKeys((prev) => {
+        const copy = { ...prev };
+        delete copy[oldKey];
+        return copy;
+      });
+    }
+  };
 
   return (
     <>
@@ -652,7 +675,7 @@ const Navbar = () => {
                     >
                       {adminAlumni.avatar}
                     </Avatar>
-                    {adminAlumni.name}
+                    {adminAlumni.name.split(" ")[0]}
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -702,7 +725,7 @@ const Navbar = () => {
                       >
                         {alumniUser.avatar}
                       </Avatar>
-                      {alumniUser.name}
+                      {alumniUser.name.split(" ")[0]}
                     </Button>
                     <Menu
                       anchorEl={anchorEl}
@@ -733,32 +756,34 @@ const Navbar = () => {
                   </Box>
                 )
               )}
-              <Button
-                variant="contained"
-                component={Link}
-                to="/connexion"
-                sx={{
-                  ml: 3,
-                  background:
-                    "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
-                  color: "#fff",
-                  fontWeight: 700,
-                  fontSize: "1.05rem",
-                  px: 3.5,
-                  py: 1.3,
-                  borderRadius: 3,
-                  boxShadow: "0 4px 16px rgba(59,130,246,0.18)",
-                  textTransform: "none",
-                  letterSpacing: 0.5,
-                  "&:hover": {
+              {isAdmin && adminAlumni ? null : alumniUser ? null : (
+                <Button
+                  variant="contained"
+                  component={Link}
+                  to="/connexion"
+                  sx={{
+                    ml: 3,
                     background:
-                      "linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)",
+                      "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
                     color: "#fff",
-                  },
-                }}
-              >
-                Connexion
-              </Button>
+                    fontWeight: 700,
+                    fontSize: "1.05rem",
+                    px: 3.5,
+                    py: 1.3,
+                    borderRadius: 3,
+                    boxShadow: "0 4px 16px rgba(59,130,246,0.18)",
+                    textTransform: "none",
+                    letterSpacing: 0.5,
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)",
+                      color: "#fff",
+                    },
+                  }}
+                >
+                  Connexion
+                </Button>
+              )}
             </Box>
           )}
 
@@ -939,13 +964,15 @@ const Navbar = () => {
                   >
                     <TextField
                       label="Diplôme"
-                      value={key}
-                      onChange={(e) => {
-                        const newKey = e.target.value;
-                        const val = editData.profile.grades[key];
-                        handleRemoveGrade(key);
-                        handleGradeChange(newKey, val);
-                      }}
+                      value={
+                        editingGradeKeys[key] !== undefined
+                          ? editingGradeKeys[key]
+                          : key
+                      }
+                      onChange={(e) =>
+                        handleGradeKeyChange(key, e.target.value)
+                      }
+                      onBlur={() => handleGradeKeyBlur(key)}
                       size="small"
                       sx={{
                         input: { color: "#fff" },
@@ -955,11 +982,32 @@ const Navbar = () => {
                     <TextField
                       label="Note"
                       value={value}
-                      onChange={(e) => handleGradeChange(key, e.target.value)}
+                      onChange={(e) => {
+                        // Only allow integers 0-20
+                        let val = e.target.value.replace(/[^0-9]/g, "");
+                        if (val !== "") {
+                          let intVal = Math.min(20, Math.max(0, parseInt(val)));
+                          val = intVal.toString();
+                        }
+                        handleGradeChange(key, val);
+                      }}
                       size="small"
                       sx={{
                         input: { color: "#fff" },
                         label: { color: "#3b82f6" },
+                      }}
+                      InputProps={{
+                        endAdornment: (
+                          <span style={{ color: "#888", marginLeft: 4 }}>
+                            /20
+                          </span>
+                        ),
+                        inputProps: {
+                          min: 0,
+                          max: 20,
+                          inputMode: "numeric",
+                          pattern: "[0-9]*",
+                        },
                       }}
                     />
                     <Button
@@ -1392,29 +1440,48 @@ const Navbar = () => {
                     >
                       <TextField
                         label="Diplôme"
-                        value={key}
-                        onChange={(e) => {
-                          const newKey = e.target.value;
-                          const grades = { ...alumniEditForm.profile.grades };
-                          const val = grades[key];
-                          delete grades[key];
-                          grades[newKey] = val;
-                          setAlumniEditForm((prev) => ({
-                            ...prev,
-                            profile: { ...prev.profile, grades },
-                          }));
-                        }}
+                        value={
+                          alumniEditingGradeKeys[key] !== undefined
+                            ? alumniEditingGradeKeys[key]
+                            : key
+                        }
+                        onChange={(e) =>
+                          handleAlumniGradeKeyChange(key, e.target.value)
+                        }
+                        onBlur={() => handleAlumniGradeKeyBlur(key)}
                         size="small"
                         sx={{ flex: 1 }}
                       />
                       <TextField
                         label="Note"
                         value={value}
-                        onChange={(e) =>
-                          handleAlumniGradeChange(key, e.target.value)
-                        }
+                        onChange={(e) => {
+                          // Only allow integers 0-20
+                          let val = e.target.value.replace(/[^0-9]/g, "");
+                          if (val !== "") {
+                            let intVal = Math.min(
+                              20,
+                              Math.max(0, parseInt(val))
+                            );
+                            val = intVal.toString();
+                          }
+                          handleAlumniGradeChange(key, val);
+                        }}
                         size="small"
                         sx={{ flex: 1 }}
+                        InputProps={{
+                          endAdornment: (
+                            <span style={{ color: "#888", marginLeft: 4 }}>
+                              /20
+                            </span>
+                          ),
+                          inputProps: {
+                            min: 0,
+                            max: 20,
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                          },
+                        }}
                       />
                       <Button
                         onClick={() => handleAlumniRemoveGrade(key)}
