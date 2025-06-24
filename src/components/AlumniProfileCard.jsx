@@ -27,6 +27,38 @@ export default function AlumniProfileCard({
 }) {
   // Support both alum.profile and flat alum for backward compatibility
   const profile = alum.profile || alum;
+
+  // Helper to render conseil with clickable links and preserved formatting
+  function renderConseilWithLinks(text) {
+    if (!text) return null;
+    // Regex to match URLs
+    const urlRegex =
+      /(https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=%]+)|(www\.[\w\-._~:/?#[\]@!$&'()*+,;=%]+)/gi;
+    const parts = text.split(urlRegex);
+    return parts.map((part, i) => {
+      if (!part) return null;
+      if (part.match(urlRegex)) {
+        let href = part.startsWith("http") ? part : `https://${part}`;
+        return (
+          <a
+            key={i}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "#3b82f6",
+              textDecoration: "underline",
+              wordBreak: "break-all",
+            }}
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
+  }
+
   return (
     <Card
       sx={{
@@ -101,21 +133,26 @@ export default function AlumniProfileCard({
         >
           {alum.position}
         </Typography>
-        {(isAdmin || alum._id === alumniId) && (
+        {alum._id === alumniId && (
           <IconButton
-            size="small"
+            size="medium"
             sx={{
               position: "absolute",
-              top: 12,
-              right: 12,
-              color: alum.isAdmin ? "#fff" : "#3b82f6",
-              background: alum.isAdmin ? "#3b82f6" : "rgba(255,255,255,0.08)",
-              boxShadow: alum.isAdmin ? "0 0 8px 2px #fff" : undefined,
+              top: 16,
+              right: 16,
+              color: "#fff",
+              background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
               zIndex: 20,
+              width: 40,
+              height: 40,
               "&:hover": {
-                background: "#1e40af",
+                background: "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
                 color: "#fff",
+                transform: "scale(1.1)",
+                boxShadow: "0 6px 16px rgba(59, 130, 246, 0.6)",
               },
+              transition: "all 0.2s ease",
             }}
             onClick={(e) => {
               e.stopPropagation();
@@ -275,8 +312,16 @@ export default function AlumniProfileCard({
             >
               Conseil de cet alumni
             </Typography>
-            <Typography variant="body1" sx={{ color: "#fff", opacity: 0.9 }}>
-              {alum.conseil}
+            <Typography
+              variant="body1"
+              sx={{
+                color: "#fff",
+                opacity: 0.9,
+                whiteSpace: "pre-wrap",
+                lineHeight: 1.6,
+              }}
+            >
+              {renderConseilWithLinks(alum.conseil)}
             </Typography>
           </Box>
         )}

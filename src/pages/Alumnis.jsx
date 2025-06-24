@@ -656,18 +656,26 @@ export default function Alumnis() {
                       </Typography>
                       {(isAdmin || alum._id === alumniId) && (
                         <IconButton
-                          size="small"
+                          size="medium"
                           sx={{
                             position: "absolute",
-                            top: 12,
-                            right: 12,
-                            color: "#3b82f6",
-                            background: "rgba(255,255,255,0.08)",
+                            top: 16,
+                            right: 16,
+                            color: "#fff",
+                            background:
+                              "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                            boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
                             zIndex: 20,
+                            width: 40,
+                            height: 40,
                             "&:hover": {
-                              background: "#1e40af",
+                              background:
+                                "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
                               color: "#fff",
+                              transform: "scale(1.1)",
+                              boxShadow: "0 6px 16px rgba(59, 130, 246, 0.6)",
                             },
+                            transition: "all 0.2s ease",
                           }}
                           onClick={(e) => {
                             e.stopPropagation();

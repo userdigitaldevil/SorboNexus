@@ -18,6 +18,10 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  TextField,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import {
   School as SchoolIcon,
@@ -39,12 +43,49 @@ import {
   Cancel as CancelIcon,
 } from "@mui/icons-material";
 import AlumniProfileCard from "../components/AlumniProfileCard";
+import { jwtDecode } from "jwt-decode";
 
 const tipsPerPage = 9;
 
 export default function Conseils() {
+  // Get alumniId from JWT
+  let alumniId = null;
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        alumniId = decoded.alumniId;
+      } catch (e) {
+        alumniId = null;
+      }
+    }
+  }
+
   const [alumni, setAlumni] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editAlumni, setEditAlumni] = useState(null);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    degree: "",
+    position: "",
+    field: "",
+    linkedin: "",
+    email: "",
+    avatar: "",
+    color: "",
+    gradient: "",
+    conseil: "",
+    profile: {
+      email: "",
+      linkedin: "",
+      currentPosition: "",
+      grades: {},
+      schoolsApplied: [],
+    },
+    isAdmin: false,
+  });
 
   useEffect(() => {
     fetch("http://localhost:5001/api/alumni")
@@ -58,6 +99,7 @@ export default function Conseils() {
 
   const alumniTips = alumni.map((alum) => ({
     id: alum.id,
+    _id: alum._id,
     title: alum.degree || alum.name,
     content: alum.conseil || "",
     author: alum.name,
@@ -105,6 +147,142 @@ export default function Conseils() {
   const closeProfileModal = () => {
     setIsProfileModalOpen(false);
     setSelectedProfile(null);
+  };
+
+  const handleEditClick = (alum) => {
+    setEditAlumni(alum);
+    setEditForm({
+      name: alum.name || "",
+      degree: alum.degree || "",
+      position: alum.position || "",
+      field: alum.field || "",
+      linkedin: alum.profile?.linkedin || "",
+      email: alum.profile?.email || "",
+      avatar: alum.avatar || "",
+      color: alum.color || "",
+      gradient: alum.gradient || "",
+      conseil: alum.conseil || "",
+      profile: {
+        email: alum.profile?.email || "",
+        linkedin: alum.profile?.linkedin || "",
+        currentPosition: alum.profile?.currentPosition || "",
+        grades: alum.profile?.grades || {},
+        schoolsApplied: alum.profile?.schoolsApplied || [],
+      },
+      isAdmin: alum.isAdmin || false,
+    });
+    setEditModalOpen(true);
+    closeProfileModal();
+  };
+
+  const handleEditFormChange = (e) => {
+    const { name, value } = e.target;
+    if (name.startsWith("profile.")) {
+      const key = name.split(".")[1];
+      setEditForm((prev) => ({
+        ...prev,
+        profile: {
+          ...prev.profile,
+          [key]: value,
+        },
+      }));
+    } else if (name === "isAdmin") {
+      setEditForm((prev) => ({ ...prev, isAdmin: value === "true" }));
+    } else {
+      setEditForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  // Add helpers for grades and schools
+  const handleGradeChange = (key, value) => {
+    setEditForm((prev) => ({
+      ...prev,
+      profile: {
+        ...prev.profile,
+        grades: { ...prev.profile.grades, [key]: value },
+      },
+    }));
+  };
+  const handleAddGrade = () => {
+    setEditForm((prev) => ({
+      ...prev,
+      profile: {
+        ...prev.profile,
+        grades: { ...prev.profile.grades, "": "" },
+      },
+    }));
+  };
+  const handleRemoveGrade = (key) => {
+    setEditForm((prev) => {
+      const newGrades = { ...prev.profile.grades };
+      delete newGrades[key];
+      return {
+        ...prev,
+        profile: { ...prev.profile, grades: newGrades },
+      };
+    });
+  };
+  const handleSchoolChange = (idx, field, value) => {
+    setEditForm((prev) => {
+      const schools = [...(prev.profile.schoolsApplied || [])];
+      schools[idx] = { ...schools[idx], [field]: value };
+      return {
+        ...prev,
+        profile: { ...prev.profile, schoolsApplied: schools },
+      };
+    });
+  };
+  const handleAddSchool = () => {
+    setEditForm((prev) => ({
+      ...prev,
+      profile: {
+        ...prev.profile,
+        schoolsApplied: [
+          ...(prev.profile.schoolsApplied || []),
+          { name: "", status: "accepted" },
+        ],
+      },
+    }));
+  };
+  const handleRemoveSchool = (idx) => {
+    setEditForm((prev) => {
+      const schools = [...(prev.profile.schoolsApplied || [])];
+      schools.splice(idx, 1);
+      return {
+        ...prev,
+        profile: { ...prev.profile, schoolsApplied: schools },
+      };
+    });
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `http://localhost:5001/api/alumni/${editAlumni._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(editForm),
+        }
+      );
+
+      if (response.ok) {
+        // Refresh alumni data
+        const updatedResponse = await fetch("http://localhost:5001/api/alumni");
+        const updatedData = await updatedResponse.json();
+        setAlumni(updatedData);
+        setEditModalOpen(false);
+        setEditAlumni(null);
+      } else {
+        console.error("Failed to update alumni");
+      }
+    } catch (error) {
+      console.error("Error updating alumni:", error);
+    }
   };
 
   const currentTips = alumniTips.slice(
@@ -640,9 +818,237 @@ export default function Conseils() {
                 degree: selectedProfile.title,
               }}
               isAdmin={false}
-              handleEditClick={() => {}}
+              handleEditClick={handleEditClick}
             />
           )}
+        </motion.div>
+      </Modal>
+
+      {/* Edit Modal */}
+      <Modal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        aria-labelledby="edit-modal-title"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 2,
+        }}
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: 50 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.8, y: 50 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Card
+            elevation={24}
+            sx={{
+              background: "rgba(15, 23, 42, 0.98)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              borderRadius: "24px",
+              maxWidth: 600,
+              width: "100%",
+              maxHeight: "90vh",
+              overflow: "auto",
+              position: "relative",
+            }}
+          >
+            <Box sx={{ p: 4 }}>
+              <Typography
+                id="edit-modal-title"
+                variant="h5"
+                sx={{
+                  fontWeight: 800,
+                  color: "#3b82f6",
+                  mb: 3,
+                  textAlign: "center",
+                }}
+              >
+                Modifier ma carte
+              </Typography>
+              <form onSubmit={handleEditSubmit}>
+                <TextField
+                  label="Nom"
+                  name="name"
+                  value={editForm.name}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="Diplôme"
+                  name="degree"
+                  value={editForm.degree}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="Poste"
+                  name="position"
+                  value={editForm.position}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="Domaine"
+                  name="field"
+                  value={editForm.field}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="LinkedIn"
+                  name="profile.linkedin"
+                  value={editForm.profile?.linkedin || ""}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="Email"
+                  name="email"
+                  value={editForm.email || ""}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="Profile Email"
+                  name="profile.email"
+                  value={editForm.profile?.email || ""}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="Profile Poste Actuel"
+                  name="profile.currentPosition"
+                  value={editForm.profile?.currentPosition || ""}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                {/* Grades Section */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1">Notes / Diplômes</Typography>
+                  {Object.entries(editForm.profile?.grades || {}).map(
+                    ([key, value], idx) => (
+                      <Box
+                        key={key + idx}
+                        sx={{ display: "flex", gap: 1, mb: 1 }}
+                      >
+                        <TextField
+                          label="Diplôme"
+                          value={key}
+                          onChange={(e) => {
+                            const newKey = e.target.value;
+                            const grades = { ...editForm.profile.grades };
+                            const val = grades[key];
+                            delete grades[key];
+                            grades[newKey] = val;
+                            setEditForm((prev) => ({
+                              ...prev,
+                              profile: { ...prev.profile, grades },
+                            }));
+                          }}
+                          size="small"
+                          sx={{ flex: 1 }}
+                        />
+                        <TextField
+                          label="Note"
+                          value={value}
+                          onChange={(e) =>
+                            handleGradeChange(key, e.target.value)
+                          }
+                          size="small"
+                          sx={{ flex: 1 }}
+                        />
+                        <Button
+                          onClick={() => handleRemoveGrade(key)}
+                          color="error"
+                          size="small"
+                        >
+                          Supprimer
+                        </Button>
+                      </Box>
+                    )
+                  )}
+                  <Button onClick={handleAddGrade} size="small" sx={{ mt: 1 }}>
+                    Ajouter un diplôme/note
+                  </Button>
+                </Box>
+                {/* Schools Section */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1">Écoles demandées</Typography>
+                  {(editForm.profile?.schoolsApplied || []).map(
+                    (school, idx) => (
+                      <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                        <TextField
+                          label="École"
+                          value={school.name}
+                          onChange={(e) =>
+                            handleSchoolChange(idx, "name", e.target.value)
+                          }
+                          size="small"
+                          sx={{ flex: 2 }}
+                        />
+                        <TextField
+                          select
+                          label="Statut"
+                          value={school.status}
+                          onChange={(e) =>
+                            handleSchoolChange(idx, "status", e.target.value)
+                          }
+                          size="small"
+                          sx={{ flex: 1 }}
+                          SelectProps={{ native: true }}
+                        >
+                          <option value="accepted">Accepté</option>
+                          <option value="rejected">Refusé</option>
+                        </TextField>
+                        <Button
+                          onClick={() => handleRemoveSchool(idx)}
+                          color="error"
+                          size="small"
+                        >
+                          Supprimer
+                        </Button>
+                      </Box>
+                    )
+                  )}
+                  <Button onClick={handleAddSchool} size="small" sx={{ mt: 1 }}>
+                    Ajouter une école
+                  </Button>
+                </Box>
+                <TextField
+                  label="Conseil"
+                  name="conseil"
+                  value={editForm.conseil || ""}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                  multiline
+                  minRows={4}
+                />
+                <Box
+                  sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
+                >
+                  <Button onClick={() => setEditModalOpen(false)}>
+                    Annuler
+                  </Button>
+                  <Button type="submit" variant="contained">
+                    Enregistrer
+                  </Button>
+                </Box>
+              </form>
+            </Box>
+          </Card>
         </motion.div>
       </Modal>
     </Box>
