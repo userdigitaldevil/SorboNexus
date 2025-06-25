@@ -455,19 +455,27 @@ export default function AlumniProfileCard({
               </Typography>
             </Box>
           )}
-          {/* Account creation date (mini gray) */}
-          {alum.accountCreationDate && (
-            <Box sx={{ mt: 1, mb: 0 }}>
+          {/* Account creation and last updated dates (side by side, left and right) */}
+          <Box
+            sx={{
+              mt: 3,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            {alum.accountCreationDate && (
               <Typography
                 variant="caption"
                 sx={{
-                  color: "#aaa",
+                  color: "gray",
                   fontSize: "0.75rem",
-                  display: "block",
-                  textAlign: "right",
+                  display: "inline-block",
+                  textAlign: "left",
                 }}
               >
-                {`Créé le ${new Date(
+                {`Compte créé le ${new Date(
                   alum.accountCreationDate
                 ).toLocaleDateString("fr-FR", {
                   day: "2-digit",
@@ -475,21 +483,24 @@ export default function AlumniProfileCard({
                   year: "numeric",
                 })}`}
               </Typography>
-            </Box>
-          )}
-          {/* Account creation and last updated dates */}
-          <Box sx={{ mt: 3, textAlign: "right" }}>
+            )}
             {alum.updatedAt && (
               <Typography
                 variant="caption"
-                sx={{ color: "gray", display: "block" }}
+                sx={{
+                  color: "gray",
+                  display: "inline-block",
+                  fontSize: "0.75rem",
+                  textAlign: "right",
+                }}
               >
-                Modifié le{" "}
-                {new Date(alum.updatedAt).toLocaleDateString("fr-FR", {
+                {`Dernière modification le ${new Date(
+                  alum.updatedAt
+                ).toLocaleDateString("fr-FR", {
                   day: "2-digit",
                   month: "long",
                   year: "numeric",
-                })}
+                })}`}
               </Typography>
             )}
           </Box>

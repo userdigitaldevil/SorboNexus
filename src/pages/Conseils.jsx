@@ -822,11 +822,10 @@ export default function Conseils() {
         >
           {selectedProfile && (
             <AlumniProfileCard
-              alum={{
-                ...selectedProfile,
-                name: selectedProfile.author,
-                degree: selectedProfile.title,
-              }}
+              alum={
+                alumni.find((a) => a._id === selectedProfile._id) ||
+                selectedProfile
+              }
               isAdmin={false}
               handleEditClick={handleEditClick}
             />
