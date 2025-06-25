@@ -370,48 +370,73 @@ export default function Alumnis() {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     setEditError("");
-    try {
-      const submitData = {
-        ...editForm,
-        nationalities: editForm.nationalities
-          ? editForm.nationalities
-              .split(",")
-              .map((s) => s.trim())
-              .filter(Boolean)
-          : [],
-        updatedAt: new Date(),
-      };
-      const response = await fetch(
-        `http://localhost:5001/api/alumni/${editAlumni._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(submitData),
-        }
-      );
-
-      if (response.ok) {
-        // Refresh alumni data
-        const updatedResponse = await fetch("http://localhost:5001/api/alumni");
-        const updatedData = await updatedResponse.json();
-        setAlumni(updatedData);
-        setEditModalOpen(false);
-        setEditAlumni(null);
-        setEditError("");
-        // Notify navbar to refresh user data
-        localStorage.setItem("profileUpdated", Date.now().toString());
-        window.dispatchEvent(new Event("profileUpdated"));
-      } else {
-        const err = await response.json();
-        setEditError(err.error || "Erreur lors de la mise à jour.");
-        console.error("Failed to update alumni", err);
+    // Debug: log the form state before sending
+    console.log("Submitting editForm:", editForm);
+    // Build payload
+    const stringFields = [
+      "name",
+      "degree",
+      "position",
+      "field",
+      "linkedin",
+      "email",
+      "avatar",
+      "color",
+      "gradient",
+      "conseil",
+    ];
+    const payload = {
+      ...stringFields.reduce(
+        (acc, key) => ({ ...acc, [key]: editForm[key] || "" }),
+        {}
+      ),
+      isAdmin: !!editForm.isAdmin,
+      hidden: !!editForm.hidden,
+      nationalities: (editForm.nationalities || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      stagesWorkedContestsExtracurriculars:
+        editForm.stagesWorkedContestsExtracurriculars || "",
+      futureGoals: editForm.futureGoals || "",
+      anneeFinL3: editForm.anneeFinL3 || "",
+      profile: {
+        email: editForm.profile?.email || "",
+        linkedin: editForm.profile?.linkedin || "",
+        currentPosition: editForm.profile?.currentPosition || "",
+        grades: editForm.profile?.grades || {},
+        schoolsApplied: editForm.profile?.schoolsApplied || [],
+      },
+      updatedAt: new Date(),
+    };
+    // Debug: log the payload before sending
+    console.log("Submitting payload:", payload);
+    // Send to backend
+    const response = await fetch(
+      `http://localhost:5001/api/alumni/${editAlumni._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(payload),
       }
-    } catch (error) {
-      setEditError("Erreur lors de la mise à jour.");
-      console.error("Error updating alumni:", error);
+    );
+    if (response.ok) {
+      // Refresh alumni data
+      const updatedResponse = await fetch("http://localhost:5001/api/alumni");
+      const updatedData = await updatedResponse.json();
+      setAlumni(updatedData);
+      setEditModalOpen(false);
+      setEditAlumni(null);
+      setEditError("");
+      // Notify navbar to refresh user data
+      localStorage.setItem("profileUpdated", Date.now().toString());
+      window.dispatchEvent(new Event("profileUpdated"));
+    } else {
+      const err = await response.json();
+      setEditError(err.error || "Erreur lors de la mise à jour.");
     }
   };
 
@@ -1454,12 +1479,7 @@ export default function Alumnis() {
               label="Nationalités (séparées par des virgules)"
               name="nationalities"
               value={editForm.nationalities || ""}
-              onChange={(e) =>
-                setEditForm((prev) => ({
-                  ...prev,
-                  nationalities: e.target.value,
-                }))
-              }
+              onChange={handleEditFormChange}
               fullWidth
               sx={{ mb: 2 }}
             />

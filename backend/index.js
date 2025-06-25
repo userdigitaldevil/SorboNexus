@@ -1,3 +1,4 @@
+console.log("=== THIS IS THE RUNNING BACKEND ===");
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config({ path: __dirname + "/.env" });

@@ -604,6 +604,14 @@ const Navbar = () => {
       alert("Veuillez ajouter au moins une école demandée.");
       return;
     }
+    // Format nationalities as array
+    let nationalitiesArr = [];
+    if (addAlumniForm.nationalities) {
+      nationalitiesArr = addAlumniForm.nationalities
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
     // Build alumni object
     const alumniToSend = {
       ...addAlumniForm,
@@ -614,6 +622,11 @@ const Navbar = () => {
         schoolsApplied: schoolsArr,
       },
       isAdmin: addAlumniForm.isAdmin,
+      nationalities: nationalitiesArr,
+      anneeFinL3: addAlumniForm.anneeFinL3,
+      futureGoals: addAlumniForm.futureGoals,
+      stagesWorkedContestsExtracurriculars:
+        addAlumniForm.stagesWorkedContestsExtracurriculars,
     };
     try {
       const token = localStorage.getItem("token");

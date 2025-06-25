@@ -32,6 +32,7 @@ router.get("/:id", async (req, res) => {
 
 // Update alumni (admin or self)
 router.put("/:id", async (req, res) => {
+  console.log("PUT /api/alumni/:id route hit");
   try {
     // Authenticate user
     const authHeader = req.headers.authorization;
@@ -45,11 +46,43 @@ router.put("/:id", async (req, res) => {
     }
     console.log("[PUT /api/alumni/:id] req.params.id =", req.params.id);
     console.log("[PUT /api/alumni/:id] req.body =", req.body);
+    // Only pick allowed fields
+    const allowedFields = [
+      "name",
+      "degree",
+      "position",
+      "field",
+      "gradient",
+      "color",
+      "linkedin",
+      "email",
+      "avatar",
+      "isAdmin",
+      "profile",
+      "conseil",
+      "hidden",
+      "nationalities",
+      "stagesWorkedContestsExtracurriculars",
+      "accountCreationDate",
+      "futureGoals",
+      "anneeFinL3",
+    ];
+    const update = {};
+    for (const key of allowedFields) {
+      if (req.body[key] !== undefined) update[key] = req.body[key];
+    }
+    // Debug: log the update object
+    console.log("Backend update object:", update);
+    // Log before update
+    const before = await Alumni.findById(req.params.id);
+    console.log("[PUT /api/alumni/:id] BEFORE UPDATE:", before);
     const alumni = await Alumni.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: update },
       { new: true, runValidators: true }
     );
+    // Log after update
+    console.log("[PUT /api/alumni/:id] AFTER UPDATE:", alumni);
     if (!alumni) return res.status(404).json({ error: "Alumni not found" });
     res.json(alumni);
   } catch (err) {
