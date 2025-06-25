@@ -149,6 +149,11 @@ export default function Home() {
       });
   }, []);
 
+  // Scroll to top when component mounts (especially important for mobile)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   // Format number as 1.5K if >= 1000
   function formatCount(n) {
     if (n == null) return "...";
@@ -568,6 +573,17 @@ export default function Home() {
                                     transform: "translateY(-5px)",
                                     boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
                                   },
+                                  // Mobile optimizations
+                                  WebkitTapHighlightColor: "transparent",
+                                  userSelect: "none",
+                                  // Ensure proper touch target size on mobile
+                                  minHeight: { xs: "44px", sm: "auto" },
+                                  minWidth: { xs: "44px", sm: "auto" },
+                                  // Add touch feedback
+                                  "&:active": {
+                                    opacity: 0.7,
+                                    transform: "scale(0.98)",
+                                  },
                                 }}
                               >
                                 <motion.div
@@ -738,6 +754,17 @@ export default function Home() {
                       color: "inherit",
                       display: "block",
                       cursor: "pointer",
+                      // Mobile optimizations
+                      WebkitTapHighlightColor: "transparent",
+                      userSelect: "none",
+                      // Ensure proper touch target size on mobile
+                      minHeight: { xs: "44px", sm: "auto" },
+                      minWidth: { xs: "44px", sm: "auto" },
+                      // Add touch feedback
+                      "&:active": {
+                        opacity: 0.7,
+                        transform: "scale(0.98)",
+                      },
                     }}
                   >
                     <Card

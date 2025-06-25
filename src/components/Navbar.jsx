@@ -60,10 +60,9 @@ const Navbar = () => {
   };
 
   const handleNavigation = (path) => {
-    // If we're already on this page, scroll to top
-    if (isActive(path)) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    // Always scroll to top when navigating
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     // Close mobile drawer if open
     if (mobileOpen) {
       setMobileOpen(false);
