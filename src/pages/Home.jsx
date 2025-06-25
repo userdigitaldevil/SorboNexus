@@ -25,6 +25,7 @@ import {
   Rating,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
 const features = [
   {
@@ -103,6 +104,21 @@ const stats = [
 ];
 
 export default function Home() {
+  // Live alumni count
+  const [alumniCount, setAlumniCount] = useState(null);
+  useEffect(() => {
+    fetch("http://localhost:5001/api/alumni")
+      .then((res) => res.json())
+      .then((data) => setAlumniCount(data.length));
+  }, []);
+
+  // Format number as 1.5K if >= 1000
+  function formatCount(n) {
+    if (n == null) return "...";
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K+";
+    return n + "+";
+  }
+
   return (
     <Box>
       {/* Hero Section */}
@@ -906,7 +922,7 @@ export default function Home() {
                     mb: 0.5,
                   }}
                 >
-                  1.5K+
+                  {formatCount(alumniCount)}
                 </Typography>
                 <Typography
                   variant="body1"

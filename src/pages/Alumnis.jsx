@@ -337,6 +337,16 @@ export default function Alumnis() {
     });
   }
 
+  // Place this at the top of the component (inside the function, before return)
+  const adminGlow = {
+    boxShadow: "0 0 36px 8px #3b82f6cc",
+    transition: "filter 0.3s, box-shadow 0.3s",
+    filter: "none",
+    "&:hover": {
+      filter: "hue-rotate(30deg)",
+    },
+  };
+
   return (
     <div className="min-h-screen relative overflow-x-hidden">
       {/* Animated Gradient Background */}
@@ -592,11 +602,16 @@ export default function Alumnis() {
                       overflow: "hidden",
                       position: "relative",
                       cursor: "pointer",
-                      "&:hover": {
-                        transform: "translateY(-6px)",
-                        boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
-                      },
                       transition: "all 0.3s ease",
+                      ...(alum.isAdmin
+                        ? adminGlow
+                        : {
+                            boxShadow: undefined,
+                            "&:hover": {
+                              transform: "translateY(-6px)",
+                              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
+                            },
+                          }),
                     }}
                   >
                     <Box
