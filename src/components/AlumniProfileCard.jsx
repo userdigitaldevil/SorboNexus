@@ -13,7 +13,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { LinkedIn, Mail } from "@mui/icons-material";
+import { LinkedIn, Mail, Close } from "@mui/icons-material";
 import BusinessIcon from "@mui/icons-material/Business";
 import GradeIcon from "@mui/icons-material/Grade";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -26,6 +26,7 @@ export default function AlumniProfileCard({
   alumniId,
   handleEditClick,
   handleDeleteClick,
+  onClose,
 }) {
   // Support both alum.profile and flat alum for backward compatibility
   const profile = alum.profile || alum;
@@ -100,6 +101,35 @@ export default function AlumniProfileCard({
           ...adminGlow,
         }}
       >
+        {/* Close button */}
+        {onClose && (
+          <IconButton
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              top: { xs: 12, sm: 16 },
+              right: { xs: 12, sm: 16 },
+              color: "rgba(255, 255, 255, 0.7)",
+              background: "rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              zIndex: 30,
+              width: { xs: 32, sm: 36 },
+              height: { xs: 32, sm: 36 },
+              minWidth: { xs: 32, sm: 36 },
+              minHeight: { xs: 32, sm: 36 },
+              "&:hover": {
+                color: "#fff",
+                background: "rgba(0, 0, 0, 0.5)",
+                transform: "scale(1.1)",
+              },
+              transition: "all 0.2s ease",
+            }}
+          >
+            <Close sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }} />
+          </IconButton>
+        )}
+
         {/* Hidden profile indicator */}
         {alum.hidden && (
           <Box
@@ -202,19 +232,21 @@ export default function AlumniProfileCard({
           >
             {alum.position}
           </Typography>
-          {alum._id === alumniId && (
+          {(alum._id === alumniId || isAdmin) && (
             <IconButton
               size="medium"
               sx={{
                 position: "absolute",
-                top: 16,
-                right: 16,
+                top: { xs: 12, sm: 16 },
+                right: { xs: onClose ? 52 : 12, sm: onClose ? 60 : 16 },
                 color: "#fff",
                 background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                 boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
                 zIndex: 20,
-                width: 40,
-                height: 40,
+                width: { xs: 36, sm: 40 },
+                height: { xs: 36, sm: 40 },
+                minWidth: { xs: 36, sm: 40 },
+                minHeight: { xs: 36, sm: 40 },
                 "&:hover": {
                   background:
                     "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
@@ -243,7 +275,31 @@ export default function AlumniProfileCard({
               variant="outlined"
               color="error"
               size="small"
-              sx={{ position: "absolute", top: 16, right: 60, zIndex: 20 }}
+              sx={{
+                position: "absolute",
+                top: { xs: 12, sm: 16 },
+                right: {
+                  xs: onClose
+                    ? alum._id === alumniId || isAdmin
+                      ? 96
+                      : 52
+                    : alum._id === alumniId || isAdmin
+                    ? 52
+                    : 12,
+                  sm: onClose
+                    ? alum._id === alumniId || isAdmin
+                      ? 108
+                      : 60
+                    : alum._id === alumniId || isAdmin
+                    ? 60
+                    : 16,
+                },
+                zIndex: 20,
+                fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                px: { xs: 1, sm: 2 },
+                py: { xs: 0.5, sm: 1 },
+                minWidth: { xs: "auto", sm: "auto" },
+              }}
               onClick={() => handleDeleteClick(alum)}
             >
               Supprimer

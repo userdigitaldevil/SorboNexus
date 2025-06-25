@@ -285,8 +285,13 @@ export default function Home() {
                     variant="h1"
                     sx={{
                       fontWeight: 900,
-                      mb: 3,
-                      fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
+                      mb: { xs: 2, md: 3 },
+                      fontSize: {
+                        xs: "1.8rem",
+                        sm: "2.2rem",
+                        md: "3.5rem",
+                        lg: "4rem",
+                      },
                       lineHeight: 1.1,
                       background:
                         "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
@@ -305,11 +310,12 @@ export default function Home() {
                     variant="h5"
                     sx={{
                       color: "rgba(255, 255, 255, 0.8)",
-                      mb: 4,
+                      mb: { xs: 3, md: 4 },
                       fontWeight: 400,
                       lineHeight: 1.6,
                       maxWidth: 500,
                       mx: { xs: "auto", md: 0 },
+                      fontSize: { xs: "0.9rem", sm: "1.1rem", md: "1.25rem" },
                     }}
                   >
                     Votre portail vers les ressources, conseils, liens utiles et
@@ -322,9 +328,9 @@ export default function Home() {
                   {/* Action Buttons */}
                   <Stack
                     direction={{ xs: "column", sm: "row" }}
-                    spacing={2}
+                    spacing={{ xs: 1.5, md: 2 }}
                     sx={{
-                      mb: 4,
+                      mb: { xs: 3, md: 4 },
                       justifyContent: { xs: "center", md: "flex-start" },
                     }}
                   >
@@ -339,13 +345,13 @@ export default function Home() {
                         endIcon={<ArrowRight size={20} />}
                         sx={{
                           fontWeight: 600,
-                          px: 4,
-                          py: 1.5,
+                          px: { xs: 3, md: 4 },
+                          py: { xs: 1.2, md: 1.5 },
                           borderRadius: 3,
                           background:
                             "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                           boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                          fontSize: "1rem",
+                          fontSize: { xs: "0.9rem", md: "1rem" },
                           "&:hover": {
                             background:
                               "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
@@ -367,14 +373,14 @@ export default function Home() {
                         size="large"
                         sx={{
                           fontWeight: 600,
-                          px: 4,
-                          py: 1.5,
+                          px: { xs: 3, md: 4 },
+                          py: { xs: 1.2, md: 1.5 },
                           borderRadius: 3,
                           color: "#3b82f6",
                           borderColor: "#3b82f6",
                           borderWidth: 2,
                           background: "rgba(59, 130, 246, 0.05)",
-                          fontSize: "1rem",
+                          fontSize: { xs: "0.9rem", md: "1rem" },
                           "&:hover": {
                             background: "rgba(59, 130, 246, 0.1)",
                             borderColor: "#1e40af",
@@ -391,7 +397,7 @@ export default function Home() {
                   <Box
                     sx={{
                       display: "flex",
-                      gap: 3,
+                      gap: { xs: 2, md: 3 },
                       flexWrap: "wrap",
                       justifyContent: { xs: "center", md: "flex-start" },
                     }}
@@ -408,6 +414,7 @@ export default function Home() {
                             fontWeight: 800,
                             color: "#3b82f6",
                             mb: 0.5,
+                            fontSize: { xs: "1.5rem", md: "2.125rem" },
                           }}
                         >
                           {formatCount(alumniCount)}
@@ -416,7 +423,7 @@ export default function Home() {
                           variant="body2"
                           sx={{
                             color: "rgba(255, 255, 255, 0.6)",
-                            fontSize: "0.875rem",
+                            fontSize: { xs: "0.7rem", md: "0.875rem" },
                           }}
                         >
                           Étudiants actifs
@@ -435,6 +442,7 @@ export default function Home() {
                             fontWeight: 800,
                             color: "#3b82f6",
                             mb: 0.5,
+                            fontSize: { xs: "1.5rem", md: "2.125rem" },
                           }}
                         >
                           {formatCount(alumniWithLicenseBeforeCurrentYear)}
@@ -443,7 +451,7 @@ export default function Home() {
                           variant="body2"
                           sx={{
                             color: "rgba(255, 255, 255, 0.6)",
-                            fontSize: "0.875rem",
+                            fontSize: { xs: "0.7rem", md: "0.875rem" },
                           }}
                         >
                           Alumnis qui ont eu leur licence avant {currentYear}
@@ -709,7 +717,7 @@ export default function Home() {
         id="features"
         component="section"
         sx={{
-          py: 8,
+          py: { xs: 4, md: 8 },
           px: 2,
           background: "rgba(255,255,255,0.02)",
         }}
@@ -725,19 +733,20 @@ export default function Home() {
               variant="h3"
               sx={{
                 textAlign: "center",
-                mb: 6,
+                mb: { xs: 3, md: 6 },
                 fontWeight: 700,
                 background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
+                fontSize: { xs: "1.5rem", sm: "2rem", md: "3rem" },
               }}
             >
               Notre plateforme vous offre
             </Typography>
           </motion.div>
 
-          <Grid container spacing={4} justifyContent="center">
+          <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
             {features.map((feature, index) => (
               <Grid xs={12} sm={6} md={4} key={index}>
                 <motion.div
@@ -769,7 +778,7 @@ export default function Home() {
                     <Card
                       sx={{
                         height: "100%",
-                        maxWidth: 320,
+                        maxWidth: { xs: 280, md: 320 },
                         mx: "auto",
                         background: "rgba(255,255,255,0.05)",
                         backdropFilter: "blur(20px)",
@@ -783,17 +792,17 @@ export default function Home() {
                         },
                       }}
                     >
-                      <CardContent sx={{ p: 3 }}>
+                      <CardContent sx={{ p: { xs: 2, md: 3 } }}>
                         <Box
                           sx={{
-                            width: 48,
-                            height: 48,
+                            width: { xs: 40, md: 48 },
+                            height: { xs: 40, md: 48 },
                             borderRadius: 2,
                             background: feature.gradient,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            mb: 2,
+                            mb: { xs: 1.5, md: 2 },
                             color: "white",
                           }}
                         >
@@ -801,11 +810,21 @@ export default function Home() {
                         </Box>
                         <Typography
                           variant="h6"
-                          sx={{ fontWeight: 600, mb: 1 }}
+                          sx={{
+                            fontWeight: 600,
+                            mb: { xs: 0.5, md: 1 },
+                            fontSize: { xs: "0.9rem", md: "1.25rem" },
+                          }}
                         >
                           {feature.title}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: "#a1a1aa" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#a1a1aa",
+                            fontSize: { xs: "0.75rem", md: "0.875rem" },
+                          }}
+                        >
                           {feature.description}
                         </Typography>
                       </CardContent>
@@ -819,7 +838,7 @@ export default function Home() {
       </Box>
 
       {/* Testimonials Section */}
-      <Box component="section" sx={{ py: 8, px: 2 }}>
+      <Box component="section" sx={{ py: { xs: 4, md: 8 }, px: 2 }}>
         <Container maxWidth="lg">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -831,19 +850,20 @@ export default function Home() {
               variant="h3"
               sx={{
                 textAlign: "center",
-                mb: 6,
+                mb: { xs: 3, md: 6 },
                 fontWeight: 700,
                 background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
+                fontSize: { xs: "1.5rem", sm: "2rem", md: "3rem" },
               }}
             >
               Ce que disent nos utilisateurs
             </Typography>
           </motion.div>
 
-          <Stack spacing={3}>
+          <Stack spacing={{ xs: 2, md: 3 }}>
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
@@ -910,9 +930,13 @@ export default function Home() {
                     },
                   }}
                 >
-                  <CardContent sx={{ p: 3 }}>
+                  <CardContent sx={{ p: { xs: 2, md: 3 } }}>
                     <Box
-                      sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}
+                      sx={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: { xs: 1.5, md: 2 },
+                      }}
                     >
                       <motion.div
                         whileHover={{ rotate: 360 }}
@@ -921,12 +945,13 @@ export default function Home() {
                         <Avatar
                           className="testimonial-avatar"
                           sx={{
-                            width: 48,
-                            height: 48,
+                            width: { xs: 40, md: 48 },
+                            height: { xs: 40, md: 48 },
                             background: testimonial.gradient,
                             fontWeight: 700,
                             transition: "all 0.3s ease",
                             cursor: "pointer",
+                            fontSize: { xs: "0.9rem", md: "1.25rem" },
                           }}
                         >
                           {testimonial.initials}
@@ -938,7 +963,7 @@ export default function Home() {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "flex-start",
-                            mb: 1,
+                            mb: { xs: 0.5, md: 1 },
                           }}
                         >
                           <Typography
@@ -947,6 +972,7 @@ export default function Home() {
                             sx={{
                               fontWeight: 600,
                               transition: "all 0.3s ease",
+                              fontSize: { xs: "0.9rem", md: "1.25rem" },
                             }}
                           >
                             {testimonial.name}
@@ -979,6 +1005,7 @@ export default function Home() {
                             fontStyle: "italic",
                             transition: "all 0.3s ease",
                             lineHeight: 1.6,
+                            fontSize: { xs: "0.75rem", md: "0.875rem" },
                           }}
                         >
                           "{testimonial.text}"
@@ -997,7 +1024,7 @@ export default function Home() {
       <Box
         component="section"
         sx={{
-          py: 8,
+          py: { xs: 4, md: 8 },
           px: 2,
           background:
             "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
@@ -1033,7 +1060,7 @@ export default function Home() {
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
                 mb: 1,
-                fontSize: "1.75rem",
+                fontSize: { xs: "1.25rem", md: "1.75rem" },
               }}
             >
               Notre Impact
@@ -1042,8 +1069,8 @@ export default function Home() {
               variant="body2"
               sx={{
                 color: "rgba(255, 255, 255, 0.7)",
-                mb: 4,
-                fontSize: "0.95rem",
+                mb: { xs: 2, md: 4 },
+                fontSize: { xs: "0.8rem", md: "0.95rem" },
               }}
             >
               Découvrez l'ampleur de notre communauté
@@ -1054,7 +1081,7 @@ export default function Home() {
               style={{
                 display: "flex",
                 justifyContent: "center",
-                gap: "4rem",
+                gap: window.innerWidth < 600 ? "2rem" : "4rem",
                 flexWrap: "wrap",
               }}
             >
@@ -1074,7 +1101,7 @@ export default function Home() {
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
-                    fontSize: "2.5rem",
+                    fontSize: { xs: "1.8rem", md: "2.5rem" },
                     mb: 0.5,
                   }}
                 >
@@ -1085,7 +1112,7 @@ export default function Home() {
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     fontWeight: 500,
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.75rem", md: "0.9rem" },
                   }}
                 >
                   Étudiants actifs
@@ -1108,7 +1135,7 @@ export default function Home() {
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
-                    fontSize: "2.5rem",
+                    fontSize: { xs: "1.8rem", md: "2.5rem" },
                     mb: 0.5,
                   }}
                 >
@@ -1119,7 +1146,7 @@ export default function Home() {
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     fontWeight: 500,
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.75rem", md: "0.9rem" },
                   }}
                 >
                   Alumnis qui ont eu leur licence avant {currentYear}
@@ -1134,7 +1161,7 @@ export default function Home() {
       <Box
         component="section"
         sx={{
-          py: 8,
+          py: { xs: 4, md: 8 },
           px: 2,
           background: "rgba(255,255,255,0.02)",
           position: "relative",
@@ -1157,8 +1184,8 @@ export default function Home() {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                mb: 3,
-                fontSize: { xs: "2rem", md: "2.5rem" },
+                mb: { xs: 2, md: 3 },
+                fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
               }}
             >
               Contribuez au Projet
@@ -1167,15 +1194,16 @@ export default function Home() {
               variant="h6"
               sx={{
                 color: "rgba(255, 255, 255, 0.9)",
-                mb: 4,
+                mb: { xs: 3, md: 4 },
                 fontWeight: 500,
                 maxWidth: 800,
                 mx: "auto",
-                lineHeight: 1.6,
+                fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
               }}
             >
-              Je suis ouvert aux retours, modifications du site et contributions
-              de la communauté
+              SorboNexus est un projet communautaire. Votre feedback et vos
+              contributions nous aident à améliorer la plateforme pour tous les
+              étudiants.
             </Typography>
 
             <motion.div
@@ -1191,18 +1219,19 @@ export default function Home() {
                   backdropFilter: "blur(20px)",
                   border: "1px solid rgba(255, 255, 255, 0.1)",
                   borderRadius: 4,
-                  p: 4,
+                  p: { xs: 2, md: 4 },
                   maxWidth: 600,
                   mx: "auto",
-                  mb: 4,
+                  mb: { xs: 3, md: 4 },
                 }}
               >
                 <Typography
                   variant="body1"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
-                    mb: 3,
+                    mb: { xs: 2, md: 3 },
                     lineHeight: 1.7,
+                    fontSize: { xs: "0.8rem", md: "1rem" },
                   }}
                 >
                   SorboNexus est un projet open source développé pour la
@@ -1212,7 +1241,7 @@ export default function Home() {
 
                 <Stack
                   direction={{ xs: "column", sm: "row" }}
-                  spacing={2}
+                  spacing={{ xs: 1.5, md: 2 }}
                   justifyContent="center"
                   alignItems="center"
                 >
@@ -1231,11 +1260,11 @@ export default function Home() {
                           "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                         color: "white",
                         fontWeight: 600,
-                        px: 4,
-                        py: 1.5,
+                        px: { xs: 3, md: 4 },
+                        py: { xs: 1, md: 1.5 },
                         borderRadius: 3,
                         boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
-                        fontSize: "1rem",
+                        fontSize: { xs: "0.8rem", md: "1rem" },
                         "&:hover": {
                           background:
                             "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
@@ -1258,7 +1287,10 @@ export default function Home() {
                       size="large"
                       href="mailto:sethaguila@icloud.com"
                       startIcon={
-                        <Box component="span" sx={{ fontSize: "1.2rem" }}>
+                        <Box
+                          component="span"
+                          sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}
+                        >
                           ✉️
                         </Box>
                       }
@@ -1267,10 +1299,10 @@ export default function Home() {
                         borderColor: "#3b82f6",
                         borderWidth: 2,
                         fontWeight: 600,
-                        px: 4,
-                        py: 1.5,
+                        px: { xs: 3, md: 4 },
+                        py: { xs: 1, md: 1.5 },
                         borderRadius: 3,
-                        fontSize: "1rem",
+                        fontSize: { xs: "0.8rem", md: "1rem" },
                         "&:hover": {
                           background: "rgba(59, 130, 246, 0.1)",
                           borderColor: "#1e40af",
@@ -1293,6 +1325,7 @@ export default function Home() {
                 fontStyle: "italic",
                 maxWidth: 500,
                 mx: "auto",
+                fontSize: { xs: "0.7rem", md: "0.875rem" },
               }}
             >
               © 2025 Seth Aguila - Développé avec &lt;3 pour la communauté

@@ -22,6 +22,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  FormControlLabel,
+  Checkbox,
+  Close,
 } from "@mui/material";
 import {
   School as SchoolIcon,
@@ -34,7 +37,6 @@ import {
   Person as PersonIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
-  Close as CloseIcon,
   LinkedIn as LinkedInIcon,
   Email as EmailIcon,
   Grade as GradeIcon,
@@ -102,6 +104,11 @@ export default function Conseils() {
         setLoading(false);
         console.log("Fetched alumni (conseils):", data);
       });
+  }, []);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const alumniTips = alumni.map((alum) => ({
@@ -424,14 +431,14 @@ export default function Conseils() {
         <SchoolIcon />
       </motion.div>
 
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 8 } }}>
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <Box sx={{ textAlign: "center", mb: 8 }}>
+          <Box sx={{ textAlign: "center", mb: { xs: 3, md: 8 } }}>
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -439,8 +446,8 @@ export default function Conseils() {
             >
               <Box
                 sx={{
-                  width: 80,
-                  height: 80,
+                  width: { xs: 50, md: 80 },
+                  height: { xs: 50, md: 80 },
                   borderRadius: "50%",
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
@@ -449,7 +456,7 @@ export default function Conseils() {
                   justifyContent: "center",
                   margin: "0 auto 24px",
                   color: "white",
-                  fontSize: "2rem",
+                  fontSize: { xs: "1.25rem", md: "2rem" },
                 }}
               >
                 <GroupIcon />
@@ -464,13 +471,13 @@ export default function Conseils() {
                 variant="h2"
                 sx={{
                   fontWeight: 700,
-                  mb: 2,
+                  mb: { xs: 1, md: 2 },
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
-                  fontSize: { xs: "2.5rem", md: "3.5rem" },
+                  fontSize: { xs: "1.5rem", sm: "2rem", md: "3.5rem" },
                 }}
               >
                 Conseils des Alumnis
@@ -479,9 +486,10 @@ export default function Conseils() {
                 variant="h5"
                 sx={{
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "1.1rem",
+                  fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1.1rem" },
                   maxWidth: "600px",
                   margin: "0 auto",
+                  lineHeight: { xs: 1.4, md: 1.5 },
                 }}
               >
                 Découvrez les conseils précieux de nos anciens étudiants pour
@@ -503,10 +511,10 @@ export default function Conseils() {
                 background: "rgba(239, 68, 68, 0.1)",
                 border: "1px solid rgba(239, 68, 68, 0.3)",
                 borderRadius: 3,
-                p: 3,
+                p: { xs: 2, md: 3 },
                 textAlign: "center",
                 backdropFilter: "blur(10px)",
-                mb: 4,
+                mb: { xs: 3, md: 4 },
               }}
             >
               <Typography
@@ -515,6 +523,7 @@ export default function Conseils() {
                   color: "#ef4444",
                   fontWeight: 600,
                   mb: 1,
+                  fontSize: { xs: "0.9rem", md: "1rem" },
                 }}
               >
                 Votre profil est caché
@@ -523,7 +532,8 @@ export default function Conseils() {
                 variant="body2"
                 sx={{
                   color: "rgba(239, 68, 68, 0.8)",
-                  mb: 2,
+                  mb: { xs: 1.5, md: 2 },
+                  fontSize: { xs: "0.8rem", md: "0.875rem" },
                 }}
               >
                 Modifier votre carte pour l'afficher aux autres utilisateurs
@@ -535,6 +545,9 @@ export default function Conseils() {
                 sx={{
                   color: "#ef4444",
                   borderColor: "#ef4444",
+                  fontSize: { xs: "0.7rem", md: "0.875rem" },
+                  px: { xs: 2, md: 3 },
+                  py: { xs: 0.5, md: 1 },
                   "&:hover": {
                     borderColor: "#dc2626",
                     backgroundColor: "rgba(239, 68, 68, 0.1)",
@@ -553,7 +566,7 @@ export default function Conseils() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          <Box sx={{ mb: 6 }}>
+          <Box sx={{ mb: { xs: 4, md: 6 } }}>
             {currentTips.map((tip, index) => (
               <motion.div
                 key={tip.id}
@@ -568,12 +581,12 @@ export default function Conseils() {
                     background: "rgba(255, 255, 255, 0.06)",
                     borderRadius: 2,
                     boxShadow: "0 1px 6px rgba(59, 130, 246, 0.06)",
-                    mb: 2,
+                    mb: { xs: 1.5, md: 2 },
                     p: 0,
                     overflow: "visible",
                     position: "relative",
                     transition: "box-shadow 0.2s",
-                    minHeight: 100,
+                    minHeight: { xs: 80, md: 100 },
                     display: "flex",
                     alignItems: "center",
                     "&:hover": {
@@ -587,11 +600,11 @@ export default function Conseils() {
                       display: "flex",
                       flexDirection: "row",
                       alignItems: "center",
-                      minWidth: LEFT_COL_WIDTH,
-                      maxWidth: LEFT_COL_WIDTH,
-                      px: 2,
-                      py: 1.5,
-                      gap: 2,
+                      minWidth: { xs: 160, md: LEFT_COL_WIDTH },
+                      maxWidth: { xs: 160, md: LEFT_COL_WIDTH },
+                      px: { xs: 1.5, md: 2 },
+                      py: { xs: 1, md: 1.5 },
+                      gap: { xs: 1.5, md: 2 },
                     }}
                   >
                     <motion.div
@@ -601,10 +614,10 @@ export default function Conseils() {
                       <Avatar
                         onClick={() => openProfileModal(tip)}
                         sx={{
-                          width: 44,
-                          height: 44,
+                          width: { xs: 36, md: 44 },
+                          height: { xs: 36, md: 44 },
                           background: tip.color,
-                          fontSize: "1rem",
+                          fontSize: { xs: "0.8rem", md: "1rem" },
                           fontWeight: 600,
                           cursor: "pointer",
                           "&:hover": {
@@ -639,7 +652,8 @@ export default function Conseils() {
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            maxWidth: 120,
+                            maxWidth: { xs: 80, md: 120 },
+                            fontSize: { xs: "0.8rem", md: "1rem" },
                             "&:hover": {
                               textDecoration: "underline",
                             },
@@ -656,7 +670,8 @@ export default function Conseils() {
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
-                          maxWidth: 120,
+                          maxWidth: { xs: 80, md: 120 },
+                          fontSize: { xs: "0.65rem", md: "0.75rem" },
                         }}
                       >
                         {tip.position}
@@ -669,7 +684,8 @@ export default function Conseils() {
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
-                          maxWidth: 120,
+                          maxWidth: { xs: 80, md: 120 },
+                          fontSize: { xs: "0.65rem", md: "0.75rem" },
                         }}
                       >
                         {tip.title}
@@ -682,6 +698,8 @@ export default function Conseils() {
                           color: "#3b82f6",
                           fontWeight: 600,
                           mt: 0.5,
+                          fontSize: { xs: "0.6rem", md: "0.75rem" },
+                          height: { xs: "20px", md: "24px" },
                         }}
                       />
                     </Box>
@@ -693,7 +711,7 @@ export default function Conseils() {
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "center",
-                      p: 2,
+                      p: { xs: 1.5, md: 2 },
                       minWidth: 0,
                     }}
                   >
@@ -702,8 +720,8 @@ export default function Conseils() {
                       sx={{
                         color: "rgba(255, 255, 255, 0.85)",
                         lineHeight: 1.7,
-                        fontSize: "1.05rem",
-                        mb: isLongContent(tip.content) ? 2 : 0,
+                        fontSize: { xs: "0.85rem", md: "1.05rem" },
+                        mb: isLongContent(tip.content) ? { xs: 1.5, md: 2 } : 0,
                         whiteSpace: "pre-wrap",
                       }}
                     >
@@ -724,15 +742,20 @@ export default function Conseils() {
                             fontWeight: 600,
                             p: 0,
                             minWidth: "auto",
+                            fontSize: { xs: "0.75rem", md: "0.875rem" },
                             "&:hover": {
                               background: "rgba(59, 130, 246, 0.1)",
                             },
                           }}
                           endIcon={
                             expandedTips.has(tip.id) ? (
-                              <ExpandLessIcon />
+                              <ExpandLessIcon
+                                sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+                              />
                             ) : (
-                              <ExpandMoreIcon />
+                              <ExpandMoreIcon
+                                sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+                              />
                             )
                           }
                         >
@@ -904,6 +927,7 @@ export default function Conseils() {
               }
               isAdmin={false}
               handleEditClick={handleEditClick}
+              onClose={closeProfileModal}
             />
           ) : null}
         </motion.div>
@@ -942,6 +966,31 @@ export default function Conseils() {
             }}
           >
             <Box sx={{ p: 4 }}>
+              {/* Close button */}
+              <IconButton
+                onClick={() => setEditModalOpen(false)}
+                sx={{
+                  position: "absolute",
+                  top: 16,
+                  right: 16,
+                  color: "rgba(255, 255, 255, 0.7)",
+                  background: "rgba(0, 0, 0, 0.3)",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  zIndex: 30,
+                  width: 36,
+                  height: 36,
+                  "&:hover": {
+                    color: "#fff",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    transform: "scale(1.1)",
+                  },
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <Close sx={{ fontSize: "1.2rem" }} />
+              </IconButton>
+
               <Typography
                 id="edit-modal-title"
                 variant="h5"
@@ -950,6 +999,7 @@ export default function Conseils() {
                   color: "#3b82f6",
                   mb: 3,
                   textAlign: "center",
+                  pr: 4,
                 }}
               >
                 Modifier ma carte

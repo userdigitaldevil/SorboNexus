@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Typography,
@@ -50,6 +50,11 @@ const LiensUtiles = () => {
   const [bookmarkedLinks, setBookmarkedLinks] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const categories = [
     "Tous les liens",
@@ -224,6 +229,10 @@ const LiensUtiles = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        style={{
+          paddingTop: window.innerWidth < 600 ? "100px" : "160px",
+          paddingBottom: window.innerWidth < 600 ? "60px" : "128px",
+        }}
       >
         <Container maxWidth="lg">
           <Box sx={{ textAlign: "center", position: "relative" }}>
@@ -236,16 +245,21 @@ const LiensUtiles = () => {
                 variant="h1"
                 sx={{
                   fontWeight: 900,
-                  mb: 4,
-                  fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
-                  lineHeight: 1.1,
+                  mb: { xs: 2, md: 4 },
+                  fontSize: {
+                    xs: "1.8rem",
+                    sm: "2.2rem",
+                    md: "3.5rem",
+                    lg: "4rem",
+                  },
+                  lineHeight: { xs: 1.2, md: 1.1 },
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                   position: "relative",
-                  mt: 6,
+                  mt: { xs: 1, md: 6 },
                 }}
               >
                 <span style={{ display: "block" }}>Liens</span>
@@ -262,11 +276,12 @@ const LiensUtiles = () => {
                 variant="h5"
                 sx={{
                   color: "rgba(255, 255, 255, 0.8)",
-                  mb: 8,
+                  mb: { xs: 3, md: 8 },
                   fontWeight: 400,
-                  lineHeight: 1.6,
+                  lineHeight: { xs: 1.4, md: 1.6 },
                   maxWidth: 600,
                   mx: "auto",
+                  fontSize: { xs: "0.9rem", sm: "1.1rem", md: "1.25rem" },
                 }}
               >
                 Découvrez tous les liens essentiels vers les services
@@ -316,8 +331,8 @@ const LiensUtiles = () => {
                     },
                     "& input": {
                       color: "white",
-                      fontSize: "1rem",
-                      padding: "16px",
+                      fontSize: { xs: "0.9rem", md: "1rem" },
+                      padding: { xs: "12px", md: "16px" },
                     },
                   },
                 }}
@@ -333,16 +348,20 @@ const LiensUtiles = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
+        style={{
+          paddingTop: window.innerWidth < 600 ? "60px" : "64px",
+          paddingBottom: window.innerWidth < 600 ? "60px" : "64px",
+        }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: "center", mb: 12 }}>
+          <Box sx={{ textAlign: "center", mb: { xs: 6, md: 12 } }}>
             <Box
               sx={{
                 display: "flex",
                 flexWrap: "wrap",
-                gap: 2,
+                gap: { xs: 1, md: 2 },
                 justifyContent: "center",
-                pt: 4,
+                pt: { xs: 2, md: 4 },
                 mt: 0,
               }}
             >
@@ -373,9 +392,9 @@ const LiensUtiles = () => {
                           : "1px solid rgba(255, 255, 255, 0.2)",
                       backdropFilter: "blur(20px)",
                       fontWeight: 600,
-                      fontSize: "0.875rem",
-                      padding: "8px 16px",
-                      height: "auto",
+                      fontSize: { xs: "0.7rem", md: "0.875rem" },
+                      padding: { xs: "6px 12px", md: "8px 16px" },
+                      height: { xs: "28px", md: "auto" },
                       "&:hover": {
                         background:
                           activeCategory === category
@@ -399,9 +418,13 @@ const LiensUtiles = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
+        style={{
+          paddingTop: window.innerWidth < 600 ? "80px" : "80px",
+          paddingBottom: window.innerWidth < 600 ? "80px" : "80px",
+        }}
       >
         <Container maxWidth="lg">
-          <Grid container spacing={4} justifyContent="center">
+          <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
             {currentLinks.map((link, index) => (
               <Grid xs={12} sm={6} md={4} key={link.id}>
                 <motion.div
@@ -413,7 +436,7 @@ const LiensUtiles = () => {
                   <Card
                     sx={{
                       height: "100%",
-                      maxWidth: 320,
+                      maxWidth: { xs: 280, md: 320 },
                       mx: "auto",
                       background: "rgba(255,255,255,0.05)",
                       backdropFilter: "blur(20px)",
@@ -455,20 +478,20 @@ const LiensUtiles = () => {
                       },
                     }}
                   >
-                    <CardContent sx={{ p: 4 }}>
+                    <CardContent sx={{ p: { xs: 2, md: 4 } }}>
                       <Box
                         sx={{
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "flex-start",
-                          mb: 3,
+                          mb: { xs: 2, md: 3 },
                         }}
                       >
                         <Box
                           className="link-icon"
                           sx={{
-                            width: 48,
-                            height: 48,
+                            width: { xs: 40, md: 48 },
+                            height: { xs: 40, md: 48 },
                             borderRadius: 2,
                             background: link.gradient,
                             display: "flex",
@@ -496,9 +519,13 @@ const LiensUtiles = () => {
                           }}
                         >
                           {bookmarkedLinks.has(link.id) ? (
-                            <BookmarkFilledIcon />
+                            <BookmarkFilledIcon
+                              sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+                            />
                           ) : (
-                            <BookmarkIcon />
+                            <BookmarkIcon
+                              sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+                            />
                           )}
                         </IconButton>
                       </Box>
@@ -508,8 +535,9 @@ const LiensUtiles = () => {
                         className="link-title"
                         sx={{
                           fontWeight: 600,
-                          mb: 2,
+                          mb: { xs: 1, md: 2 },
                           transition: "all 0.3s ease",
+                          fontSize: { xs: "0.9rem", md: "1.25rem" },
                         }}
                       >
                         {link.title}
@@ -519,8 +547,8 @@ const LiensUtiles = () => {
                         variant="body2"
                         sx={{
                           color: "#3b82f6",
-                          fontSize: "0.875rem",
-                          mb: 3,
+                          fontSize: { xs: "0.7rem", md: "0.875rem" },
+                          mb: { xs: 2, md: 3 },
                         }}
                       >
                         {link.category}
@@ -530,8 +558,9 @@ const LiensUtiles = () => {
                         variant="body2"
                         sx={{
                           color: "#a1a1aa",
-                          mb: 4,
+                          mb: { xs: 3, md: 4 },
                           lineHeight: 1.6,
+                          fontSize: { xs: "0.75rem", md: "0.875rem" },
                         }}
                       >
                         {link.description}
@@ -548,7 +577,7 @@ const LiensUtiles = () => {
                           variant="caption"
                           sx={{
                             color: "#6b7280",
-                            fontSize: "0.75rem",
+                            fontSize: { xs: "0.65rem", md: "0.75rem" },
                           }}
                         >
                           <i className="fas fa-external-link-alt mr-1"></i>
@@ -561,18 +590,22 @@ const LiensUtiles = () => {
                           <Button
                             variant="contained"
                             size="small"
-                            endIcon={<ArrowRight />}
+                            endIcon={
+                              <ArrowRight
+                                sx={{ fontSize: { xs: "0.8rem", md: "1rem" } }}
+                              />
+                            }
                             onClick={() => window.open(link.url, "_blank")}
                             sx={{
                               fontWeight: 600,
-                              px: 2,
-                              py: 0.5,
+                              px: { xs: 1.5, md: 2 },
+                              py: { xs: 0.5, md: 0.5 },
                               borderRadius: 2,
                               background:
                                 "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                               color: "white",
                               textTransform: "none",
-                              fontSize: "0.75rem",
+                              fontSize: { xs: "0.65rem", md: "0.75rem" },
                               "&:hover": {
                                 background:
                                   "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
@@ -600,6 +633,10 @@ const LiensUtiles = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
+        style={{
+          paddingTop: window.innerWidth < 600 ? "60px" : "80px",
+          paddingBottom: window.innerWidth < 600 ? "60px" : "80px",
+        }}
       >
         <Container maxWidth="lg">
           {totalPages > 1 && (
@@ -608,12 +645,18 @@ const LiensUtiles = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.2 }}
             >
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  mt: { xs: 4, md: 6 },
+                }}
+              >
                 <Pagination
                   count={totalPages}
                   page={currentPage}
                   onChange={(_, value) => setCurrentPage(value)}
-                  size="large"
+                  size={window.innerWidth < 600 ? "small" : "large"}
                   sx={{
                     "& .MuiPaginationItem-root": {
                       color: "rgba(255, 255, 255, 0.7)",

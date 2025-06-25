@@ -29,6 +29,7 @@ import {
   Fade,
   FormControlLabel,
   Checkbox,
+  Close,
 } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
@@ -981,7 +982,11 @@ const Navbar = () => {
           }}
         >
           {alumniUser ? (
-            <AlumniProfileCard alum={alumniUser} isAdmin={alumniUser.isAdmin} />
+            <AlumniProfileCard
+              alum={alumniUser}
+              isAdmin={alumniUser.isAdmin}
+              onClose={() => setIsAlumniProfileModalOpen(false)}
+            />
           ) : null}
         </Box>
       </Modal>
@@ -993,21 +998,47 @@ const Navbar = () => {
       >
         <Box
           sx={{
-            minWidth: 340,
-            maxWidth: 420,
-            bgcolor: "#18181b",
-            p: 4,
-            borderRadius: 2,
-            maxHeight: "90vh",
-            overflowY: "auto",
-            boxShadow: 24,
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
+            bgcolor: "#18181b",
+            p: 4,
+            borderRadius: 2,
+            minWidth: 320,
+            maxWidth: 600,
+            maxHeight: "80vh",
+            overflowY: "auto",
+            boxShadow: 24,
+            position: "relative",
           }}
         >
-          <Typography variant="h6" sx={{ mb: 2 }}>
+          {/* Close button */}
+          <IconButton
+            onClick={() => setIsAddAlumniModalOpen(false)}
+            sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              color: "rgba(255, 255, 255, 0.7)",
+              background: "rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              zIndex: 30,
+              width: 36,
+              height: 36,
+              "&:hover": {
+                color: "#fff",
+                background: "rgba(0, 0, 0, 0.5)",
+                transform: "scale(1.1)",
+              },
+              transition: "all 0.2s ease",
+            }}
+          >
+            <Close sx={{ fontSize: "1.2rem" }} />
+          </IconButton>
+
+          <Typography variant="h6" sx={{ mb: 2, pr: 4 }}>
             Ajouter un alumni
           </Typography>
           <form onSubmit={handleAddAlumniSubmit}>

@@ -24,6 +24,7 @@ import {
   AccordionDetails,
   FormControlLabel,
   Checkbox,
+  Close,
 } from "@mui/material";
 import {
   ArrowRight,
@@ -34,7 +35,6 @@ import {
   ChevronRight,
 } from "lucide-react";
 import {
-  Close as CloseIcon,
   LinkedIn as LinkedInIcon,
   Email as EmailIcon,
   Grade as GradeIcon,
@@ -132,6 +132,11 @@ export default function Alumnis() {
 
   useEffect(() => {
     fetchAlumni();
+  }, []);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   useEffect(() => {
@@ -563,6 +568,10 @@ export default function Alumnis() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        style={{
+          paddingTop: window.innerWidth < 600 ? "100px" : "160px",
+          paddingBottom: window.innerWidth < 600 ? "60px" : "128px",
+        }}
       >
         <Container maxWidth="lg">
           <Box sx={{ textAlign: "center", position: "relative" }}>
@@ -575,16 +584,21 @@ export default function Alumnis() {
                 variant="h1"
                 sx={{
                   fontWeight: 900,
-                  mb: 4,
-                  fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
-                  lineHeight: 1.1,
+                  mb: { xs: 2, md: 4 },
+                  fontSize: {
+                    xs: "1.8rem",
+                    sm: "2.2rem",
+                    md: "3.5rem",
+                    lg: "4rem",
+                  },
+                  lineHeight: { xs: 1.2, md: 1.1 },
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                   position: "relative",
-                  mt: 6,
+                  mt: { xs: 1, md: 6 },
                 }}
               >
                 <span style={{ display: "block" }}>Réseau des</span>
@@ -601,11 +615,12 @@ export default function Alumnis() {
                 variant="h5"
                 sx={{
                   color: "rgba(255, 255, 255, 0.8)",
-                  mb: 8,
+                  mb: { xs: 3, md: 8 },
                   fontWeight: 400,
-                  lineHeight: 1.6,
+                  lineHeight: { xs: 1.4, md: 1.6 },
                   maxWidth: 600,
                   mx: "auto",
+                  fontSize: { xs: "0.9rem", sm: "1.1rem", md: "1.25rem" },
                 }}
               >
                 Découvrez les parcours inspirants de nos anciens étudiants.
@@ -656,13 +671,13 @@ export default function Alumnis() {
                     },
                     "& input": {
                       color: "white",
-                      fontSize: "1rem",
-                      padding: "16px",
+                      fontSize: { xs: "0.9rem", md: "1rem" },
+                      padding: { xs: "12px", md: "16px" },
                     },
                   },
                 }}
               />
-              <Box sx={{ mt: 3, textAlign: "center" }}>
+              <Box sx={{ mt: { xs: 2, md: 3 }, textAlign: "center" }}>
                 <Button
                   variant="outlined"
                   onClick={openListModal}
@@ -671,10 +686,11 @@ export default function Alumnis() {
                     border: "1.5px solid #3b82f6",
                     fontWeight: 700,
                     borderRadius: 2,
-                    px: 3,
-                    py: 1.2,
+                    px: { xs: 2, md: 3 },
+                    py: { xs: 1, md: 1.2 },
                     background: "rgba(59, 130, 246, 0.08)",
                     boxShadow: "0 2px 8px rgba(59, 130, 246, 0.08)",
+                    fontSize: { xs: "0.8rem", md: "1rem" },
                     "&:hover": {
                       background: "rgba(59, 130, 246, 0.15)",
                       borderColor: "#2563eb",
@@ -696,6 +712,10 @@ export default function Alumnis() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.35 }}
+          style={{
+            paddingTop: window.innerWidth < 600 ? "40px" : "64px",
+            paddingBottom: window.innerWidth < 600 ? "40px" : "64px",
+          }}
         >
           <Container maxWidth="lg">
             <Box
@@ -703,7 +723,7 @@ export default function Alumnis() {
                 background: "rgba(239, 68, 68, 0.1)",
                 border: "1px solid rgba(239, 68, 68, 0.3)",
                 borderRadius: 3,
-                p: 3,
+                p: { xs: 2, md: 3 },
                 textAlign: "center",
                 backdropFilter: "blur(10px)",
               }}
@@ -714,6 +734,7 @@ export default function Alumnis() {
                   color: "#ef4444",
                   fontWeight: 600,
                   mb: 1,
+                  fontSize: { xs: "0.9rem", md: "1rem" },
                 }}
               >
                 Votre profil est caché
@@ -722,7 +743,8 @@ export default function Alumnis() {
                 variant="body2"
                 sx={{
                   color: "rgba(239, 68, 68, 0.8)",
-                  mb: 2,
+                  mb: { xs: 1.5, md: 2 },
+                  fontSize: { xs: "0.8rem", md: "0.875rem" },
                 }}
               >
                 Modifier votre carte pour l'afficher aux autres utilisateurs
@@ -734,6 +756,9 @@ export default function Alumnis() {
                 sx={{
                   color: "#ef4444",
                   borderColor: "#ef4444",
+                  fontSize: { xs: "0.7rem", md: "0.875rem" },
+                  px: { xs: 2, md: 3 },
+                  py: { xs: 0.5, md: 1 },
                   "&:hover": {
                     borderColor: "#dc2626",
                     backgroundColor: "rgba(239, 68, 68, 0.1)",
@@ -753,16 +778,20 @@ export default function Alumnis() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
+        style={{
+          paddingTop: window.innerWidth < 600 ? "60px" : "64px",
+          paddingBottom: window.innerWidth < 600 ? "60px" : "64px",
+        }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: "center", mb: 12 }}>
+          <Box sx={{ textAlign: "center", mb: { xs: 6, md: 12 } }}>
             <Box
               sx={{
                 display: "flex",
                 flexWrap: "wrap",
-                gap: 2,
+                gap: { xs: 1, md: 2 },
                 justifyContent: "center",
-                pt: 4,
+                pt: { xs: 2, md: 4 },
                 mt: 0,
               }}
             >
@@ -793,9 +822,9 @@ export default function Alumnis() {
                           : "1px solid rgba(255, 255, 255, 0.2)",
                       backdropFilter: "blur(20px)",
                       fontWeight: 600,
-                      fontSize: "0.875rem",
-                      padding: "8px 16px",
-                      height: "auto",
+                      fontSize: { xs: "0.7rem", md: "0.875rem" },
+                      padding: { xs: "6px 12px", md: "8px 16px" },
+                      height: { xs: "28px", md: "auto" },
                       "&:hover": {
                         background:
                           activeFilter === filter
@@ -819,15 +848,24 @@ export default function Alumnis() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
+        style={{
+          paddingTop: window.innerWidth < 600 ? "80px" : "96px",
+          paddingBottom: window.innerWidth < 600 ? "80px" : "96px",
+        }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: "center", mb: 8 }}>
+          <Box sx={{ textAlign: "center", mb: { xs: 4, md: 8 } }}>
             <Typography
               variant="h2"
               sx={{
                 fontWeight: 800,
-                mb: 4,
-                fontSize: { xs: "2rem", md: "2.5rem", lg: "3rem" },
+                mb: { xs: 2, md: 4 },
+                fontSize: {
+                  xs: "1.5rem",
+                  sm: "2rem",
+                  md: "2.5rem",
+                  lg: "3rem",
+                },
                 background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -838,9 +876,13 @@ export default function Alumnis() {
             </Typography>
           </Box>
 
-          <Grid container spacing={4} justifyContent="center">
+          <Grid
+            container
+            spacing={{ xs: 2, sm: 3, md: 4 }}
+            justifyContent="center"
+          >
             {currentAlumni.map((alum, index) => (
-              <Grid item xs={12} sm={6} md={4} key={alum.id || alum._id}>
+              <Grid item xs={6} sm={6} md={4} key={alum.id || alum._id}>
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -859,8 +901,8 @@ export default function Alumnis() {
                       position: "relative",
                       cursor: "pointer",
                       transition: "all 0.3s ease",
-                      minHeight: 400,
-                      minWidth: 280,
+                      minHeight: { xs: 280, sm: 400 },
+                      minWidth: { xs: 140, sm: 280 },
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
@@ -877,15 +919,15 @@ export default function Alumnis() {
                   >
                     <Box
                       sx={{
-                        height: 120,
+                        height: { xs: 60, sm: 120 },
                         background: alum.color,
                         position: "relative",
                       }}
                     />
                     <CardContent
                       sx={{
-                        p: 4,
-                        pt: 8,
+                        p: { xs: 1.5, sm: 4 },
+                        pt: { xs: 4, sm: 8 },
                         flexGrow: 1,
                         display: "flex",
                         flexDirection: "column",
@@ -894,18 +936,18 @@ export default function Alumnis() {
                       <Box
                         sx={{
                           position: "absolute",
-                          top: 80,
-                          left: 24,
+                          top: { xs: 35, sm: 80 },
+                          left: { xs: 12, sm: 24 },
                           zIndex: 10,
                         }}
                       >
                         <Avatar
                           sx={{
-                            width: 64,
-                            height: 64,
+                            width: { xs: 40, sm: 64 },
+                            height: { xs: 40, sm: 64 },
                             background: alum.color,
                             border: "4px solid rgba(255, 255, 255, 0.1)",
-                            fontSize: "1.5rem",
+                            fontSize: { xs: "1rem", sm: "1.5rem" },
                             fontWeight: 700,
                           }}
                         >
@@ -914,126 +956,88 @@ export default function Alumnis() {
                       </Box>
                       <Typography
                         variant="h6"
-                        sx={{ fontWeight: 700, mb: 1, color: "white" }}
+                        sx={{
+                          fontWeight: 700,
+                          mb: 1,
+                          color: "white",
+                          fontSize: { xs: "0.8rem", sm: "1.25rem" },
+                        }}
                       >
                         {alum.name}
                       </Typography>
                       <Typography
                         variant="body2"
-                        sx={{ color: "#3b82f6", fontWeight: 600, mb: 2 }}
+                        sx={{
+                          color: "#3b82f6",
+                          fontWeight: 500,
+                          mb: { xs: 0.5, sm: 1 },
+                          fontSize: { xs: "0.65rem", sm: "0.875rem" },
+                        }}
                       >
                         {alum.degree}
                       </Typography>
                       <Typography
                         variant="body2"
                         sx={{
-                          color: "rgba(255, 255, 255, 0.7)",
-                          mb: 3,
-                          lineHeight: 1.5,
+                          color: "#a1a1aa",
+                          mb: { xs: 1, sm: 2 },
+                          fontSize: { xs: "0.65rem", sm: "0.875rem" },
                         }}
                       >
                         {alum.position}
                       </Typography>
-
-                      {/* Année de fin de L3 */}
-                      {alum.anneeFinL3 && (
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: "rgba(255, 255, 255, 0.6)",
-                            mb: 2,
-                            fontSize: "0.8rem",
-                          }}
-                        >
-                          Année de fin de L3 : {alum.anneeFinL3}
-                        </Typography>
-                      )}
-
-                      {/* Social Links */}
-                      <Box sx={{ mt: "auto", display: "flex", gap: 1 }}>
-                        {alum.profile?.linkedin && (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: { xs: 1, sm: 1.5 },
+                          mt: "auto",
+                        }}
+                      >
+                        {alum.linkedin && (
                           <IconButton
                             size="small"
-                            href={alum.profile.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(alum.linkedin, "_blank");
+                            }}
                             sx={{
-                              color: "rgba(255, 255, 255, 0.7)",
-                              background: "rgba(255, 255, 255, 0.05)",
-                              border: "1px solid rgba(255, 255, 255, 0.1)",
+                              color: "#0077b5",
+                              background: "rgba(0, 119, 181, 0.1)",
                               "&:hover": {
-                                color: "#0077b5",
-                                background: "rgba(0, 119, 181, 0.1)",
-                                border: "1px solid rgba(0, 119, 181, 0.3)",
+                                background: "rgba(0, 119, 181, 0.2)",
                               },
+                              width: { xs: 28, sm: 32 },
+                              height: { xs: 28, sm: 32 },
                             }}
                           >
-                            <LinkedInIcon fontSize="small" />
+                            <LinkedInIcon
+                              sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }}
+                            />
                           </IconButton>
                         )}
-                        {alum.profile?.email && (
+                        {alum.email && (
                           <IconButton
                             size="small"
-                            href={`mailto:${alum.profile.email}`}
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(`mailto:${alum.email}`, "_blank");
+                            }}
                             sx={{
-                              color: "rgba(255, 255, 255, 0.7)",
-                              background: "rgba(255, 255, 255, 0.05)",
-                              border: "1px solid rgba(255, 255, 255, 0.1)",
+                              color: "#ea4335",
+                              background: "rgba(234, 67, 53, 0.1)",
                               "&:hover": {
-                                color: "#3b82f6",
-                                background: "rgba(59, 130, 246, 0.1)",
-                                border: "1px solid rgba(59, 130, 246, 0.3)",
+                                background: "rgba(234, 67, 53, 0.2)",
                               },
+                              width: { xs: 28, sm: 32 },
+                              height: { xs: 28, sm: 32 },
                             }}
                           >
-                            <EmailIcon fontSize="small" />
+                            <EmailIcon
+                              sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }}
+                            />
                           </IconButton>
                         )}
                       </Box>
-                      {(isAdmin || alum._id === alumniId) && (
-                        <IconButton
-                          size="medium"
-                          sx={{
-                            position: "absolute",
-                            top: 16,
-                            right: 16,
-                            color: "#fff",
-                            background:
-                              "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                            boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
-                            zIndex: 20,
-                            width: 40,
-                            height: 40,
-                            "&:hover": {
-                              background:
-                                "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                              color: "#fff",
-                              transform: "scale(1.1)",
-                              boxShadow: "0 6px 16px rgba(59, 130, 246, 0.6)",
-                            },
-                            transition: "all 0.2s ease",
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditClick(alum);
-                          }}
-                        >
-                          <svg
-                            width="20"
-                            height="20"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              d="M16.474 5.474a2.5 2.5 0 1 1 3.536 3.536l-9.193 9.193a2 2 0 0 1-.707.464l-3.5 1.167a.5.5 0 0 1-.633-.633l1.167-3.5a2 2 0 0 1 .464-.707l9.192-9.192Z"
-                            />
-                          </svg>
-                        </IconButton>
-                      )}
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -1222,6 +1226,7 @@ export default function Alumnis() {
               alumniId={alumniId}
               handleEditClick={handleEditClick}
               handleDeleteClick={handleDeleteClick}
+              onClose={closeProfileModal}
             />
           ) : null}
         </motion.div>
@@ -1279,7 +1284,7 @@ export default function Alumnis() {
                 onClick={closeListModal}
                 sx={{ color: "rgba(255,255,255,0.7)" }}
               >
-                <CloseIcon />
+                <Close />
               </IconButton>
             </Box>
             <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
@@ -1478,9 +1483,35 @@ export default function Alumnis() {
             maxHeight: "80vh",
             overflowY: "auto",
             boxShadow: 24,
+            position: "relative",
           }}
         >
-          <Typography variant="h6" sx={{ mb: 2 }}>
+          {/* Close button */}
+          <IconButton
+            onClick={() => setEditModalOpen(false)}
+            sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              color: "rgba(255, 255, 255, 0.7)",
+              background: "rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              zIndex: 30,
+              width: 36,
+              height: 36,
+              "&:hover": {
+                color: "#fff",
+                background: "rgba(0, 0, 0, 0.5)",
+                transform: "scale(1.1)",
+              },
+              transition: "all 0.2s ease",
+            }}
+          >
+            <Close sx={{ fontSize: "1.2rem" }} />
+          </IconButton>
+
+          <Typography variant="h6" sx={{ mb: 2, pr: 4 }}>
             {editAlumni && alumniId === editAlumni._id
               ? "Modifier ma carte"
               : "Modifier l'alumni"}

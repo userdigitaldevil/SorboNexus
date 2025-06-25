@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -21,6 +21,11 @@ export default function Ressources() {
   const [activeFilter, setActiveFilter] = useState("Tous");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const categories = [
     "Toutes les ressources",
@@ -190,228 +195,218 @@ export default function Ressources() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        style={{
+          paddingTop: window.innerWidth < 600 ? "100px" : "160px",
+          paddingBottom: window.innerWidth < 600 ? "60px" : "128px",
+        }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: "center", position: "relative" }}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            style={{ textAlign: "center" }}
+          >
+            <Typography
+              variant="h1"
+              sx={{
+                fontWeight: 900,
+                background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                mb: { xs: 2, md: 3 },
+                fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
+                lineHeight: { xs: 1.2, md: 1.1 },
+              }}
             >
-              <Typography
-                variant="h1"
-                sx={{
-                  fontWeight: 900,
-                  mb: 4,
-                  fontSize: { xs: "2.5rem", md: "3.5rem", lg: "4rem" },
-                  lineHeight: 1.1,
-                  background:
-                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  position: "relative",
-                  mt: 6,
-                }}
-              >
-                <span style={{ display: "block" }}>Ressources</span>
-                <span style={{ display: "block" }}>Académiques</span>
-              </Typography>
-            </motion.div>
+              Ressources
+            </Typography>
+            <Typography
+              variant="h5"
+              sx={{
+                color: "rgba(255, 255, 255, 0.9)",
+                fontWeight: 500,
+                maxWidth: 800,
+                mx: "auto",
+                mb: { xs: 3, md: 4 },
+                fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },
+                lineHeight: { xs: 1.4, md: 1.5 },
+              }}
+            >
+              Découvrez notre collection de ressources éducatives pour enrichir
+              votre parcours académique
+            </Typography>
+          </motion.div>
+        </Container>
+      </motion.section>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+      {/* Search and Filters Section */}
+      <Box
+        component="section"
+        sx={{
+          py: { xs: 3, md: 6 },
+          px: 2,
+          background: "rgba(255,255,255,0.02)",
+        }}
+      >
+        <Container maxWidth="lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                textAlign: "center",
+                mb: { xs: 2, md: 4 },
+                fontWeight: 700,
+                background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                fontSize: { xs: "1.5rem", sm: "2rem", md: "2.125rem" },
+              }}
             >
-              <Typography
-                variant="h5"
-                sx={{
-                  color: "rgba(255, 255, 255, 0.8)",
-                  mb: 8,
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  maxWidth: 600,
-                  mx: "auto",
-                }}
-              >
-                Accédez à une bibliothèque complète de ressources pédagogiques,
-                supports de cours, et outils d'apprentissage pour toutes les
-                disciplines.{" "}
-                <span style={{ color: "#3b82f6", fontWeight: 600 }}>
-                  Explorez, découvrez et apprenez !
-                </span>
-              </Typography>
-            </motion.div>
+              Trouvez ce que vous cherchez
+            </Typography>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              sx={{ maxWidth: 600, mx: "auto" }}
-            >
+            {/* Search Bar */}
+            <Box sx={{ mb: { xs: 2, md: 3 } }}>
               <TextField
                 fullWidth
-                placeholder="Rechercher des ressources par nom, matière ou mot-clé..."
+                placeholder="Rechercher une ressource..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                variant="outlined"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <Search size={20} color="#6b7280" />
                     </InputAdornment>
                   ),
-                  sx: {
-                    background: "rgba(255, 255, 255, 0.08)",
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    background: "rgba(255,255,255,0.05)",
                     backdropFilter: "blur(20px)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    border: "1px solid rgba(255,255,255,0.1)",
                     borderRadius: 3,
                     color: "white",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
+                    "&:hover": {
+                      border: "1px solid rgba(59, 130, 246, 0.3)",
                     },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
+                    "&.Mui-focused": {
+                      border: "1px solid #3b82f6",
                     },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      border: "2px solid #3b82f6",
-                    },
-                    "& input::placeholder": {
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "white",
+                    fontSize: { xs: "0.9rem", md: "1rem" },
+                    "&::placeholder": {
                       color: "rgba(255, 255, 255, 0.5)",
                       opacity: 1,
-                    },
-                    "& input": {
-                      color: "white",
-                      fontSize: "1rem",
-                      padding: "16px",
                     },
                   },
                 }}
               />
-            </motion.div>
-          </Box>
-        </Container>
-      </motion.section>
+            </Box>
 
-      {/* Categories & Filters */}
-      <motion.section
-        className="py-16 px-6 z-10 relative"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: "center", mb: 12 }}>
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 2,
-                justifyContent: "center",
-                pt: 4,
-                mt: 0,
-              }}
-            >
-              {categories.map((category, index) => (
-                <motion.div
-                  key={category}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 * index }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
+            {/* Categories */}
+            <Box sx={{ mb: { xs: 2, md: 3 } }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  mb: { xs: 1, md: 2 },
+                  color: "rgba(255, 255, 255, 0.9)",
+                  fontWeight: 600,
+                  fontSize: { xs: "0.9rem", md: "1.25rem" },
+                }}
+              >
+                Catégories
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: { xs: 1, md: 1.5 },
+                }}
+              >
+                {categories.map((category) => (
                   <Chip
+                    key={category}
                     label={category}
                     onClick={() => setActiveCategory(category)}
                     sx={{
                       background:
                         activeCategory === category
                           ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                          : "rgba(255, 255, 255, 0.08)",
-                      color:
-                        activeCategory === category
-                          ? "white"
-                          : "rgba(255, 255, 255, 0.8)",
-                      border:
-                        activeCategory === category
-                          ? "none"
-                          : "1px solid rgba(255, 255, 255, 0.2)",
-                      backdropFilter: "blur(20px)",
-                      fontWeight: 600,
-                      fontSize: "0.875rem",
-                      padding: "8px 16px",
-                      height: "auto",
+                          : "rgba(255,255,255,0.05)",
+                      color: "white",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      cursor: "pointer",
+                      transition: "all 0.3s ease",
+                      fontSize: { xs: "0.7rem", md: "0.875rem" },
+                      height: { xs: "28px", md: "32px" },
                       "&:hover": {
-                        background:
-                          activeCategory === category
-                            ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
-                            : "rgba(255, 255, 255, 0.12)",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
+                        background: "rgba(59, 130, 246, 0.2)",
+                        border: "1px solid rgba(59, 130, 246, 0.3)",
                       },
                     }}
                   />
-                </motion.div>
-              ))}
+                ))}
+              </Box>
             </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 2,
-                justifyContent: "center",
-                mt: 2,
-              }}
-            >
-              {filters.map((filter, index) => (
-                <motion.div
-                  key={filter}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 * (index + 5) }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
+            {/* Filters */}
+            <Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  mb: { xs: 1, md: 2 },
+                  color: "rgba(255, 255, 255, 0.9)",
+                  fontWeight: 600,
+                  fontSize: { xs: "0.9rem", md: "1.25rem" },
+                }}
+              >
+                Types de ressources
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: { xs: 1, md: 1.5 },
+                }}
+              >
+                {filters.map((filter) => (
                   <Chip
+                    key={filter}
                     label={filter}
                     onClick={() => setActiveFilter(filter)}
                     sx={{
                       background:
                         activeFilter === filter
-                          ? "rgba(59, 130, 246, 0.2)"
-                          : "rgba(255, 255, 255, 0.08)",
-                      color:
-                        activeFilter === filter
-                          ? "#3b82f6"
-                          : "rgba(255, 255, 255, 0.8)",
-                      border:
-                        activeFilter === filter
-                          ? "1px solid #3b82f6"
-                          : "1px solid rgba(255, 255, 255, 0.2)",
-                      backdropFilter: "blur(20px)",
-                      fontWeight: 600,
-                      fontSize: "0.875rem",
-                      padding: "8px 16px",
-                      height: "auto",
+                          ? "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)"
+                          : "rgba(255,255,255,0.05)",
+                      color: "white",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      cursor: "pointer",
+                      transition: "all 0.3s ease",
+                      fontSize: { xs: "0.7rem", md: "0.875rem" },
+                      height: { xs: "28px", md: "32px" },
                       "&:hover": {
-                        background:
-                          activeFilter === filter
-                            ? "rgba(59, 130, 246, 0.3)"
-                            : "rgba(255, 255, 255, 0.12)",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 8px 25px rgba(59, 130, 246, 0.2)",
+                        background: "rgba(139, 92, 246, 0.2)",
+                        border: "1px solid rgba(139, 92, 246, 0.3)",
                       },
                     }}
                   />
-                </motion.div>
-              ))}
+                ))}
+              </Box>
             </Box>
-          </Box>
+          </motion.div>
         </Container>
-      </motion.section>
+      </Box>
 
       {/* Resource Grid */}
       <motion.section
@@ -419,9 +414,13 @@ export default function Ressources() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
+        style={{
+          paddingTop: window.innerWidth < 600 ? "60px" : "80px",
+          paddingBottom: window.innerWidth < 600 ? "60px" : "80px",
+        }}
       >
         <Container maxWidth="lg">
-          <Grid container spacing={4} justifyContent="center">
+          <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
             {currentResources.map((resource, index) => (
               <Grid xs={12} sm={6} md={4} key={resource.id}>
                 <motion.div
@@ -433,7 +432,7 @@ export default function Ressources() {
                   <Card
                     sx={{
                       height: "100%",
-                      maxWidth: 320,
+                      maxWidth: { xs: 280, md: 320 },
                       mx: "auto",
                       background: "rgba(255,255,255,0.05)",
                       backdropFilter: "blur(20px)",
@@ -475,18 +474,18 @@ export default function Ressources() {
                       },
                     }}
                   >
-                    <CardContent sx={{ p: 4 }}>
+                    <CardContent sx={{ p: { xs: 2, md: 4 } }}>
                       <Box
                         className="resource-icon"
                         sx={{
-                          width: 48,
-                          height: 48,
+                          width: { xs: 40, md: 48 },
+                          height: { xs: 40, md: 48 },
                           borderRadius: 2,
                           background: resource.gradient,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          mb: 3,
+                          mb: { xs: 2, md: 3 },
                           color: "white",
                           transition: "all 0.3s ease",
                         }}
@@ -498,8 +497,9 @@ export default function Ressources() {
                         className="resource-title"
                         sx={{
                           fontWeight: 600,
-                          mb: 2,
+                          mb: { xs: 1, md: 2 },
                           transition: "all 0.3s ease",
+                          fontSize: { xs: "0.9rem", md: "1.25rem" },
                         }}
                       >
                         {resource.title}
@@ -508,8 +508,9 @@ export default function Ressources() {
                         variant="body2"
                         sx={{
                           color: "#3b82f6",
-                          fontSize: "0.875rem",
-                          mb: 3,
+                          fontWeight: 500,
+                          mb: { xs: 1, md: 2 },
+                          fontSize: { xs: "0.7rem", md: "0.875rem" },
                         }}
                       >
                         {resource.subject}
@@ -518,8 +519,9 @@ export default function Ressources() {
                         variant="body2"
                         sx={{
                           color: "#a1a1aa",
-                          mb: 4,
+                          mb: { xs: 2, md: 3 },
                           lineHeight: 1.6,
+                          fontSize: { xs: "0.75rem", md: "0.875rem" },
                         }}
                       >
                         {resource.description}
@@ -531,43 +533,26 @@ export default function Ressources() {
                           alignItems: "center",
                         }}
                       >
+                        <Chip
+                          label={resource.type}
+                          size="small"
+                          sx={{
+                            background: "rgba(59, 130, 246, 0.1)",
+                            color: "#3b82f6",
+                            border: "1px solid rgba(59, 130, 246, 0.2)",
+                            fontSize: { xs: "0.6rem", md: "0.75rem" },
+                            height: { xs: "20px", md: "24px" },
+                          }}
+                        />
                         <Typography
                           variant="caption"
                           sx={{
-                            color: "#6b7280",
-                            fontSize: "0.75rem",
+                            color: "rgba(255, 255, 255, 0.6)",
+                            fontSize: { xs: "0.6rem", md: "0.75rem" },
                           }}
                         >
-                          <i className="fas fa-file-alt mr-1"></i>{" "}
-                          {resource.pages} • {resource.type}
+                          {resource.pages}
                         </Typography>
-                        <motion.div
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <Button
-                            variant="contained"
-                            size="small"
-                            endIcon={<ArrowRight size={16} />}
-                            sx={{
-                              fontWeight: 600,
-                              px: 2,
-                              py: 0.5,
-                              borderRadius: 2,
-                              background:
-                                "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                              boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)",
-                              fontSize: "0.75rem",
-                              "&:hover": {
-                                background:
-                                  "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                                boxShadow: "0 6px 20px rgba(59, 130, 246, 0.4)",
-                              },
-                            }}
-                          >
-                            Télécharger
-                          </Button>
-                        </motion.div>
                       </Box>
                     </CardContent>
                   </Card>
@@ -578,41 +563,38 @@ export default function Ressources() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.2 }}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                mt: { xs: 3, md: 6 },
+              }}
             >
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
-                <Pagination
-                  count={totalPages}
-                  page={currentPage}
-                  onChange={(_, value) => setCurrentPage(value)}
-                  size="large"
-                  sx={{
-                    "& .MuiPaginationItem-root": {
-                      color: "rgba(255, 255, 255, 0.7)",
-                      border: "1px solid rgba(255, 255, 255, 0.2)",
-                      background: "rgba(255, 255, 255, 0.05)",
-                      "&:hover": {
-                        background: "rgba(255, 255, 255, 0.1)",
-                        border: "1px solid rgba(255, 255, 255, 0.3)",
-                      },
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={(event, value) => setCurrentPage(value)}
+                color="primary"
+                size={window.innerWidth < 600 ? "small" : "medium"}
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    color: "rgba(255, 255, 255, 0.8)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    "&:hover": {
+                      background: "rgba(59, 130, 246, 0.2)",
+                      border: "1px solid rgba(59, 130, 246, 0.3)",
                     },
-                    "& .Mui-selected": {
+                    "&.Mui-selected": {
                       background:
-                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important",
-                      color: "white !important",
-                      border: "1px solid #3b82f6 !important",
-                      "&:hover": {
-                        background:
-                          "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%) !important",
-                      },
+                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                      color: "white",
+                      border: "none",
                     },
-                  }}
-                />
-              </Box>
-            </motion.div>
+                  },
+                }}
+              />
+            </Box>
           )}
         </Container>
       </motion.section>

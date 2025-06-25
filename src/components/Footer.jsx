@@ -12,7 +12,7 @@ export default function Footer() {
     navigate(path);
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 100);
+    }, 200);
   };
 
   return (
@@ -38,7 +38,10 @@ export default function Footer() {
         },
       }}
     >
-      <Container maxWidth="lg" sx={{ py: 4, position: "relative", zIndex: 1 }}>
+      <Container
+        maxWidth="lg"
+        sx={{ py: { xs: 2, md: 4 }, position: "relative", zIndex: 1 }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -48,10 +51,10 @@ export default function Footer() {
           {/* Main Footer Content */}
           <Stack
             direction={{ xs: "column", md: "row" }}
-            spacing={3}
+            spacing={{ xs: 2, md: 3 }}
             alignItems={{ xs: "center", md: "space-between" }}
             justifyContent="space-between"
-            sx={{ mb: 3 }}
+            sx={{ mb: { xs: 2, md: 3 } }}
           >
             {/* Left: Slogan */}
             <motion.div
@@ -71,7 +74,7 @@ export default function Footer() {
                   backgroundClip: "text",
                   letterSpacing: 1,
                   textAlign: { xs: "center", md: "left" },
-                  fontSize: "0.875rem",
+                  fontSize: { xs: "0.7rem", md: "0.875rem" },
                 }}
               >
                 Connecter · Inspirer · Évoluer
@@ -88,15 +91,15 @@ export default function Footer() {
             >
               <Stack
                 direction={{ xs: "column", sm: "row" }}
-                spacing={{ xs: 1, sm: 3 }}
+                spacing={{ xs: 0.5, sm: 3 }}
                 alignItems="center"
                 sx={{
                   background: "rgba(255, 255, 255, 0.03)",
                   backdropFilter: "blur(10px)",
                   border: "1px solid rgba(255, 255, 255, 0.05)",
                   borderRadius: 3,
-                  px: 3,
-                  py: 2,
+                  px: { xs: 2, md: 3 },
+                  py: { xs: 1.5, md: 2 },
                 }}
               >
                 <motion.div
@@ -114,6 +117,8 @@ export default function Footer() {
                       padding: "4px 8px",
                       borderRadius: "4px",
                       cursor: "pointer",
+                      fontSize:
+                        window.innerWidth < 600 ? "0.75rem" : "0.875rem",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -142,6 +147,8 @@ export default function Footer() {
                       padding: "4px 8px",
                       borderRadius: "4px",
                       cursor: "pointer",
+                      fontSize:
+                        window.innerWidth < 600 ? "0.75rem" : "0.875rem",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -170,6 +177,8 @@ export default function Footer() {
                       padding: "4px 8px",
                       borderRadius: "4px",
                       cursor: "pointer",
+                      fontSize:
+                        window.innerWidth < 600 ? "0.75rem" : "0.875rem",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -198,6 +207,8 @@ export default function Footer() {
                       padding: "4px 8px",
                       borderRadius: "4px",
                       cursor: "pointer",
+                      fontSize:
+                        window.innerWidth < 600 ? "0.75rem" : "0.875rem",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -225,6 +236,8 @@ export default function Footer() {
                       display: "block",
                       padding: "4px 8px",
                       borderRadius: "4px",
+                      fontSize:
+                        window.innerWidth < 600 ? "0.75rem" : "0.875rem",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -248,7 +261,7 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <Stack direction="row" spacing={2}>
+              <Stack direction="row" spacing={{ xs: 1, md: 2 }}>
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -260,8 +273,8 @@ export default function Footer() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      width: 40,
-                      height: 40,
+                      width: { xs: 32, md: 40 },
+                      height: { xs: 32, md: 40 },
                       color: "rgba(255, 255, 255, 0.8)",
                       background: "rgba(255, 255, 255, 0.05)",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -277,7 +290,7 @@ export default function Footer() {
                       transition: "all 0.3s ease",
                     }}
                   >
-                    <Email />
+                    <Email sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }} />
                   </Box>
                 </motion.div>
 
@@ -294,8 +307,8 @@ export default function Footer() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      width: 40,
-                      height: 40,
+                      width: { xs: 32, md: 40 },
+                      height: { xs: 32, md: 40 },
                       color: "rgba(255, 255, 255, 0.8)",
                       background: "rgba(255, 255, 255, 0.05)",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -311,7 +324,9 @@ export default function Footer() {
                       transition: "all 0.3s ease",
                     }}
                   >
-                    <LinkedIn />
+                    <LinkedIn
+                      sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+                    />
                   </Box>
                 </motion.div>
 
@@ -328,8 +343,8 @@ export default function Footer() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      width: 40,
-                      height: 40,
+                      width: { xs: 32, md: 40 },
+                      height: { xs: 32, md: 40 },
                       color: "rgba(255, 255, 255, 0.8)",
                       background: "rgba(255, 255, 255, 0.05)",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -345,7 +360,7 @@ export default function Footer() {
                       transition: "all 0.3s ease",
                     }}
                   >
-                    <GitHub />
+                    <GitHub sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }} />
                   </Box>
                 </motion.div>
               </Stack>
@@ -365,7 +380,7 @@ export default function Footer() {
               sx={{
                 color: "rgba(255, 255, 255, 0.5)",
                 fontWeight: 300,
-                fontSize: "0.75rem",
+                fontSize: { xs: "0.6rem", md: "0.75rem" },
                 letterSpacing: 0.5,
               }}
             >

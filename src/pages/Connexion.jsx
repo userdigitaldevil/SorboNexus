@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Container,
@@ -41,6 +41,11 @@ export default function Connexion() {
     rememberMe: false,
   });
   const [errors, setErrors] = useState({});
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const handleInputChange = (field) => (event) => {
     setFormData({
