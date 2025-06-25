@@ -24,6 +24,7 @@ export default function AlumniProfileCard({
   isAdmin,
   alumniId,
   handleEditClick,
+  handleDeleteClick,
 }) {
   // Support both alum.profile and flat alum for backward compatibility
   const profile = alum.profile || alum;
@@ -182,6 +183,17 @@ export default function AlumniProfileCard({
                 />
               </svg>
             </IconButton>
+          )}
+          {isAdmin && (
+            <Button
+              variant="outlined"
+              color="error"
+              size="small"
+              sx={{ position: "absolute", top: 16, right: 60, zIndex: 20 }}
+              onClick={() => handleDeleteClick(alum)}
+            >
+              Supprimer
+            </Button>
           )}
           <Divider sx={{ my: 3, borderColor: "rgba(255,255,255,0.1)" }} />
           {/* Contact Section */}

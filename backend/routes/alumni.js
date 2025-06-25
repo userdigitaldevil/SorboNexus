@@ -145,8 +145,16 @@ router.post("/test-user", async (req, res) => {
 
 // Delete alumni (admin only)
 router.delete("/:id", isAdmin, async (req, res) => {
-  await Alumni.findByIdAndDelete(req.params.id);
-  res.json({ message: "Deleted" });
+  try {
+    // Delete the alumni
+    const alumni = await Alumni.findByIdAndDelete(req.params.id);
+    if (!alumni) return res.status(404).json({ message: "Alumni not found" });
+    // Delete the associated user
+    await User.deleteOne({ alumni: req.params.id });
+    res.json({ message: "Deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

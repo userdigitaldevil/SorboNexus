@@ -306,6 +306,32 @@ export default function Alumnis() {
     }
   };
 
+  const handleDeleteClick = async (alum) => {
+    if (
+      !window.confirm(
+        `Supprimer l'alumni ${alum.name} ? Cette action est irréversible et supprimera aussi son compte utilisateur.`
+      )
+    )
+      return;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:5001/api/alumni/${alum._id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        setAlumni((prev) => prev.filter((a) => a._id !== alum._id));
+        window.dispatchEvent(new Event("profileUpdated"));
+      } else {
+        alert("Erreur lors de la suppression de l'alumni.");
+      }
+    } catch (err) {
+      alert("Erreur lors de la suppression de l'alumni.");
+    }
+  };
+
   // Helper to render conseil with clickable links
   function renderConseilWithLinks(text) {
     if (!text) return null;
@@ -585,7 +611,7 @@ export default function Alumnis() {
 
           <Grid container spacing={4} justifyContent="center">
             {currentAlumni.map((alum, index) => (
-              <Grid item xs={12} md={6} lg={4} key={alum.id}>
+              <Grid item xs={12} md={6} lg={4} key={alum.id || alum._id}>
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -893,10 +919,8 @@ export default function Alumnis() {
               alum={selectedAlumni}
               isAdmin={isAdmin}
               alumniId={alumniId}
-              handleEditClick={(alum) => {
-                handleEditClick(alum);
-                closeProfileModal();
-              }}
+              handleEditClick={handleEditClick}
+              handleDeleteClick={handleDeleteClick}
             />
           )}
         </motion.div>
