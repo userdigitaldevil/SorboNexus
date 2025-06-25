@@ -102,6 +102,7 @@ export default function Alumnis() {
     futureGoals: "",
     anneeFinL3: "",
   });
+  const [editError, setEditError] = useState("");
 
   const filters = [
     "Tous",
@@ -368,6 +369,7 @@ export default function Alumnis() {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    setEditError("");
     try {
       const submitData = {
         ...editForm,
@@ -398,14 +400,17 @@ export default function Alumnis() {
         setAlumni(updatedData);
         setEditModalOpen(false);
         setEditAlumni(null);
-
+        setEditError("");
         // Notify navbar to refresh user data
         localStorage.setItem("profileUpdated", Date.now().toString());
         window.dispatchEvent(new Event("profileUpdated"));
       } else {
-        console.error("Failed to update alumni");
+        const err = await response.json();
+        setEditError(err.error || "Erreur lors de la mise à jour.");
+        console.error("Failed to update alumni", err);
       }
     } catch (error) {
+      setEditError("Erreur lors de la mise à jour.");
       console.error("Error updating alumni:", error);
     }
   };
@@ -1507,8 +1512,13 @@ export default function Alumnis() {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={editForm.isAdmin}
-                      onChange={handleEditFormChange}
+                      checked={!!editForm.isAdmin}
+                      onChange={(e) =>
+                        setEditForm((prev) => ({
+                          ...prev,
+                          isAdmin: e.target.checked,
+                        }))
+                      }
                       name="isAdmin"
                       color="primary"
                     />
@@ -1526,6 +1536,11 @@ export default function Alumnis() {
                 InputProps={{ readOnly: true }}
                 sx={{ mb: 2 }}
               />
+            )}
+            {editError && (
+              <Typography color="error" sx={{ mb: 2 }}>
+                {editError}
+              </Typography>
             )}
             <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
               <Button onClick={() => setEditModalOpen(false)}>Annuler</Button>
