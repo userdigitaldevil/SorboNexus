@@ -40,7 +40,7 @@ export default function Footer() {
     >
       <Container
         maxWidth="lg"
-        sx={{ py: { xs: 2, md: 4 }, position: "relative", zIndex: 1 }}
+        sx={{ py: { xs: 0.25, md: 4 }, position: "relative", zIndex: 1 }}
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -51,10 +51,10 @@ export default function Footer() {
           {/* Main Footer Content */}
           <Stack
             direction="row"
-            spacing={{ xs: 1, md: 3 }}
+            spacing={{ xs: 0.1, md: 3 }}
             alignItems="center"
             justifyContent="space-between"
-            sx={{ mb: { xs: 1, md: 3 } }}
+            sx={{ mb: { xs: 0.1, md: 3 } }}
           >
             {/* Left: Slogan */}
             <motion.div
@@ -74,7 +74,7 @@ export default function Footer() {
                   backgroundClip: "text",
                   letterSpacing: 1,
                   textAlign: "left",
-                  fontSize: { xs: "0.6rem", md: "0.875rem" },
+                  fontSize: { xs: "0.3rem", sm: "0.6rem", md: "0.875rem" },
                 }}
               >
                 Connecter · Inspirer · Évoluer
@@ -87,19 +87,44 @@ export default function Footer() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
-              style={{ flex: 1, display: "flex", justifyContent: "center" }}
+              style={{
+                flex: 1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginLeft: { xs: "-20px", sm: "0px", md: "0px" },
+              }}
             >
               <Stack
                 direction="row"
-                spacing={{ xs: 0.5, sm: 1, md: 3 }}
+                spacing={{ xs: 0.001, sm: 0.5, md: 3 }}
                 alignItems="center"
+                justifyContent="center"
                 sx={{
-                  background: "rgba(255, 255, 255, 0.03)",
-                  backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(255, 255, 255, 0.05)",
-                  borderRadius: 3,
-                  px: { xs: 1, md: 3 },
-                  py: { xs: 0.5, md: 2 },
+                  background: {
+                    xs: "transparent",
+                    sm: "rgba(255, 255, 255, 0.03)",
+                    md: "rgba(255, 255, 255, 0.03)",
+                  },
+                  backdropFilter: {
+                    xs: "none",
+                    sm: "blur(10px)",
+                    md: "blur(10px)",
+                  },
+                  border: {
+                    xs: "none",
+                    sm: "1px solid rgba(255, 255, 255, 0.05)",
+                    md: "1px solid rgba(255, 255, 255, 0.05)",
+                  },
+                  borderRadius: { xs: 0.5, sm: 3, md: 3 },
+                  px: { xs: 0.001, sm: 1, md: 3 },
+                  py: { xs: 0.001, sm: 0.5, md: 2 },
+                  maxWidth: { xs: "60%", sm: "none", md: "none" },
+                  transform: {
+                    xs: "scale(0.5)",
+                    sm: "scale(1)",
+                    md: "scale(1)",
+                  },
                 }}
               >
                 <motion.div
@@ -114,10 +139,10 @@ export default function Footer() {
                       fontWeight: 500,
                       transition: "all 0.3s ease",
                       display: "block",
-                      padding: "2px 4px",
+                      padding: "0px",
                       borderRadius: "4px",
                       cursor: "pointer",
-                      fontSize: { xs: "0.6rem", md: "0.875rem" },
+                      fontSize: { xs: "0.3rem", sm: "0.6rem", md: "0.875rem" },
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -143,10 +168,10 @@ export default function Footer() {
                       fontWeight: 500,
                       transition: "all 0.3s ease",
                       display: "block",
-                      padding: "2px 4px",
+                      padding: "0px",
                       borderRadius: "4px",
                       cursor: "pointer",
-                      fontSize: { xs: "0.6rem", md: "0.875rem" },
+                      fontSize: { xs: "0.3rem", sm: "0.6rem", md: "0.875rem" },
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -172,10 +197,10 @@ export default function Footer() {
                       fontWeight: 500,
                       transition: "all 0.3s ease",
                       display: "block",
-                      padding: "2px 4px",
+                      padding: "0px",
                       borderRadius: "4px",
                       cursor: "pointer",
-                      fontSize: { xs: "0.6rem", md: "0.875rem" },
+                      fontSize: { xs: "0.3rem", sm: "0.6rem", md: "0.875rem" },
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -201,10 +226,10 @@ export default function Footer() {
                       fontWeight: 500,
                       transition: "all 0.3s ease",
                       display: "block",
-                      padding: "2px 4px",
+                      padding: "0px",
                       borderRadius: "4px",
                       cursor: "pointer",
-                      fontSize: { xs: "0.6rem", md: "0.875rem" },
+                      fontSize: { xs: "0.3rem", sm: "0.6rem", md: "0.875rem" },
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -230,9 +255,9 @@ export default function Footer() {
                       fontWeight: 500,
                       transition: "all 0.3s ease",
                       display: "block",
-                      padding: "2px 4px",
+                      padding: "0px",
                       borderRadius: "4px",
-                      fontSize: { xs: "0.6rem", md: "0.875rem" },
+                      fontSize: { xs: "0.3rem", sm: "0.6rem", md: "0.875rem" },
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -256,7 +281,7 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <Stack direction="row" spacing={{ xs: 0.5, md: 2 }}>
+              <Stack direction="row" spacing={{ xs: 0.05, sm: 0.5, md: 2 }}>
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -268,8 +293,8 @@ export default function Footer() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      width: { xs: 24, md: 40 },
-                      height: { xs: 24, md: 40 },
+                      width: { xs: 12, sm: 24, md: 40 },
+                      height: { xs: 12, sm: 24, md: 40 },
                       color: "rgba(255, 255, 255, 0.8)",
                       background: "rgba(255, 255, 255, 0.05)",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -285,7 +310,11 @@ export default function Footer() {
                       transition: "all 0.3s ease",
                     }}
                   >
-                    <Email sx={{ fontSize: { xs: "0.8rem", md: "1.25rem" } }} />
+                    <Email
+                      sx={{
+                        fontSize: { xs: "0.4rem", sm: "0.8rem", md: "1.25rem" },
+                      }}
+                    />
                   </Box>
                 </motion.div>
 
@@ -302,8 +331,8 @@ export default function Footer() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      width: { xs: 24, md: 40 },
-                      height: { xs: 24, md: 40 },
+                      width: { xs: 12, sm: 24, md: 40 },
+                      height: { xs: 12, sm: 24, md: 40 },
                       color: "rgba(255, 255, 255, 0.8)",
                       background: "rgba(255, 255, 255, 0.05)",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -320,7 +349,9 @@ export default function Footer() {
                     }}
                   >
                     <LinkedIn
-                      sx={{ fontSize: { xs: "0.8rem", md: "1.25rem" } }}
+                      sx={{
+                        fontSize: { xs: "0.4rem", sm: "0.8rem", md: "1.25rem" },
+                      }}
                     />
                   </Box>
                 </motion.div>
@@ -338,8 +369,8 @@ export default function Footer() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      width: { xs: 24, md: 40 },
-                      height: { xs: 24, md: 40 },
+                      width: { xs: 12, sm: 24, md: 40 },
+                      height: { xs: 12, sm: 24, md: 40 },
                       color: "rgba(255, 255, 255, 0.8)",
                       background: "rgba(255, 255, 255, 0.05)",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -356,7 +387,9 @@ export default function Footer() {
                     }}
                   >
                     <GitHub
-                      sx={{ fontSize: { xs: "0.8rem", md: "1.25rem" } }}
+                      sx={{
+                        fontSize: { xs: "0.4rem", sm: "0.8rem", md: "1.25rem" },
+                      }}
                     />
                   </Box>
                 </motion.div>
@@ -377,7 +410,7 @@ export default function Footer() {
               sx={{
                 color: "rgba(255, 255, 255, 0.5)",
                 fontWeight: 300,
-                fontSize: { xs: "0.6rem", md: "0.75rem" },
+                fontSize: { xs: "0.3rem", sm: "0.6rem", md: "0.75rem" },
                 letterSpacing: 0.5,
               }}
             >
