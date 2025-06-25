@@ -119,7 +119,7 @@ const Navbar = () => {
           const decoded = jwtDecode(token);
           if (decoded.alumniId) {
             const res = await fetch(
-              `http://localhost:5001/api/alumni/${decoded.alumniId}`
+              `${process.env.VITE_API_URL}/api/alumni/${decoded.alumniId}`
             );
             if (res.ok) {
               const data = await res.json();
@@ -641,7 +641,7 @@ const Navbar = () => {
     };
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5001/api/alumni", {
+      const res = await fetch(`${process.env.VITE_API_URL}/api/alumni`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

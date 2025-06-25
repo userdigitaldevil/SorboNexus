@@ -1,7 +1,7 @@
 console.log("=== THIS IS THE RUNNING BACKEND ===");
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config({ path: __dirname + "/.env" });
+require("dotenv").config();
 const mongoose = require("mongoose");
 
 const app = express();
@@ -16,12 +16,11 @@ app.use("/api/conseils", require("./routes/conseils"));
 
 console.log("MONGO_URI:", process.env.MONGO_URI);
 
+const PORT = process.env.PORT || 5001;
+
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => {
-    app.listen(5001, () => console.log("Server running on port 5001"));
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => console.error("MongoDB error:", err));

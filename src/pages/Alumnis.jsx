@@ -119,7 +119,7 @@ export default function Alumnis() {
 
   const fetchAlumni = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/alumni");
+      const response = await fetch(`${process.env.VITE_API_URL}/api/alumni`);
       const data = await response.json();
       setAlumni(data);
       setLoading(false);
@@ -457,7 +457,7 @@ export default function Alumnis() {
     console.log("Submitting payload:", payload);
     // Send to backend
     const response = await fetch(
-      `http://localhost:5001/api/alumni/${editAlumni._id}`,
+      `${process.env.VITE_API_URL}/api/alumni/${editAlumni._id}`,
       {
         method: "PUT",
         headers: {
