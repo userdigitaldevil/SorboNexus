@@ -27,6 +27,8 @@ import {
   ListItemIcon,
   Grow,
   Fade,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
@@ -600,6 +602,14 @@ const Navbar = () => {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               <MenuItem onClick={handleEditCard}>Modifier ma carte</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setIsAddAlumniModalOpen(true);
+                  handleProfileClose();
+                }}
+              >
+                Ajouter un alumni
+              </MenuItem>
               <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
             </Menu>
           </Box>
@@ -764,6 +774,175 @@ const Navbar = () => {
     }
   };
 
+  // Add Alumni state
+  const [isAddAlumniModalOpen, setIsAddAlumniModalOpen] = useState(false);
+  const [addAlumniForm, setAddAlumniForm] = useState({
+    name: "",
+    degree: "",
+    position: "",
+    field: "",
+    email: "",
+    linkedin: "",
+    avatar: "",
+    conseil: "",
+    color: "",
+    gradient: "",
+    username: "",
+    password: "",
+    isAdmin: false,
+    profile: {
+      currentPosition: "",
+      grades: {},
+      schoolsApplied: [],
+      email: "",
+      linkedin: "",
+    },
+  });
+  const [addAlumniGrades, setAddAlumniGrades] = useState([
+    { key: "", value: "" },
+  ]);
+  const [addAlumniSchools, setAddAlumniSchools] = useState([
+    { name: "", status: "accepted" },
+  ]);
+
+  // Handlers for add alumni form
+  const handleAddAlumniChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (name.startsWith("profile.")) {
+      const key = name.split(".")[1];
+      setAddAlumniForm((prev) => ({
+        ...prev,
+        profile: { ...prev.profile, [key]: value },
+      }));
+    } else if (type === "checkbox") {
+      setAddAlumniForm((prev) => ({ ...prev, [name]: checked }));
+    } else {
+      setAddAlumniForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+  const handleAddAlumniGradeChange = (idx, field, value) => {
+    setAddAlumniGrades((prev) => {
+      const copy = [...prev];
+      copy[idx][field] = value;
+      return copy;
+    });
+  };
+  const handleAddAlumniAddGrade = () => {
+    setAddAlumniGrades((prev) => [...prev, { key: "", value: "" }]);
+  };
+  const handleAddAlumniRemoveGrade = (idx) => {
+    setAddAlumniGrades((prev) => prev.filter((_, i) => i !== idx));
+  };
+  const handleAddAlumniSchoolChange = (idx, field, value) => {
+    setAddAlumniSchools((prev) => {
+      const copy = [...prev];
+      copy[idx][field] = value;
+      return copy;
+    });
+  };
+  const handleAddAlumniAddSchool = () => {
+    setAddAlumniSchools((prev) => [...prev, { name: "", status: "accepted" }]);
+  };
+  const handleAddAlumniRemoveSchool = (idx) => {
+    setAddAlumniSchools((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  // Submit handler
+  const handleAddAlumniSubmit = async (e) => {
+    e.preventDefault();
+    // Build grades and schools objects
+    const gradesObj = {};
+    addAlumniGrades.forEach((g) => {
+      if (g.key && g.value) gradesObj[g.key] = g.value;
+    });
+    const schoolsArr = addAlumniSchools.filter((s) => s.name);
+    // Require all fields except conseil
+    const required = [
+      "name",
+      "degree",
+      "position",
+      "field",
+      "email",
+      "linkedin",
+      "avatar",
+      "profile.currentPosition",
+      "username",
+      "password",
+    ];
+    for (const field of required) {
+      const val = field.startsWith("profile.")
+        ? addAlumniForm.profile[field.split(".")[1]]
+        : addAlumniForm[field];
+      if (!val) {
+        alert("Veuillez remplir tous les champs obligatoires.");
+        return;
+      }
+    }
+    if (Object.keys(gradesObj).length === 0) {
+      alert("Veuillez ajouter au moins une note/diplôme.");
+      return;
+    }
+    if (schoolsArr.length === 0) {
+      alert("Veuillez ajouter au moins une école demandée.");
+      return;
+    }
+    // Build alumni object
+    const alumniToSend = {
+      ...addAlumniForm,
+      avatar: addAlumniForm.name ? addAlumniForm.name[0].toUpperCase() : "",
+      profile: {
+        ...addAlumniForm.profile,
+        grades: gradesObj,
+        schoolsApplied: schoolsArr,
+      },
+      isAdmin: addAlumniForm.isAdmin,
+    };
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5001/api/alumni", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(alumniToSend),
+      });
+      if (res.ok) {
+        setIsAddAlumniModalOpen(false);
+        setAddAlumniForm({
+          name: "",
+          degree: "",
+          position: "",
+          field: "",
+          email: "",
+          linkedin: "",
+          avatar: "",
+          conseil: "",
+          color: "",
+          gradient: "",
+          username: "",
+          password: "",
+          isAdmin: false,
+          profile: {
+            currentPosition: "",
+            grades: {},
+            schoolsApplied: [],
+            email: "",
+            linkedin: "",
+          },
+        });
+        setAddAlumniGrades([{ key: "", value: "" }]);
+        setAddAlumniSchools([{ name: "", status: "accepted" }]);
+        // Optionally, refresh alumni data in parent
+        window.dispatchEvent(new Event("profileUpdated"));
+      } else {
+        alert("Erreur lors de la création de l'alumni.");
+      }
+    } catch (err) {
+      alert("Erreur lors de la création de l'alumni.");
+    }
+  };
+
   return (
     <>
       <AppBar
@@ -889,6 +1068,14 @@ const Navbar = () => {
                   >
                     <MenuItem onClick={handleEditCard}>
                       Modifier ma carte
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        setIsAddAlumniModalOpen(true);
+                        handleProfileClose();
+                      }}
+                    >
+                      Ajouter un alumni
                     </MenuItem>
                     <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
                   </Menu>
@@ -1799,6 +1986,262 @@ const Navbar = () => {
         ) : (
           <></>
         )}
+      </Modal>
+
+      {/* Add Alumni Modal */}
+      <Modal
+        open={isAddAlumniModalOpen}
+        onClose={() => setIsAddAlumniModalOpen(false)}
+      >
+        <Box
+          sx={{
+            minWidth: 340,
+            maxWidth: 420,
+            bgcolor: "#18181b",
+            p: 4,
+            borderRadius: 2,
+            maxHeight: "90vh",
+            overflowY: "auto",
+            boxShadow: 24,
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Ajouter un alumni
+          </Typography>
+          <form onSubmit={handleAddAlumniSubmit}>
+            <TextField
+              label="Nom"
+              name="name"
+              value={addAlumniForm.name}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Diplôme"
+              name="degree"
+              value={addAlumniForm.degree}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Poste actuel"
+              name="position"
+              value={addAlumniForm.position}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Domaine"
+              name="field"
+              value={addAlumniForm.field}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Email"
+              name="email"
+              value={addAlumniForm.email}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="LinkedIn"
+              name="linkedin"
+              value={addAlumniForm.linkedin}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Avatar (lettres)"
+              name="avatar"
+              value={addAlumniForm.avatar}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Poste actuel (profile)"
+              name="profile.currentPosition"
+              value={addAlumniForm.profile.currentPosition}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            {/* Grades */}
+            <Typography variant="subtitle1" sx={{ mt: 2 }}>
+              Notes/Diplômes
+            </Typography>
+            {addAlumniGrades.map((g, idx) => (
+              <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                <TextField
+                  label="Diplôme"
+                  value={g.key}
+                  onChange={(e) =>
+                    handleAddAlumniGradeChange(idx, "key", e.target.value)
+                  }
+                  size="small"
+                  sx={{ flex: 1 }}
+                  required
+                />
+                <TextField
+                  label="Note"
+                  value={g.value}
+                  onChange={(e) =>
+                    handleAddAlumniGradeChange(idx, "value", e.target.value)
+                  }
+                  size="small"
+                  sx={{ flex: 1 }}
+                  required
+                />
+                <Button
+                  onClick={() => handleAddAlumniRemoveGrade(idx)}
+                  color="error"
+                  size="small"
+                >
+                  Supprimer
+                </Button>
+              </Box>
+            ))}
+            <Button
+              onClick={handleAddAlumniAddGrade}
+              size="small"
+              sx={{ mt: 1, mb: 2 }}
+            >
+              Ajouter une note
+            </Button>
+            {/* Schools */}
+            <Typography variant="subtitle1" sx={{ mt: 2 }}>
+              Écoles demandées
+            </Typography>
+            {addAlumniSchools.map((s, idx) => (
+              <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                <TextField
+                  label="École"
+                  value={s.name}
+                  onChange={(e) =>
+                    handleAddAlumniSchoolChange(idx, "name", e.target.value)
+                  }
+                  size="small"
+                  sx={{ flex: 2 }}
+                  required
+                />
+                <TextField
+                  select
+                  label="Statut"
+                  value={s.status}
+                  onChange={(e) =>
+                    handleAddAlumniSchoolChange(idx, "status", e.target.value)
+                  }
+                  size="small"
+                  sx={{ flex: 1 }}
+                  SelectProps={{ native: true }}
+                  required
+                >
+                  <option value="accepted">Accepté</option>
+                  <option value="rejected">Refusé</option>
+                </TextField>
+                <Button
+                  onClick={() => handleAddAlumniRemoveSchool(idx)}
+                  color="error"
+                  size="small"
+                >
+                  Supprimer
+                </Button>
+              </Box>
+            ))}
+            <Button
+              onClick={handleAddAlumniAddSchool}
+              size="small"
+              sx={{ mt: 1, mb: 2 }}
+            >
+              Ajouter une école
+            </Button>
+            {/* Conseil (optional) */}
+            <TextField
+              label="Conseil (optionnel)"
+              name="conseil"
+              value={addAlumniForm.conseil}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              multiline
+              minRows={2}
+            />
+            <TextField
+              label="Nom d'utilisateur"
+              name="username"
+              value={addAlumniForm.username}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Mot de passe"
+              name="password"
+              value={addAlumniForm.password}
+              onChange={handleAddAlumniChange}
+              type="password"
+              fullWidth
+              sx={{ mb: 2 }}
+              required
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={addAlumniForm.isAdmin}
+                  onChange={handleAddAlumniChange}
+                  name="isAdmin"
+                  color="primary"
+                />
+              }
+              label="Donner le statut administrateur à cet utilisateur"
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Couleur (hex)"
+              name="color"
+              value={addAlumniForm.color}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Dégradé (gradient)"
+              name="gradient"
+              value={addAlumniForm.gradient}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+              <Button onClick={() => setIsAddAlumniModalOpen(false)}>
+                Annuler
+              </Button>
+              <Button type="submit" variant="contained">
+                Créer
+              </Button>
+            </Box>
+          </form>
+        </Box>
       </Modal>
     </>
   );
