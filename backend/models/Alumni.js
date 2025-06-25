@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment-timezone");
 
 const AlumniSchema = new mongoose.Schema({
   name: String,
@@ -25,6 +26,13 @@ const AlumniSchema = new mongoose.Schema({
   },
   conseil: String,
   hidden: { type: Boolean, default: false },
+  nationalities: [String],
+  stagesWorkedContestsExtracurriculars: String,
+  accountCreationDate: {
+    type: Date,
+    default: () => moment().tz("Europe/Paris").toDate(),
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Alumni", AlumniSchema);

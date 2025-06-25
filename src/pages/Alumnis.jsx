@@ -95,6 +95,8 @@ export default function Alumnis() {
     },
     isAdmin: false,
     hidden: false,
+    nationalities: "",
+    stagesWorkedContestsExtracurriculars: "",
   });
 
   const filters = [
@@ -185,27 +187,43 @@ export default function Alumnis() {
   const endIndex = startIndex + itemsPerPage;
   let currentAlumni = filteredAlumni.slice(startIndex, endIndex);
 
-  // Custom ordering: self first, then admins (excluding self if admin), then others
+  // Custom ordering:
   if (alumniId) {
-    // Find self
+    // If logged in: self first, then admins (excluding self if admin), then others
     const selfIdx = currentAlumni.findIndex((a) => a._id === alumniId);
     let selfCard = null;
     if (selfIdx > -1) {
       [selfCard] = currentAlumni.splice(selfIdx, 1);
     }
-    // Find all admin cards (excluding self if admin)
     const adminCards = currentAlumni.filter(
       (a) => a.isAdmin && a._id !== alumniId
     );
-    // Remove admin cards from currentAlumni
     currentAlumni = currentAlumni.filter(
       (a) => !a.isAdmin || a._id === alumniId
     );
-    // Compose new order: self, admins, then others
     currentAlumni = [
       ...(selfCard ? [selfCard] : []),
       ...adminCards,
       ...currentAlumni.filter((a) => !a.isAdmin && a._id !== alumniId),
+    ];
+  } else {
+    // If not logged in: admins first, with 'admindigitaldevil' (or name contains 'DigitalDevil') always first
+    const adminCards = currentAlumni.filter((a) => a.isAdmin);
+    const otherCards = currentAlumni.filter((a) => !a.isAdmin);
+    // Find the special admin
+    let specialAdminIdx = adminCards.findIndex(
+      (a) =>
+        (a.username && a.username.toLowerCase() === "admindigitaldevil") ||
+        (a.name && a.name.toLowerCase().includes("digitaldevil"))
+    );
+    let specialAdmin = null;
+    if (specialAdminIdx > -1) {
+      [specialAdmin] = adminCards.splice(specialAdminIdx, 1);
+    }
+    currentAlumni = [
+      ...(specialAdmin ? [specialAdmin] : []),
+      ...adminCards,
+      ...otherCards,
     ];
   }
 
@@ -258,6 +276,11 @@ export default function Alumnis() {
       },
       isAdmin: alum.isAdmin || false,
       hidden: alum.hidden || false,
+      nationalities: Array.isArray(alum.nationalities)
+        ? alum.nationalities.join(", ")
+        : alum.nationalities || "",
+      stagesWorkedContestsExtracurriculars:
+        alum.stagesWorkedContestsExtracurriculars || "",
     });
     setEditModalOpen(true);
   };
@@ -345,6 +368,15 @@ export default function Alumnis() {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
+      const submitData = {
+        ...editForm,
+        nationalities: editForm.nationalities
+          ? editForm.nationalities
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
+      };
       const response = await fetch(
         `http://localhost:5001/api/alumni/${editAlumni._id}`,
         {
@@ -353,7 +385,7 @@ export default function Alumnis() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(editForm),
+          body: JSON.stringify(submitData),
         }
       );
 
@@ -1411,6 +1443,34 @@ export default function Alumnis() {
               multiline
               minRows={4}
             />
+            <TextField
+              label="Nationalités (séparées par des virgules)"
+              name="nationalities"
+              value={editForm.nationalities || ""}
+              onChange={(e) =>
+                setEditForm((prev) => ({
+                  ...prev,
+                  nationalities: e.target.value,
+                }))
+              }
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Stages, entreprises, concours, extrascolaire (texte libre)"
+              name="stagesWorkedContestsExtracurriculars"
+              value={editForm.stagesWorkedContestsExtracurriculars || ""}
+              onChange={(e) =>
+                setEditForm((prev) => ({
+                  ...prev,
+                  stagesWorkedContestsExtracurriculars: e.target.value,
+                }))
+              }
+              fullWidth
+              multiline
+              minRows={2}
+              sx={{ mb: 2 }}
+            />
             <Button
               variant="outlined"
               color={editForm.hidden ? "success" : "warning"}
@@ -1470,6 +1530,15 @@ export default function Alumnis() {
                   sx={{ mb: 2 }}
                 />
               </>
+            )}
+            {editAlumni && editAlumni.createdAt && (
+              <TextField
+                label="Date de création du compte"
+                value={new Date(editAlumni.createdAt).toLocaleString("fr-FR")}
+                fullWidth
+                InputProps={{ readOnly: true }}
+                sx={{ mb: 2 }}
+              />
             )}
             <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
               <Button onClick={() => setEditModalOpen(false)}>Annuler</Button>

@@ -399,6 +399,59 @@ export default function AlumniProfileCard({
               </Typography>
             </Box>
           )}
+          {/* Nationalities */}
+          {alum.nationalities && alum.nationalities.length > 0 && (
+            <Box sx={{ mb: 2 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ color: "#3b82f6", fontWeight: 600 }}
+              >
+                Nationalités
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "rgba(255,255,255,0.85)" }}
+              >
+                {Array.isArray(alum.nationalities)
+                  ? alum.nationalities.join(", ")
+                  : alum.nationalities}
+              </Typography>
+            </Box>
+          )}
+          {/* Stages/Worked/Contests/Extracurriculars */}
+          {alum.stagesWorkedContestsExtracurriculars && (
+            <Box sx={{ mb: 2 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ color: "#3b82f6", fontWeight: 600 }}
+              >
+                Stages, entreprises, concours, extrascolaire
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "rgba(255,255,255,0.85)", whiteSpace: "pre-line" }}
+              >
+                {alum.stagesWorkedContestsExtracurriculars}
+              </Typography>
+            </Box>
+          )}
+          {/* Account creation date */}
+          {alum.createdAt && (
+            <Box sx={{ mb: 2 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ color: "#3b82f6", fontWeight: 600 }}
+              >
+                Date de création du compte
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "rgba(255,255,255,0.85)" }}
+              >
+                {new Date(alum.createdAt).toLocaleString("fr-FR")}
+              </Typography>
+            </Box>
+          )}
         </CardContent>
       </Card>
     </>
