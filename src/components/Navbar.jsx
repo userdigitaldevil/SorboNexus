@@ -511,6 +511,10 @@ const Navbar = () => {
       email: "",
       linkedin: "",
     },
+    anneeFinL3: "",
+    futureGoals: "",
+    nationalities: "",
+    stagesWorkedContestsExtracurriculars: "",
   });
   const [addAlumniGrades, setAddAlumniGrades] = useState([
     { key: "", value: "" },
@@ -644,6 +648,10 @@ const Navbar = () => {
             email: "",
             linkedin: "",
           },
+          anneeFinL3: "",
+          futureGoals: "",
+          nationalities: "",
+          stagesWorkedContestsExtracurriculars: "",
         });
         setAddAlumniGrades([{ key: "", value: "" }]);
         setAddAlumniSchools([{ name: "", status: "accepted" }]);
@@ -1374,6 +1382,41 @@ const Navbar = () => {
               onChange={handleAddAlumniChange}
               fullWidth
               sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Nationalités (séparées par des virgules)"
+              name="nationalities"
+              value={addAlumniForm.nationalities || ""}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Stages, entreprises, concours, extrascolaire (texte libre)"
+              name="stagesWorkedContestsExtracurriculars"
+              value={addAlumniForm.stagesWorkedContestsExtracurriculars || ""}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              multiline
+              minRows={2}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Projets futurs (métiers, masters, écoles visés...)"
+              name="futureGoals"
+              value={addAlumniForm.futureGoals || ""}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Année de fin de L3 (4 chiffres)"
+              name="anneeFinL3"
+              value={addAlumniForm.anneeFinL3 || ""}
+              onChange={handleAddAlumniChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
             />
             <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
               <Button onClick={() => setIsAddAlumniModalOpen(false)}>

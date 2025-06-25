@@ -22,6 +22,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import {
   ArrowRight,
@@ -97,6 +99,8 @@ export default function Alumnis() {
     hidden: false,
     nationalities: "",
     stagesWorkedContestsExtracurriculars: "",
+    futureGoals: "",
+    anneeFinL3: "",
   });
 
   const filters = [
@@ -189,27 +193,21 @@ export default function Alumnis() {
 
   // Custom ordering:
   if (alumniId) {
-    // If logged in: self first, then admins (excluding self if admin), then others
-    const selfIdx = currentAlumni.findIndex((a) => a._id === alumniId);
-    let selfCard = null;
-    if (selfIdx > -1) {
-      [selfCard] = currentAlumni.splice(selfIdx, 1);
-    }
-    const adminCards = currentAlumni.filter(
+    // If logged in: self first (always first card on first page), then admins (excluding self if admin), then others
+    const self = filteredAlumni.find((a) => a._id === alumniId);
+    const adminCards = filteredAlumni.filter(
       (a) => a.isAdmin && a._id !== alumniId
     );
-    currentAlumni = currentAlumni.filter(
-      (a) => !a.isAdmin || a._id === alumniId
+    const otherCards = filteredAlumni.filter(
+      (a) => !a.isAdmin && a._id !== alumniId
     );
-    currentAlumni = [
-      ...(selfCard ? [selfCard] : []),
-      ...adminCards,
-      ...currentAlumni.filter((a) => !a.isAdmin && a._id !== alumniId),
-    ];
+    const ordered = [...(self ? [self] : []), ...adminCards, ...otherCards];
+    // Apply pagination after ordering
+    currentAlumni = ordered.slice(startIndex, endIndex);
   } else {
     // If not logged in: admins first, with 'admindigitaldevil' (or name contains 'DigitalDevil') always first
-    const adminCards = currentAlumni.filter((a) => a.isAdmin);
-    const otherCards = currentAlumni.filter((a) => !a.isAdmin);
+    const adminCards = filteredAlumni.filter((a) => a.isAdmin);
+    const otherCards = filteredAlumni.filter((a) => !a.isAdmin);
     // Find the special admin
     let specialAdminIdx = adminCards.findIndex(
       (a) =>
@@ -220,11 +218,12 @@ export default function Alumnis() {
     if (specialAdminIdx > -1) {
       [specialAdmin] = adminCards.splice(specialAdminIdx, 1);
     }
-    currentAlumni = [
+    const ordered = [
       ...(specialAdmin ? [specialAdmin] : []),
       ...adminCards,
       ...otherCards,
     ];
+    currentAlumni = ordered.slice(startIndex, endIndex);
   }
 
   const openProfileModal = (alum) => {
@@ -281,6 +280,8 @@ export default function Alumnis() {
         : alum.nationalities || "",
       stagesWorkedContestsExtracurriculars:
         alum.stagesWorkedContestsExtracurriculars || "",
+      futureGoals: alum.futureGoals || "",
+      anneeFinL3: alum.anneeFinL3 || "",
     });
     setEditModalOpen(true);
   };
@@ -376,6 +377,7 @@ export default function Alumnis() {
               .map((s) => s.trim())
               .filter(Boolean)
           : [],
+        updatedAt: new Date(),
       };
       const response = await fetch(
         `http://localhost:5001/api/alumni/${editAlumni._id}`,
@@ -1460,55 +1462,36 @@ export default function Alumnis() {
               label="Stages, entreprises, concours, extrascolaire (texte libre)"
               name="stagesWorkedContestsExtracurriculars"
               value={editForm.stagesWorkedContestsExtracurriculars || ""}
-              onChange={(e) =>
-                setEditForm((prev) => ({
-                  ...prev,
-                  stagesWorkedContestsExtracurriculars: e.target.value,
-                }))
-              }
+              onChange={handleEditFormChange}
               fullWidth
               multiline
               minRows={2}
               sx={{ mb: 2 }}
             />
-            <Button
-              variant="outlined"
-              color={editForm.hidden ? "success" : "warning"}
-              onClick={async () => {
-                const token = localStorage.getItem("token");
-                const res = await fetch(
-                  `http://localhost:5001/api/alumni/${editAlumni._id}/hidden`,
-                  {
-                    method: "PATCH",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ hidden: !editForm.hidden }),
-                  }
-                );
-                if (res.ok) {
-                  const updated = await res.json();
-                  setEditForm((prev) => ({ ...prev, hidden: updated.hidden }));
-                  // Optionally, show a toast or message
-                } else {
-                  alert("Erreur lors du changement de visibilité du profil.");
-                }
-              }}
+            <TextField
+              label="Projets futurs (métiers, masters, écoles visés...)"
+              name="futureGoals"
+              value={editForm.futureGoals || ""}
+              onChange={handleEditFormChange}
               fullWidth
               sx={{ mb: 2 }}
-            >
-              {editForm.hidden
-                ? "Afficher mon profil (le rendre visible)"
-                : "Cacher mon profil (le rendre invisible)"}
-            </Button>
-            {/* Only show these fields for admin */}
+            />
+            <TextField
+              label="Année de fin de L3 (4 chiffres)"
+              name="anneeFinL3"
+              value={editForm.anneeFinL3 || ""}
+              onChange={handleEditFormChange}
+              fullWidth
+              sx={{ mb: 2 }}
+              inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
+            />
+            {/* Only admins can edit color, gradient, and admin status */}
             {isAdmin && (
               <>
                 <TextField
                   label="Couleur (hex)"
                   name="color"
-                  value={editForm.color || ""}
+                  value={editForm.color}
                   onChange={handleEditFormChange}
                   fullWidth
                   sx={{ mb: 2 }}
@@ -1516,17 +1499,21 @@ export default function Alumnis() {
                 <TextField
                   label="Dégradé (gradient)"
                   name="gradient"
-                  value={editForm.gradient || ""}
+                  value={editForm.gradient}
                   onChange={handleEditFormChange}
                   fullWidth
                   sx={{ mb: 2 }}
                 />
-                <TextField
-                  label="Admin (true/false)"
-                  name="isAdmin"
-                  value={editForm.isAdmin ? "true" : "false"}
-                  onChange={handleEditFormChange}
-                  fullWidth
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={editForm.isAdmin}
+                      onChange={handleEditFormChange}
+                      name="isAdmin"
+                      color="primary"
+                    />
+                  }
+                  label="Donner le statut administrateur à cet utilisateur"
                   sx={{ mb: 2 }}
                 />
               </>

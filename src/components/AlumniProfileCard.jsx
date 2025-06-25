@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -71,6 +71,14 @@ export default function AlumniProfileCard({
         },
       }
     : {};
+
+  // Conseil section with expandable/collapsible logic
+  const [showFullConseil, setShowFullConseil] = useState(false);
+  const conseilMaxLength = 180;
+  const conseilIsLong = alum.conseil && alum.conseil.length > conseilMaxLength;
+  const conseilPreview = conseilIsLong
+    ? alum.conseil.slice(0, conseilMaxLength) + "..."
+    : alum.conseil;
 
   return (
     <>
@@ -377,28 +385,6 @@ export default function AlumniProfileCard({
               </List>
             </Box>
           )}
-          {/* Conseil Section */}
-          {alum.conseil && (
-            <Box sx={{ mb: 2 }}>
-              <Typography
-                variant="h6"
-                sx={{ color: "white", fontWeight: 600, mb: 2 }}
-              >
-                Conseil de cet alumni
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  color: "#fff",
-                  opacity: 0.9,
-                  whiteSpace: "pre-wrap",
-                  lineHeight: 1.6,
-                }}
-              >
-                {renderConseilWithLinks(alum.conseil)}
-              </Typography>
-            </Box>
-          )}
           {/* Nationalities */}
           {alum.nationalities && alum.nationalities.length > 0 && (
             <Box sx={{ mb: 2 }}>
@@ -418,37 +404,123 @@ export default function AlumniProfileCard({
               </Typography>
             </Box>
           )}
-          {/* Stages/Worked/Contests/Extracurriculars */}
+          {/* Stages/Extrascolaire/Associations/Expérience Pro */}
           {alum.stagesWorkedContestsExtracurriculars && (
             <Box sx={{ mb: 2 }}>
               <Typography
                 variant="subtitle2"
                 sx={{ color: "#3b82f6", fontWeight: 600 }}
               >
-                Stages, entreprises, concours, extrascolaire
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "rgba(255,255,255,0.85)", whiteSpace: "pre-line" }}
-              >
-                {alum.stagesWorkedContestsExtracurriculars}
-              </Typography>
-            </Box>
-          )}
-          {/* Account creation date */}
-          {alum.createdAt && (
-            <Box sx={{ mb: 2 }}>
-              <Typography
-                variant="subtitle2"
-                sx={{ color: "#3b82f6", fontWeight: 600 }}
-              >
-                Date de création du compte
+                Stages / Extrascolaire / Associations / Expérience Pro
               </Typography>
               <Typography
                 variant="body2"
                 sx={{ color: "rgba(255,255,255,0.85)" }}
               >
-                {new Date(alum.createdAt).toLocaleString("fr-FR")}
+                {alum.stagesWorkedContestsExtracurriculars}
+              </Typography>
+            </Box>
+          )}
+          {/* Future Goals */}
+          {alum.futureGoals && (
+            <Box sx={{ mb: 2 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ color: "#3b82f6", fontWeight: 600 }}
+              >
+                Projets futurs (métiers, masters, écoles visés...)
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "rgba(255,255,255,0.85)" }}
+              >
+                {alum.futureGoals}
+              </Typography>
+            </Box>
+          )}
+          {/* Année de fin de L3 */}
+          {alum.anneeFinL3 && (
+            <Box sx={{ mb: 2 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ color: "#3b82f6", fontWeight: 600 }}
+              >
+                Année de fin de L3
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "rgba(255,255,255,0.85)" }}
+              >
+                {alum.anneeFinL3}
+              </Typography>
+            </Box>
+          )}
+          {/* Account creation date (mini gray) */}
+          {alum.accountCreationDate && (
+            <Box sx={{ mt: 1, mb: 0 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "#aaa",
+                  fontSize: "0.75rem",
+                  display: "block",
+                  textAlign: "right",
+                }}
+              >
+                {`Créé le ${new Date(
+                  alum.accountCreationDate
+                ).toLocaleDateString("fr-FR", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                })}`}
+              </Typography>
+            </Box>
+          )}
+          {/* Account creation and last updated dates */}
+          <Box sx={{ mt: 3, textAlign: "right" }}>
+            {alum.updatedAt && (
+              <Typography
+                variant="caption"
+                sx={{ color: "gray", display: "block" }}
+              >
+                Modifié le{" "}
+                {new Date(alum.updatedAt).toLocaleDateString("fr-FR", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </Typography>
+            )}
+          </Box>
+          {/* Conseil section at the very bottom */}
+          {alum.conseil && (
+            <Box sx={{ mt: 2 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ color: "#3b82f6", fontWeight: 600 }}
+              >
+                Conseil
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "rgba(255,255,255,0.85)" }}
+              >
+                {showFullConseil || !conseilIsLong
+                  ? alum.conseil
+                  : conseilPreview}
+                {conseilIsLong && (
+                  <span
+                    style={{
+                      color: "#3b82f6",
+                      cursor: "pointer",
+                      marginLeft: 8,
+                    }}
+                    onClick={() => setShowFullConseil((v) => !v)}
+                  >
+                    {showFullConseil ? "Réduire" : "Lire la suite"}
+                  </span>
+                )}
               </Typography>
             </Box>
           )}

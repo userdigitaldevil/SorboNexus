@@ -43,6 +43,8 @@ router.put("/:id", async (req, res) => {
     if (!decoded.isAdmin && decoded.alumniId !== req.params.id) {
       return res.status(403).json({ error: "Forbidden" });
     }
+    console.log("[PUT /api/alumni/:id] req.params.id =", req.params.id);
+    console.log("[PUT /api/alumni/:id] req.body =", req.body);
     const alumni = await Alumni.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },

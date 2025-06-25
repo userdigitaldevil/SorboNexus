@@ -19,6 +19,14 @@ async function updateAllAlumni() {
     { accountCreationDate: { $exists: false } },
     { $set: { accountCreationDate: nowParis } }
   );
+  await Alumni.updateMany(
+    { futureGoals: { $exists: false } },
+    { $set: { futureGoals: "" } }
+  );
+  await Alumni.updateMany(
+    { anneeFinL3: { $exists: false } },
+    { $set: { anneeFinL3: "" } }
+  );
   // Optionally remove createdAt from old docs
   await Alumni.updateMany(
     { createdAt: { $exists: true } },
