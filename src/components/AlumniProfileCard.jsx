@@ -77,16 +77,60 @@ export default function AlumniProfileCard({
       <Card
         sx={{
           borderRadius: 4,
-          background: "linear-gradient(145deg, #232323 0%, #111 100%)",
+          background: alum.hidden
+            ? "linear-gradient(145deg, #444 0%, #222 100%)"
+            : "linear-gradient(145deg, #232323 0%, #111 100%)",
           border: "none",
           color: "#fff",
           minHeight: 340,
           position: "relative",
           overflow: "visible",
           boxShadow: alum.isAdmin ? undefined : "0 16px 40px rgba(0,0,0,0.5)",
+          filter: alum.hidden ? "grayscale(0.7) brightness(0.7)" : undefined,
+          opacity: alum.hidden ? 0.7 : 1,
           ...adminGlow,
         }}
       >
+        {/* Hidden profile indicator */}
+        {alum.hidden && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 12,
+              left: 12,
+              zIndex: 30,
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              bgcolor: "rgba(30,30,30,0.85)",
+              px: 1.5,
+              py: 0.5,
+              borderRadius: 2,
+              boxShadow: "0 2px 8px #0006",
+            }}
+          >
+            <svg
+              width="18"
+              height="18"
+              fill="none"
+              viewBox="0 0 24 24"
+              style={{ marginRight: 4 }}
+            >
+              <path
+                stroke="#aaa"
+                strokeWidth="2"
+                d="M3 12s3.6-7 9-7 9 7 9 7-3.6 7-9 7-9-7-9-7Z"
+              />
+              <circle cx="12" cy="12" r="3" stroke="#aaa" strokeWidth="2" />
+            </svg>
+            <Typography
+              variant="caption"
+              sx={{ color: "#aaa", fontWeight: 700 }}
+            >
+              Profil caché
+            </Typography>
+          </Box>
+        )}
         <Box
           sx={{
             height: 120,
@@ -106,10 +150,11 @@ export default function AlumniProfileCard({
             sx={{
               width: 64,
               height: 64,
-              background: alum.color,
+              background: alum.hidden ? "#555" : alum.color,
               border: "4px solid rgba(255, 255, 255, 0.1)",
               fontSize: "1.5rem",
               fontWeight: 700,
+              filter: alum.hidden ? "grayscale(1) brightness(0.8)" : undefined,
             }}
           >
             {alum.avatar}

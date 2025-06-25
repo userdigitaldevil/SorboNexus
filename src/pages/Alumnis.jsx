@@ -184,13 +184,29 @@ export default function Alumnis() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   let currentAlumni = filteredAlumni.slice(startIndex, endIndex);
-  // If admin, ensure admin card is always first
-  if (isAdmin) {
-    const adminIdx = currentAlumni.findIndex((a) => a.isAdmin);
-    if (adminIdx > 0) {
-      const [adminCard] = currentAlumni.splice(adminIdx, 1);
-      currentAlumni = [adminCard, ...currentAlumni];
+
+  // Custom ordering: self first, then admins (excluding self if admin), then others
+  if (alumniId) {
+    // Find self
+    const selfIdx = currentAlumni.findIndex((a) => a._id === alumniId);
+    let selfCard = null;
+    if (selfIdx > -1) {
+      [selfCard] = currentAlumni.splice(selfIdx, 1);
     }
+    // Find all admin cards (excluding self if admin)
+    const adminCards = currentAlumni.filter(
+      (a) => a.isAdmin && a._id !== alumniId
+    );
+    // Remove admin cards from currentAlumni
+    currentAlumni = currentAlumni.filter(
+      (a) => !a.isAdmin || a._id === alumniId
+    );
+    // Compose new order: self, admins, then others
+    currentAlumni = [
+      ...(selfCard ? [selfCard] : []),
+      ...adminCards,
+      ...currentAlumni.filter((a) => !a.isAdmin && a._id !== alumniId),
+    ];
   }
 
   const openProfileModal = (alum) => {
