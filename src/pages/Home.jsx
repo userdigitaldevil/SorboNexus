@@ -179,7 +179,7 @@ export default function Home() {
           alignItems: "center",
           justifyContent: "center",
           px: 2,
-          pt: 0,
+          pt: { xs: "72px", sm: "72px" },
           position: "relative",
           overflow: "hidden",
         }}

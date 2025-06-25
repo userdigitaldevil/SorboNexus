@@ -7,10 +7,8 @@ export default function Footer() {
   const location = useLocation();
 
   const handleNavigation = (path) => {
-    // If we're already on this page, scroll to top
-    if (location.pathname === path) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    // Always scroll to top when navigating
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
