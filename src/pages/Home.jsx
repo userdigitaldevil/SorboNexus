@@ -333,8 +333,7 @@ export default function Home() {
                       whileTap={{ scale: 0.95 }}
                     >
                       <Button
-                        component={RouterLink}
-                        to="/ressources"
+                        onClick={() => handleCardNavigation("/ressources")}
                         variant="contained"
                         size="large"
                         endIcon={<ArrowRight size={20} />}
