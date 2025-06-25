@@ -755,14 +755,21 @@ const Navbar = () => {
               onClick={() => handleNavigation("/")}
               sx={{
                 fontWeight: 800,
-                fontSize: { xs: "1rem", sm: "1.2rem", md: "1.5rem" },
+                fontSize: { xs: "0.8rem", sm: "1rem", md: "1.2rem" },
                 letterSpacing: 1,
                 cursor: "pointer",
                 textDecoration: "none",
+                padding: { xs: "8px", sm: "4px" },
+                borderRadius: "4px",
                 "&:hover": {
                   opacity: 0.8,
                 },
+                "&:active": {
+                  opacity: 0.6,
+                },
                 transition: "opacity 0.2s ease",
+                userSelect: "none",
+                WebkitTapHighlightColor: "transparent",
               }}
             >
               SorboNexus

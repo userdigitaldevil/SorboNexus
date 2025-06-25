@@ -36,6 +36,7 @@ const features = [
     description:
       "Accédez à une bibliothèque de ressources pédagogiques, supports de cours et documents de référence pour tous les niveaux.",
     gradient: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+    path: "/ressources",
   },
   {
     icon: <Users size={24} />,
@@ -43,6 +44,7 @@ const features = [
     description:
       "Connectez-vous avec les anciens étudiants pour des opportunités de mentorat, de stage et de développement professionnel.",
     gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+    path: "/alumnis",
   },
   {
     icon: <Lightbulb size={24} />,
@@ -50,6 +52,7 @@ const features = [
     description:
       "Bénéficiez de conseils d'experts pour réussir vos études, gérer votre temps et préparer votre avenir professionnel.",
     gradient: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
+    path: "/conseils",
   },
   {
     icon: <Link size={24} />,
@@ -57,6 +60,7 @@ const features = [
     description:
       "Trouvez tous les liens essentiels vers les services universitaires, bibliothèques et plateformes pédagogiques.",
     gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+    path: "/liens-utiles",
   },
   {
     icon: <Calendar size={24} />,
@@ -64,6 +68,7 @@ const features = [
     description:
       "Restez informé des événements universitaires, conférences, ateliers et rencontres professionnelles.",
     gradient: "linear-gradient(135deg, #ef4444 0%, #ec4899 100%)",
+    path: "/evenements",
   },
   {
     icon: <MessageCircle size={24} />,
@@ -71,6 +76,7 @@ const features = [
     description:
       "Rejoignez une communauté active d'étudiants et diplômés pour échanger, collaborer et s'entraider.",
     gradient: "linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)",
+    path: "/communaute",
   },
 ];
 
@@ -127,6 +133,12 @@ export default function Home() {
       }
     }
   }
+
+  // Function to handle navigation with scroll to top
+  const handleCardNavigation = (path) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate(path);
+  };
 
   useEffect(() => {
     fetch("http://localhost:5001/api/alumni")
@@ -532,17 +544,8 @@ export default function Home() {
                             >
                               <Box
                                 className="feature-highlight"
-                                component={RouterLink}
-                                to={
-                                  index === 0
-                                    ? "/ressources"
-                                    : index === 1
-                                    ? "/alumnis"
-                                    : index === 2
-                                    ? "/conseils"
-                                    : index === 3
-                                    ? "/liens-utiles"
-                                    : "/"
+                                onClick={() =>
+                                  handleCardNavigation(feature.path)
                                 }
                                 sx={{
                                   p: 2,
@@ -728,47 +731,60 @@ export default function Home() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <Card
+                  <Box
+                    onClick={() => handleCardNavigation(feature.path)}
                     sx={{
-                      height: "100%",
-                      maxWidth: 320,
-                      mx: "auto",
-                      background: "rgba(255,255,255,0.05)",
-                      backdropFilter: "blur(20px)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: 3,
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        transform: "translateY(-8px)",
-                        boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                        background: "rgba(255,255,255,0.08)",
-                      },
+                      textDecoration: "none",
+                      color: "inherit",
+                      display: "block",
+                      cursor: "pointer",
                     }}
                   >
-                    <CardContent sx={{ p: 3 }}>
-                      <Box
-                        sx={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: 2,
-                          background: feature.gradient,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          mb: 2,
-                          color: "white",
-                        }}
-                      >
-                        {feature.icon}
-                      </Box>
-                      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                        {feature.title}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: "#a1a1aa" }}>
-                        {feature.description}
-                      </Typography>
-                    </CardContent>
-                  </Card>
+                    <Card
+                      sx={{
+                        height: "100%",
+                        maxWidth: 320,
+                        mx: "auto",
+                        background: "rgba(255,255,255,0.05)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: 3,
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          transform: "translateY(-8px)",
+                          boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+                          background: "rgba(255,255,255,0.08)",
+                        },
+                      }}
+                    >
+                      <CardContent sx={{ p: 3 }}>
+                        <Box
+                          sx={{
+                            width: 48,
+                            height: 48,
+                            borderRadius: 2,
+                            background: feature.gradient,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            mb: 2,
+                            color: "white",
+                          }}
+                        >
+                          {feature.icon}
+                        </Box>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: 600, mb: 1 }}
+                        >
+                          {feature.title}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#a1a1aa" }}>
+                          {feature.description}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Box>
                 </motion.div>
               </Grid>
             ))}
