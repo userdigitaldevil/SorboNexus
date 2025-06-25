@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -44,6 +44,7 @@ const Navbar = () => {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const navigate = useNavigate();
 
   const navItems = [
     { name: "Accueil", path: "/" },
@@ -72,20 +73,6 @@ const Navbar = () => {
   const handleProfileClick = (event) => setAnchorEl(event.currentTarget);
   const handleProfileClose = () => setAnchorEl(null);
 
-  // Admin edit modal state
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editData, setEditData] = useState({
-    name: "",
-    degree: "",
-    position: "",
-    field: "",
-    email: "",
-    linkedin: "",
-    avatar: "",
-    conseil: "",
-    profile: { grades: {}, currentPosition: "", schoolsApplied: [] },
-  });
-
   // Fetch admin data from database
   useEffect(() => {
     if (isAdmin) {
@@ -95,14 +82,6 @@ const Navbar = () => {
           const admin = data.find((a) => a.isAdmin);
           if (admin) {
             setAdminAlumni(admin);
-            setEditData({
-              ...admin,
-              profile: {
-                ...admin.profile,
-                grades: { ...admin.profile.grades },
-                schoolsApplied: [...admin.profile.schoolsApplied],
-              },
-            });
           }
         })
         .catch((error) => {
@@ -110,110 +89,6 @@ const Navbar = () => {
         });
     }
   }, [isAdmin]);
-
-  const handleEditCard = () => {
-    handleProfileClose();
-    setIsEditModalOpen(true);
-  };
-  const handleEditChange = (field, value) => {
-    setEditData((prev) => ({ ...prev, [field]: value }));
-  };
-  const handleProfileChange = (field, value) => {
-    setEditData((prev) => ({
-      ...prev,
-      profile: { ...prev.profile, [field]: value },
-    }));
-  };
-  const handleGradeChange = (gradeKey, value) => {
-    setEditData((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        grades: { ...prev.profile.grades, [gradeKey]: value },
-      },
-    }));
-  };
-  const handleSchoolChange = (idx, field, value) => {
-    setEditData((prev) => {
-      const schools = [...prev.profile.schoolsApplied];
-      schools[idx] = { ...schools[idx], [field]: value };
-      return { ...prev, profile: { ...prev.profile, schoolsApplied: schools } };
-    });
-  };
-  const handleAddGrade = () => {
-    setEditData((prev) => {
-      const grades = { ...prev.profile.grades, "": "" };
-      return { ...prev, profile: { ...prev.profile, grades } };
-    });
-  };
-  const handleRemoveGrade = (gradeKey) => {
-    setEditData((prev) => {
-      const grades = { ...prev.profile.grades };
-      delete grades[gradeKey];
-      return { ...prev, profile: { ...prev.profile, grades } };
-    });
-  };
-  const handleAddSchool = () => {
-    setEditData((prev) => {
-      const schools = [
-        ...prev.profile.schoolsApplied,
-        { name: "", status: "accepted" },
-      ];
-      return { ...prev, profile: { ...prev.profile, schoolsApplied: schools } };
-    });
-  };
-  const handleRemoveSchool = (idx) => {
-    setEditData((prev) => {
-      const schools = [...prev.profile.schoolsApplied];
-      schools.splice(idx, 1);
-      return { ...prev, profile: { ...prev.profile, schoolsApplied: schools } };
-    });
-  };
-  const handleEditModalClose = () => setIsEditModalOpen(false);
-
-  const handleEditSave = async () => {
-    if (!adminAlumni) return;
-
-    try {
-      const avatar = editData.name ? editData.name[0].toUpperCase() : "";
-      const formToSend = {
-        ...editData,
-        avatar,
-      };
-      delete formToSend.color;
-      delete formToSend.gradient;
-      delete formToSend.isAdmin;
-
-      const token = localStorage.getItem("token");
-      const res = await fetch(
-        `http://localhost:5001/api/alumni/${adminAlumni._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(formToSend),
-        }
-      );
-
-      if (res.ok) {
-        setIsEditModalOpen(false);
-        // Refresh admin data
-        const updatedRes = await fetch("http://localhost:5001/api/alumni");
-        const updatedData = await updatedRes.json();
-        const updatedAdmin = updatedData.find((a) => a.isAdmin);
-        if (updatedAdmin) {
-          setAdminAlumni(updatedAdmin);
-        }
-      } else {
-        alert("Erreur lors de la mise à jour");
-      }
-    } catch (error) {
-      console.error("Error updating admin:", error);
-      alert("Erreur lors de la mise à jour");
-    }
-  };
 
   const handleLogout = () => {
     localStorage.removeItem("isAdmin");
@@ -292,179 +167,6 @@ const Navbar = () => {
       return () => clearInterval(interval);
     }
   }, [isAdmin, alumniUser]);
-
-  // Add state for modals and edit form for alumni user
-  const [isAlumniProfileModalOpen, setIsAlumniProfileModalOpen] =
-    useState(false);
-  const [isAlumniEditModalOpen, setIsAlumniEditModalOpen] = useState(false);
-  const [alumniEditForm, setAlumniEditForm] = useState(null);
-
-  // Open edit modal with alumniUser data
-  const handleAlumniEditClick = () => {
-    setAlumniEditForm({
-      name: alumniUser.name || "",
-      degree: alumniUser.degree || "",
-      position: alumniUser.position || "",
-      field: alumniUser.field || "",
-      email: alumniUser.email || "",
-      avatar: alumniUser.avatar || "",
-      color: alumniUser.color || "",
-      gradient: alumniUser.gradient || "",
-      conseil: alumniUser.conseil || "",
-      profile: {
-        email: alumniUser.profile?.email || "",
-        linkedin: alumniUser.profile?.linkedin || "",
-        currentPosition: alumniUser.profile?.currentPosition || "",
-        grades: alumniUser.profile?.grades || {},
-        schoolsApplied: alumniUser.profile?.schoolsApplied || [],
-      },
-      isAdmin: alumniUser.isAdmin || false,
-    });
-    setIsAlumniEditModalOpen(true);
-    handleProfileClose();
-  };
-  const handleAlumniEditFormChange = (e) => {
-    const { name, value } = e.target;
-    if (name.startsWith("profile.")) {
-      const key = name.split(".")[1];
-      setAlumniEditForm((prev) => ({
-        ...prev,
-        profile: {
-          ...prev.profile,
-          [key]: value,
-        },
-      }));
-    } else {
-      setAlumniEditForm((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-  // Grades/schools helpers (same as Alumnis.jsx)
-  const handleAlumniGradeChange = (key, value) => {
-    setAlumniEditForm((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        grades: { ...prev.profile.grades, [key]: value },
-      },
-    }));
-  };
-  const handleAlumniAddGrade = () => {
-    setAlumniEditForm((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        grades: { ...prev.profile.grades, "": "" },
-      },
-    }));
-  };
-  const handleAlumniRemoveGrade = (key) => {
-    setAlumniEditForm((prev) => {
-      const grades = { ...prev.profile.grades };
-      delete grades[key];
-      return {
-        ...prev,
-        profile: { ...prev.profile, grades: grades },
-      };
-    });
-  };
-  const handleAlumniSchoolChange = (idx, field, value) => {
-    setAlumniEditForm((prev) => {
-      const schools = [...(prev.profile.schoolsApplied || [])];
-      schools[idx] = { ...schools[idx], [field]: value };
-      return {
-        ...prev,
-        profile: { ...prev.profile, schoolsApplied: schools },
-      };
-    });
-  };
-  const handleAlumniAddSchool = () => {
-    setAlumniEditForm((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        schoolsApplied: [
-          ...(prev.profile.schoolsApplied || []),
-          { name: "", status: "accepted" },
-        ],
-      },
-    }));
-  };
-  const handleAlumniRemoveSchool = (idx) => {
-    setAlumniEditForm((prev) => {
-      const schools = [...(prev.profile.schoolsApplied || [])];
-      schools.splice(idx, 1);
-      return {
-        ...prev,
-        profile: { ...prev.profile, schoolsApplied: schools },
-      };
-    });
-  };
-  // Submit edit
-  const handleAlumniEditSubmit = async (e) => {
-    e.preventDefault();
-    // Auto-generate avatar from name
-    const avatar = alumniEditForm.name
-      ? alumniEditForm.name[0].toUpperCase()
-      : "";
-    const formToSend = {
-      ...alumniEditForm,
-      avatar,
-    };
-    delete formToSend.color;
-    delete formToSend.gradient;
-    delete formToSend.isAdmin;
-    const token = localStorage.getItem("token");
-    const res = await fetch(
-      `http://localhost:5001/api/alumni/${alumniUser._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formToSend),
-      }
-    );
-    if (res.ok) {
-      setIsAlumniEditModalOpen(false);
-      // Optionally, refresh alumniUser data here
-      fetch(`http://localhost:5001/api/alumni/${alumniUser._id}`)
-        .then((res) => res.json())
-        .then((data) => setAlumniUser(data));
-    } else {
-      alert("Erreur lors de la mise à jour");
-    }
-  };
-
-  // Helper for conseil links/formatting (reuse from Alumnis.jsx if needed)
-  function renderConseilWithLinks(text) {
-    if (!text) return null;
-    const urlRegex =
-      /(https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=%]+)|(www\.[\w\-._~:/?#[\]@!$&'()*+,;=%]+)/gi;
-    const parts = text.split(urlRegex);
-    return parts.map((part, i) => {
-      if (!part) return null;
-      if (part.match(urlRegex)) {
-        let href = part.startsWith("http") ? part : `https://${part}`;
-        return (
-          <a
-            key={i}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "#3b82f6",
-              textDecoration: "underline",
-              wordBreak: "break-all",
-            }}
-          >
-            {part}
-          </a>
-        );
-      }
-      return <span key={i}>{part}</span>;
-    });
-  }
 
   const drawer = (
     <Box
@@ -601,7 +303,14 @@ const Navbar = () => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
-              <MenuItem onClick={handleEditCard}>Modifier ma carte</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/alumnis?editSelf=1");
+                  handleProfileClose();
+                }}
+              >
+                Modifier ma carte
+              </MenuItem>
               <MenuItem
                 onClick={() => {
                   setIsAddAlumniModalOpen(true);
@@ -683,7 +392,12 @@ const Navbar = () => {
               >
                 Voir ma carte
               </MenuItem>
-              <MenuItem onClick={handleAlumniEditClick}>
+              <MenuItem
+                onClick={() => {
+                  navigate("/alumnis?editSelf=1");
+                  handleProfileClose();
+                }}
+              >
                 Modifier ma carte
               </MenuItem>
               <MenuItem
@@ -943,6 +657,38 @@ const Navbar = () => {
     }
   };
 
+  const [isAlumniProfileModalOpen, setIsAlumniProfileModalOpen] =
+    useState(false);
+
+  function renderConseilWithLinks(text) {
+    if (!text) return null;
+    const urlRegex =
+      /(https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=%]+)|(www\.[\w\-._~:/?#[\]@!$&'()*+,;=%]+)/gi;
+    const parts = text.split(urlRegex);
+    return parts.map((part, i) => {
+      if (!part) return null;
+      if (part.match(urlRegex)) {
+        let href = part.startsWith("http") ? part : `https://${part}`;
+        return (
+          <a
+            key={i}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "#3b82f6",
+              textDecoration: "underline",
+              wordBreak: "break-all",
+            }}
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
+  }
+
   return (
     <>
       <AppBar
@@ -1042,43 +788,6 @@ const Navbar = () => {
                     </Avatar>
                     {adminAlumni.name.split(" ")[0]}
                   </Button>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleProfileClose}
-                    TransitionComponent={Grow}
-                    PaperProps={{
-                      sx: {
-                        borderRadius: 3,
-                        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
-                        minWidth: 180,
-                        mt: 1,
-                        background: "rgba(30, 41, 59, 0.98)",
-                        color: "#fff",
-                        p: 0.5,
-                      },
-                    }}
-                    MenuListProps={{
-                      sx: {
-                        p: 0,
-                      },
-                    }}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    transformOrigin={{ vertical: "top", horizontal: "right" }}
-                  >
-                    <MenuItem onClick={handleEditCard}>
-                      Modifier ma carte
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        setIsAddAlumniModalOpen(true);
-                        handleProfileClose();
-                      }}
-                    >
-                      Ajouter un alumni
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
-                  </Menu>
                 </Box>
               ) : (
                 alumniUser && (
@@ -1119,51 +828,6 @@ const Navbar = () => {
                       </Avatar>
                       {alumniUser.name.split(" ")[0]}
                     </Button>
-                    <Menu
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl)}
-                      onClose={handleProfileClose}
-                      TransitionComponent={Grow}
-                      PaperProps={{
-                        sx: {
-                          borderRadius: 3,
-                          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
-                          minWidth: 180,
-                          mt: 1,
-                          background: "rgba(30, 41, 59, 0.98)",
-                          color: "#fff",
-                          p: 0.5,
-                        },
-                      }}
-                      MenuListProps={{
-                        sx: {
-                          p: 0,
-                        },
-                      }}
-                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                      transformOrigin={{ vertical: "top", horizontal: "right" }}
-                    >
-                      <MenuItem
-                        onClick={() => {
-                          setIsAlumniProfileModalOpen(true);
-                          handleProfileClose();
-                        }}
-                      >
-                        Voir ma carte
-                      </MenuItem>
-                      <MenuItem onClick={handleAlumniEditClick}>
-                        Modifier ma carte
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => {
-                          localStorage.removeItem("token");
-                          localStorage.removeItem("isAdmin");
-                          window.location.reload();
-                        }}
-                      >
-                        Déconnexion
-                      </MenuItem>
-                    </Menu>
                   </Box>
                 )
               )}
@@ -1241,289 +905,6 @@ const Navbar = () => {
 
       {/* Spacer for fixed navbar */}
       <Toolbar />
-
-      {/* Admin Edit Modal */}
-      <Modal
-        open={isEditModalOpen}
-        onClose={handleEditModalClose}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 2000,
-        }}
-      >
-        <Box
-          sx={{
-            minWidth: 400,
-            width: "100%",
-            maxWidth: 540,
-            maxHeight: "90vh",
-            bgcolor: "rgba(30, 41, 59, 0.95)",
-            borderRadius: 4,
-            boxShadow: "0 0 40px 10px #3b82f6, 0 0 80px 20px #8b5cf6",
-            border: "2.5px solid #fff",
-            p: 4,
-            position: "relative",
-            backdropFilter: "blur(24px)",
-            overflowY: "auto",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 800,
-              mb: 2,
-              color: "#fff",
-              textAlign: "center",
-              letterSpacing: 1.5,
-              background: "rgba(255,255,255,0.18)",
-              borderRadius: 2,
-              px: 2,
-              py: 1,
-              boxShadow: "0 2px 24px 2px #fff6",
-              fontFamily: "monospace",
-            }}
-          >
-            Modifier ma carte
-          </Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <TextField
-              label="Nom"
-              value={editData?.name || ""}
-              onChange={(e) => handleEditChange("name", e.target.value)}
-              fullWidth
-              size="small"
-              sx={{ input: { color: "#fff" }, label: { color: "#3b82f6" } }}
-            />
-            <TextField
-              label="Diplôme"
-              value={editData?.degree || ""}
-              onChange={(e) => handleEditChange("degree", e.target.value)}
-              fullWidth
-              size="small"
-              sx={{ input: { color: "#fff" }, label: { color: "#3b82f6" } }}
-            />
-            <TextField
-              label="Poste actuel"
-              value={editData?.position || ""}
-              onChange={(e) => handleEditChange("position", e.target.value)}
-              fullWidth
-              size="small"
-              sx={{ input: { color: "#fff" }, label: { color: "#3b82f6" } }}
-            />
-            <TextField
-              label="Domaine"
-              value={editData?.field || ""}
-              onChange={(e) => handleEditChange("field", e.target.value)}
-              fullWidth
-              size="small"
-              sx={{ input: { color: "#fff" }, label: { color: "#3b82f6" } }}
-            />
-            <TextField
-              label="Email"
-              value={editData?.email || ""}
-              onChange={(e) => handleEditChange("email", e.target.value)}
-              fullWidth
-              size="small"
-              sx={{ input: { color: "#fff" }, label: { color: "#3b82f6" } }}
-            />
-            <TextField
-              label="LinkedIn"
-              value={editData?.linkedin || ""}
-              onChange={(e) => handleEditChange("linkedin", e.target.value)}
-              fullWidth
-              size="small"
-              sx={{ input: { color: "#fff" }, label: { color: "#3b82f6" } }}
-            />
-            <TextField
-              label="Avatar"
-              value={editData?.avatar || ""}
-              onChange={(e) => handleEditChange("avatar", e.target.value)}
-              fullWidth
-              size="small"
-              sx={{ input: { color: "#fff" }, label: { color: "#3b82f6" } }}
-            />
-            <TextField
-              label="Conseil"
-              value={editData?.conseil || ""}
-              onChange={(e) => handleEditChange("conseil", e.target.value)}
-              fullWidth
-              size="small"
-              multiline
-              minRows={2}
-              sx={{ input: { color: "#fff" }, label: { color: "#3b82f6" } }}
-            />
-            {/* Grades */}
-            <Typography variant="subtitle1" sx={{ color: "#3b82f6", mt: 2 }}>
-              Notes/Diplômes
-            </Typography>
-            {editData?.profile?.grades &&
-              Object.entries(editData.profile.grades).map(
-                ([key, value], idx) => (
-                  <Box
-                    key={key + idx}
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      alignItems: "center",
-                      mb: 1,
-                    }}
-                  >
-                    <TextField
-                      label="Diplôme"
-                      value={
-                        editingGradeKeys[key] !== undefined
-                          ? editingGradeKeys[key]
-                          : key
-                      }
-                      onChange={(e) =>
-                        handleGradeKeyChange(key, e.target.value)
-                      }
-                      onBlur={() => handleGradeKeyBlur(key)}
-                      size="small"
-                      sx={{
-                        input: { color: "#fff" },
-                        label: { color: "#3b82f6" },
-                      }}
-                    />
-                    <TextField
-                      label="Note"
-                      value={value}
-                      onChange={(e) => {
-                        // Only allow integers 0-20
-                        let val = e.target.value.replace(/[^0-9]/g, "");
-                        if (val !== "") {
-                          let intVal = Math.min(20, Math.max(0, parseInt(val)));
-                          val = intVal.toString();
-                        }
-                        handleGradeChange(key, val);
-                      }}
-                      size="small"
-                      sx={{
-                        input: { color: "#fff" },
-                        label: { color: "#3b82f6" },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <span style={{ color: "#888", marginLeft: 4 }}>
-                            /20
-                          </span>
-                        ),
-                        inputProps: {
-                          min: 0,
-                          max: 20,
-                          inputMode: "numeric",
-                          pattern: "[0-9]*",
-                        },
-                      }}
-                    />
-                    <Button
-                      onClick={() => handleRemoveGrade(key)}
-                      size="small"
-                      color="error"
-                    >
-                      Supprimer
-                    </Button>
-                  </Box>
-                )
-              )}
-            <Button
-              onClick={handleAddGrade}
-              size="small"
-              color="primary"
-              sx={{ mb: 2 }}
-            >
-              Ajouter un diplôme
-            </Button>
-            {/* Current Position */}
-            <TextField
-              label="Poste actuel (détail)"
-              value={editData?.profile?.currentPosition || ""}
-              onChange={(e) =>
-                handleProfileChange("currentPosition", e.target.value)
-              }
-              fullWidth
-              size="small"
-              sx={{ input: { color: "#fff" }, label: { color: "#3b82f6" } }}
-            />
-            {/* Schools Applied */}
-            <Typography variant="subtitle1" sx={{ color: "#3b82f6", mt: 2 }}>
-              Écoles postulées
-            </Typography>
-            {editData?.profile?.schoolsApplied &&
-              editData.profile.schoolsApplied.map((school, idx) => (
-                <Box
-                  key={idx}
-                  sx={{ display: "flex", gap: 1, alignItems: "center", mb: 1 }}
-                >
-                  <TextField
-                    label="École"
-                    value={school.name}
-                    onChange={(e) =>
-                      handleSchoolChange(idx, "name", e.target.value)
-                    }
-                    size="small"
-                    sx={{
-                      input: { color: "#fff" },
-                      label: { color: "#3b82f6" },
-                    }}
-                  />
-                  <FormControl size="small" sx={{ minWidth: 100 }}>
-                    <InputLabel sx={{ color: "#3b82f6" }}>Statut</InputLabel>
-                    <Select
-                      value={school.status}
-                      label="Statut"
-                      onChange={(e) =>
-                        handleSchoolChange(idx, "status", e.target.value)
-                      }
-                      sx={{ color: "#fff" }}
-                    >
-                      <MenuItem value="accepted">Accepté</MenuItem>
-                      <MenuItem value="rejected">Refusé</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <Button
-                    onClick={() => handleRemoveSchool(idx)}
-                    size="small"
-                    color="error"
-                  >
-                    Supprimer
-                  </Button>
-                </Box>
-              ))}
-            <Button
-              onClick={handleAddSchool}
-              size="small"
-              color="primary"
-              sx={{ mb: 2 }}
-            >
-              Ajouter une école
-            </Button>
-          </Box>
-          <Box
-            sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 4 }}
-          >
-            <Button
-              onClick={handleEditModalClose}
-              color="secondary"
-              variant="outlined"
-            >
-              Annuler
-            </Button>
-            <Button
-              onClick={handleEditSave}
-              color="primary"
-              variant="contained"
-            >
-              Enregistrer
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
 
       {/* Alumni Profile Modal */}
       <Modal
@@ -1744,244 +1125,6 @@ const Navbar = () => {
                 </Box>
               </CardContent>
             </Card>
-          </Box>
-        ) : (
-          <></>
-        )}
-      </Modal>
-
-      {/* Alumni Edit Modal */}
-      <Modal
-        open={isAlumniEditModalOpen}
-        onClose={() => setIsAlumniEditModalOpen(false)}
-      >
-        {alumniEditForm ? (
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "#18181b",
-              p: 4,
-              borderRadius: 2,
-              minWidth: 320,
-              maxWidth: 420,
-              maxHeight: "80vh",
-              overflowY: "auto",
-              boxShadow: 24,
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Modifier ma carte
-            </Typography>
-            <form onSubmit={handleAlumniEditSubmit}>
-              <TextField
-                label="Nom"
-                name="name"
-                value={alumniEditForm.name}
-                onChange={handleAlumniEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Diplôme"
-                name="degree"
-                value={alumniEditForm.degree}
-                onChange={handleAlumniEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Poste"
-                name="position"
-                value={alumniEditForm.position}
-                onChange={handleAlumniEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Domaine"
-                name="field"
-                value={alumniEditForm.field}
-                onChange={handleAlumniEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="LinkedIn"
-                name="profile.linkedin"
-                value={alumniEditForm.profile?.linkedin || ""}
-                onChange={handleAlumniEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Email"
-                name="email"
-                value={alumniEditForm.email || ""}
-                onChange={handleAlumniEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Profile Email"
-                name="profile.email"
-                value={alumniEditForm.profile?.email || ""}
-                onChange={handleAlumniEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Profile Poste Actuel"
-                name="profile.currentPosition"
-                value={alumniEditForm.profile?.currentPosition || ""}
-                onChange={handleAlumniEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              {/* Grades Section */}
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle1">Notes / Diplômes</Typography>
-                {Object.entries(alumniEditForm.profile?.grades || {}).map(
-                  ([key, value], idx) => (
-                    <Box
-                      key={key + idx}
-                      sx={{ display: "flex", gap: 1, mb: 1 }}
-                    >
-                      <TextField
-                        label="Diplôme"
-                        value={
-                          alumniEditingGradeKeys[key] !== undefined
-                            ? alumniEditingGradeKeys[key]
-                            : key
-                        }
-                        onChange={(e) =>
-                          handleAlumniGradeKeyChange(key, e.target.value)
-                        }
-                        onBlur={() => handleAlumniGradeKeyBlur(key)}
-                        size="small"
-                        sx={{ flex: 1 }}
-                      />
-                      <TextField
-                        label="Note"
-                        value={value}
-                        onChange={(e) => {
-                          // Only allow integers 0-20
-                          let val = e.target.value.replace(/[^0-9]/g, "");
-                          if (val !== "") {
-                            let intVal = Math.min(
-                              20,
-                              Math.max(0, parseInt(val))
-                            );
-                            val = intVal.toString();
-                          }
-                          handleAlumniGradeChange(key, val);
-                        }}
-                        size="small"
-                        sx={{ flex: 1 }}
-                        InputProps={{
-                          endAdornment: (
-                            <span style={{ color: "#888", marginLeft: 4 }}>
-                              /20
-                            </span>
-                          ),
-                          inputProps: {
-                            min: 0,
-                            max: 20,
-                            inputMode: "numeric",
-                            pattern: "[0-9]*",
-                          },
-                        }}
-                      />
-                      <Button
-                        onClick={() => handleAlumniRemoveGrade(key)}
-                        color="error"
-                        size="small"
-                      >
-                        Supprimer
-                      </Button>
-                    </Box>
-                  )
-                )}
-                <Button
-                  onClick={handleAlumniAddGrade}
-                  size="small"
-                  sx={{ mt: 1 }}
-                >
-                  Ajouter un diplôme/note
-                </Button>
-              </Box>
-              {/* Schools Section */}
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle1">Écoles demandées</Typography>
-                {(alumniEditForm.profile?.schoolsApplied || []).map(
-                  (school, idx) => (
-                    <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
-                      <TextField
-                        label="École"
-                        value={school.name}
-                        onChange={(e) =>
-                          handleAlumniSchoolChange(idx, "name", e.target.value)
-                        }
-                        size="small"
-                        sx={{ flex: 2 }}
-                      />
-                      <TextField
-                        select
-                        label="Statut"
-                        value={school.status}
-                        onChange={(e) =>
-                          handleAlumniSchoolChange(
-                            idx,
-                            "status",
-                            e.target.value
-                          )
-                        }
-                        size="small"
-                        sx={{ flex: 1 }}
-                        SelectProps={{ native: true }}
-                      >
-                        <option value="accepted">Accepté</option>
-                        <option value="rejected">Refusé</option>
-                      </TextField>
-                      <Button
-                        onClick={() => handleAlumniRemoveSchool(idx)}
-                        color="error"
-                        size="small"
-                      >
-                        Supprimer
-                      </Button>
-                    </Box>
-                  )
-                )}
-                <Button
-                  onClick={handleAlumniAddSchool}
-                  size="small"
-                  sx={{ mt: 1 }}
-                >
-                  Ajouter une école
-                </Button>
-              </Box>
-              <TextField
-                label="Conseil"
-                name="conseil"
-                value={alumniEditForm.conseil || ""}
-                onChange={handleAlumniEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-                multiline
-                minRows={4}
-              />
-              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-                <Button onClick={() => setIsAlumniEditModalOpen(false)}>
-                  Annuler
-                </Button>
-                <Button type="submit" variant="contained">
-                  Enregistrer
-                </Button>
-              </Box>
-            </form>
           </Box>
         ) : (
           <></>

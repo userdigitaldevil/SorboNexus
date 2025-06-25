@@ -157,4 +157,24 @@ router.delete("/:id", isAdmin, async (req, res) => {
   }
 });
 
+// Toggle alumni profile visibility
+router.patch("/:id/hidden", auth, async (req, res) => {
+  try {
+    // Only allow the owner or an admin to update
+    if (!req.user.isAdmin && req.user.alumni.toString() !== req.params.id) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+    const { hidden } = req.body;
+    const alumni = await Alumni.findByIdAndUpdate(
+      req.params.id,
+      { hidden: !!hidden },
+      { new: true }
+    );
+    if (!alumni) return res.status(404).json({ error: "Not found" });
+    res.json(alumni);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

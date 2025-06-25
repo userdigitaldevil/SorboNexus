@@ -24,6 +24,7 @@ const AlumniSchema = new mongoose.Schema({
     ],
   },
   conseil: String,
+  hidden: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model("Alumni", AlumniSchema);

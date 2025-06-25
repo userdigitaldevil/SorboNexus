@@ -44,6 +44,7 @@ import Pagination from "@mui/material/Pagination";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { jwtDecode } from "jwt-decode";
 import AlumniProfileCard from "../components/AlumniProfileCard";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Alumnis() {
   // Admin state (must be first)
@@ -93,6 +94,7 @@ export default function Alumnis() {
       schoolsApplied: [],
     },
     isAdmin: false,
+    hidden: false,
   });
 
   const filters = [
@@ -105,6 +107,9 @@ export default function Alumnis() {
     "Médecine",
   ];
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetch("http://localhost:5001/api/alumni")
       .then((res) => res.json())
@@ -115,14 +120,62 @@ export default function Alumnis() {
       });
   }, []);
 
-  const filteredAlumni = alumni.filter((alum) => {
+  useEffect(() => {
+    // If ?editSelf=1 is present, open the edit modal for the current user
+    const params = new URLSearchParams(location.search);
+    if (params.get("editSelf") === "1") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          const myAlumni = alumni.find((a) => a._id === decoded.alumniId);
+          if (myAlumni) {
+            handleEditClick(myAlumni);
+            // Remove the query param for a clean URL
+            params.delete("editSelf");
+            navigate(
+              { pathname: location.pathname, search: params.toString() },
+              { replace: true }
+            );
+          }
+        } catch (e) {}
+      }
+    }
+  }, [location, alumni]);
+
+  useEffect(() => {
+    if (!loading) {
+      // If ?profileSelf=1 is present, open the profile modal for the current user
+      const params = new URLSearchParams(location.search);
+      if (params.get("profileSelf") === "1") {
+        const token = localStorage.getItem("token");
+        if (token) {
+          try {
+            const decoded = jwtDecode(token);
+            const myAlumni = alumni.find((a) => a._id === decoded.alumniId);
+            if (myAlumni) {
+              openProfileModal(myAlumni);
+              // Remove the query param for a clean URL
+              params.delete("profileSelf");
+              navigate(
+                { pathname: location.pathname, search: params.toString() },
+                { replace: true }
+              );
+            }
+          } catch (e) {}
+        }
+      }
+    }
+  }, [location, alumni, loading]);
+
+  const visibleAlumni = alumni.filter((alum) => !alum.hidden);
+  const filteredAlumni = visibleAlumni.filter((alum) => {
     const matchesSearch =
       alum.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       alum.position.toLowerCase().includes(searchQuery.toLowerCase()) ||
       alum.degree.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter =
       activeFilter === "Tous" || alum.field === activeFilter;
-
     return matchesSearch && matchesFilter;
   });
 
@@ -188,6 +241,7 @@ export default function Alumnis() {
         schoolsApplied: alum.profile?.schoolsApplied || [],
       },
       isAdmin: alum.isAdmin || false,
+      hidden: alum.hidden || false,
     });
     setEditModalOpen(true);
   };
@@ -1177,7 +1231,9 @@ export default function Alumnis() {
           }}
         >
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Modifier l'alumni
+            {editAlumni && alumniId === editAlumni._id
+              ? "Modifier ma carte"
+              : "Modifier l'alumni"}
           </Typography>
           <form onSubmit={handleEditSubmit}>
             <TextField
@@ -1339,6 +1395,37 @@ export default function Alumnis() {
               multiline
               minRows={4}
             />
+            <Button
+              variant="outlined"
+              color={editForm.hidden ? "success" : "warning"}
+              onClick={async () => {
+                const token = localStorage.getItem("token");
+                const res = await fetch(
+                  `http://localhost:5001/api/alumni/${editAlumni._id}/hidden`,
+                  {
+                    method: "PATCH",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ hidden: !editForm.hidden }),
+                  }
+                );
+                if (res.ok) {
+                  const updated = await res.json();
+                  setEditForm((prev) => ({ ...prev, hidden: updated.hidden }));
+                  // Optionally, show a toast or message
+                } else {
+                  alert("Erreur lors du changement de visibilité du profil.");
+                }
+              }}
+              fullWidth
+              sx={{ mb: 2 }}
+            >
+              {editForm.hidden
+                ? "Afficher mon profil (le rendre visible)"
+                : "Cacher mon profil (le rendre invisible)"}
+            </Button>
             {/* Only show these fields for admin */}
             {isAdmin && (
               <>
