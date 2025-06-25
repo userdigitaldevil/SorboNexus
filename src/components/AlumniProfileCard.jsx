@@ -18,6 +18,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import GradeIcon from "@mui/icons-material/Grade";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
+import ReactMarkdown from "react-markdown";
 
 export default function AlumniProfileCard({
   alum,
@@ -509,30 +510,69 @@ export default function AlumniProfileCard({
             <Box sx={{ mt: 2 }}>
               <Typography
                 variant="subtitle2"
-                sx={{ color: "#3b82f6", fontWeight: 600 }}
+                sx={{ color: "#3b82f6", fontWeight: 600, mb: 1 }}
               >
                 Conseil
               </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "rgba(255,255,255,0.85)" }}
+              <Box
+                sx={{
+                  color: "rgba(255,255,255,0.85)",
+                  fontSize: "0.875rem",
+                  lineHeight: 1.6,
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                  "& p": {
+                    margin: "0.5rem 0",
+                  },
+                  "& ul, & ol": {
+                    margin: "0.5rem 0",
+                    paddingLeft: "1.5rem",
+                  },
+                  "& li": {
+                    margin: "0.25rem 0",
+                  },
+                  "& strong, & b": {
+                    fontWeight: 600,
+                    color: "#3b82f6",
+                  },
+                  "& em, & i": {
+                    fontStyle: "italic",
+                  },
+                  "& code": {
+                    backgroundColor: "rgba(59, 130, 246, 0.1)",
+                    padding: "0.125rem 0.25rem",
+                    borderRadius: "0.25rem",
+                    fontFamily: "monospace",
+                    fontSize: "0.8rem",
+                  },
+                  "& a": {
+                    color: "#3b82f6",
+                    textDecoration: "underline",
+                    "&:hover": {
+                      color: "#1e40af",
+                    },
+                  },
+                }}
               >
-                {showFullConseil || !conseilIsLong
-                  ? alum.conseil
-                  : conseilPreview}
+                {showFullConseil || !conseilIsLong ? (
+                  <ReactMarkdown>{alum.conseil}</ReactMarkdown>
+                ) : (
+                  <ReactMarkdown>{conseilPreview}</ReactMarkdown>
+                )}
                 {conseilIsLong && (
                   <span
                     style={{
                       color: "#3b82f6",
                       cursor: "pointer",
                       marginLeft: 8,
+                      fontWeight: 600,
                     }}
                     onClick={() => setShowFullConseil((v) => !v)}
                   >
                     {showFullConseil ? "Réduire" : "Lire la suite"}
                   </span>
                 )}
-              </Typography>
+              </Box>
             </Box>
           )}
         </CardContent>

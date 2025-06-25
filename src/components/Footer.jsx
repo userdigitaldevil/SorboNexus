@@ -50,7 +50,7 @@ export default function Footer() {
               viewport={{ once: true }}
             >
               <Typography
-                variant="h6"
+                variant="body2"
                 sx={{
                   fontWeight: 600,
                   background:
@@ -60,6 +60,7 @@ export default function Footer() {
                   backgroundClip: "text",
                   letterSpacing: 1,
                   textAlign: { xs: "center", md: "left" },
+                  fontSize: "0.875rem",
                 }}
               >
                 Connecter · Inspirer · Évoluer
@@ -72,6 +73,7 @@ export default function Footer() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
+              style={{ flex: 1, display: "flex", justifyContent: "center" }}
             >
               <Stack
                 direction={{ xs: "column", sm: "row" }}
@@ -86,81 +88,141 @@ export default function Footer() {
                   py: 2,
                 }}
               >
-                <Link
-                  to="/"
-                  style={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      color: "#3b82f6",
-                      transform: "translateY(-1px)",
-                    },
-                  }}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Accueil
-                </Link>
-                <Link
-                  to="/ressources"
-                  style={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      color: "#3b82f6",
-                      transform: "translateY(-1px)",
-                    },
-                  }}
+                  <Link
+                    to="/"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.8)",
+                      textDecoration: "none",
+                      fontWeight: 500,
+                      transition: "all 0.3s ease",
+                      display: "block",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = "#3b82f6";
+                      e.target.style.transform = "translateY(-1px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = "rgba(255, 255, 255, 0.8)";
+                      e.target.style.transform = "translateY(0)";
+                    }}
+                  >
+                    Accueil
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Ressources
-                </Link>
-                <Link
-                  to="/alumnis"
-                  style={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      color: "#3b82f6",
-                      transform: "translateY(-1px)",
-                    },
-                  }}
+                  <Link
+                    to="/ressources"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.8)",
+                      textDecoration: "none",
+                      fontWeight: 500,
+                      transition: "all 0.3s ease",
+                      display: "block",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = "#3b82f6";
+                      e.target.style.transform = "translateY(-1px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = "rgba(255, 255, 255, 0.8)";
+                      e.target.style.transform = "translateY(0)";
+                    }}
+                  >
+                    Ressources
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Alumnis
-                </Link>
-                <Link
-                  to="/conseils"
-                  style={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      color: "#3b82f6",
-                      transform: "translateY(-1px)",
-                    },
-                  }}
+                  <Link
+                    to="/alumnis"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.8)",
+                      textDecoration: "none",
+                      fontWeight: 500,
+                      transition: "all 0.3s ease",
+                      display: "block",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = "#3b82f6";
+                      e.target.style.transform = "translateY(-1px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = "rgba(255, 255, 255, 0.8)";
+                      e.target.style.transform = "translateY(0)";
+                    }}
+                  >
+                    Alumnis
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Conseils
-                </Link>
-                <a
-                  href="mailto:sethaguila@icloud.com"
-                  style={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    textDecoration: "none",
-                    fontWeight: 500,
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      color: "#3b82f6",
-                      transform: "translateY(-1px)",
-                    },
-                  }}
+                  <Link
+                    to="/conseils"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.8)",
+                      textDecoration: "none",
+                      fontWeight: 500,
+                      transition: "all 0.3s ease",
+                      display: "block",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = "#3b82f6";
+                      e.target.style.transform = "translateY(-1px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = "rgba(255, 255, 255, 0.8)";
+                      e.target.style.transform = "translateY(0)";
+                    }}
+                  >
+                    Conseils
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Contact
-                </a>
+                  <a
+                    href="mailto:sethaguila@icloud.com"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.8)",
+                      textDecoration: "none",
+                      fontWeight: 500,
+                      transition: "all 0.3s ease",
+                      display: "block",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = "#3b82f6";
+                      e.target.style.transform = "translateY(-1px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = "rgba(255, 255, 255, 0.8)";
+                      e.target.style.transform = "translateY(0)";
+                    }}
+                  >
+                    Contact
+                  </a>
+                </motion.div>
               </Stack>
             </motion.div>
 
@@ -260,9 +322,9 @@ export default function Footer() {
                       cursor: "pointer",
                       textDecoration: "none",
                       "&:hover": {
-                        color: "#333",
-                        background: "rgba(51, 51, 51, 0.1)",
-                        border: "1px solid rgba(51, 51, 51, 0.3)",
+                        color: "#3b82f6",
+                        background: "rgba(59, 130, 246, 0.1)",
+                        border: "1px solid rgba(59, 130, 246, 0.3)",
                         transform: "translateY(-2px)",
                       },
                       transition: "all 0.3s ease",
@@ -292,7 +354,8 @@ export default function Footer() {
                 letterSpacing: 0.5,
               }}
             >
-              © {new Date().getFullYear()} SorboNexus. Tous droits réservés.
+              © 2025 Seth Aguila - Développé avec &lt;3 pour la communauté
+              Sorbonne Sciences Jussieu
             </Typography>
           </motion.div>
         </motion.div>

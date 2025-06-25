@@ -27,6 +27,7 @@ import {
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import ReactMarkdown from "react-markdown";
 
 const features = [
   {
@@ -110,6 +111,9 @@ export default function Home() {
   const [alumni, setAlumni] = useState([]);
   const navigate = useNavigate();
 
+  // Get current year
+  const currentYear = new Date().getFullYear();
+
   // Get alumniId from JWT
   let alumniId = null;
   if (typeof window !== "undefined") {
@@ -139,6 +143,13 @@ export default function Home() {
     if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K+";
     return n + "+";
   }
+
+  // Count alumni who completed their license before current year
+  const alumniWithLicenseBeforeCurrentYear = alumni.filter((alum) => {
+    if (!alum.anneeFinL3) return false;
+    const anneeFin = parseInt(alum.anneeFinL3);
+    return !isNaN(anneeFin) && anneeFin <= currentYear;
+  }).length;
 
   return (
     <Box>
@@ -369,36 +380,60 @@ export default function Home() {
                       justifyContent: { xs: "center", md: "flex-start" },
                     }}
                   >
-                    {stats.slice(0, 2).map((stat, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
-                      >
-                        <Box sx={{ textAlign: "center" }}>
-                          <Typography
-                            variant="h4"
-                            sx={{
-                              fontWeight: 800,
-                              color: "#3b82f6",
-                              mb: 0.5,
-                            }}
-                          >
-                            {stat.value}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: "rgba(255, 255, 255, 0.6)",
-                              fontSize: "0.875rem",
-                            }}
-                          >
-                            {stat.label}
-                          </Typography>
-                        </Box>
-                      </motion.div>
-                    ))}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 1 }}
+                    >
+                      <Box sx={{ textAlign: "center" }}>
+                        <Typography
+                          variant="h4"
+                          sx={{
+                            fontWeight: 800,
+                            color: "#3b82f6",
+                            mb: 0.5,
+                          }}
+                        >
+                          {formatCount(alumniCount)}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "rgba(255, 255, 255, 0.6)",
+                            fontSize: "0.875rem",
+                          }}
+                        >
+                          Étudiants actifs
+                        </Typography>
+                      </Box>
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 1.1 }}
+                    >
+                      <Box sx={{ textAlign: "center" }}>
+                        <Typography
+                          variant="h4"
+                          sx={{
+                            fontWeight: 800,
+                            color: "#3b82f6",
+                            mb: 0.5,
+                          }}
+                        >
+                          {formatCount(alumniWithLicenseBeforeCurrentYear)}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "rgba(255, 255, 255, 0.6)",
+                            fontSize: "0.875rem",
+                          }}
+                        >
+                          Alumnis qui ont eu leur licence avant {currentYear}
+                        </Typography>
+                      </Box>
+                    </motion.div>
                   </Box>
                 </Box>
               </motion.div>
@@ -1035,7 +1070,7 @@ export default function Home() {
                     mb: 0.5,
                   }}
                 >
-                  850+
+                  {formatCount(alumniWithLicenseBeforeCurrentYear)}
                 </Typography>
                 <Typography
                   variant="body1"
@@ -1218,7 +1253,8 @@ export default function Home() {
                 mx: "auto",
               }}
             >
-              © 2025 Seth Aguila - Développé avec ❤️ pour la communauté Sorbonne
+              © 2025 Seth Aguila - Développé avec &lt;3 pour la communauté
+              Sorbonne Sciences Jussieu
             </Typography>
           </motion.div>
         </Container>

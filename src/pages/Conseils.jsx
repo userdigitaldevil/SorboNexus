@@ -118,6 +118,7 @@ export default function Conseils() {
     conseil: alum.conseil,
     color: alum.color,
     hidden: alum.hidden,
+    isAdmin: alum.isAdmin || false,
   }));
 
   // Only include alumni with a non-empty conseil and not hidden
@@ -127,6 +128,15 @@ export default function Conseils() {
       tip.conseil.trim().length > 0 &&
       (!tip.hidden || tip._id === alumniId || isAdmin)
   );
+
+  // Sort to put admins first
+  const sortedAlumniTips = filteredAlumniTips.sort((a, b) => {
+    // Admins first
+    if (a.isAdmin && !b.isAdmin) return -1;
+    if (!a.isAdmin && b.isAdmin) return 1;
+    // Then by name alphabetically
+    return a.author.localeCompare(b.author);
+  });
 
   // Preview length for conseil content
   const PREVIEW_LENGTH = 200;
@@ -305,12 +315,12 @@ export default function Conseils() {
     }
   };
 
-  const currentTips = filteredAlumniTips.slice(
+  const currentTips = sortedAlumniTips.slice(
     (currentPage - 1) * tipsPerPage,
     currentPage * tipsPerPage
   );
 
-  const totalPages = Math.ceil(filteredAlumniTips.length / tipsPerPage);
+  const totalPages = Math.ceil(sortedAlumniTips.length / tipsPerPage);
 
   const isLongContent = (content) => content.length > PREVIEW_LENGTH;
 
@@ -869,6 +879,7 @@ export default function Conseils() {
         sx={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
           p: 2,
         }}
       >

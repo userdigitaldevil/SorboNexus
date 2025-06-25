@@ -117,14 +117,21 @@ export default function Alumnis() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const fetchAlumni = async () => {
+    try {
+      const response = await fetch("http://localhost:5001/api/alumni");
+      const data = await response.json();
+      setAlumni(data);
+      setLoading(false);
+      console.log("Fetched alumni:", data);
+    } catch (error) {
+      console.error("Error fetching alumni:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetch("http://localhost:5001/api/alumni")
-      .then((res) => res.json())
-      .then((data) => {
-        setAlumni(data);
-        setLoading(false);
-        console.log("Fetched alumni:", data);
-      });
+    fetchAlumni();
   }, []);
 
   useEffect(() => {
@@ -179,12 +186,42 @@ export default function Alumnis() {
     (alum) => !alum.hidden || alum._id === alumniId || isAdmin
   );
   const filteredAlumni = visibleAlumni.filter((alum) => {
-    const matchesSearch =
-      alum.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      alum.position.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      alum.degree.toLowerCase().includes(searchQuery.toLowerCase());
+    const searchLower = searchQuery.toLowerCase();
+
+    // Check basic fields
+    const basicMatch =
+      (alum.name && alum.name.toLowerCase().includes(searchLower)) ||
+      (alum.position && alum.position.toLowerCase().includes(searchLower)) ||
+      (alum.degree && alum.degree.toLowerCase().includes(searchLower)) ||
+      (alum.field && alum.field.toLowerCase().includes(searchLower)) ||
+      (alum.avatar && alum.avatar.toLowerCase().includes(searchLower));
+
+    // Check schools applied (accepted schools)
+    const schoolsMatch =
+      alum.profile?.schoolsApplied?.some(
+        (school) =>
+          school.name &&
+          school.name.toLowerCase().includes(searchLower) &&
+          school.status === "accepted"
+      ) || false;
+
+    const matchesSearch = basicMatch || schoolsMatch;
     const matchesFilter =
       activeFilter === "Tous" || alum.field === activeFilter;
+
+    // Debug logging for new alumni
+    if (searchQuery && !matchesSearch) {
+      console.log("Alumni not matching search:", {
+        name: alum.name,
+        position: alum.position,
+        degree: alum.degree,
+        field: alum.field,
+        schoolsApplied: alum.profile?.schoolsApplied,
+        searchQuery: searchQuery,
+        hidden: alum.hidden,
+      });
+    }
+
     return matchesSearch && matchesFilter;
   });
 
@@ -427,9 +464,7 @@ export default function Alumnis() {
     );
     if (response.ok) {
       // Refresh alumni data
-      const updatedResponse = await fetch("http://localhost:5001/api/alumni");
-      const updatedData = await updatedResponse.json();
-      setAlumni(updatedData);
+      await fetchAlumni();
       setEditModalOpen(false);
       setEditAlumni(null);
       setEditError("");
@@ -458,7 +493,7 @@ export default function Alumnis() {
         },
       });
       if (res.ok) {
-        setAlumni((prev) => prev.filter((a) => a._id !== alum._id));
+        await fetchAlumni();
         window.dispatchEvent(new Event("profileUpdated"));
       } else {
         alert("Erreur lors de la suppression de l'alumni.");
@@ -805,12 +840,13 @@ export default function Alumnis() {
 
           <Grid container spacing={4} justifyContent="center">
             {currentAlumni.map((alum, index) => (
-              <Grid item xs={12} md={6} lg={4} key={alum.id || alum._id}>
+              <Grid item xs={12} sm={6} md={4} key={alum.id || alum._id}>
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   viewport={{ once: true }}
+                  style={{ height: "100%" }}
                 >
                   <Card
                     onClick={() => openProfileModal(alum)}
@@ -823,6 +859,11 @@ export default function Alumnis() {
                       position: "relative",
                       cursor: "pointer",
                       transition: "all 0.3s ease",
+                      minHeight: 400,
+                      minWidth: 280,
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
                       ...(alum.isAdmin
                         ? adminGlow
                         : {
@@ -841,7 +882,15 @@ export default function Alumnis() {
                         position: "relative",
                       }}
                     />
-                    <CardContent sx={{ p: 4, pt: 8 }}>
+                    <CardContent
+                      sx={{
+                        p: 4,
+                        pt: 8,
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
                       <Box
                         sx={{
                           position: "absolute",
@@ -885,6 +934,64 @@ export default function Alumnis() {
                       >
                         {alum.position}
                       </Typography>
+
+                      {/* Année de fin de L3 */}
+                      {alum.anneeFinL3 && (
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "rgba(255, 255, 255, 0.6)",
+                            mb: 2,
+                            fontSize: "0.8rem",
+                          }}
+                        >
+                          Année de fin de L3 : {alum.anneeFinL3}
+                        </Typography>
+                      )}
+
+                      {/* Social Links */}
+                      <Box sx={{ mt: "auto", display: "flex", gap: 1 }}>
+                        {alum.profile?.linkedin && (
+                          <IconButton
+                            size="small"
+                            href={alum.profile.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            sx={{
+                              color: "rgba(255, 255, 255, 0.7)",
+                              background: "rgba(255, 255, 255, 0.05)",
+                              border: "1px solid rgba(255, 255, 255, 0.1)",
+                              "&:hover": {
+                                color: "#0077b5",
+                                background: "rgba(0, 119, 181, 0.1)",
+                                border: "1px solid rgba(0, 119, 181, 0.3)",
+                              },
+                            }}
+                          >
+                            <LinkedInIcon fontSize="small" />
+                          </IconButton>
+                        )}
+                        {alum.profile?.email && (
+                          <IconButton
+                            size="small"
+                            href={`mailto:${alum.profile.email}`}
+                            onClick={(e) => e.stopPropagation()}
+                            sx={{
+                              color: "rgba(255, 255, 255, 0.7)",
+                              background: "rgba(255, 255, 255, 0.05)",
+                              border: "1px solid rgba(255, 255, 255, 0.1)",
+                              "&:hover": {
+                                color: "#3b82f6",
+                                background: "rgba(59, 130, 246, 0.1)",
+                                border: "1px solid rgba(59, 130, 246, 0.3)",
+                              },
+                            }}
+                          >
+                            <EmailIcon fontSize="small" />
+                          </IconButton>
+                        )}
+                      </Box>
                       {(isAdmin || alum._id === alumniId) && (
                         <IconButton
                           size="medium"
