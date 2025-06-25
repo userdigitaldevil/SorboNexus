@@ -44,10 +44,15 @@ import {
 } from "@mui/icons-material";
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const tipsPerPage = 9;
 
 export default function Conseils() {
+  // Admin state
+  const isAdmin =
+    typeof window !== "undefined" && localStorage.getItem("isAdmin") === "true";
+
   // Get alumniId from JWT
   let alumniId = null;
   if (typeof window !== "undefined") {
@@ -87,6 +92,8 @@ export default function Conseils() {
     isAdmin: false,
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetch("http://localhost:5001/api/alumni")
       .then((res) => res.json())
@@ -115,7 +122,10 @@ export default function Conseils() {
 
   // Only include alumni with a non-empty conseil and not hidden
   const filteredAlumniTips = alumniTips.filter(
-    (tip) => tip.conseil && tip.conseil.trim().length > 0 && !tip.hidden
+    (tip) =>
+      tip.conseil &&
+      tip.conseil.trim().length > 0 &&
+      (!tip.hidden || tip._id === alumniId || isAdmin)
   );
 
   // Preview length for conseil content
@@ -471,6 +481,62 @@ export default function Conseils() {
           </Box>
         </motion.div>
 
+        {/* Hidden Profile Message */}
+        {alumniId && alumni.find((a) => a._id === alumniId)?.hidden && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
+            <Box
+              sx={{
+                background: "rgba(239, 68, 68, 0.1)",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+                borderRadius: 3,
+                p: 3,
+                textAlign: "center",
+                backdropFilter: "blur(10px)",
+                mb: 4,
+              }}
+            >
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "#ef4444",
+                  fontWeight: 600,
+                  mb: 1,
+                }}
+              >
+                Votre profil est caché
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(239, 68, 68, 0.8)",
+                  mb: 2,
+                }}
+              >
+                Modifier votre carte pour l'afficher aux autres utilisateurs
+              </Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => navigate("/alumnis?editSelf=1")}
+                sx={{
+                  color: "#ef4444",
+                  borderColor: "#ef4444",
+                  "&:hover": {
+                    borderColor: "#dc2626",
+                    backgroundColor: "rgba(239, 68, 68, 0.1)",
+                  },
+                }}
+              >
+                Modifier ma carte
+              </Button>
+            </Box>
+          </motion.div>
+        )}
+
         {/* Tips Grid */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -803,7 +869,6 @@ export default function Conseils() {
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
           p: 2,
         }}
       >
@@ -820,7 +885,7 @@ export default function Conseils() {
             borderRadius: 16,
           }}
         >
-          {selectedProfile && (
+          {selectedProfile ? (
             <AlumniProfileCard
               alum={
                 alumni.find((a) => a._id === selectedProfile._id) ||
@@ -829,7 +894,7 @@ export default function Conseils() {
               isAdmin={false}
               handleEditClick={handleEditClick}
             />
-          )}
+          ) : null}
         </motion.div>
       </Modal>
 

@@ -135,7 +135,7 @@ export default function AlumniProfileCard({
               variant="caption"
               sx={{ color: "#aaa", fontWeight: 700 }}
             >
-              Profil caché
+              {alum._id === alumniId ? "Ton profil est caché" : "Profil caché"}
             </Typography>
           </Box>
         )}

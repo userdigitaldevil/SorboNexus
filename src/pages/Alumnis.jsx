@@ -175,7 +175,9 @@ export default function Alumnis() {
     }
   }, [location, alumni, loading]);
 
-  const visibleAlumni = alumni.filter((alum) => !alum.hidden);
+  const visibleAlumni = alumni.filter(
+    (alum) => !alum.hidden || alum._id === alumniId || isAdmin
+  );
   const filteredAlumni = visibleAlumni.filter((alum) => {
     const matchesSearch =
       alum.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -652,6 +654,64 @@ export default function Alumnis() {
         </Container>
       </motion.section>
 
+      {/* Hidden Profile Message */}
+      {alumniId && alumni.find((a) => a._id === alumniId)?.hidden && (
+        <motion.section
+          className="py-8 px-6 z-10 relative"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+        >
+          <Container maxWidth="lg">
+            <Box
+              sx={{
+                background: "rgba(239, 68, 68, 0.1)",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+                borderRadius: 3,
+                p: 3,
+                textAlign: "center",
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "#ef4444",
+                  fontWeight: 600,
+                  mb: 1,
+                }}
+              >
+                Votre profil est caché
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(239, 68, 68, 0.8)",
+                  mb: 2,
+                }}
+              >
+                Modifier votre carte pour l'afficher aux autres utilisateurs
+              </Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => navigate("/alumnis?editSelf=1")}
+                sx={{
+                  color: "#ef4444",
+                  borderColor: "#ef4444",
+                  "&:hover": {
+                    borderColor: "#dc2626",
+                    backgroundColor: "rgba(239, 68, 68, 0.1)",
+                  },
+                }}
+              >
+                Modifier ma carte
+              </Button>
+            </Box>
+          </Container>
+        </motion.section>
+      )}
+
       {/* Filters Section */}
       <motion.section
         className="py-16 px-6 z-10 relative"
@@ -1048,7 +1108,7 @@ export default function Alumnis() {
             borderRadius: 16,
           }}
         >
-          {selectedAlumni && (
+          {selectedAlumni ? (
             <AlumniProfileCard
               alum={selectedAlumni}
               isAdmin={isAdmin}
@@ -1056,7 +1116,7 @@ export default function Alumnis() {
               handleEditClick={handleEditClick}
               handleDeleteClick={handleDeleteClick}
             />
-          )}
+          ) : null}
         </motion.div>
       </Modal>
 
@@ -1069,7 +1129,6 @@ export default function Alumnis() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          p: 2,
         }}
       >
         <motion.div
@@ -1119,11 +1178,15 @@ export default function Alumnis() {
             <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
               {/* Group alumni by field, use Accordions */}
               {Object.entries(
-                alumni.reduce((acc, alum) => {
-                  if (!acc[alum.field]) acc[alum.field] = [];
-                  acc[alum.field].push(alum);
-                  return acc;
-                }, {})
+                alumni
+                  .filter(
+                    (alum) => !alum.hidden || alum._id === alumniId || isAdmin
+                  )
+                  .reduce((acc, alum) => {
+                    if (!acc[alum.field]) acc[alum.field] = [];
+                    acc[alum.field].push(alum);
+                    return acc;
+                  }, {})
               ).map(([field, group], idx, arr) => (
                 <Accordion
                   key={field}
@@ -1380,6 +1443,27 @@ export default function Alumnis() {
               fullWidth
               sx={{ mb: 2 }}
             />
+            {/* Hide profile option for admin or self */}
+            {(isAdmin || (editAlumni && alumniId === editAlumni._id)) && (
+              <Box sx={{ mb: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!editForm.hidden}
+                      onChange={(e) =>
+                        setEditForm((prev) => ({
+                          ...prev,
+                          hidden: e.target.checked,
+                        }))
+                      }
+                      name="hidden"
+                      color="primary"
+                    />
+                  }
+                  label="Cacher mon profil"
+                />
+              </Box>
+            )}
             {/* Grades Section */}
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle1">Notes / Diplômes</Typography>

@@ -24,8 +24,9 @@ import {
   Avatar,
   Rating,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 const features = [
   {
@@ -106,10 +107,30 @@ const stats = [
 export default function Home() {
   // Live alumni count
   const [alumniCount, setAlumniCount] = useState(null);
+  const [alumni, setAlumni] = useState([]);
+  const navigate = useNavigate();
+
+  // Get alumniId from JWT
+  let alumniId = null;
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        alumniId = decoded.alumniId;
+      } catch (e) {
+        alumniId = null;
+      }
+    }
+  }
+
   useEffect(() => {
     fetch("http://localhost:5001/api/alumni")
       .then((res) => res.json())
-      .then((data) => setAlumniCount(data.length));
+      .then((data) => {
+        setAlumniCount(data.length);
+        setAlumni(data);
+      });
   }, []);
 
   // Format number as 1.5K if >= 1000
@@ -572,6 +593,64 @@ export default function Home() {
         </Container>
       </Box>
 
+      {/* Hidden Profile Message */}
+      {alumniId && alumni.find((a) => a._id === alumniId)?.hidden && (
+        <motion.section
+          className="py-8 px-6 z-10 relative"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+        >
+          <Container maxWidth="lg">
+            <Box
+              sx={{
+                background: "rgba(239, 68, 68, 0.1)",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+                borderRadius: 3,
+                p: 3,
+                textAlign: "center",
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "#ef4444",
+                  fontWeight: 600,
+                  mb: 1,
+                }}
+              >
+                Votre profil est caché
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(239, 68, 68, 0.8)",
+                  mb: 2,
+                }}
+              >
+                Modifier votre carte pour l'afficher aux autres utilisateurs
+              </Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => navigate("/alumnis?editSelf=1")}
+                sx={{
+                  color: "#ef4444",
+                  borderColor: "#ef4444",
+                  "&:hover": {
+                    borderColor: "#dc2626",
+                    backgroundColor: "rgba(239, 68, 68, 0.1)",
+                  },
+                }}
+              >
+                Modifier ma carte
+              </Button>
+            </Box>
+          </Container>
+        </motion.section>
+      )}
+
       {/* Features Section */}
       <Box
         id="features"
@@ -970,6 +1049,177 @@ export default function Home() {
                 </Typography>
               </motion.div>
             </div>
+          </motion.div>
+        </Container>
+      </Box>
+
+      {/* Feedback & Contributions Section */}
+      <Box
+        component="section"
+        sx={{
+          py: 8,
+          px: 2,
+          background: "rgba(255,255,255,0.02)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <Container maxWidth="lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            style={{ textAlign: "center" }}
+          >
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 700,
+                background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                mb: 3,
+                fontSize: { xs: "2rem", md: "2.5rem" },
+              }}
+            >
+              Contribuez au Projet
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "rgba(255, 255, 255, 0.9)",
+                mb: 4,
+                fontWeight: 500,
+                maxWidth: 800,
+                mx: "auto",
+                lineHeight: 1.6,
+              }}
+            >
+              Je suis ouvert aux retours, modifications du site et contributions
+              de la communauté
+            </Typography>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <Card
+                elevation={0}
+                sx={{
+                  background: "rgba(255, 255, 255, 0.05)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: 4,
+                  p: 4,
+                  maxWidth: 600,
+                  mx: "auto",
+                  mb: 4,
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.8)",
+                    mb: 3,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  SorboNexus est un projet open source développé pour la
+                  communauté étudiante. Vos suggestions, améliorations et
+                  contributions sont les bienvenues !
+                </Typography>
+
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      variant="contained"
+                      size="large"
+                      href="https://github.com/userdigitaldevil/SorboNexus/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        background:
+                          "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                        color: "white",
+                        fontWeight: 600,
+                        px: 4,
+                        py: 1.5,
+                        borderRadius: 3,
+                        boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
+                        fontSize: "1rem",
+                        "&:hover": {
+                          background:
+                            "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                          boxShadow: "0 12px 35px rgba(59, 130, 246, 0.4)",
+                          transform: "translateY(-2px)",
+                        },
+                        transition: "all 0.3s ease",
+                      }}
+                    >
+                      Voir le Repository GitHub
+                    </Button>
+                  </motion.div>
+
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      href="mailto:sethaguila@icloud.com"
+                      startIcon={
+                        <Box component="span" sx={{ fontSize: "1.2rem" }}>
+                          ✉️
+                        </Box>
+                      }
+                      sx={{
+                        color: "#3b82f6",
+                        borderColor: "#3b82f6",
+                        borderWidth: 2,
+                        fontWeight: 600,
+                        px: 4,
+                        py: 1.5,
+                        borderRadius: 3,
+                        fontSize: "1rem",
+                        "&:hover": {
+                          background: "rgba(59, 130, 246, 0.1)",
+                          borderColor: "#1e40af",
+                          borderWidth: 2,
+                        },
+                        transition: "all 0.3s ease",
+                      }}
+                    >
+                      Envoyer un Feedback
+                    </Button>
+                  </motion.div>
+                </Stack>
+              </Card>
+            </motion.div>
+
+            <Typography
+              variant="body2"
+              sx={{
+                color: "rgba(255, 255, 255, 0.6)",
+                fontStyle: "italic",
+                maxWidth: 500,
+                mx: "auto",
+              }}
+            >
+              © 2025 Seth Aguila - Développé avec ❤️ pour la communauté Sorbonne
+            </Typography>
           </motion.div>
         </Container>
       </Box>

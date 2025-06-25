@@ -933,26 +933,26 @@ const Navbar = () => {
         open={isAlumniProfileModalOpen}
         onClose={() => setIsAlumniProfileModalOpen(false)}
       >
-        {alumniUser ? (
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "transparent",
-              p: 0,
-              borderRadius: 2,
-              minWidth: 420,
-              maxWidth: 600,
-              maxHeight: "90vh",
-              overflowY: "auto",
-              boxShadow: 24,
-            }}
-          >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "transparent",
+            p: 0,
+            borderRadius: 2,
+            minWidth: 420,
+            maxWidth: 600,
+            maxHeight: "90vh",
+            overflowY: "auto",
+            boxShadow: 24,
+          }}
+        >
+          {alumniUser ? (
             <AlumniProfileCard alum={alumniUser} isAdmin={alumniUser.isAdmin} />
-          </Box>
-        ) : null}
+          ) : null}
+        </Box>
       </Modal>
 
       {/* Add Alumni Modal */}
