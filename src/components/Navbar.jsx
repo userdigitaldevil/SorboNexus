@@ -59,6 +59,17 @@ const Navbar = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleNavigation = (path) => {
+    // If we're already on this page, scroll to top
+    if (isActive(path)) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    // Close mobile drawer if open
+    if (mobileOpen) {
+      setMobileOpen(false);
+    }
+  };
+
   const isActive = (path) => {
     if (path === "/") {
       return location.pathname === "/";
@@ -217,7 +228,7 @@ const Navbar = () => {
             key={item.name}
             component={Link}
             to={item.path}
-            onClick={handleDrawerToggle}
+            onClick={() => handleNavigation(item.path)}
             sx={{
               color: isActive(item.path) ? theme.palette.primary.main : "white",
               borderRadius: 2,
@@ -739,7 +750,20 @@ const Navbar = () => {
             <Typography
               variant="h6"
               className="gradient-text"
-              sx={{ fontWeight: 800, fontSize: "2rem", letterSpacing: 1 }}
+              component={Link}
+              to="/"
+              onClick={() => handleNavigation("/")}
+              sx={{
+                fontWeight: 800,
+                fontSize: { xs: "1rem", sm: "1.2rem", md: "1.5rem" },
+                letterSpacing: 1,
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 0.8,
+                },
+                transition: "opacity 0.2s ease",
+              }}
             >
               SorboNexus
             </Typography>
@@ -753,6 +777,7 @@ const Navbar = () => {
                   key={item.name}
                   component={Link}
                   to={item.path}
+                  onClick={() => handleNavigation(item.path)}
                   sx={{
                     color: isActive(item.path)
                       ? "#3b82f6"

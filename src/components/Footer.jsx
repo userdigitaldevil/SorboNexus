@@ -1,9 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Box, Container, Typography, Stack } from "@mui/material";
 import { motion } from "framer-motion";
 import { Email, LinkedIn, GitHub } from "@mui/icons-material";
 
 export default function Footer() {
+  const location = useLocation();
+
+  const handleNavigation = (path) => {
+    // If we're already on this page, scroll to top
+    if (location.pathname === path) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <Box
       component="footer"
@@ -94,6 +103,7 @@ export default function Footer() {
                 >
                   <Link
                     to="/"
+                    onClick={() => handleNavigation("/")}
                     style={{
                       color: "rgba(255, 255, 255, 0.8)",
                       textDecoration: "none",
@@ -121,6 +131,7 @@ export default function Footer() {
                 >
                   <Link
                     to="/ressources"
+                    onClick={() => handleNavigation("/ressources")}
                     style={{
                       color: "rgba(255, 255, 255, 0.8)",
                       textDecoration: "none",
@@ -148,6 +159,7 @@ export default function Footer() {
                 >
                   <Link
                     to="/alumnis"
+                    onClick={() => handleNavigation("/alumnis")}
                     style={{
                       color: "rgba(255, 255, 255, 0.8)",
                       textDecoration: "none",
@@ -175,6 +187,7 @@ export default function Footer() {
                 >
                   <Link
                     to="/conseils"
+                    onClick={() => handleNavigation("/conseils")}
                     style={{
                       color: "rgba(255, 255, 255, 0.8)",
                       textDecoration: "none",

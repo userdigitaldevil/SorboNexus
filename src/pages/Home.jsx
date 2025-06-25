@@ -1080,7 +1080,7 @@ export default function Home() {
                     fontSize: "0.9rem",
                   }}
                 >
-                  Alumnis inscrits
+                  Alumnis qui ont eu leur licence avant {currentYear}
                 </Typography>
               </motion.div>
             </div>
