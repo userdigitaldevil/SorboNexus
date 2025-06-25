@@ -24,7 +24,6 @@ import {
   AccordionDetails,
   FormControlLabel,
   Checkbox,
-  Close,
 } from "@mui/material";
 import {
   School as SchoolIcon,
@@ -37,6 +36,7 @@ import {
   Person as PersonIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
+  Close as CloseIcon,
   LinkedIn as LinkedInIcon,
   Email as EmailIcon,
   Grade as GradeIcon,
@@ -988,7 +988,7 @@ export default function Conseils() {
                   transition: "all 0.2s ease",
                 }}
               >
-                <Close sx={{ fontSize: "1.2rem" }} />
+                <CloseIcon sx={{ fontSize: "1.2rem" }} />
               </IconButton>
 
               <Typography

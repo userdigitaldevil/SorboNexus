@@ -24,7 +24,6 @@ import {
   AccordionDetails,
   FormControlLabel,
   Checkbox,
-  Close,
 } from "@mui/material";
 import {
   ArrowRight,
@@ -41,6 +40,7 @@ import {
   Business as BusinessIcon,
   CheckCircleOutline as CheckCircleOutlineIcon,
   Cancel as CancelIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import Pagination from "@mui/material/Pagination";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -564,13 +564,13 @@ export default function Alumnis() {
 
       {/* Hero Section */}
       <motion.section
-        className="relative pt-40 pb-32 px-6 bg-gradient-to-r from-blue-900/30 to-teal-900/30 z-10"
+        className="relative pt-20 pb-16 px-4 bg-gradient-to-r from-blue-900/30 to-teal-900/30 z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         style={{
-          paddingTop: window.innerWidth < 600 ? "100px" : "160px",
-          paddingBottom: window.innerWidth < 600 ? "60px" : "128px",
+          paddingTop: window.innerWidth < 600 ? "80px" : "80px",
+          paddingBottom: window.innerWidth < 600 ? "64px" : "64px",
         }}
       >
         <Container maxWidth="lg">
@@ -774,13 +774,13 @@ export default function Alumnis() {
 
       {/* Filters Section */}
       <motion.section
-        className="py-16 px-6 z-10 relative"
+        className="py-0 px-4 z-10 relative"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
         style={{
-          paddingTop: window.innerWidth < 600 ? "60px" : "64px",
-          paddingBottom: window.innerWidth < 600 ? "60px" : "64px",
+          paddingTop: window.innerWidth < 600 ? "16px" : "16px",
+          paddingBottom: window.innerWidth < 600 ? "16px" : "16px",
         }}
       >
         <Container maxWidth="lg">
@@ -844,12 +844,12 @@ export default function Alumnis() {
 
       {/* Alumni Grid Section */}
       <motion.section
-        className="py-24 px-6 bg-gradient-to-r from-blue-900/40 to-teal-900/40 z-10 relative"
+        className="pb-24 px-6 bg-gradient-to-r from-blue-900/40 to-teal-900/40 z-10 relative"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
         style={{
-          paddingTop: window.innerWidth < 600 ? "80px" : "96px",
+          paddingTop: window.innerWidth < 600 ? "16px" : "16px",
           paddingBottom: window.innerWidth < 600 ? "80px" : "96px",
         }}
       >
@@ -1284,7 +1284,7 @@ export default function Alumnis() {
                 onClick={closeListModal}
                 sx={{ color: "rgba(255,255,255,0.7)" }}
               >
-                <Close />
+                <CloseIcon />
               </IconButton>
             </Box>
             <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
@@ -1508,7 +1508,7 @@ export default function Alumnis() {
               transition: "all 0.2s ease",
             }}
           >
-            <Close sx={{ fontSize: "1.2rem" }} />
+            <CloseIcon sx={{ fontSize: "1.2rem" }} />
           </IconButton>
 
           <Typography variant="h6" sx={{ mb: 2, pr: 4 }}>

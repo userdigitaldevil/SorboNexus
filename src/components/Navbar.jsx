@@ -29,7 +29,6 @@ import {
   Fade,
   FormControlLabel,
   Checkbox,
-  Close,
 } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
@@ -1035,7 +1034,7 @@ const Navbar = () => {
               transition: "all 0.2s ease",
             }}
           >
-            <Close sx={{ fontSize: "1.2rem" }} />
+            <CloseIcon sx={{ fontSize: "1.2rem" }} />
           </IconButton>
 
           <Typography variant="h6" sx={{ mb: 2, pr: 4 }}>

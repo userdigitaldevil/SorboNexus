@@ -191,13 +191,13 @@ export default function Ressources() {
 
       {/* Hero Section */}
       <motion.section
-        className="relative pt-40 pb-32 px-6 bg-gradient-to-r from-blue-900/30 to-teal-900/30 z-10"
+        className="relative pt-20 pb-16 px-4 bg-gradient-to-r from-blue-900/30 to-teal-900/30 z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         style={{
-          paddingTop: window.innerWidth < 600 ? "100px" : "160px",
-          paddingBottom: window.innerWidth < 600 ? "60px" : "128px",
+          paddingTop: window.innerWidth < 600 ? "80px" : "80px",
+          paddingBottom: window.innerWidth < 600 ? "64px" : "64px",
         }}
       >
         <Container maxWidth="lg">
@@ -247,7 +247,8 @@ export default function Ressources() {
         sx={{
           py: { xs: 3, md: 6 },
           px: 2,
-          background: "rgba(255,255,255,0.02)",
+          background: "transparent",
+          textAlign: "center",
         }}
       >
         <Container maxWidth="lg">
@@ -274,9 +275,14 @@ export default function Ressources() {
             </Typography>
 
             {/* Search Bar */}
-            <Box sx={{ mb: { xs: 2, md: 3 } }}>
+            <Box
+              sx={{
+                mb: { xs: 2, md: 3 },
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <TextField
-                fullWidth
                 placeholder="Rechercher une ressource..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -288,6 +294,8 @@ export default function Ressources() {
                   ),
                 }}
                 sx={{
+                  maxWidth: 600,
+                  width: "100%",
                   "& .MuiOutlinedInput-root": {
                     background: "rgba(255,255,255,0.05)",
                     backdropFilter: "blur(20px)",
@@ -322,6 +330,7 @@ export default function Ressources() {
                   color: "rgba(255, 255, 255, 0.9)",
                   fontWeight: 600,
                   fontSize: { xs: "0.9rem", md: "1.25rem" },
+                  textAlign: "center",
                 }}
               >
                 Catégories
@@ -331,6 +340,7 @@ export default function Ressources() {
                   display: "flex",
                   flexWrap: "wrap",
                   gap: { xs: 1, md: 1.5 },
+                  justifyContent: "center",
                 }}
               >
                 {categories.map((category) => (
@@ -368,6 +378,7 @@ export default function Ressources() {
                   color: "rgba(255, 255, 255, 0.9)",
                   fontWeight: 600,
                   fontSize: { xs: "0.9rem", md: "1.25rem" },
+                  textAlign: "center",
                 }}
               >
                 Types de ressources
@@ -377,6 +388,7 @@ export default function Ressources() {
                   display: "flex",
                   flexWrap: "wrap",
                   gap: { xs: 1, md: 1.5 },
+                  justifyContent: "center",
                 }}
               >
                 {filters.map((filter) => (

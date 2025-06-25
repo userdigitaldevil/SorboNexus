@@ -225,13 +225,13 @@ const LiensUtiles = () => {
 
       {/* Hero Section */}
       <motion.section
-        className="relative pt-40 pb-32 px-6 bg-gradient-to-r from-blue-900/30 to-teal-900/30 z-10"
+        className="relative pt-20 pb-16 px-4 bg-gradient-to-r from-blue-900/30 to-teal-900/30 z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         style={{
-          paddingTop: window.innerWidth < 600 ? "100px" : "160px",
-          paddingBottom: window.innerWidth < 600 ? "60px" : "128px",
+          paddingTop: window.innerWidth < 600 ? "80px" : "80px",
+          paddingBottom: window.innerWidth < 600 ? "64px" : "64px",
         }}
       >
         <Container maxWidth="lg">
@@ -344,24 +344,24 @@ const LiensUtiles = () => {
 
       {/* Categories & Filters */}
       <motion.section
-        className="py-16 px-6 z-10 relative"
+        className="py-8 px-4 z-10 relative"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
         style={{
-          paddingTop: window.innerWidth < 600 ? "60px" : "64px",
-          paddingBottom: window.innerWidth < 600 ? "60px" : "64px",
+          paddingTop: window.innerWidth < 600 ? "32px" : "32px",
+          paddingBottom: window.innerWidth < 600 ? "32px" : "32px",
         }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: "center", mb: { xs: 6, md: 12 } }}>
+          <Box sx={{ textAlign: "center", mb: { xs: 3, md: 6 } }}>
             <Box
               sx={{
                 display: "flex",
                 flexWrap: "wrap",
                 gap: { xs: 1, md: 2 },
                 justifyContent: "center",
-                pt: { xs: 2, md: 4 },
+                pt: { xs: 1, md: 2 },
                 mt: 0,
               }}
             >
@@ -414,13 +414,13 @@ const LiensUtiles = () => {
 
       {/* Links Grid */}
       <motion.section
-        className="py-20 px-6 z-10 relative"
+        className="py-12 px-4 z-10 relative"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
         style={{
-          paddingTop: window.innerWidth < 600 ? "80px" : "80px",
-          paddingBottom: window.innerWidth < 600 ? "80px" : "80px",
+          paddingTop: window.innerWidth < 600 ? "48px" : "48px",
+          paddingBottom: window.innerWidth < 600 ? "48px" : "48px",
         }}
       >
         <Container maxWidth="lg">
