@@ -1,14 +1,18 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, Container, Typography, Stack } from "@mui/material";
 import { motion } from "framer-motion";
 import { Email, LinkedIn, GitHub } from "@mui/icons-material";
 
 export default function Footer() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleNavigation = (path) => {
-    // Always scroll to top when navigating
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Navigate first, then scroll to top after a short delay
+    navigate(path);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
   };
 
   return (
@@ -99,8 +103,7 @@ export default function Footer() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link
-                    to="/"
+                  <Box
                     onClick={() => handleNavigation("/")}
                     style={{
                       color: "rgba(255, 255, 255, 0.8)",
@@ -110,6 +113,7 @@ export default function Footer() {
                       display: "block",
                       padding: "4px 8px",
                       borderRadius: "4px",
+                      cursor: "pointer",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -121,14 +125,13 @@ export default function Footer() {
                     }}
                   >
                     Accueil
-                  </Link>
+                  </Box>
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link
-                    to="/ressources"
+                  <Box
                     onClick={() => handleNavigation("/ressources")}
                     style={{
                       color: "rgba(255, 255, 255, 0.8)",
@@ -138,6 +141,7 @@ export default function Footer() {
                       display: "block",
                       padding: "4px 8px",
                       borderRadius: "4px",
+                      cursor: "pointer",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -149,14 +153,13 @@ export default function Footer() {
                     }}
                   >
                     Ressources
-                  </Link>
+                  </Box>
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link
-                    to="/alumnis"
+                  <Box
                     onClick={() => handleNavigation("/alumnis")}
                     style={{
                       color: "rgba(255, 255, 255, 0.8)",
@@ -166,6 +169,7 @@ export default function Footer() {
                       display: "block",
                       padding: "4px 8px",
                       borderRadius: "4px",
+                      cursor: "pointer",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -177,14 +181,13 @@ export default function Footer() {
                     }}
                   >
                     Alumnis
-                  </Link>
+                  </Box>
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link
-                    to="/conseils"
+                  <Box
                     onClick={() => handleNavigation("/conseils")}
                     style={{
                       color: "rgba(255, 255, 255, 0.8)",
@@ -194,6 +197,7 @@ export default function Footer() {
                       display: "block",
                       padding: "4px 8px",
                       borderRadius: "4px",
+                      cursor: "pointer",
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = "#3b82f6";
@@ -205,7 +209,7 @@ export default function Footer() {
                     }}
                   >
                     Conseils
-                  </Link>
+                  </Box>
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
