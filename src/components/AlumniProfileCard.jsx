@@ -642,6 +642,7 @@ export default function AlumniProfileCard({
                 Conseil
               </Typography>
               <Box
+                className="markdown-content"
                 sx={{
                   background: "rgba(59, 130, 246, 0.05)",
                   borderRadius: 2,

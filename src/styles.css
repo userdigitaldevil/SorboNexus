@@ -158,3 +158,35 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+.markdown-content strong,
+.markdown-content b {
+  font-weight: bold !important;
+}
+.markdown-content em,
+.markdown-content i {
+  font-style: italic !important;
+}
+.markdown-content ul {
+  margin-left: 1.5em;
+  list-style-type: disc;
+}
+.markdown-content ol {
+  margin-left: 1.5em;
+  list-style-type: decimal;
+}
+.markdown-content code {
+  background: #222;
+  color: #3b82f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+.markdown-content pre {
+  background: #18181b;
+  color: #f1f5f9;
+  padding: 10px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
