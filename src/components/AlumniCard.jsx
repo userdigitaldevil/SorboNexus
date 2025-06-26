@@ -33,9 +33,10 @@ const AlumniCard = ({ alum, index, onCardClick, adminGlow = {} }) => {
           position: "relative",
           cursor: "pointer",
           transition: "all 0.3s ease",
-          minHeight: { xs: 280, sm: 400 },
-          minWidth: { xs: 140, sm: 280 },
+          minHeight: { xs: 280, sm: 320, md: 360 },
           height: "100%",
+          width: "100%",
+          maxWidth: { xs: 280, sm: 320, md: 350 },
           display: "flex",
           flexDirection: "column",
           opacity: alum.hidden ? 0.5 : 1,
@@ -52,15 +53,15 @@ const AlumniCard = ({ alum, index, onCardClick, adminGlow = {} }) => {
       >
         <Box
           sx={{
-            height: { xs: 60, sm: 120 },
+            height: { xs: 60, sm: 80, md: 100 },
             background: alum.color,
             position: "relative",
           }}
         />
         <CardContent
           sx={{
-            p: { xs: 1.5, sm: 4 },
-            pt: { xs: 4, sm: 8 },
+            p: { xs: 1.5, sm: 2, md: 2.5 },
+            pt: { xs: 4, sm: 5, md: 6 },
             flexGrow: 1,
             display: "flex",
             flexDirection: "column",
@@ -69,18 +70,18 @@ const AlumniCard = ({ alum, index, onCardClick, adminGlow = {} }) => {
           <Box
             sx={{
               position: "absolute",
-              top: { xs: 35, sm: 80 },
-              left: { xs: 12, sm: 24 },
+              top: { xs: 35, sm: 60, md: 70 },
+              left: { xs: 12, sm: 16, md: 20 },
               zIndex: 10,
             }}
           >
             <Avatar
               sx={{
-                width: { xs: 40, sm: 64 },
-                height: { xs: 40, sm: 64 },
+                width: { xs: 40, sm: 48, md: 56 },
+                height: { xs: 40, sm: 48, md: 56 },
                 background: alum.color,
                 border: "4px solid rgba(255, 255, 255, 0.1)",
-                fontSize: { xs: "1rem", sm: "1.5rem" },
+                fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },
                 fontWeight: 700,
               }}
             >
@@ -119,14 +120,29 @@ const AlumniCard = ({ alum, index, onCardClick, adminGlow = {} }) => {
           >
             {alum.position}
           </Typography>
-          {/* Conseil Preview (if present) */}
-          {alum.conseil && (
+          {/* Année de fin L3 */}
+          {alum.anneeFinL3 && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: "rgba(255,255,255,0.85)",
+                fontWeight: 400,
+                mb: { xs: 0.5, sm: 1 },
+                fontSize: { xs: "0.65rem", sm: "0.875rem" },
+              }}
+            >
+              <span style={{ fontWeight: 700 }}>Annee de fin de L3:</span>{" "}
+              {alum.anneeFinL3}
+            </Typography>
+          )}
+          {/* Future Goals */}
+          {alum.futureGoals && (
             <Box
               sx={{
                 mt: 1,
                 color: "rgba(255,255,255,0.85)",
-                fontSize: "0.92rem",
-                lineHeight: 1.5,
+                fontSize: "0.85rem",
+                lineHeight: 1.4,
                 whiteSpace: "pre-line",
                 wordBreak: "break-word",
                 fontFamily: "inherit",
@@ -135,9 +151,27 @@ const AlumniCard = ({ alum, index, onCardClick, adminGlow = {} }) => {
                 overflow: "hidden",
               }}
             >
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {alum.conseil}
-              </ReactMarkdown>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255,255,255,0.85)",
+                  fontSize: { xs: "0.65rem", sm: "0.8rem" },
+                  fontWeight: 500,
+                  mb: 0.5,
+                }}
+              >
+                Objectifs:
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255,255,255,0.7)",
+                  fontSize: { xs: "0.6rem", sm: "0.75rem" },
+                  lineHeight: 1.3,
+                }}
+              >
+                {alum.futureGoals}
+              </Typography>
             </Box>
           )}
           <Box

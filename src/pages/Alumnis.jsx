@@ -49,6 +49,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { jwtDecode } from "jwt-decode";
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import AlumniCard from "../components/AlumniCard";
+import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Alumnis() {
@@ -155,7 +156,9 @@ export default function Alumnis() {
       if (token) {
         try {
           const decoded = jwtDecode(token);
-          const myAlumni = alumni.find((a) => a._id === decoded.alumniId);
+          const myAlumni = alumni.find(
+            (a) => String(a._id) === String(decoded.alumniId)
+          );
           if (myAlumni) {
             handleEditClick(myAlumni);
             // Remove the query param for a clean URL
@@ -179,7 +182,9 @@ export default function Alumnis() {
         if (token) {
           try {
             const decoded = jwtDecode(token);
-            const myAlumni = alumni.find((a) => a._id === decoded.alumniId);
+            const myAlumni = alumni.find(
+              (a) => String(a._id) === String(decoded.alumniId)
+            );
             if (myAlumni) {
               openProfileModal(myAlumni);
               // Remove the query param for a clean URL
@@ -196,7 +201,7 @@ export default function Alumnis() {
   }, [location, alumni, loading]);
 
   const visibleAlumni = alumni.filter(
-    (alum) => !alum.hidden || alum._id === alumniId || isAdmin
+    (alum) => !alum.hidden || String(alum._id) === String(alumniId) || isAdmin
   );
   const filteredAlumni = visibleAlumni.filter((alum) => {
     const searchLower = searchQuery.toLowerCase();
@@ -247,12 +252,12 @@ export default function Alumnis() {
   // Custom ordering:
   if (alumniId) {
     // If logged in: self first (always first card on first page), then admins (excluding self if admin), then others
-    const self = filteredAlumni.find((a) => a._id === alumniId);
+    const self = filteredAlumni.find((a) => String(a._id) === String(alumniId));
     const adminCards = filteredAlumni.filter(
-      (a) => a.isAdmin && a._id !== alumniId
+      (a) => a.isAdmin && String(a._id) !== String(alumniId)
     );
     const otherCards = filteredAlumni.filter(
-      (a) => !a.isAdmin && a._id !== alumniId
+      (a) => !a.isAdmin && String(a._id) !== String(alumniId)
     );
     const ordered = [...(self ? [self] : []), ...adminCards, ...otherCards];
     // Apply pagination after ordering
@@ -559,37 +564,6 @@ export default function Alumnis() {
     }
   };
 
-  // Helper to render conseil with clickable links
-  function renderConseilWithLinks(text) {
-    if (!text) return null;
-    // Regex to match URLs
-    const urlRegex =
-      /(https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=%]+)|(www\.[\w\-._~:/?#[\]@!$&'()*+,;=%]+)/gi;
-    const parts = text.split(urlRegex);
-    return parts.map((part, i) => {
-      if (!part) return null;
-      if (part.match(urlRegex)) {
-        let href = part.startsWith("http") ? part : `https://${part}`;
-        return (
-          <a
-            key={i}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "#3b82f6",
-              textDecoration: "underline",
-              wordBreak: "break-all",
-            }}
-          >
-            {part}
-          </a>
-        );
-      }
-      return <span key={i}>{part}</span>;
-    });
-  }
-
   // Place this at the top of the component (inside the function, before return)
   const adminGlow = {
     boxShadow: "0 0 36px 8px #3b82f6cc",
@@ -757,71 +731,72 @@ export default function Alumnis() {
       </motion.section>
 
       {/* Hidden Profile Message */}
-      {alumniId && alumni.find((a) => a._id === alumniId)?.hidden && (
-        <motion.section
-          className="py-8 px-6 z-10 relative"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-          style={{
-            paddingTop: window.innerWidth < 600 ? "40px" : "64px",
-            paddingBottom: window.innerWidth < 600 ? "40px" : "64px",
-          }}
-        >
-          <Container maxWidth="lg">
-            <Box
-              sx={{
-                background: "rgba(239, 68, 68, 0.1)",
-                border: "1px solid rgba(239, 68, 68, 0.3)",
-                borderRadius: 3,
-                p: { xs: 2, md: 3 },
-                textAlign: "center",
-                backdropFilter: "blur(10px)",
-              }}
-            >
-              <Typography
-                variant="body1"
+      {alumniId &&
+        alumni.find((a) => String(a._id) === String(alumniId))?.hidden && (
+          <motion.section
+            className="py-8 px-6 z-10 relative"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+            style={{
+              paddingTop: window.innerWidth < 600 ? "40px" : "64px",
+              paddingBottom: window.innerWidth < 600 ? "40px" : "64px",
+            }}
+          >
+            <Container maxWidth="lg">
+              <Box
                 sx={{
-                  color: "#ef4444",
-                  fontWeight: 600,
-                  mb: 1,
-                  fontSize: { xs: "0.9rem", md: "1rem" },
+                  background: "rgba(239, 68, 68, 0.1)",
+                  border: "1px solid rgba(239, 68, 68, 0.3)",
+                  borderRadius: 3,
+                  p: { xs: 2, md: 3 },
+                  textAlign: "center",
+                  backdropFilter: "blur(10px)",
                 }}
               >
-                Votre profil est caché
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "rgba(239, 68, 68, 0.8)",
-                  mb: { xs: 1.5, md: 2 },
-                  fontSize: { xs: "0.8rem", md: "0.875rem" },
-                }}
-              >
-                Modifier votre carte pour l'afficher aux autres utilisateurs
-              </Typography>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => navigate("/alumnis?editSelf=1")}
-                sx={{
-                  color: "#ef4444",
-                  borderColor: "#ef4444",
-                  fontSize: { xs: "0.7rem", md: "0.875rem" },
-                  px: { xs: 2, md: 3 },
-                  py: { xs: 0.5, md: 1 },
-                  "&:hover": {
-                    borderColor: "#dc2626",
-                    backgroundColor: "rgba(239, 68, 68, 0.1)",
-                  },
-                }}
-              >
-                Modifier ma carte
-              </Button>
-            </Box>
-          </Container>
-        </motion.section>
-      )}
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "#ef4444",
+                    fontWeight: 600,
+                    mb: 1,
+                    fontSize: { xs: "0.9rem", md: "1rem" },
+                  }}
+                >
+                  Votre profil est caché
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "rgba(239, 68, 68, 0.8)",
+                    mb: { xs: 1.5, md: 2 },
+                    fontSize: { xs: "0.8rem", md: "0.875rem" },
+                  }}
+                >
+                  Modifier votre carte pour l'afficher aux autres utilisateurs
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => navigate("/alumnis?editSelf=1")}
+                  sx={{
+                    color: "#ef4444",
+                    borderColor: "#ef4444",
+                    fontSize: { xs: "0.7rem", md: "0.875rem" },
+                    px: { xs: 2, md: 3 },
+                    py: { xs: 0.5, md: 1 },
+                    "&:hover": {
+                      borderColor: "#dc2626",
+                      backgroundColor: "rgba(239, 68, 68, 0.1)",
+                    },
+                  }}
+                >
+                  Modifier ma carte
+                </Button>
+              </Box>
+            </Container>
+          </motion.section>
+        )}
 
       {/* Filters Section */}
       <motion.section
@@ -931,9 +906,26 @@ export default function Alumnis() {
             container
             spacing={{ xs: 2, sm: 3, md: 4 }}
             justifyContent="center"
+            sx={{
+              maxWidth: "100%",
+              width: "100%",
+            }}
           >
             {currentAlumni.map((alum, index) => (
-              <Grid item xs={6} sm={6} md={4} key={alum.id || alum._id}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={3}
+                lg={3}
+                xl={3}
+                key={alum.id || alum._id}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  maxWidth: { xs: "100%", sm: "50%", md: "25%" },
+                }}
+              >
                 <AlumniCard
                   alum={alum}
                   index={index}
@@ -1191,7 +1183,10 @@ export default function Alumnis() {
               {Object.entries(
                 alumni
                   .filter(
-                    (alum) => !alum.hidden || alum._id === alumniId || isAdmin
+                    (alum) =>
+                      !alum.hidden ||
+                      String(alum._id) === String(alumniId) ||
+                      isAdmin
                   )
                   .reduce((acc, alum) => {
                     if (!acc[alum.field]) acc[alum.field] = [];
@@ -1411,7 +1406,7 @@ export default function Alumnis() {
           </IconButton>
 
           <Typography variant="h6" sx={{ mb: 2, pr: 4 }}>
-            {editAlumni && alumniId === editAlumni._id
+            {editAlumni && String(alumniId) === String(editAlumni._id)
               ? "Modifier ma carte"
               : "Modifier l'alumni"}
           </Typography>
@@ -1481,7 +1476,8 @@ export default function Alumnis() {
               sx={{ mb: 2 }}
             />
             {/* Hide profile option for admin or self */}
-            {(isAdmin || (editAlumni && alumniId === editAlumni._id)) && (
+            {(isAdmin ||
+              (editAlumni && String(alumniId) === String(editAlumni._id))) && (
               <Box sx={{ mb: 2 }}>
                 <FormControlLabel
                   control={

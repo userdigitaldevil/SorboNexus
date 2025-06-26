@@ -25,7 +25,8 @@ import {
   CheckCircleOutline as CheckCircleOutlineIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
-import { renderTextWithLinks } from "../utils/textUtils";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 

@@ -47,7 +47,7 @@ import {
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { renderTextWithLinks } from "../utils/textUtils";
+import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -712,6 +712,7 @@ export default function Conseils() {
                     }}
                   >
                     <Typography
+                      component="div"
                       variant="body1"
                       sx={{
                         color: "rgba(255,255,255,0.85)",

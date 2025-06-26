@@ -29,6 +29,7 @@ import {
   Fade,
   FormControlLabel,
   Checkbox,
+  Chip,
 } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
@@ -39,6 +40,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AlumniProfileCard from "./AlumniProfileCard";
+import { renderTextWithLinks } from "../utils/textUtils.jsx";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -690,35 +692,6 @@ const Navbar = () => {
 
   const [isAlumniProfileModalOpen, setIsAlumniProfileModalOpen] =
     useState(false);
-
-  function renderConseilWithLinks(text) {
-    if (!text) return null;
-    const urlRegex =
-      /(https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=%]+)|(www\.[\w\-._~:/?#[\]@!$&'()*+,;=%]+)/gi;
-    const parts = text.split(urlRegex);
-    return parts.map((part, i) => {
-      if (!part) return null;
-      if (part.match(urlRegex)) {
-        let href = part.startsWith("http") ? part : `https://${part}`;
-        return (
-          <a
-            key={i}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "#3b82f6",
-              textDecoration: "underline",
-              wordBreak: "break-all",
-            }}
-          >
-            {part}
-          </a>
-        );
-      }
-      return <span key={i}>{part}</span>;
-    });
-  }
 
   return (
     <>
