@@ -34,6 +34,10 @@ const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
           position: "relative",
           overflow: "hidden",
           height: isMini ? "auto" : "100%",
+          maxWidth: isMini
+            ? "none"
+            : { xs: "100%", sm: "280px", md: "320px", lg: "280px" },
+          width: "100%",
           "&:hover": {
             background: "rgba(255,255,255,0.08)",
             border: "1px solid rgba(59, 130, 246, 0.3)",

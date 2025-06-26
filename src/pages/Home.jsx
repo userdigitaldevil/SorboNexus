@@ -672,9 +672,18 @@ export default function Home() {
             </Typography>
           </motion.div>
 
-          <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
+          <Grid
+            container
+            spacing={{ xs: 2, sm: 3, md: 4 }}
+            justifyContent="center"
+            sx={{
+              maxWidth: "1200px",
+              margin: "0 auto",
+              px: { xs: 1, sm: 2 },
+            }}
+          >
             {features.map((feature, index) => (
-              <Grid xs={12} sm={6} md={4} key={index}>
+              <Grid xs={12} sm={6} md={4} lg={3} key={index}>
                 <FeatureCard
                   feature={feature}
                   index={index}
