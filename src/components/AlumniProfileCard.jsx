@@ -170,7 +170,12 @@ export default function AlumniProfileCard({
               height: 64,
               background: alum.hidden ? "#555" : alum.color,
               border: "4px solid rgba(255, 255, 255, 0.1)",
-              fontSize: "1.5rem",
+              fontSize:
+                alum.avatar && alum.avatar.length > 4
+                  ? "0.9rem"
+                  : alum.avatar && alum.avatar.length > 2
+                  ? "1.1rem"
+                  : "1.5rem",
               fontWeight: 700,
               filter: alum.hidden ? "grayscale(1) brightness(0.8)" : undefined,
             }}

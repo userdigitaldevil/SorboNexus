@@ -548,9 +548,17 @@ export default function AlumniEditModal({
                 }
               />
             </Box>
-            {/* Only admins can edit color, gradient, and admin status */}
-            {isAdmin && (
+            {/* Only admins can edit color, gradient, avatar, and admin status */}
+            {isAdmin ? (
               <>
+                <TextField
+                  label="Avatar (lettres)"
+                  name="avatar"
+                  value={editForm.avatar}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
                 <TextField
                   label="Couleur (hex)"
                   name="color"
@@ -585,6 +593,15 @@ export default function AlumniEditModal({
                   sx={{ mb: 2 }}
                 />
               </>
+            ) : (
+              <TextField
+                label="Avatar (lettres)"
+                name="avatar"
+                value={editForm.avatar}
+                fullWidth
+                sx={{ mb: 2 }}
+                InputProps={{ readOnly: true }}
+              />
             )}
             {alumni && alumni.createdAt && (
               <TextField
