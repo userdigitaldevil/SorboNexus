@@ -1,10 +1,10 @@
 const express = require("express");
-const Alumni = require("../models/Alumni");
-const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { isAdmin } = require("../middleware/auth");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 // Middleware to check JWT
 function auth(req, res, next) {
@@ -26,209 +26,148 @@ function isStrongPassword(password) {
   );
 }
 
-// Get all alumni (public)
+// GET all alumni
 router.get("/", async (req, res) => {
-  const alumni = await Alumni.find();
-  res.json(alumni);
-});
-
-// Get one alumni (public)
-router.get("/:id", async (req, res) => {
-  const alumni = await Alumni.findById(req.params.id);
-  res.json(alumni);
-});
-
-// Update alumni (admin or self)
-router.put("/:id", async (req, res) => {
-  console.log("PUT /api/alumni/:id route hit");
   try {
-    // Authenticate user
-    const authHeader = req.headers.authorization;
-    if (!authHeader)
-      return res.status(401).json({ error: "No token provided" });
-    const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // Allow if admin or owner of alumni card
-    if (!decoded.isAdmin && decoded.alumniId !== req.params.id) {
-      return res.status(403).json({ error: "Forbidden" });
-    }
-    console.log("[PUT /api/alumni/:id] req.params.id =", req.params.id);
-    console.log("[PUT /api/alumni/:id] req.body =", req.body);
-
-    // Handle password change if provided
-    if (req.body.newPassword) {
-      // Validate password strength
-      if (!isStrongPassword(req.body.newPassword)) {
-        return res.status(400).json({
-          error:
-            "Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole.",
-        });
-      }
-
-      // Find the user associated with this alumni
-      const user = await User.findOne({ alumni: req.params.id });
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      // Hash the new password
-      const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
-
-      // Update the user's password
-      await User.findByIdAndUpdate(user._id, { password: hashedPassword });
-      console.log("[PUT /api/alumni/:id] Password updated for user:", user._id);
-    }
-
-    // Only pick allowed fields (excluding password fields)
-    const allowedFields = [
-      "name",
-      "degree",
-      "position",
-      "field",
-      "gradient",
-      "color",
-      "linkedin",
-      "email",
-      "avatar",
-      "isAdmin",
-      "profile",
-      "conseil",
-      "hidden",
-      "nationalities",
-      "stagesWorkedContestsExtracurriculars",
-      "accountCreationDate",
-      "futureGoals",
-      "anneeFinL3",
-    ];
-    const update = {};
-    for (const key of allowedFields) {
-      if (req.body[key] !== undefined) update[key] = req.body[key];
-    }
-    // Debug: log the update object
-    console.log("Backend update object:", update);
-    // Log before update
-    const before = await Alumni.findById(req.params.id);
-    console.log("[PUT /api/alumni/:id] BEFORE UPDATE:", before);
-    const alumni = await Alumni.findByIdAndUpdate(
-      req.params.id,
-      { $set: update },
-      { new: true, runValidators: true }
-    );
-    // Log after update
-    console.log("[PUT /api/alumni/:id] AFTER UPDATE:", alumni);
-    if (!alumni) return res.status(404).json({ error: "Alumni not found" });
+    const alumni = await prisma.alumni.findMany({
+      include: { grades: true, schoolsApplied: true },
+    });
     res.json(alumni);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: "Failed to fetch alumni" });
   }
 });
 
-// Create alumni (admin only)
-router.post("/", auth, async (req, res) => {
-  if (!req.user.isAdmin) return res.status(403).json({ error: "Forbidden" });
+// GET single alumni by ID
+router.get("/:id", async (req, res) => {
   try {
+    const alumni = await prisma.alumni.findUnique({
+      where: { id: parseInt(req.params.id) },
+      include: { grades: true, schoolsApplied: true, users: true },
+    });
+    if (!alumni) return res.status(404).json({ error: "Alumni not found" });
+    // If there is a user, attach the username (first user for now)
+    let username = null;
+    if (alumni.users && alumni.users.length > 0) {
+      username = alumni.users[0].username;
+    }
+    res.json({ ...alumni, username });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch alumni" });
+  }
+});
+
+// UPDATE alumni by ID (admin only)
+router.put("/:id", isAdmin, async (req, res) => {
+  try {
+    // Destructure and remove non-Alumni fields
     const {
+      grades,
+      schoolsApplied,
+      updatedAt,
       username,
-      password,
-      isAdmin: isAdminNewUser = false,
+      newPassword,
       ...alumniData
     } = req.body;
-    if (!username || !password) {
-      console.error("[Alumni POST] Missing username or password");
-      return res
-        .status(400)
-        .json({ error: "Username and password are required" });
+    // Remove any forbidden fields from alumniData
+    const forbiddenFields = ["username", "newPassword", "password", "users"];
+    for (const field of forbiddenFields) {
+      if (alumniData.hasOwnProperty(field)) {
+        delete alumniData[field];
+      }
     }
-    // Password strength check
-    if (!isStrongPassword(password)) {
-      return res.status(400).json({
-        error:
-          "Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole.",
-      });
-    }
-    // Check for duplicate username
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      console.error("[Alumni POST] Username already exists:", username);
-      return res.status(409).json({ error: "Username already exists" });
-    }
-    // Create Alumni first
-    let alumni;
-    try {
-      alumni = await Alumni.create(alumniData);
-      console.log("[Alumni POST] Alumni created:", alumni._id);
-    } catch (err) {
-      console.error("[Alumni POST] Error creating Alumni:", err);
-      return res
-        .status(500)
-        .json({ error: "Failed to create Alumni", details: err.message });
-    }
-    // Hash password
-    let hash;
-    try {
-      hash = await bcrypt.hash(password, 10);
-      console.log("[Alumni POST] Password hashed");
-    } catch (err) {
-      console.error("[Alumni POST] Error hashing password:", err);
-      await Alumni.findByIdAndDelete(alumni._id);
-      return res
-        .status(500)
-        .json({ error: "Failed to hash password", details: err.message });
-    }
-    // Create User linked to Alumni
-    let user;
-    try {
-      user = await User.create({
-        username,
-        password: hash,
-        isAdmin: isAdminNewUser,
-        alumni: alumni._id,
-      });
-      console.log("[Alumni POST] User created:", user._id);
-    } catch (err) {
-      console.error("[Alumni POST] Error creating User:", err);
-      await Alumni.findByIdAndDelete(alumni._id);
-      return res
-        .status(500)
-        .json({ error: "Failed to create User", details: err.message });
-    }
-    res.json({ alumni, user });
-  } catch (err) {
-    console.error("[Alumni POST] Unexpected error:", err);
-    res.status(500).json({ error: "Unexpected error", details: err.message });
-  }
-});
-
-// TEMPORARY: Test user creation directly
-router.post("/test-user", async (req, res) => {
-  try {
-    const { username, password, isAdmin = false, alumni } = req.body;
-    const bcrypt = require("bcryptjs");
-    const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({
-      username,
-      password: hash,
-      isAdmin,
-      alumni,
+    // Update alumni
+    const alumni = await prisma.alumni.update({
+      where: { id: parseInt(req.params.id) },
+      data: {
+        ...alumniData,
+        grades: grades
+          ? {
+              deleteMany: {},
+              create: grades,
+            }
+          : undefined,
+        schoolsApplied: schoolsApplied
+          ? {
+              deleteMany: {},
+              create: schoolsApplied,
+            }
+          : undefined,
+      },
+      include: { grades: true, schoolsApplied: true, users: true },
     });
-    res.json({ user });
+    // Update username and/or password if provided (for first user)
+    if (username || newPassword) {
+      if (!alumni.users || alumni.users.length === 0) {
+        return res.status(400).json({
+          error:
+            "No user found for this alumni to update username or password.",
+        });
+      }
+      const userId = alumni.users[0].id;
+      const userUpdate = {};
+      if (username) userUpdate.username = username;
+      if (newPassword) {
+        if (!isStrongPassword(newPassword)) {
+          return res
+            .status(400)
+            .json({ error: "Le mot de passe n'est pas assez fort." });
+        }
+        userUpdate.password = await bcrypt.hash(newPassword, 10);
+      }
+      await prisma.user.update({
+        where: { id: userId },
+        data: userUpdate,
+      });
+    }
+    res.json(alumni);
   } catch (err) {
-    console.error("User creation error:", err);
-    res.status(500).json({ error: err.message, details: err });
+    console.error("Alumni update error:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// Delete alumni (admin only)
+// CREATE new alumni (admin only)
+router.post("/", isAdmin, async (req, res) => {
+  try {
+    const { grades, schoolsApplied, username, password, ...alumniData } =
+      req.body;
+    let userData = undefined;
+    if (username && password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      userData = {
+        create: {
+          username,
+          password: hashedPassword,
+          isAdmin: alumniData.isAdmin || false,
+        },
+      };
+    }
+    const alumni = await prisma.alumni.create({
+      data: {
+        ...alumniData,
+        grades: grades ? { create: grades } : undefined,
+        schoolsApplied: schoolsApplied ? { create: schoolsApplied } : undefined,
+        users: userData,
+      },
+      include: { users: true },
+    });
+    res.status(201).json(alumni);
+  } catch (err) {
+    console.error("[ERROR] Failed to create alumni:", err);
+    res.status(500).json({ error: err.message || "Failed to create alumni" });
+  }
+});
+
+// DELETE alumni by ID (admin only)
 router.delete("/:id", isAdmin, async (req, res) => {
   try {
-    // Delete the alumni
-    const alumni = await Alumni.findByIdAndDelete(req.params.id);
-    if (!alumni) return res.status(404).json({ message: "Alumni not found" });
-    // Delete the associated user
-    await User.deleteOne({ alumni: req.params.id });
-    res.json({ message: "Deleted" });
+    await prisma.alumni.delete({
+      where: { id: parseInt(req.params.id) },
+    });
+    res.json({ message: "Alumni deleted" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: "Failed to delete alumni" });
   }
 });
 
@@ -240,11 +179,10 @@ router.patch("/:id/hidden", auth, async (req, res) => {
       return res.status(403).json({ error: "Forbidden" });
     }
     const { hidden } = req.body;
-    const alumni = await Alumni.findByIdAndUpdate(
-      req.params.id,
-      { hidden: !!hidden },
-      { new: true }
-    );
+    const alumni = await prisma.alumni.update({
+      where: { id: parseInt(req.params.id) },
+      data: { hidden: !!hidden },
+    });
     if (!alumni) return res.status(404).json({ error: "Not found" });
     res.json(alumni);
   } catch (err) {
