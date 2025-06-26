@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 // Enhanced token validation
 function validateToken(token) {
@@ -33,7 +34,10 @@ async function isAdmin(req, res, next) {
       return res.status(401).json({ error: "Invalid token" });
     }
 
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: { id: true, isAdmin: true },
+    });
     if (!user || !user.isAdmin) {
       return res.status(403).json({ error: "Admin access required" });
     }
@@ -52,7 +56,7 @@ async function isAdmin(req, res, next) {
   }
 }
 
-// User authentication middleware (for alumni editing their own profiles)
+// Authenticated user middleware
 async function isAuthenticated(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
@@ -67,9 +71,10 @@ async function isAuthenticated(req, res, next) {
       return res.status(401).json({ error: "Invalid token" });
     }
 
-    const user = await User.findById(decoded.id)
-      .select("-password")
-      .populate("alumni");
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: { id: true, isAdmin: true },
+    });
     if (!user) {
       return res.status(401).json({ error: "User not found" });
     }
@@ -77,13 +82,7 @@ async function isAuthenticated(req, res, next) {
     req.user = user;
     next();
   } catch (error) {
-    console.error("Auth error:", error.message);
-    if (error.message === "Token expired") {
-      return res.status(401).json({ error: "Token expired" });
-    }
-    if (error.message === "Invalid token") {
-      return res.status(401).json({ error: "Invalid token" });
-    }
+    req.user = null;
     res.status(500).json({ error: "Authentication error" });
   }
 }
@@ -105,9 +104,10 @@ async function optionalAuth(req, res, next) {
       return next();
     }
 
-    const user = await User.findById(decoded.id)
-      .select("-password")
-      .populate("alumni");
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      include: { alumni: true },
+    });
     req.user = user || null;
     next();
   } catch (error) {

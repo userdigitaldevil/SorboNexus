@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Alumni {
+  id        Int      @id @default(autoincrement())
+  name      String
+  degree    String
+  position  String
+  field     String
+  gradient  String
+  color     String
+  linkedin  String
+  email     String
+  avatar    String
+  isAdmin   Boolean
+  conseil   String
+  hidden    Boolean  @default(false)
+  nationalities String[]
+  stagesWorkedContestsExtracurriculars String
+  accountCreationDate DateTime @default(now())
+  futureGoals String
+  anneeFinL3 String
+
+  profileEmail         String
+  profileLinkedin      String
+  profileGrades        Json
+  profileCurrentPosition String
+  profileSchoolsApplied SchoolApplied[]
+
+  users     User[]    @relation("AlumniUsers")
+}
+
+model SchoolApplied {
+  id        Int    @id @default(autoincrement())
+  name      String
+  status    String
+  alumniId  Int
+  alumni    Alumni @relation(fields: [alumniId], references: [id])
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  username  String  @unique
+  password  String
+  isAdmin   Boolean @default(false)
+  alumniId  Int?
+  alumni    Alumni? @relation(fields: [alumniId], references: [id], name: "AlumniUsers")
+} 

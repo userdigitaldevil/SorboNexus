@@ -10,6 +10,7 @@ import Conseils from "./pages/Conseils";
 import Alumnis from "./pages/Alumnis";
 import LiensUtiles from "./pages/LiensUtiles";
 import Connexion from "./pages/Connexion";
+import { AlumniEditModalProvider } from "./components/AlumniEditModalContext";
 
 // Create a dark theme inspired by Cursor AI
 const theme = createTheme({
@@ -98,20 +99,22 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <div>
-          <Navbar />
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/ressources" element={<Ressources />} />
-              <Route path="/conseils" element={<Conseils />} />
-              <Route path="/alumnis" element={<Alumnis />} />
-              <Route path="/liens-utiles" element={<LiensUtiles />} />
-              <Route path="/connexion" element={<Connexion />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+        <AlumniEditModalProvider>
+          <div>
+            <Navbar />
+            <main>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/ressources" element={<Ressources />} />
+                <Route path="/conseils" element={<Conseils />} />
+                <Route path="/alumnis" element={<Alumnis />} />
+                <Route path="/liens-utiles" element={<LiensUtiles />} />
+                <Route path="/connexion" element={<Connexion />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </AlumniEditModalProvider>
       </Router>
     </ThemeProvider>
   );

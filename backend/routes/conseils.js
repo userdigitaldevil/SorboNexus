@@ -1,16 +1,16 @@
 const express = require("express");
-const Alumni = require("../models/Alumni");
+// Removed: const Alumni = require("../models/Alumni");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 const router = express.Router();
 
 // GET /api/conseils - return all conseils from alumni
 router.get("/", async (req, res) => {
   try {
-    const alumni = await Alumni.find();
-    const conseils = alumni.map((a) => ({
-      name: a.name,
-      conseil: a.conseil,
-    }));
-    res.json(conseils);
+    const alumni = await prisma.alumni.findMany({
+      select: { name: true, conseil: true },
+    });
+    res.json(alumni);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

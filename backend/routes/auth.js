@@ -2,9 +2,10 @@ console.log("=== USING AUTH.JS FROM:", __filename);
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-const Alumni = require("../models/Alumni");
+const { isAdmin } = require("../middleware/auth");
 const router = express.Router();
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 // Register (disabled by admin)
 router.post("/register", (req, res) => {
@@ -19,9 +20,21 @@ router.post("/login", async (req, res) => {
   try {
     console.log("Login attempt:", req.body);
     const { username, password } = req.body;
-    const user = await User.findOne({ username }).populate("alumni");
+    const user = await prisma.user.findUnique({
+      where: { username },
+      include: {
+        alumni: {
+          include: {
+            grades: true,
+            schoolsApplied: true,
+          },
+        },
+      },
+    });
     console.log("DEBUG: user =", user);
-    if (!user) return res.status(400).json({ error: "Invalid credentials" });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    }
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(400).json({ error: "Invalid credentials" });
     console.log("User found:", user);
@@ -31,16 +44,49 @@ router.post("/login", async (req, res) => {
       "type:",
       typeof user.alumni
     );
-    if (user.alumni && typeof user.alumni === "object" && user.alumni._id) {
-      console.log("DEBUG: user.alumni._id =", user.alumni._id);
+    if (user.alumni && typeof user.alumni === "object" && user.alumni.id) {
+      console.log("DEBUG: user.alumni.id =", user.alumni.id);
     }
+    const safeUser = {
+      id: user.id,
+      username: user.username,
+      isAdmin: user.isAdmin,
+      alumni: user.alumni
+        ? {
+            id: user.alumni.id,
+            name: user.alumni.name,
+            degree: user.alumni.degree,
+            position: user.alumni.position,
+            field: user.alumni.field,
+            gradient: user.alumni.gradient,
+            color: user.alumni.color,
+            linkedin: user.alumni.linkedin,
+            email: user.alumni.email,
+            avatar: user.alumni.avatar,
+            isAdmin: user.alumni.isAdmin,
+            conseil: user.alumni.conseil,
+            nationalities: user.alumni.nationalities,
+            updatedAt: user.alumni.updatedAt,
+            stagesWorkedContestsExtracurriculars:
+              user.alumni.stagesWorkedContestsExtracurriculars,
+            accountCreationDate: user.alumni.accountCreationDate,
+            hidden: user.alumni.hidden,
+            futureGoals: user.alumni.futureGoals,
+            anneeFinL3: user.alumni.anneeFinL3,
+            grades: user.alumni.grades,
+            schoolsApplied: user.alumni.schoolsApplied,
+          }
+        : null,
+    };
     const token = jwt.sign(
       {
-        id: user._id,
-        isAdmin: user.isAdmin,
+        id: safeUser.id,
+        isAdmin: safeUser.isAdmin,
         alumniId:
-          user.alumni && typeof user.alumni === "object" && user.alumni._id
-            ? user.alumni._id
+          safeUser.alumni &&
+          typeof safeUser.alumni === "object" &&
+          safeUser.alumni.id
+            ? safeUser.alumni.id
             : null,
       },
       process.env.JWT_SECRET,
@@ -48,11 +94,7 @@ router.post("/login", async (req, res) => {
     );
     res.json({
       token,
-      user: {
-        username: user.username,
-        isAdmin: user.isAdmin,
-        alumni: user.alumni,
-      },
+      user: safeUser,
     });
   } catch (err) {
     console.error("Login error:", err);

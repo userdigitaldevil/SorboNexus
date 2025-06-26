@@ -23,12 +23,14 @@ import {
   Link as MuiLink,
   Avatar,
   Rating,
+  Alert,
 } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import ReactMarkdown from "react-markdown";
 import FeatureCard from "../components/FeatureCard";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
 const features = [
   {
@@ -581,62 +583,60 @@ export default function Home() {
       </Box>
 
       {/* Hidden Profile Message */}
-      {alumniId && alumni.find((a) => a._id === alumniId)?.hidden && (
-        <motion.section
-          className="py-8 px-6 z-10 relative"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-        >
-          <Container maxWidth="lg">
-            <Box
-              sx={{
-                background: "rgba(239, 68, 68, 0.1)",
-                border: "1px solid rgba(239, 68, 68, 0.3)",
-                borderRadius: 3,
-                p: 3,
-                textAlign: "center",
-                backdropFilter: "blur(10px)",
-              }}
+      {alumniId &&
+        alumni.find(
+          (a) =>
+            String(a._id) === String(alumniId) ||
+            String(a.id) === String(alumniId)
+        )?.hidden && (
+          <motion.section
+            className="py-8 px-6 z-10 relative"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+          >
+            <Container
+              maxWidth="lg"
+              sx={{ display: "flex", justifyContent: "center" }}
             >
-              <Typography
-                variant="body1"
+              <Alert
+                severity="warning"
+                icon={false}
                 sx={{
-                  color: "#ef4444",
+                  background: "rgba(239, 68, 68, 0.13)",
+                  border: "1.5px solid #ef4444",
+                  color: "#b91c1c",
                   fontWeight: 600,
-                  mb: 1,
-                }}
-              >
-                Votre profil est caché
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "rgba(239, 68, 68, 0.8)",
+                  borderRadius: 2,
                   mb: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  p: 2,
+                  fontSize: { xs: "0.95rem", md: "1.1rem" },
+                  maxWidth: 600,
+                  mx: "auto",
+                }}
+                iconMapping={{
+                  warning: (
+                    <WarningAmberIcon
+                      sx={{ mr: 1, fontSize: 28, color: "#ef4444" }}
+                    />
+                  ),
                 }}
               >
-                Modifier votre carte pour l'afficher aux autres utilisateurs
-              </Typography>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => navigate("/alumnis?editSelf=1")}
-                sx={{
-                  color: "#ef4444",
-                  borderColor: "#ef4444",
-                  "&:hover": {
-                    borderColor: "#dc2626",
-                    backgroundColor: "rgba(239, 68, 68, 0.1)",
-                  },
-                }}
-              >
-                Modifier ma carte
-              </Button>
-            </Box>
-          </Container>
-        </motion.section>
-      )}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <WarningAmberIcon
+                    sx={{ fontSize: 24, color: "#ef4444", mr: 1 }}
+                  />
+                  Votre profil est caché parce que vous avez choisi de le
+                  masquer, ou parce qu'un administrateur l'a masqué
+                  (informations incomplètes).
+                </Box>
+              </Alert>
+            </Container>
+          </motion.section>
+        )}
 
       {/* Features Section */}
       <Box
