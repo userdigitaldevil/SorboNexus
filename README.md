@@ -1,10 +1,10 @@
 # SorboNexus
 
 > **Project History:**
-> This is the second version of the SorboNexus repository. The project was initially started as a static website. It has now been fully migrated to a modern React frontend, and a backend (Node.js/Express + MongoDB) has been added to replace local/static data with a dynamic API and database.
+> This is the second version of the SorboNexus repository. The project was initially started as a static website on another repo that I have made privaate now. It has now been fully migrated to a modern React frontend, and a backend (Node.js/Express + MongoDB) has been added to replace local/static data with a dynamic API and database.
 >
 > **Author & Mission:**
-> Developed by Seth Aguila as a personal project to help students fight the information asymmetry and ensure equal access to academic and professional resources.
+> Developed by Seth Aguila as a personal initiative during the summer following his first year at Sorbonne Université, this project aims to empower students by bridging information gaps and promoting equal access to academic and professional resources.
 
 SorboNexus is a modern web platform for students and alumni of Sorbonne University. It provides a collaborative space to access resources, connect with alumni, share advice, and discover useful links and events.
 
@@ -20,18 +20,18 @@ SorboNexus is a modern web platform for students and alumni of Sorbonne Universi
 
 ---
 
-## Getting Started
+## Getting Started (Local Development)
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18+ recommended)
 - [npm](https://www.npmjs.com/)
-- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account or local MongoDB instance
+- [PostgreSQL](https://www.postgresql.org/) database (local or Railway)
 
 ### 1. Clone the Repository
 
 ```bash
-git clone git@github.com:userdigitaldevil/SorboNexus.git
+git clone https://github.com/yourusername/SorboNexus.git
 cd SorboNexus
 ```
 
@@ -47,13 +47,14 @@ cd SorboNexus
    ```
 3. Create a `.env` file in the `backend/` directory with the following content:
    ```env
-   MONGO_URI=your_mongodb_connection_string
+   DATABASE_URL=your_postgres_connection_string
+   JWT_SECRET=your_jwt_secret
    ```
-   Replace `your_mongodb_connection_string` with your actual MongoDB URI.
-4. (Optional) Seed the database with sample alumni and user data:
+   Replace `your_postgres_connection_string` with your actual PostgreSQL connection string and `your_jwt_secret` with a strong JWT secret.
+4. Run migrations and seed data:
    ```bash
+   npx prisma migrate dev
    node seedAlumni.js
-   node seedUsers.js
    ```
 5. Start the backend server:
    ```bash
@@ -79,11 +80,48 @@ cd SorboNexus
 
 ---
 
-## Usage
+## Deployment on Railway
 
-- Open your browser and go to the frontend URL (shown in the terminal, e.g., http://localhost:5173 or http://localhost:5178).
-- The frontend communicates with the backend API at `http://localhost:5001`.
-- You can log in as an admin or user (see `backend/alumniUsers.json` for sample credentials if seeded).
+### 1. Push Your Code to GitHub
+
+```bash
+git add .
+git commit -m "Ready for Railway deployment"
+git push origin main
+```
+
+### 2. Deploy Backend on Railway
+
+- Create a new Railway project and add a service from your repo.
+- Set the **Root Directory** to `backend/`.
+- **Install Command:** `npm install`
+- **Start Command:** `node index.js`
+- **Environment Variables:**
+  - `DATABASE_URL` (from Railway Postgres plugin)
+  - `JWT_SECRET` (set a strong secret)
+  - `VITE_API_URL` (set to your backend's Railway URL)
+
+### 3. Deploy Frontend on Railway
+
+- Add another service from your repo.
+- **Root Directory:** `/` (or `/src` if your Vite config is there)
+- **Install Command:** `npm install`
+- **Build Command:** `npm run build`
+- **Start Command:** `npm run preview` or `npx serve -s dist`
+- **Environment Variables:**
+  - `VITE_API_URL` (set to your backend's Railway URL)
+
+### 4. Run Prisma Migrations on Railway
+
+- In the Railway backend service shell:
+  ```bash
+  npx prisma migrate deploy
+  ```
+
+### 5. Test Your Deployment
+
+- Visit your Railway frontend URL and test the app.
+- Check backend logs for errors.
 
 ---
 
@@ -91,13 +129,12 @@ cd SorboNexus
 
 ```
 SorboNexus/
-  backend/         # Express.js backend API
-    models/        # Mongoose models
+  backend/         # Express.js backend API (Prisma/PostgreSQL)
+    prisma/        # Prisma schema and migrations
     routes/        # API routes (auth, alumni, conseils)
     seedAlumni.js  # Alumni data seeder
-    seedUsers.js   # User data seeder
-    .env           # MongoDB connection string (not committed)
-  src/             # React frontend
+    .env           # PostgreSQL connection string (not committed)
+  src/             # React frontend (Vite)
     components/    # Shared UI components
     pages/         # Main app pages (Home, Alumnis, Conseils, etc.)
     data/          # Sample/mock data (for development)
@@ -109,9 +146,11 @@ SorboNexus/
 
 ## Environment Variables
 
-- **Backend**: Requires a `.env` file in `backend/` with:
-  - `MONGO_URI` (your MongoDB connection string)
-- **Frontend**: No environment variables required by default, but you can add Vite env variables as needed.
+- **Backend**: `.env` in `backend/`:
+  - `DATABASE_URL` (PostgreSQL connection string)
+  - `JWT_SECRET` (JWT signing secret)
+- **Frontend**: `.env` in `/`:
+  - `VITE_API_URL` (URL of your backend API)
 
 ---
 

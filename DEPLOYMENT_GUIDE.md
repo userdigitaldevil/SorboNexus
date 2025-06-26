@@ -1,231 +1,121 @@
-# 🚀 SorboNexus Full-Stack Deployment Guide
+# 🚀 SorboNexus Railway Deployment Guide
 
 ## Overview
 
-This guide will deploy your SorboNexus application with **real-time updates** using Render.com (free tier).
+This guide will help you deploy your SorboNexus full-stack application (React/Vite frontend + Node.js/Express/Prisma backend) on **Railway**, using Railway's managed PostgreSQL database.
+
+---
 
 ## Prerequisites
 
 - GitHub account
-- MongoDB Atlas account (free)
-- Render.com account (free)
+- Railway account ([railway.app](https://railway.app/))
+- Your code pushed to GitHub
+- Railway PostgreSQL database (already set up)
 
 ---
 
-## Step 1: Set up MongoDB Atlas
+## Step 1: Prepare Your Code
 
-### 1.1 Create MongoDB Atlas Account
-
-1. Go to [mongodb.com/atlas](https://mongodb.com/atlas)
-2. Sign up for free account
-3. Create a free cluster (M0 tier)
-
-### 1.2 Get Connection String
-
-1. Click "Connect" on your cluster
-2. Choose "Connect your application"
-3. Copy the connection string
-4. Replace `<password>` with your database password
-5. Replace `<dbname>` with `sorbonexus`
-
-**Example:**
-
-```
-mongodb+srv://username:password@cluster.mongodb.net/sorbonexus?retryWrites=true&w=majority
-```
+1. **Push your latest code to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Prepare for Railway deployment"
+   git push origin main
+   ```
+2. **Check your backend `.env` file:**
+   - Should use `DATABASE_URL` for PostgreSQL and `JWT_SECRET` for authentication.
 
 ---
 
-## Step 2: Prepare Your Code
+## Step 2: Create a Railway Project
 
-### 2.1 Push to GitHub
-
-```bash
-git add .
-git commit -m "Prepare for deployment"
-git push origin main
-```
-
-### 2.2 Environment Variables
-
-Create `.env` files for local development:
-
-**Backend/.env:**
-
-```
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/sorbonexus?retryWrites=true&w=majority
-JWT_SECRET=your-super-secret-jwt-key-here
-```
-
-**Frontend/.env:**
-
-```
-VITE_API_URL=http://localhost:5001
-```
+1. Go to [railway.app](https://railway.app/) and log in.
+2. Click **New Project** → **Deploy from GitHub repo**.
+3. Select your SorboNexus repository.
 
 ---
 
-## Step 3: Deploy to Render
+## Step 3: Deploy the Backend Service
 
-### 3.1 Deploy Backend First
-
-1. **Go to Render Dashboard:**
-
-   - Visit [render.com](https://render.com)
-   - Sign up/Login
-   - Click "New +" → "Web Service"
-
-2. **Connect Repository:**
-
-   - Connect your GitHub repo
-   - Select the repository
-
-3. **Configure Backend (EXACT SETTINGS):**
-
-   - **Name:** `sorbonexus-backend`
-   - **Environment:** `Node`
-   - **Root Directory:** Leave empty
-   - **Build Command:** `cd backend && npm install`
-   - **Start Command:** `cd backend && npm start`
-   - **Plan:** `Free`
-
-4. **Environment Variables:**
-
-   - Click "Environment" tab
-   - Add these variables:
-     - `MONGO_URI`: Your MongoDB connection string
-     - `JWT_SECRET`: A random secret string
-     - `NODE_ENV`: `production`
-
-5. **Deploy:**
-   - Click "Create Web Service"
-   - Wait for deployment (2-3 minutes)
-   - Copy the URL (e.g., `https://sorbonexus-backend.onrender.com`)
-
-### 3.2 Deploy Frontend
-
-1. **Create New Web Service:**
-
-   - Click "New +" → "Web Service"
-   - Connect same GitHub repo
-
-2. **Configure Frontend:**
-
-   - **Name:** `sorbonexus-frontend`
-   - **Environment:** `Node`
-   - **Root Directory:** Leave empty
-   - **Build Command:** `npm install && npm run build`
-   - **Start Command:** `npm run preview`
-   - **Plan:** `Free`
-
-3. **Environment Variables:**
-
-   - `VITE_API_URL`: Your backend URL (e.g., `https://sorbonexus-backend.onrender.com`)
-
-4. **Deploy:**
-   - Click "Create Web Service"
-   - Wait for deployment
+1. **Add a new service** → **Deploy from GitHub**.
+2. **Root Directory:** `backend/`
+3. **Install Command:** `npm install`
+4. **Start Command:** `node index.js`
+5. **Environment Variables:**
+   - `DATABASE_URL` (from your Railway Postgres plugin)
+   - `JWT_SECRET` (set a strong secret)
+   - `VITE_API_URL` (set to your backend Railway URL)
+6. Click **Deploy**.
 
 ---
 
-## Step 4: Test Your Deployment
+## Step 4: Deploy the Frontend Service
 
-### 4.1 Test Backend
-
-- Visit your backend URL + `/` (e.g., `https://sorbonexus-backend.onrender.com/`)
-- Should see "API running!"
-
-### 4.2 Test Frontend
-
-- Visit your frontend URL
-- Test login functionality
-- Test adding alumni (should work in real-time!)
+1. **Add a new service** → **Deploy from GitHub**.
+2. **Root Directory:** `/` (or `/src` if your Vite config is there)
+3. **Install Command:** `npm install`
+4. **Build Command:** `npm run build`
+5. **Start Command:** `npm run preview` or `npx serve -s dist`
+6. **Environment Variables:**
+   - `VITE_API_URL` (set to your backend's Railway URL)
+7. Click **Deploy**.
 
 ---
 
-## Step 5: Set up Custom Domain (Optional)
+## Step 5: Run Prisma Migrations on Railway
 
-1. **In Render Dashboard:**
+1. In your Railway backend service, open the **Shell** tab.
+2. Run:
+   ```bash
+   npx prisma migrate deploy
+   ```
+   This applies your migrations to the Railway Postgres database.
 
-   - Go to your frontend service
-   - Click "Settings" → "Custom Domains"
-   - Add your domain
+---
 
-2. **Update DNS:**
-   - Point your domain to Render's servers
-   - Wait for DNS propagation
+## Step 6: Test Your Deployment
+
+- Visit your Railway frontend URL and test the app.
+- Check backend logs for errors.
+- Make sure the frontend can talk to the backend and the backend can talk to the database.
+
+---
+
+## Step 7: (Optional) Set Up a Custom Domain
+
+- In Railway, go to your frontend service and add a custom domain if you want.
 
 ---
 
 ## Troubleshooting
 
-### Common Issues:
+- **Backend won't start?**
+  - Check your environment variables (especially `DATABASE_URL` and `JWT_SECRET`).
+  - Check logs in the Railway dashboard.
+- **Frontend can't connect to backend?**
+  - Make sure `VITE_API_URL` is set to your backend's Railway URL.
+  - Check CORS settings in your backend.
+- **Migrations not working?**
+  - Make sure you run `npx prisma migrate deploy` in the Railway backend shell.
 
-1. **Backend won't start:**
+---
 
-   - ✅ **SOLUTION**: Use exact settings above
-   - Root Directory: Leave empty
-   - Build Command: `cd backend && npm install`
-   - Start Command: `cd backend && npm start`
-   - Check MongoDB connection string
-   - Verify environment variables
+## Example Environment Variables
 
-2. **Frontend can't connect to backend:**
+**Backend (`backend/.env`):**
 
-   - Verify `VITE_API_URL` is correct
-   - Check CORS settings
-   - Ensure backend is running
-
-3. **Real-time updates not working:**
-   - Verify both services are deployed as web services (not static sites)
-   - Check API calls in browser console
-   - Ensure environment variables are set correctly
-
-### Debug Commands:
-
-```bash
-# Check backend logs
-# Go to Render dashboard → Backend service → Logs
-
-# Check frontend logs
-# Go to Render dashboard → Frontend service → Logs
+```
+DATABASE_URL=postgresql://user:password@host:port/dbname
+JWT_SECRET=your_jwt_secret
 ```
 
-### ✅ **Working Configuration:**
+**Frontend (`.env`):**
 
-- **Backend Root Directory**: Empty
-- **Backend Build Command**: `cd backend && npm install`
-- **Backend Start Command**: `cd backend && npm start`
-- **Frontend Root Directory**: Empty
-- **Frontend Build Command**: `npm install && npm run build`
-- **Frontend Start Command**: `npm run preview`
+```
+VITE_API_URL=https://your-backend.up.railway.app
+```
 
 ---
 
-## Real-Time Updates ✅
-
-With this setup, when an admin adds a new alumni member:
-
-1. ✅ **Backend saves to MongoDB**
-2. ✅ **Frontend fetches updated data**
-3. ✅ **New cards appear immediately**
-4. ✅ **No manual rebuilds needed**
-
----
-
-## Cost
-
-- **MongoDB Atlas:** Free (512MB storage)
-- **Render:** Free (750 hours/month)
-- **Total:** $0/month
-
----
-
-## Next Steps
-
-1. Set up monitoring
-2. Add SSL certificates
-3. Configure backups
-4. Set up CI/CD pipeline
-
-Your SorboNexus application is now live with real-time updates! 🎉
+## Your SorboNexus app is now live on Railway! 🎉
