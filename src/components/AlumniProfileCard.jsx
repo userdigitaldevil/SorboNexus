@@ -12,13 +12,22 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Chip,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import { LinkedIn, Mail, Close } from "@mui/icons-material";
-import BusinessIcon from "@mui/icons-material/Business";
-import GradeIcon from "@mui/icons-material/Grade";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import CancelIcon from "@mui/icons-material/Cancel";
+import {
+  LinkedIn as LinkedInIcon,
+  Email as EmailIcon,
+  Grade as GradeIcon,
+  Business as BusinessIcon,
+  CheckCircleOutline as CheckCircleOutlineIcon,
+  Close as CloseIcon,
+} from "@mui/icons-material";
+import { renderTextWithLinks } from "../utils/textUtils";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function AlumniProfileCard({
   alum,
@@ -30,37 +39,6 @@ export default function AlumniProfileCard({
 }) {
   // Support both alum.profile and flat alum for backward compatibility
   const profile = alum.profile || alum;
-
-  // Helper to render conseil with clickable links and preserved formatting
-  function renderConseilWithLinks(text) {
-    if (!text) return null;
-    // Regex to match URLs
-    const urlRegex =
-      /(https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=%]+)|(www\.[\w\-._~:/?#[\]@!$&'()*+,;=%]+)/gi;
-    const parts = text.split(urlRegex);
-    return parts.map((part, i) => {
-      if (!part) return null;
-      if (part.match(urlRegex)) {
-        let href = part.startsWith("http") ? part : `https://${part}`;
-        return (
-          <a
-            key={i}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "#3b82f6",
-              textDecoration: "underline",
-              wordBreak: "break-all",
-            }}
-          >
-            {part}
-          </a>
-        );
-      }
-      return <span key={i}>{part}</span>;
-    });
-  }
 
   // Subtle glow for admin
   const adminGlow = alum.isAdmin
@@ -126,7 +104,7 @@ export default function AlumniProfileCard({
               transition: "all 0.2s ease",
             }}
           >
-            <Close sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }} />
+            <CloseIcon sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }} />
           </IconButton>
         )}
 
@@ -317,7 +295,7 @@ export default function AlumniProfileCard({
             <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
               {profile.email && (
                 <Button
-                  startIcon={<Mail />}
+                  startIcon={<EmailIcon />}
                   href={`mailto:${profile.email}`}
                   sx={{
                     color: "#3b82f6",
@@ -333,7 +311,7 @@ export default function AlumniProfileCard({
               )}
               {profile.linkedin && (
                 <Button
-                  startIcon={<LinkedIn />}
+                  startIcon={<LinkedInIcon />}
                   href={profile.linkedin}
                   target="_blank"
                   sx={{
@@ -561,73 +539,31 @@ export default function AlumniProfileCard({
               </Typography>
             )}
           </Box>
-          {/* Conseil section at the very bottom */}
+          {/* Conseil Section */}
           {alum.conseil && (
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 3 }}>
               <Typography
                 variant="subtitle2"
-                sx={{ color: "#3b82f6", fontWeight: 600, mb: 1 }}
+                sx={{ color: "#3b82f6", fontWeight: 700, mb: 1 }}
               >
                 Conseil
               </Typography>
               <Box
                 sx={{
-                  color: "rgba(255,255,255,0.85)",
-                  fontSize: "0.875rem",
-                  lineHeight: 1.6,
-                  whiteSpace: "pre-wrap",
+                  background: "rgba(59, 130, 246, 0.05)",
+                  borderRadius: 2,
+                  p: 2,
+                  fontSize: "1rem",
+                  color: "#fff",
+                  whiteSpace: "pre-line",
                   wordBreak: "break-word",
-                  "& p": {
-                    margin: "0.5rem 0",
-                  },
-                  "& ul, & ol": {
-                    margin: "0.5rem 0",
-                    paddingLeft: "1.5rem",
-                  },
-                  "& li": {
-                    margin: "0.25rem 0",
-                  },
-                  "& strong, & b": {
-                    fontWeight: 600,
-                    color: "#3b82f6",
-                  },
-                  "& em, & i": {
-                    fontStyle: "italic",
-                  },
-                  "& code": {
-                    backgroundColor: "rgba(59, 130, 246, 0.1)",
-                    padding: "0.125rem 0.25rem",
-                    borderRadius: "0.25rem",
-                    fontFamily: "monospace",
-                    fontSize: "0.8rem",
-                  },
-                  "& a": {
-                    color: "#3b82f6",
-                    textDecoration: "underline",
-                    "&:hover": {
-                      color: "#1e40af",
-                    },
-                  },
+                  fontFamily: "inherit",
+                  minHeight: 48,
                 }}
               >
-                {showFullConseil || !conseilIsLong ? (
-                  <ReactMarkdown>{alum.conseil}</ReactMarkdown>
-                ) : (
-                  <ReactMarkdown>{conseilPreview}</ReactMarkdown>
-                )}
-                {conseilIsLong && (
-                  <span
-                    style={{
-                      color: "#3b82f6",
-                      cursor: "pointer",
-                      marginLeft: 8,
-                      fontWeight: 600,
-                    }}
-                    onClick={() => setShowFullConseil((v) => !v)}
-                  >
-                    {showFullConseil ? "Réduire" : "Lire la suite"}
-                  </span>
-                )}
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {alum.conseil}
+                </ReactMarkdown>
               </Box>
             </Box>
           )}

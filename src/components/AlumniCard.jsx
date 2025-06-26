@@ -10,6 +10,8 @@ import {
 import { motion } from "framer-motion";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EmailIcon from "@mui/icons-material/Email";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const AlumniCard = ({ alum, index, onCardClick, adminGlow = {} }) => {
   return (
@@ -117,6 +119,27 @@ const AlumniCard = ({ alum, index, onCardClick, adminGlow = {} }) => {
           >
             {alum.position}
           </Typography>
+          {/* Conseil Preview (if present) */}
+          {alum.conseil && (
+            <Box
+              sx={{
+                mt: 1,
+                color: "rgba(255,255,255,0.85)",
+                fontSize: "0.92rem",
+                lineHeight: 1.5,
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+                fontFamily: "inherit",
+                minHeight: 32,
+                maxHeight: 64,
+                overflow: "hidden",
+              }}
+            >
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {alum.conseil}
+              </ReactMarkdown>
+            </Box>
+          )}
           <Box
             sx={{
               display: "flex",

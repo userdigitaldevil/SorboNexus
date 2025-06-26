@@ -47,6 +47,9 @@ import {
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { renderTextWithLinks } from "../utils/textUtils";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const tipsPerPage = 9;
 
@@ -354,37 +357,6 @@ export default function Conseils() {
     if (content.length <= PREVIEW_LENGTH) return content;
     return content.substring(0, PREVIEW_LENGTH) + "...";
   };
-
-  // Helper to render conseil with clickable links
-  function renderConseilWithLinks(text) {
-    if (!text) return null;
-    // Regex to match URLs
-    const urlRegex =
-      /(https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=%]+)|(www\.[\w\-._~:/?#[\]@!$&'()*+,;=%]+)/gi;
-    const parts = text.split(urlRegex);
-    return parts.map((part, i) => {
-      if (!part) return null;
-      if (part.match(urlRegex)) {
-        let href = part.startsWith("http") ? part : `https://${part}`;
-        return (
-          <a
-            key={i}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "#3b82f6",
-              textDecoration: "underline",
-              wordBreak: "break-all",
-            }}
-          >
-            {part}
-          </a>
-        );
-      }
-      return <span key={i}>{part}</span>;
-    });
-  }
 
   return (
     <Box sx={{ minHeight: "100vh", position: "relative", overflow: "hidden" }}>
@@ -742,18 +714,21 @@ export default function Conseils() {
                     <Typography
                       variant="body1"
                       sx={{
-                        color: "rgba(255, 255, 255, 0.85)",
-                        lineHeight: 1.7,
-                        fontSize: { xs: "0.85rem", md: "1.05rem" },
-                        mb: isLongContent(tip.content) ? { xs: 1.5, md: 2 } : 0,
-                        whiteSpace: "pre-wrap",
+                        color: "rgba(255,255,255,0.85)",
+                        fontSize: "0.95rem",
+                        lineHeight: 1.6,
+                        whiteSpace: "pre-line",
+                        wordBreak: "break-word",
+                        fontFamily: "inherit",
+                        minHeight: 48,
+                        mb: 1,
                       }}
                     >
-                      {expandedTips.has(tip.id)
-                        ? renderConseilWithLinks(tip.content)
-                        : renderConseilWithLinks(
-                            getPreviewContent(tip.content)
-                          )}
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {expandedTips.has(tip.id)
+                          ? tip.content
+                          : getPreviewContent(tip.content)}
+                      </ReactMarkdown>
                     </Typography>
                     {/* Expand/Collapse Button */}
                     {isLongContent(tip.content) && (
