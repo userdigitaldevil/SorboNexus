@@ -136,14 +136,39 @@ export default function Conseils() {
       (!tip.hidden || tip._id === alumniId || isAdmin)
   );
 
-  // Sort to put admins first
-  const sortedAlumniTips = filteredAlumniTips.sort((a, b) => {
-    // Admins first
-    if (a.isAdmin && !b.isAdmin) return -1;
-    if (!a.isAdmin && b.isAdmin) return 1;
-    // Then by name alphabetically
-    return a.author.localeCompare(b.author);
-  });
+  // Custom ordering: user first, then admins, then others
+  let userTip = null;
+  let adminTips = [];
+  let otherTips = [];
+  if (alumniId) {
+    userTip = filteredAlumniTips.find((tip) => tip._id === alumniId);
+    adminTips = filteredAlumniTips.filter(
+      (tip) => tip.isAdmin && tip._id !== alumniId
+    );
+    otherTips = filteredAlumniTips.filter(
+      (tip) => !tip.isAdmin && tip._id !== alumniId
+    );
+  } else {
+    adminTips = filteredAlumniTips.filter((tip) => tip.isAdmin);
+    otherTips = filteredAlumniTips.filter((tip) => !tip.isAdmin);
+  }
+  // Sort admins and others alphabetically by author
+  adminTips.sort((a, b) => a.author.localeCompare(b.author));
+  otherTips.sort((a, b) => a.author.localeCompare(b.author));
+
+  // Final ordered list
+  const orderedAlumniTips = [
+    ...(userTip ? [userTip] : []),
+    ...adminTips,
+    ...otherTips,
+  ];
+
+  // Pagination
+  const totalPages = Math.ceil(orderedAlumniTips.length / tipsPerPage);
+  const currentTips = orderedAlumniTips.slice(
+    (currentPage - 1) * tipsPerPage,
+    currentPage * tipsPerPage
+  );
 
   // Preview length for conseil content
   const PREVIEW_LENGTH = 200;
@@ -323,13 +348,6 @@ export default function Conseils() {
       console.error("Error updating alumni:", error);
     }
   };
-
-  const currentTips = sortedAlumniTips.slice(
-    (currentPage - 1) * tipsPerPage,
-    currentPage * tipsPerPage
-  );
-
-  const totalPages = Math.ceil(sortedAlumniTips.length / tipsPerPage);
 
   const isLongContent = (content) => content.length > PREVIEW_LENGTH;
 
@@ -591,6 +609,11 @@ export default function Conseils() {
                     minHeight: { xs: 80, md: 100 },
                     display: "flex",
                     alignItems: "center",
+                    opacity:
+                      tip._id === alumniId &&
+                      alumni.find((a) => a._id === alumniId)?.hidden
+                        ? 0.5
+                        : 1,
                     "&:hover": {
                       boxShadow: "0 4px 16px rgba(59, 130, 246, 0.10)",
                     },
