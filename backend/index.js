@@ -24,6 +24,7 @@ const corsOptions = {
           "https://www.sorbonexus.com",
           "https://sorbonexus-frontend.onrender.com",
           "https://sorbonexus-backend.onrender.com",
+          "https://sorbonexus-frontend-production-7763.up.railway.app",
         ]
       : [
           "http://localhost:5173",
