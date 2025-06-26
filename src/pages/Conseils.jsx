@@ -24,6 +24,7 @@ import {
   AccordionDetails,
   FormControlLabel,
   Checkbox,
+  Alert,
 } from "@mui/material";
 import {
   School as SchoolIcon,
@@ -43,6 +44,7 @@ import {
   Business as BusinessIcon,
   CheckCircleOutline as CheckCircleOutlineIcon,
   Cancel as CancelIcon,
+  WarningAmber as WarningAmberIcon,
 } from "@mui/icons-material";
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import { jwtDecode } from "jwt-decode";
@@ -135,25 +137,34 @@ export default function Conseils() {
     isAdmin: alum.isAdmin || false,
   }));
 
-  // Only include alumni with a non-empty conseil and not hidden
-  const filteredAlumniTips = alumniTips.filter(
+  // Only include alumni with a non-empty conseil and not hidden, or self, or admin
+  let filteredAlumniTips = alumniTips.filter(
     (tip) =>
       tip.conseil &&
       tip.conseil.trim().length > 0 &&
-      (!tip.hidden || tip._id === alumniId || isAdmin)
+      (!tip.hidden || tip._id === alumniId || tip.id === alumniId || isAdmin)
   );
+
+  // Remove hidden conseils of other users if not admin
+  if (!isAdmin) {
+    filteredAlumniTips = filteredAlumniTips.filter(
+      (tip) => !tip.hidden || tip._id === alumniId || tip.id === alumniId
+    );
+  }
 
   // Custom ordering: user first, then admins, then others
   let userTip = null;
   let adminTips = [];
   let otherTips = [];
   if (alumniId) {
-    userTip = filteredAlumniTips.find((tip) => tip._id === alumniId);
+    userTip = filteredAlumniTips.find(
+      (tip) => tip._id === alumniId || tip.id === alumniId
+    );
     adminTips = filteredAlumniTips.filter(
-      (tip) => tip.isAdmin && tip._id !== alumniId
+      (tip) => tip.isAdmin && tip._id !== alumniId && tip.id !== alumniId
     );
     otherTips = filteredAlumniTips.filter(
-      (tip) => !tip.isAdmin && tip._id !== alumniId
+      (tip) => !tip.isAdmin && tip._id !== alumniId && tip.id !== alumniId
     );
   } else {
     adminTips = filteredAlumniTips.filter((tip) => tip.isAdmin);
@@ -163,7 +174,7 @@ export default function Conseils() {
   adminTips.sort((a, b) => a.author.localeCompare(b.author));
   otherTips.sort((a, b) => a.author.localeCompare(b.author));
 
-  // Final ordered list
+  // Final ordered list: user first (if present), then admins, then others
   const orderedAlumniTips = [
     ...(userTip ? [userTip] : []),
     ...adminTips,
@@ -505,65 +516,59 @@ export default function Conseils() {
         </motion.div>
 
         {/* Hidden Profile Message */}
-        {alumniId && alumni.find((a) => a._id === alumniId)?.hidden && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-          >
-            <Box
-              sx={{
-                background: "rgba(239, 68, 68, 0.1)",
-                border: "1px solid rgba(239, 68, 68, 0.3)",
-                borderRadius: 3,
-                p: { xs: 2, md: 3 },
-                textAlign: "center",
-                backdropFilter: "blur(10px)",
-                mb: { xs: 3, md: 4 },
-              }}
+        {alumniId &&
+          alumni.find(
+            (a) =>
+              String(a._id) === String(alumniId) ||
+              String(a.id) === String(alumniId)
+          )?.hidden && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
             >
-              <Typography
-                variant="body1"
-                sx={{
-                  color: "#ef4444",
-                  fontWeight: 600,
-                  mb: 1,
-                  fontSize: { xs: "0.9rem", md: "1rem" },
-                }}
+              <Container
+                maxWidth="lg"
+                sx={{ display: "flex", justifyContent: "center" }}
               >
-                Votre profil est caché
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "rgba(239, 68, 68, 0.8)",
-                  mb: { xs: 1.5, md: 2 },
-                  fontSize: { xs: "0.8rem", md: "0.875rem" },
-                }}
-              >
-                Modifier votre carte pour l'afficher aux autres utilisateurs
-              </Typography>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => navigate("/alumnis?editSelf=1")}
-                sx={{
-                  color: "#ef4444",
-                  borderColor: "#ef4444",
-                  fontSize: { xs: "0.7rem", md: "0.875rem" },
-                  px: { xs: 2, md: 3 },
-                  py: { xs: 0.5, md: 1 },
-                  "&:hover": {
-                    borderColor: "#dc2626",
-                    backgroundColor: "rgba(239, 68, 68, 0.1)",
-                  },
-                }}
-              >
-                Modifier ma carte
-              </Button>
-            </Box>
-          </motion.div>
-        )}
+                <Alert
+                  severity="warning"
+                  icon={false}
+                  sx={{
+                    background: "rgba(239, 68, 68, 0.13)",
+                    border: "1.5px solid #ef4444",
+                    color: "#b91c1c",
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    mb: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    p: 2,
+                    fontSize: { xs: "0.95rem", md: "1.1rem" },
+                    maxWidth: 600,
+                    mx: "auto",
+                  }}
+                  iconMapping={{
+                    warning: (
+                      <WarningAmberIcon
+                        sx={{ mr: 1, fontSize: 28, color: "#ef4444" }}
+                      />
+                    ),
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <WarningAmberIcon
+                      sx={{ fontSize: 24, color: "#ef4444", mr: 1 }}
+                    />
+                    Votre profil est caché parce que vous avez choisi de le
+                    masquer, ou parce qu'un administrateur l'a masqué
+                    (informations incomplètes).
+                  </Box>
+                </Alert>
+              </Container>
+            </motion.div>
+          )}
 
         {/* Tips Grid */}
         <motion.div
@@ -595,8 +600,8 @@ export default function Conseils() {
                     display: "flex",
                     alignItems: "center",
                     opacity:
-                      tip._id === alumniId &&
-                      alumni.find((a) => a._id === alumniId)?.hidden
+                      (tip._id === alumniId || tip.id === alumniId) &&
+                      tip.hidden
                         ? 0.5
                         : 1,
                     "&:hover": {
