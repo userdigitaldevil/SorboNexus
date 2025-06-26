@@ -82,6 +82,7 @@ export default function Alumnis() {
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [alumni, setAlumni] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [shuffledOrder, setShuffledOrder] = useState(null);
 
   const filters = [
     "Tous",
@@ -102,6 +103,7 @@ export default function Alumnis() {
       const response = await fetch(`${process.env.VITE_API_URL}/api/alumni`);
       const data = await response.json();
       setAlumni(data);
+      setCurrentPage(1);
       setLoading(false);
       console.log("Fetched alumni:", data);
     } catch (error) {
@@ -250,61 +252,67 @@ export default function Alumnis() {
     filteredAlumni = [self, ...filteredAlumni];
   }
 
-  // Remove hidden cards of other users if not admin
-  if (!isAdmin) {
-    filteredAlumni = filteredAlumni.filter(
-      (alum) =>
-        !alum.hidden ||
-        String(alum._id) === String(alumniId) ||
-        String(alum.id) === String(alumniId)
-    );
+  // Update the main ordering logic before pagination:
+  let ordered = filteredAlumni;
+  let sethCardIdx = filteredAlumni.findIndex(
+    (a) => a.username && a.username.toLowerCase() === "sethaguila"
+  );
+  let sethCard = sethCardIdx > -1 ? filteredAlumni[sethCardIdx] : null;
+  let selfCardIdx = alumniId
+    ? filteredAlumni.findIndex(
+        (a) =>
+          String(a._id) === String(alumniId) ||
+          String(a.id) === String(alumniId)
+      )
+    : -1;
+  let selfCard = selfCardIdx > -1 ? filteredAlumni[selfCardIdx] : null;
+  if (alumniId && selfCard) {
+    // User signed in: self first, then sethaguila (if not self), then other admins, then all other non-hidden alumni
+    const isSelf = (a) => a.id === selfCard.id;
+    const isSeth = (a) => a.id === 26;
+    const isAdmin = (a) => a.isAdmin && !isSelf(a) && !isSeth(a);
+    const isOther = (a) => !isSelf(a) && !isSeth(a) && !a.isAdmin;
+    ordered = [
+      selfCard,
+      ...(filteredAlumni.find(isSeth) && !isSelf(filteredAlumni.find(isSeth))
+        ? [filteredAlumni.find(isSeth)]
+        : []),
+      ...filteredAlumni.filter(isAdmin),
+      ...filteredAlumni.filter(isOther),
+    ];
+  } else {
+    // No user: sethaguila and all admins first, then all others
+    const isSeth = (a) => a.id === 26;
+    const isAdmin = (a) => a.isAdmin && !isSeth(a);
+    const isOther = (a) => !isSeth(a) && !a.isAdmin;
+    ordered = [
+      ...(filteredAlumni.find(isSeth) ? [filteredAlumni.find(isSeth)] : []),
+      ...filteredAlumni.filter(isAdmin),
+      ...filteredAlumni.filter(isOther),
+    ];
   }
-
+  // Pagination is applied after ordering, so the most recently updated alumni will always be right after the admins, regardless of page.
+  let displayOrdered = shuffledOrder ? shuffledOrder : ordered;
   const itemsPerPage = 9;
-  const totalPages = Math.ceil(filteredAlumni.length / itemsPerPage);
+  const totalPages = Math.ceil(displayOrdered.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  let currentAlumni = filteredAlumni.slice(startIndex, endIndex);
+  let currentAlumni = displayOrdered.slice(startIndex, endIndex);
 
-  // Custom ordering:
-  if (alumniId) {
-    // If logged in: self first (always first card on first page), then admins (excluding self if admin), then others
-    const adminCards = filteredAlumni.filter(
-      (a) =>
-        a.isAdmin &&
-        String(a._id) !== String(alumniId) &&
-        String(a.id) !== String(alumniId)
-    );
-    const otherCards = filteredAlumni.filter(
-      (a) =>
-        !a.isAdmin &&
-        String(a._id) !== String(alumniId) &&
-        String(a.id) !== String(alumniId)
-    );
-    const ordered = [...(self ? [self] : []), ...adminCards, ...otherCards];
-    // Apply pagination after ordering
-    currentAlumni = ordered.slice(startIndex, endIndex);
-  } else {
-    // If not logged in: admins first, with 'admindigitaldevil' (or name contains 'DigitalDevil') always first
-    const adminCards = filteredAlumni.filter((a) => a.isAdmin);
-    const otherCards = filteredAlumni.filter((a) => !a.isAdmin);
-    // Find the special admin
-    let specialAdminIdx = adminCards.findIndex(
-      (a) =>
-        (a.username && a.username.toLowerCase() === "admindigitaldevil") ||
-        (a.name && a.name.toLowerCase().includes("digitaldevil"))
-    );
-    let specialAdmin = null;
-    if (specialAdminIdx > -1) {
-      [specialAdmin] = adminCards.splice(specialAdminIdx, 1);
+  // Shuffle utility (Fisher-Yates)
+  function shuffleArray(array) {
+    const arr = array.slice();
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    const ordered = [
-      ...(specialAdmin ? [specialAdmin] : []),
-      ...adminCards,
-      ...otherCards,
-    ];
-    currentAlumni = ordered.slice(startIndex, endIndex);
+    return arr;
   }
+
+  // Reset shuffle if filters/search change
+  useEffect(() => {
+    setShuffledOrder(null);
+  }, [searchQuery, activeFilter, alumni, isAdmin, alumniId]);
 
   const openProfileModal = (alum) => {
     setSelectedAlumni(alum);
@@ -414,6 +422,22 @@ export default function Alumnis() {
   const handleEditFormChange = (e) => {
     // This function is no longer used in the new implementation
   };
+
+  useEffect(() => {
+    console.log(
+      "alumniId:",
+      alumniId,
+      "alumni:",
+      alumni.map((a) => ({
+        _id: a._id,
+        id: a.id,
+        name: a.name,
+        hidden: a.hidden,
+      }))
+    );
+  }, [alumni, alumniId]);
+
+  console.log("currentAlumni:", currentAlumni);
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -771,6 +795,47 @@ export default function Alumnis() {
             >
               Nos Anciens Étudiants
             </Typography>
+            <Button
+              variant="outlined"
+              color="primary"
+              sx={{
+                mb: 2,
+                fontWeight: 700,
+                borderRadius: 2,
+                px: 3,
+                py: 1.2,
+                background: "rgba(59, 130, 246, 0.08)",
+                boxShadow: "0 2px 8px rgba(59, 130, 246, 0.08)",
+                fontSize: { xs: "0.8rem", md: "1rem" },
+                border: "1.5px solid #3b82f6",
+                color: "#3b82f6",
+                "&:hover": {
+                  background: "rgba(59, 130, 246, 0.15)",
+                  borderColor: "#2563eb",
+                },
+              }}
+              onClick={() => {
+                // Find the fixed cards (self, sethaguila) as above
+                let fixed = [];
+                if (alumniId && selfCard) fixed.push(selfCard);
+                if (
+                  sethCard &&
+                  (!selfCard ||
+                    (sethCard._id !== selfCard._id &&
+                      sethCard.id !== selfCard.id))
+                )
+                  fixed.push(sethCard);
+                // The rest are all other cards (admins and others, already in order)
+                let rest = ordered.filter(
+                  (a) => !fixed.some((f) => f._id === a._id && f.id === a.id)
+                );
+                const shuffledRest = shuffleArray(rest);
+                setShuffledOrder([...fixed, ...shuffledRest]);
+                setCurrentPage(1);
+              }}
+            >
+              Mélanger les cartes
+            </Button>
           </Box>
 
           <Grid
