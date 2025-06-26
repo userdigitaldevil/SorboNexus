@@ -316,15 +316,67 @@ export default function Home() {
                       mb: { xs: 3, md: 4 },
                       fontWeight: 400,
                       lineHeight: 1.6,
-                      maxWidth: 500,
+                      maxWidth: 900,
                       mx: { xs: "auto", md: 0 },
-                      fontSize: { xs: "0.9rem", sm: "1.1rem", md: "1.25rem" },
+                      fontSize: { xs: "0.65rem", sm: "0.7rem", md: "0.75rem" },
                     }}
                   >
-                    Votre portail vers les ressources, conseils, liens utiles et
-                    le réseau des alumnis de la communauté Sorbonne.{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 600 }}>
-                      Explorez, apprenez et connectez-vous !
+                    SorboNexus est la plateforme créée par et pour les étudiants
+                    de Jussieu, dédiée à accompagner votre réussite tout au long
+                    de votre parcours universitaire et dans la préparation de
+                    vos candidatures en master ou en école, en France comme à
+                    l'international.
+                    <br />
+                    <br />
+                    Vous y trouverez une multitude de ressources utiles :
+                    modèles de lettres de motivation, informations détaillées
+                    sur les UE, guides pour constituer vos dossiers, et conseils
+                    pratiques pour chaque étape de votre cursus.
+                    <br />
+                    <br />
+                    Découvrez également des retours d'expérience et témoignages
+                    d'élèves ayant réussi les concours comme <b>
+                      GEI-UNIV
+                    </b>{" "}
+                    (admissions parallèles), des oraux, et des intégrations dans
+                    des écoles prestigieuses telles que{" "}
+                    <b>
+                      Polytechnique, ENS, CentraleSupélec, Dauphine, Sorbonne,
+                      Paris-Saclay
+                    </b>{" "}
+                    et bien d'autres.
+                    <br />
+                    <br />
+                    Le site propose aussi des fiches sur les écoles, des astuces
+                    pour les candidatures à l'étranger, des exemples de CV, des
+                    conseils pour les entretiens.
+                    <br />
+                    <br />
+                    <span
+                      style={{
+                        fontStyle: "italic",
+                        fontWeight: "bold",
+                        fontSize: "1.05em",
+                        display: "block",
+                        marginTop: "0.5em",
+                      }}
+                    >
+                      Le projet est encore en développement, mais vous pouvez
+                      dès maintenant créer votre compte, personnaliser votre
+                      profil et contribuer à enrichir la base de connaissances
+                      pour aider les générations futures.
+                      <br />
+                      <span
+                        style={{
+                          color: "#3b82f6",
+                          fontWeight: 700,
+                          fontStyle: "italic",
+                          fontSize: "1.1em",
+                        }}
+                      >
+                        Explorez, partagez, et faites grandir la communauté
+                        SorboNexus !
+                      </span>
                     </span>
                   </Typography>
 
@@ -342,7 +394,7 @@ export default function Home() {
                       whileTap={{ scale: 0.95 }}
                     >
                       <Button
-                        onClick={() => handleCardNavigation("/ressources")}
+                        onClick={() => handleCardNavigation("/alumnis")}
                         variant="contained"
                         size="large"
                         endIcon={<ArrowRight size={20} />}
@@ -362,7 +414,7 @@ export default function Home() {
                           },
                         }}
                       >
-                        Découvrez nos ressources
+                        Découvrez nos alumnis
                       </Button>
                     </motion.div>
                     <motion.div
@@ -1060,9 +1112,11 @@ export default function Home() {
                 fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
               }}
             >
-              SorboNexus est un projet communautaire. Votre feedback et vos
-              contributions nous aident à améliorer la plateforme pour tous les
-              étudiants.
+              Seth est ouvert à tous vos feedbacks, pull requests et
+              contributions !<br />
+              Vous êtes invités à compléter votre profil alumni et à partager
+              les conseils et ressources qui vous ont aidé dans votre parcours
+              pour inspirer et aider la communauté.
             </Typography>
 
             <motion.div
