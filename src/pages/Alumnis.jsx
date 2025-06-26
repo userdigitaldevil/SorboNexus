@@ -100,6 +100,8 @@ export default function Alumnis() {
     stagesWorkedContestsExtracurriculars: "",
     futureGoals: "",
     anneeFinL3: "",
+    // Username for admin editing
+    username: "",
     // Password change fields
     newPassword: "",
     confirmPassword: "",
@@ -247,12 +249,21 @@ export default function Alumnis() {
   // Custom ordering:
   if (alumniId) {
     // If logged in: self first (always first card on first page), then admins (excluding self if admin), then others
-    const self = filteredAlumni.find((a) => String(a._id) === String(alumniId));
+    const self = filteredAlumni.find(
+      (a) =>
+        String(a._id) === String(alumniId) || String(a.id) === String(alumniId)
+    );
     const adminCards = filteredAlumni.filter(
-      (a) => a.isAdmin && String(a._id) !== String(alumniId)
+      (a) =>
+        a.isAdmin &&
+        String(a._id) !== String(alumniId) &&
+        String(a.id) !== String(alumniId)
     );
     const otherCards = filteredAlumni.filter(
-      (a) => !a.isAdmin && String(a._id) !== String(alumniId)
+      (a) =>
+        !a.isAdmin &&
+        String(a._id) !== String(alumniId) &&
+        String(a.id) !== String(alumniId)
     );
     const ordered = [...(self ? [self] : []), ...adminCards, ...otherCards];
     // Apply pagination after ordering
@@ -306,32 +317,48 @@ export default function Alumnis() {
     closeListModal();
   };
 
-  const handleEditClick = (alum) => {
-    setEditAlumni(alum);
+  const handleEditClick = async (alum) => {
+    let alumniData = alum;
+    // If admin, fetch the latest alumni data (with username) from backend
+    if (isAdmin) {
+      try {
+        const res = await fetch(
+          `${process.env.VITE_API_URL}/api/alumni/${alum.id}`
+        );
+        if (res.ok) {
+          alumniData = await res.json();
+        }
+      } catch (e) {
+        // fallback to passed alum
+      }
+    }
+    setEditAlumni(alumniData);
     setEditForm({
-      name: alum.name || "",
-      degree: alum.degree || "",
-      position: alum.position || "",
-      field: alum.field || "",
-      linkedin: alum.linkedin || "",
-      email: alum.email || "",
-      avatar: alum.avatar || "",
-      color: alum.color || "",
-      gradient: alum.gradient || "",
-      conseil: alum.conseil || "",
-      grades: Array.isArray(alum.grades) ? alum.grades : [],
-      schoolsApplied: Array.isArray(alum.schoolsApplied)
-        ? alum.schoolsApplied
+      name: alumniData.name || "",
+      degree: alumniData.degree || "",
+      position: alumniData.position || "",
+      field: alumniData.field || "",
+      linkedin: alumniData.linkedin || "",
+      email: alumniData.email || "",
+      avatar: alumniData.avatar || "",
+      color: alumniData.color || "",
+      gradient: alumniData.gradient || "",
+      conseil: alumniData.conseil || "",
+      grades: Array.isArray(alumniData.grades) ? alumniData.grades : [],
+      schoolsApplied: Array.isArray(alumniData.schoolsApplied)
+        ? alumniData.schoolsApplied
         : [],
-      isAdmin: alum.isAdmin || false,
-      hidden: alum.hidden || false,
-      nationalities: Array.isArray(alum.nationalities)
-        ? alum.nationalities.join(", ")
-        : alum.nationalities || "",
+      isAdmin: alumniData.isAdmin || false,
+      hidden: alumniData.hidden || false,
+      nationalities: Array.isArray(alumniData.nationalities)
+        ? alumniData.nationalities.join(", ")
+        : alumniData.nationalities || "",
       stagesWorkedContestsExtracurriculars:
-        alum.stagesWorkedContestsExtracurriculars || "",
-      futureGoals: alum.futureGoals || "",
-      anneeFinL3: alum.anneeFinL3 || "",
+        alumniData.stagesWorkedContestsExtracurriculars || "",
+      futureGoals: alumniData.futureGoals || "",
+      anneeFinL3: alumniData.anneeFinL3 || "",
+      // Username for admin editing
+      username: alumniData.username || "",
       newPassword: "",
       confirmPassword: "",
       showPassword: false,
@@ -456,6 +483,11 @@ export default function Alumnis() {
       editForm.newPassword === editForm.confirmPassword
     ) {
       payload.newPassword = editForm.newPassword;
+    }
+
+    // Add username to payload if admin
+    if (isAdmin && editForm.username) {
+      payload.username = editForm.username;
     }
 
     // Debug: log the payload before sending
@@ -1406,6 +1438,17 @@ export default function Alumnis() {
                 : "Modifier l'alumni"}
             </Typography>
             <form onSubmit={handleEditSubmit}>
+              {/* Admins can edit username */}
+              {isAdmin && (
+                <TextField
+                  label="Nom d'utilisateur"
+                  name="username"
+                  value={editForm.username || ""}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+              )}
               <TextField
                 label="Nom"
                 name="name"
