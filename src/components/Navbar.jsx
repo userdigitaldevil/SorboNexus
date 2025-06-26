@@ -41,6 +41,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AlumniProfileCard from "./AlumniProfileCard";
 import { renderTextWithLinks } from "../utils/textUtils.jsx";
+import { useAlumniEditModal } from "./AlumniEditModalContext";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -101,6 +102,27 @@ const Navbar = () => {
           console.error("Error fetching admin data:", error);
         });
     }
+  }, [isAdmin]);
+
+  useEffect(() => {
+    const handleProfileUpdated = () => {
+      if (isAdmin) {
+        fetch(`${process.env.VITE_API_URL}/api/alumni`)
+          .then((res) => res.json())
+          .then((data) => {
+            const admin = data.find((a) => a.isAdmin);
+            if (admin) {
+              setAdminAlumni(admin);
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching admin data:", error);
+          });
+      }
+    };
+    window.addEventListener("profileUpdated", handleProfileUpdated);
+    return () =>
+      window.removeEventListener("profileUpdated", handleProfileUpdated);
   }, [isAdmin]);
 
   const handleLogout = () => {
@@ -316,8 +338,23 @@ const Navbar = () => {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               <MenuItem
-                onClick={() => {
-                  window.dispatchEvent(new Event("openEditSelfModal"));
+                onClick={async () => {
+                  // Always fetch the latest admin alumni object (with username)
+                  if (adminAlumni && adminAlumni.id) {
+                    try {
+                      const res = await fetch(
+                        `${process.env.VITE_API_URL}/api/alumni/${adminAlumni.id}`
+                      );
+                      if (res.ok) {
+                        const freshAdmin = await res.json();
+                        openEditSelfModal([freshAdmin]);
+                      } else {
+                        openEditSelfModal([adminAlumni]);
+                      }
+                    } catch {
+                      openEditSelfModal([adminAlumni]);
+                    }
+                  }
                   handleProfileClose();
                 }}
               >
@@ -406,7 +443,7 @@ const Navbar = () => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  window.dispatchEvent(new Event("openEditSelfModal"));
+                  openEditSelfModal([alumniUser]);
                   handleProfileClose();
                 }}
               >
@@ -710,6 +747,8 @@ const Navbar = () => {
 
   const [isAlumniProfileModalOpen, setIsAlumniProfileModalOpen] =
     useState(false);
+
+  const { openEditSelfModal } = useAlumniEditModal();
 
   return (
     <>
