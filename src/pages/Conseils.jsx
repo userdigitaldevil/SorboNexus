@@ -907,16 +907,17 @@ export default function Conseils() {
         }}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 50 }}
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 50 }}
-          transition={{ duration: 0.3 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ duration: 0.2 }}
           style={{
             maxHeight: "90vh",
             overflowY: "auto",
             maxWidth: 600,
             width: "100%",
             borderRadius: 16,
+            scrollBehavior: "smooth",
           }}
         >
           {selectedProfile ? (
@@ -945,246 +946,260 @@ export default function Conseils() {
           p: 2,
         }}
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 50 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 50 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Card
-            elevation={24}
+        <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+          {/* Fixed Close Button - positioned relative to viewport */}
+          <IconButton
+            onClick={() => setEditModalOpen(false)}
             sx={{
-              background: "rgba(15, 23, 42, 0.98)",
-              backdropFilter: "blur(20px)",
+              position: "fixed",
+              top: "5vh",
+              right: "5vw",
+              zIndex: 1500,
+              color: "rgba(255, 255, 255, 0.7)",
+              background: "rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(10px)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
-              borderRadius: "24px",
-              maxWidth: 600,
-              width: "100%",
-              maxHeight: "90vh",
-              overflow: "auto",
-              position: "relative",
+              width: 36,
+              height: 36,
+              "&:hover": {
+                color: "#fff",
+                background: "rgba(0, 0, 0, 0.5)",
+                transform: "scale(1.1)",
+              },
+              transition: "all 0.2s ease",
             }}
           >
-            <Box sx={{ p: 4 }}>
-              {/* Close button */}
-              <IconButton
-                onClick={() => setEditModalOpen(false)}
-                sx={{
-                  position: "absolute",
-                  top: 16,
-                  right: 16,
-                  color: "rgba(255, 255, 255, 0.7)",
-                  background: "rgba(0, 0, 0, 0.3)",
-                  backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  zIndex: 30,
-                  width: 36,
-                  height: 36,
-                  "&:hover": {
-                    color: "#fff",
-                    background: "rgba(0, 0, 0, 0.5)",
-                    transform: "scale(1.1)",
-                  },
-                  transition: "all 0.2s ease",
-                }}
-              >
-                <CloseIcon sx={{ fontSize: "1.2rem" }} />
-              </IconButton>
+            <CloseIcon sx={{ fontSize: "1.2rem" }} />
+          </IconButton>
 
-              <Typography
-                id="edit-modal-title"
-                variant="h5"
-                sx={{
-                  fontWeight: 800,
-                  color: "#3b82f6",
-                  mb: 3,
-                  textAlign: "center",
-                  pr: 4,
-                }}
-              >
-                Modifier ma carte
-              </Typography>
-              <form onSubmit={handleEditSubmit}>
-                <TextField
-                  label="Nom"
-                  name="name"
-                  value={editForm.name}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  label="Diplôme"
-                  name="degree"
-                  value={editForm.degree}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  label="Poste"
-                  name="position"
-                  value={editForm.position}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  label="Domaine"
-                  name="field"
-                  value={editForm.field}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  label="LinkedIn"
-                  name="profile.linkedin"
-                  value={editForm.profile?.linkedin || ""}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  label="Email"
-                  name="email"
-                  value={editForm.email || ""}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  label="Profile Email"
-                  name="profile.email"
-                  value={editForm.profile?.email || ""}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  label="Profile Poste Actuel"
-                  name="profile.currentPosition"
-                  value={editForm.profile?.currentPosition || ""}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-                {/* Grades Section */}
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle1">Notes / Diplômes</Typography>
-                  {Object.entries(editForm.profile?.grades || {}).map(
-                    ([key, value], idx) => (
-                      <Box
-                        key={key + idx}
-                        sx={{ display: "flex", gap: 1, mb: 1 }}
-                      >
-                        <TextField
-                          label="Diplôme"
-                          value={key}
-                          onChange={(e) => {
-                            const newKey = e.target.value;
-                            const grades = { ...editForm.profile.grades };
-                            const val = grades[key];
-                            delete grades[key];
-                            grades[newKey] = val;
-                            setEditForm((prev) => ({
-                              ...prev,
-                              profile: { ...prev.profile, grades },
-                            }));
-                          }}
-                          size="small"
-                          sx={{ flex: 1 }}
-                        />
-                        <TextField
-                          label="Note"
-                          value={value}
-                          onChange={(e) =>
-                            handleGradeChange(key, e.target.value)
-                          }
-                          size="small"
-                          sx={{ flex: 1 }}
-                        />
-                        <Button
-                          onClick={() => handleRemoveGrade(key)}
-                          color="error"
-                          size="small"
-                        >
-                          Supprimer
-                        </Button>
-                      </Box>
-                    )
-                  )}
-                  <Button onClick={handleAddGrade} size="small" sx={{ mt: 1 }}>
-                    Ajouter un diplôme/note
-                  </Button>
-                </Box>
-                {/* Schools Section */}
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle1">Écoles demandées</Typography>
-                  {(editForm.profile?.schoolsApplied || []).map(
-                    (school, idx) => (
-                      <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
-                        <TextField
-                          label="École"
-                          value={school.name}
-                          onChange={(e) =>
-                            handleSchoolChange(idx, "name", e.target.value)
-                          }
-                          size="small"
-                          sx={{ flex: 2 }}
-                        />
-                        <TextField
-                          select
-                          label="Statut"
-                          value={school.status}
-                          onChange={(e) =>
-                            handleSchoolChange(idx, "status", e.target.value)
-                          }
-                          size="small"
-                          sx={{ flex: 1 }}
-                          SelectProps={{ native: true }}
-                        >
-                          <option value="accepted">Accepté</option>
-                          <option value="rejected">Refusé</option>
-                        </TextField>
-                        <Button
-                          onClick={() => handleRemoveSchool(idx)}
-                          color="error"
-                          size="small"
-                        >
-                          Supprimer
-                        </Button>
-                      </Box>
-                    )
-                  )}
-                  <Button onClick={handleAddSchool} size="small" sx={{ mt: 1 }}>
-                    Ajouter une école
-                  </Button>
-                </Box>
-                <TextField
-                  label="Conseil"
-                  name="conseil"
-                  value={editForm.conseil || ""}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                  multiline
-                  minRows={4}
-                />
-                <Box
-                  sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Card
+              elevation={24}
+              sx={{
+                background: "rgba(15, 23, 42, 0.98)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "24px",
+                maxWidth: 600,
+                width: "100%",
+                maxHeight: "90vh",
+                overflow: "auto",
+                position: "relative",
+                scrollBehavior: "smooth",
+              }}
+            >
+              <Box sx={{ p: 4 }}>
+                <Typography
+                  id="edit-modal-title"
+                  variant="h5"
+                  sx={{
+                    fontWeight: 800,
+                    color: "#3b82f6",
+                    mb: 3,
+                    textAlign: "center",
+                  }}
                 >
-                  <Button onClick={() => setEditModalOpen(false)}>
-                    Annuler
-                  </Button>
-                  <Button type="submit" variant="contained">
-                    Enregistrer
-                  </Button>
-                </Box>
-              </form>
-            </Box>
-          </Card>
-        </motion.div>
+                  Modifier ma carte
+                </Typography>
+                <form onSubmit={handleEditSubmit}>
+                  <TextField
+                    label="Nom"
+                    name="name"
+                    value={editForm.name}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Diplôme"
+                    name="degree"
+                    value={editForm.degree}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Poste"
+                    name="position"
+                    value={editForm.position}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Domaine"
+                    name="field"
+                    value={editForm.field}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="LinkedIn"
+                    name="profile.linkedin"
+                    value={editForm.profile?.linkedin || ""}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Email"
+                    name="email"
+                    value={editForm.email || ""}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Profile Email"
+                    name="profile.email"
+                    value={editForm.profile?.email || ""}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    label="Profile Poste Actuel"
+                    name="profile.currentPosition"
+                    value={editForm.profile?.currentPosition || ""}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                  {/* Grades Section */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1">
+                      Notes / Diplômes
+                    </Typography>
+                    {Object.entries(editForm.profile?.grades || {}).map(
+                      ([key, value], idx) => (
+                        <Box
+                          key={key + idx}
+                          sx={{ display: "flex", gap: 1, mb: 1 }}
+                        >
+                          <TextField
+                            label="Diplôme"
+                            value={key}
+                            onChange={(e) => {
+                              const newKey = e.target.value;
+                              const grades = { ...editForm.profile.grades };
+                              const val = grades[key];
+                              delete grades[key];
+                              grades[newKey] = val;
+                              setEditForm((prev) => ({
+                                ...prev,
+                                profile: { ...prev.profile, grades },
+                              }));
+                            }}
+                            size="small"
+                            sx={{ flex: 1 }}
+                          />
+                          <TextField
+                            label="Note"
+                            value={value}
+                            onChange={(e) =>
+                              handleGradeChange(key, e.target.value)
+                            }
+                            size="small"
+                            sx={{ flex: 1 }}
+                          />
+                          <Button
+                            onClick={() => handleRemoveGrade(key)}
+                            color="error"
+                            size="small"
+                          >
+                            Supprimer
+                          </Button>
+                        </Box>
+                      )
+                    )}
+                    <Button
+                      onClick={handleAddGrade}
+                      size="small"
+                      sx={{ mt: 1 }}
+                    >
+                      Ajouter un diplôme/note
+                    </Button>
+                  </Box>
+                  {/* Schools Section */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1">
+                      Écoles demandées
+                    </Typography>
+                    {(editForm.profile?.schoolsApplied || []).map(
+                      (school, idx) => (
+                        <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                          <TextField
+                            label="École"
+                            value={school.name}
+                            onChange={(e) =>
+                              handleSchoolChange(idx, "name", e.target.value)
+                            }
+                            size="small"
+                            sx={{ flex: 2 }}
+                          />
+                          <TextField
+                            select
+                            label="Statut"
+                            value={school.status}
+                            onChange={(e) =>
+                              handleSchoolChange(idx, "status", e.target.value)
+                            }
+                            size="small"
+                            sx={{ flex: 1 }}
+                            SelectProps={{ native: true }}
+                          >
+                            <option value="accepted">Accepté</option>
+                            <option value="rejected">Refusé</option>
+                          </TextField>
+                          <Button
+                            onClick={() => handleRemoveSchool(idx)}
+                            color="error"
+                            size="small"
+                          >
+                            Supprimer
+                          </Button>
+                        </Box>
+                      )
+                    )}
+                    <Button
+                      onClick={handleAddSchool}
+                      size="small"
+                      sx={{ mt: 1 }}
+                    >
+                      Ajouter une école
+                    </Button>
+                  </Box>
+                  <TextField
+                    label="Conseil"
+                    name="conseil"
+                    value={editForm.conseil || ""}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                    multiline
+                    minRows={4}
+                  />
+                  <Box
+                    sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
+                  >
+                    <Button onClick={() => setEditModalOpen(false)}>
+                      Annuler
+                    </Button>
+                    <Button type="submit" variant="contained">
+                      Enregistrer
+                    </Button>
+                  </Box>
+                </form>
+              </Box>
+            </Card>
+          </motion.div>
+        </Box>
       </Modal>
     </Box>
   );

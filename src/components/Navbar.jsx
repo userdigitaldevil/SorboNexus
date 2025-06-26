@@ -950,6 +950,7 @@ const Navbar = () => {
             maxHeight: "90vh",
             overflowY: "auto",
             boxShadow: 24,
+            scrollBehavior: "smooth",
           }}
         >
           {alumniUser ? (
@@ -967,35 +968,19 @@ const Navbar = () => {
         open={isAddAlumniModalOpen}
         onClose={() => setIsAddAlumniModalOpen(false)}
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "#18181b",
-            p: 4,
-            borderRadius: 2,
-            minWidth: 320,
-            maxWidth: 600,
-            maxHeight: "80vh",
-            overflowY: "auto",
-            boxShadow: 24,
-            position: "relative",
-          }}
-        >
-          {/* Close button */}
+        <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+          {/* Fixed Close Button - positioned relative to viewport */}
           <IconButton
             onClick={() => setIsAddAlumniModalOpen(false)}
             sx={{
-              position: "absolute",
-              top: 16,
-              right: 16,
+              position: "fixed",
+              top: "5vh",
+              right: "5vw",
+              zIndex: 1500,
               color: "rgba(255, 255, 255, 0.7)",
               background: "rgba(0, 0, 0, 0.3)",
               backdropFilter: "blur(10px)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
-              zIndex: 30,
               width: 36,
               height: 36,
               "&:hover": {
@@ -1009,273 +994,291 @@ const Navbar = () => {
             <CloseIcon sx={{ fontSize: "1.2rem" }} />
           </IconButton>
 
-          <Typography variant="h6" sx={{ mb: 2, pr: 4 }}>
-            Ajouter un alumni
-          </Typography>
-          <form onSubmit={handleAddAlumniSubmit}>
-            <TextField
-              label="Nom"
-              name="name"
-              value={addAlumniForm.name}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Diplôme"
-              name="degree"
-              value={addAlumniForm.degree}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Poste actuel"
-              name="position"
-              value={addAlumniForm.position}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Domaine"
-              name="field"
-              value={addAlumniForm.field}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Email"
-              name="email"
-              value={addAlumniForm.email}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="LinkedIn"
-              name="linkedin"
-              value={addAlumniForm.linkedin}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Avatar (lettres)"
-              name="avatar"
-              value={addAlumniForm.avatar}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Poste actuel (profile)"
-              name="profile.currentPosition"
-              value={addAlumniForm.profile.currentPosition}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            {/* Grades */}
-            <Typography variant="subtitle1" sx={{ mt: 2 }}>
-              Notes/Diplômes
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "#18181b",
+              p: 4,
+              borderRadius: 2,
+              minWidth: 320,
+              maxWidth: 600,
+              maxHeight: "80vh",
+              overflowY: "auto",
+              boxShadow: 24,
+              scrollBehavior: "smooth",
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Ajouter un alumni
             </Typography>
-            {addAlumniGrades.map((g, idx) => (
-              <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
-                <TextField
-                  label="Diplôme"
-                  value={g.key}
-                  onChange={(e) =>
-                    handleAddAlumniGradeChange(idx, "key", e.target.value)
-                  }
-                  size="small"
-                  sx={{ flex: 1 }}
-                  required
-                />
-                <TextField
-                  label="Note"
-                  value={g.value}
-                  onChange={(e) =>
-                    handleAddAlumniGradeChange(idx, "value", e.target.value)
-                  }
-                  size="small"
-                  sx={{ flex: 1 }}
-                  required
-                />
-                <Button
-                  onClick={() => handleAddAlumniRemoveGrade(idx)}
-                  color="error"
-                  size="small"
-                >
-                  Supprimer
+            <form onSubmit={handleAddAlumniSubmit}>
+              <TextField
+                label="Nom"
+                name="name"
+                value={addAlumniForm.name}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              <TextField
+                label="Diplôme"
+                name="degree"
+                value={addAlumniForm.degree}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              <TextField
+                label="Poste actuel"
+                name="position"
+                value={addAlumniForm.position}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              <TextField
+                label="Domaine"
+                name="field"
+                value={addAlumniForm.field}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              <TextField
+                label="Email"
+                name="email"
+                value={addAlumniForm.email}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              <TextField
+                label="LinkedIn"
+                name="linkedin"
+                value={addAlumniForm.linkedin}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              <TextField
+                label="Avatar (lettres)"
+                name="avatar"
+                value={addAlumniForm.avatar}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              <TextField
+                label="Poste actuel (profile)"
+                name="profile.currentPosition"
+                value={addAlumniForm.profile.currentPosition}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              {/* Grades */}
+              <Typography variant="subtitle1" sx={{ mt: 2 }}>
+                Notes/Diplômes
+              </Typography>
+              {addAlumniGrades.map((g, idx) => (
+                <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                  <TextField
+                    label="Diplôme"
+                    value={g.key}
+                    onChange={(e) =>
+                      handleAddAlumniGradeChange(idx, "key", e.target.value)
+                    }
+                    size="small"
+                    sx={{ flex: 1 }}
+                    required
+                  />
+                  <TextField
+                    label="Note"
+                    value={g.value}
+                    onChange={(e) =>
+                      handleAddAlumniGradeChange(idx, "value", e.target.value)
+                    }
+                    size="small"
+                    sx={{ flex: 1 }}
+                    required
+                  />
+                  <Button
+                    onClick={() => handleAddAlumniRemoveGrade(idx)}
+                    color="error"
+                    size="small"
+                  >
+                    Supprimer
+                  </Button>
+                </Box>
+              ))}
+              <Button
+                onClick={handleAddAlumniAddGrade}
+                size="small"
+                sx={{ mt: 1, mb: 2 }}
+              >
+                Ajouter une note
+              </Button>
+              {/* Schools */}
+              <Typography variant="subtitle1" sx={{ mt: 2 }}>
+                Écoles demandées
+              </Typography>
+              {addAlumniSchools.map((s, idx) => (
+                <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                  <TextField
+                    label="École"
+                    value={s.name}
+                    onChange={(e) =>
+                      handleAddAlumniSchoolChange(idx, "name", e.target.value)
+                    }
+                    size="small"
+                    sx={{ flex: 2 }}
+                    required
+                  />
+                  <TextField
+                    select
+                    label="Statut"
+                    value={s.status}
+                    onChange={(e) =>
+                      handleAddAlumniSchoolChange(idx, "status", e.target.value)
+                    }
+                    size="small"
+                    sx={{ flex: 1 }}
+                    SelectProps={{ native: true }}
+                    required
+                  >
+                    <option value="accepted">Accepté</option>
+                    <option value="rejected">Refusé</option>
+                  </TextField>
+                  <Button
+                    onClick={() => handleAddAlumniRemoveSchool(idx)}
+                    color="error"
+                    size="small"
+                  >
+                    Supprimer
+                  </Button>
+                </Box>
+              ))}
+              <Button
+                onClick={handleAddAlumniAddSchool}
+                size="small"
+                sx={{ mt: 1, mb: 2 }}
+              >
+                Ajouter une école
+              </Button>
+              {/* Conseil (optional) */}
+              <TextField
+                label="Conseil (optionnel)"
+                name="conseil"
+                value={addAlumniForm.conseil}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                multiline
+                minRows={2}
+              />
+              <TextField
+                label="Nom d'utilisateur"
+                name="username"
+                value={addAlumniForm.username}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              <TextField
+                label="Mot de passe"
+                name="password"
+                value={addAlumniForm.password}
+                onChange={handleAddAlumniChange}
+                type="password"
+                fullWidth
+                sx={{ mb: 2 }}
+                required
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={addAlumniForm.isAdmin}
+                    onChange={handleAddAlumniChange}
+                    name="isAdmin"
+                    color="primary"
+                  />
+                }
+                label="Donner le statut administrateur à cet utilisateur"
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Couleur (hex)"
+                name="color"
+                value={addAlumniForm.color}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Dégradé (gradient)"
+                name="gradient"
+                value={addAlumniForm.gradient}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Nationalités (séparées par des virgules)"
+                name="nationalities"
+                value={addAlumniForm.nationalities || ""}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Stages, entreprises, concours, extrascolaire (texte libre)"
+                name="stagesWorkedContestsExtracurriculars"
+                value={addAlumniForm.stagesWorkedContestsExtracurriculars || ""}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                multiline
+                minRows={2}
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Projets futurs (métiers, masters, écoles visés...)"
+                name="futureGoals"
+                value={addAlumniForm.futureGoals || ""}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Année de fin de L3 (4 chiffres)"
+                name="anneeFinL3"
+                value={addAlumniForm.anneeFinL3 || ""}
+                onChange={handleAddAlumniChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
+              />
+              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                <Button onClick={() => setIsAddAlumniModalOpen(false)}>
+                  Annuler
+                </Button>
+                <Button type="submit" variant="contained">
+                  Créer
                 </Button>
               </Box>
-            ))}
-            <Button
-              onClick={handleAddAlumniAddGrade}
-              size="small"
-              sx={{ mt: 1, mb: 2 }}
-            >
-              Ajouter une note
-            </Button>
-            {/* Schools */}
-            <Typography variant="subtitle1" sx={{ mt: 2 }}>
-              Écoles demandées
-            </Typography>
-            {addAlumniSchools.map((s, idx) => (
-              <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
-                <TextField
-                  label="École"
-                  value={s.name}
-                  onChange={(e) =>
-                    handleAddAlumniSchoolChange(idx, "name", e.target.value)
-                  }
-                  size="small"
-                  sx={{ flex: 2 }}
-                  required
-                />
-                <TextField
-                  select
-                  label="Statut"
-                  value={s.status}
-                  onChange={(e) =>
-                    handleAddAlumniSchoolChange(idx, "status", e.target.value)
-                  }
-                  size="small"
-                  sx={{ flex: 1 }}
-                  SelectProps={{ native: true }}
-                  required
-                >
-                  <option value="accepted">Accepté</option>
-                  <option value="rejected">Refusé</option>
-                </TextField>
-                <Button
-                  onClick={() => handleAddAlumniRemoveSchool(idx)}
-                  color="error"
-                  size="small"
-                >
-                  Supprimer
-                </Button>
-              </Box>
-            ))}
-            <Button
-              onClick={handleAddAlumniAddSchool}
-              size="small"
-              sx={{ mt: 1, mb: 2 }}
-            >
-              Ajouter une école
-            </Button>
-            {/* Conseil (optional) */}
-            <TextField
-              label="Conseil (optionnel)"
-              name="conseil"
-              value={addAlumniForm.conseil}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              multiline
-              minRows={2}
-            />
-            <TextField
-              label="Nom d'utilisateur"
-              name="username"
-              value={addAlumniForm.username}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Mot de passe"
-              name="password"
-              value={addAlumniForm.password}
-              onChange={handleAddAlumniChange}
-              type="password"
-              fullWidth
-              sx={{ mb: 2 }}
-              required
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={addAlumniForm.isAdmin}
-                  onChange={handleAddAlumniChange}
-                  name="isAdmin"
-                  color="primary"
-                />
-              }
-              label="Donner le statut administrateur à cet utilisateur"
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Couleur (hex)"
-              name="color"
-              value={addAlumniForm.color}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Dégradé (gradient)"
-              name="gradient"
-              value={addAlumniForm.gradient}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Nationalités (séparées par des virgules)"
-              name="nationalities"
-              value={addAlumniForm.nationalities || ""}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Stages, entreprises, concours, extrascolaire (texte libre)"
-              name="stagesWorkedContestsExtracurriculars"
-              value={addAlumniForm.stagesWorkedContestsExtracurriculars || ""}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              multiline
-              minRows={2}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Projets futurs (métiers, masters, écoles visés...)"
-              name="futureGoals"
-              value={addAlumniForm.futureGoals || ""}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Année de fin de L3 (4 chiffres)"
-              name="anneeFinL3"
-              value={addAlumniForm.anneeFinL3 || ""}
-              onChange={handleAddAlumniChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
-            />
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button onClick={() => setIsAddAlumniModalOpen(false)}>
-                Annuler
-              </Button>
-              <Button type="submit" variant="contained">
-                Créer
-              </Button>
-            </Box>
-          </form>
+            </form>
+          </Box>
         </Box>
       </Modal>
     </>

@@ -1100,16 +1100,17 @@ export default function Alumnis() {
         }}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 50 }}
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 50 }}
-          transition={{ duration: 0.3 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ duration: 0.2 }}
           style={{
             maxHeight: "90vh",
             overflowY: "auto",
             maxWidth: 600,
             width: "100%",
             borderRadius: 16,
+            scrollBehavior: "smooth",
           }}
         >
           {selectedAlumni ? (
@@ -1136,40 +1137,15 @@ export default function Alumnis() {
           justifyContent: "center",
         }}
       >
-        <Card
-          elevation={24}
-          sx={{
-            background: "rgba(15, 23, 42, 0.98)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            borderRadius: "24px",
-            maxWidth: 700,
-            width: "100%",
-            maxHeight: "90vh",
-            overflow: "auto",
-            position: "relative",
-            p: 0,
-            animation: isListModalOpen ? "modalFadeIn 0.15s ease-out" : "none",
-            "@keyframes modalFadeIn": {
-              "0%": {
-                opacity: 0,
-                transform: "scale(0.95)",
-              },
-              "100%": {
-                opacity: 1,
-                transform: "scale(1)",
-              },
-            },
-          }}
-        >
-          {/* Fixed Close Button */}
+        <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+          {/* Fixed Close Button - positioned relative to viewport */}
           <IconButton
             onClick={closeListModal}
             sx={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              zIndex: 10,
+              position: "fixed",
+              top: "5vh",
+              right: "5vw",
+              zIndex: 1500,
               color: "rgba(255,255,255,0.7)",
               background: "rgba(0, 0, 0, 0.3)",
               backdropFilter: "blur(8px)",
@@ -1187,232 +1163,245 @@ export default function Alumnis() {
             <CloseIcon sx={{ fontSize: "1.2rem" }} />
           </IconButton>
 
-          <Box
+          <Card
+            elevation={24}
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              p: 3,
-              borderBottom: "1px solid rgba(255,255,255,0.08)",
-              pr: 6, // Add right padding to avoid overlap with close button
+              background: "rgba(15, 23, 42, 0.98)",
+              backdropFilter: "blur(8px)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              borderRadius: "24px",
+              maxWidth: 700,
+              width: "100%",
+              maxHeight: "90vh",
+              overflow: "auto",
+              position: "relative",
+              p: 0,
+              scrollBehavior: "smooth",
+              animation: isListModalOpen ? "modalFadeIn 0.1s ease-out" : "none",
+              "@keyframes modalFadeIn": {
+                "0%": {
+                  opacity: 0,
+                  transform: "scale(0.98)",
+                },
+                "100%": {
+                  opacity: 1,
+                  transform: "scale(1)",
+                },
+              },
             }}
           >
-            <Typography
-              id="alumni-list-modal-title"
-              variant="h5"
-              sx={{ fontWeight: 800, color: "#3b82f6" }}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                p: 3,
+                borderBottom: "1px solid rgba(255,255,255,0.08)",
+              }}
             >
-              Liste de tous les alumnis par catégorie
-            </Typography>
-          </Box>
-          <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
-            {/* Group alumni by field, use Accordions */}
-            {Object.entries(
-              alumni
-                .filter(
-                  (alum) =>
-                    !alum.hidden ||
-                    String(alum._id) === String(alumniId) ||
-                    isAdmin
-                )
-                .reduce((acc, alum) => {
-                  if (!acc[alum.field]) acc[alum.field] = [];
-                  acc[alum.field].push(alum);
-                  return acc;
-                }, {})
-            ).map(([field, group], idx, arr) => (
-              <Accordion
-                key={field}
-                defaultExpanded={arr.length <= 3}
-                sx={{
-                  background: "rgba(59,130,246,0.07)",
-                  borderRadius: 2,
-                  mb: 2,
-                  boxShadow: "none",
-                  border: "1.5px solid rgba(59,130,246,0.13)",
-                  "&:before": { display: "none" },
-                }}
+              <Typography
+                id="alumni-list-modal-title"
+                variant="h5"
+                sx={{ fontWeight: 800, color: "#3b82f6" }}
               >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon sx={{ color: "#3b82f6" }} />}
-                  aria-controls={`panel-${field}-content`}
-                  id={`panel-${field}-header`}
+                Liste de tous les alumnis par catégorie
+              </Typography>
+            </Box>
+            <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
+              {/* Group alumni by field, use Accordions */}
+              {Object.entries(
+                alumni
+                  .filter(
+                    (alum) =>
+                      !alum.hidden ||
+                      String(alum._id) === String(alumniId) ||
+                      isAdmin
+                  )
+                  .reduce((acc, alum) => {
+                    if (!acc[alum.field]) acc[alum.field] = [];
+                    acc[alum.field].push(alum);
+                    return acc;
+                  }, {})
+              ).map(([field, group], idx, arr) => (
+                <Accordion
+                  key={field}
+                  defaultExpanded={arr.length <= 3}
                   sx={{
-                    background:
-                      "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                    color: "white",
+                    background: "rgba(59,130,246,0.07)",
                     borderRadius: 2,
-                    minHeight: 56,
-                    boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
-                    fontWeight: 700,
-                    mb: 0,
+                    mb: 2,
+                    boxShadow: "none",
+                    border: "1.5px solid rgba(59,130,246,0.13)",
+                    "&:before": { display: "none" },
                   }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Avatar
-                      sx={{
-                        width: 32,
-                        height: 32,
-                        fontWeight: 700,
-                        background: group[0]?.color || "#3b82f6",
-                      }}
-                    >
-                      {field[0]}
-                    </Avatar>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: "white",
-                        fontWeight: 700,
-                        fontSize: "1.1rem",
-                        letterSpacing: 0.5,
-                        textShadow: "0 1px 4px #0002",
-                      }}
-                    >
-                      {field}
-                    </Typography>
-                    <Chip
-                      label={`${group.length} alumnis`}
-                      size="small"
-                      sx={{
-                        ml: 2,
-                        background: "rgba(255,255,255,0.13)",
-                        color: "#fff",
-                        fontWeight: 600,
-                      }}
-                    />
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails
-                  sx={{
-                    background: "rgba(15,23,42,0.97)",
-                    borderRadius: 2,
-                    p: 0,
-                  }}
-                >
-                  <List dense>
-                    {group.map((alum) => {
-                      // Find BSc/licence
-                      const licence = Object.keys(alum.profile.grades).find(
-                        (k) =>
-                          k.toLowerCase().includes("licence") ||
-                          k.toLowerCase().includes("bsc")
-                      );
-                      // Find current school (first accepted)
-                      const currentSchool = alum.profile.schoolsApplied.find(
-                        (s) => s.status === "accepted"
-                      );
-                      // Try to extract company from currentPosition
-                      let company = "";
-                      if (alum.profile.currentPosition) {
-                        const match =
-                          alum.profile.currentPosition.match(/chez ([^,]+)/i);
-                        if (match) company = match[1];
-                        else {
-                          // fallback: last word if 'à' or 'at' present
-                          const m2 =
-                            alum.profile.currentPosition.match(
-                              /(?:à|at) ([^,]+)/i
-                            );
-                          if (m2) company = m2[1];
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon sx={{ color: "#3b82f6" }} />}
+                    aria-controls={`panel-${field}-content`}
+                    id={`panel-${field}-header`}
+                    sx={{
+                      background:
+                        "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                      color: "white",
+                      borderRadius: 2,
+                      minHeight: 56,
+                      boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
+                      fontWeight: 700,
+                      mb: 0,
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                      <Avatar
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          fontWeight: 700,
+                          background: group[0]?.color || "#3b82f6",
+                        }}
+                      >
+                        {field[0]}
+                      </Avatar>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          color: "white",
+                          fontWeight: 700,
+                          fontSize: "1.1rem",
+                          letterSpacing: 0.5,
+                          textShadow: "0 1px 4px #0002",
+                        }}
+                      >
+                        {field}
+                      </Typography>
+                      <Chip
+                        label={`${group.length} alumnis`}
+                        size="small"
+                        sx={{
+                          ml: 2,
+                          background: "rgba(255,255,255,0.13)",
+                          color: "#fff",
+                          fontWeight: 600,
+                        }}
+                      />
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails
+                    sx={{
+                      background: "rgba(15,23,42,0.97)",
+                      borderRadius: 2,
+                      p: 0,
+                    }}
+                  >
+                    <List dense>
+                      {group.map((alum) => {
+                        // Find BSc/licence
+                        const licence = Object.keys(alum.profile.grades).find(
+                          (k) =>
+                            k.toLowerCase().includes("licence") ||
+                            k.toLowerCase().includes("bsc")
+                        );
+                        // Find current school (first accepted)
+                        const currentSchool = alum.profile.schoolsApplied.find(
+                          (s) => s.status === "accepted"
+                        );
+                        // Try to extract company from currentPosition
+                        let company = "";
+                        if (alum.profile.currentPosition) {
+                          const match =
+                            alum.profile.currentPosition.match(/chez ([^,]+)/i);
+                          if (match) company = match[1];
+                          else {
+                            // fallback: last word if 'à' or 'at' present
+                            const m2 =
+                              alum.profile.currentPosition.match(
+                                /(?:à|at) ([^,]+)/i
+                              );
+                            if (m2) company = m2[1];
+                          }
                         }
-                      }
-                      return (
-                        <ListItem
-                          key={alum.id}
-                          button
-                          onClick={() => handleAlumniNameClick(alum)}
-                          sx={{
-                            px: 1.5,
-                            py: 1.2,
-                            borderRadius: 2,
-                            cursor: "pointer",
-                            transition: "background 0.1s ease",
-                            "&:hover": {
-                              background: "rgba(59,130,246,0.1)",
-                            },
-                            userSelect: "none",
-                          }}
-                          aria-label={`Voir la fiche de ${alum.name}`}
-                        >
-                          <ListItemIcon sx={{ minWidth: 44 }}>
-                            <Avatar
-                              sx={{
-                                background: alum.color,
-                                color: "#fff",
-                                fontWeight: 700,
-                              }}
-                            >
-                              {alum.avatar}
-                            </Avatar>
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <span
-                                style={{
-                                  fontWeight: 600,
+                        return (
+                          <ListItem
+                            key={alum.id}
+                            button
+                            onClick={() => handleAlumniNameClick(alum)}
+                            sx={{
+                              px: 1.5,
+                              py: 1.2,
+                              borderRadius: 2,
+                              cursor: "pointer",
+                              transition: "background 0.1s ease",
+                              "&:hover": {
+                                background: "rgba(59,130,246,0.1)",
+                              },
+                              userSelect: "none",
+                            }}
+                            aria-label={`Voir la fiche de ${alum.name}`}
+                          >
+                            <ListItemIcon sx={{ minWidth: 44 }}>
+                              <Avatar
+                                sx={{
+                                  background: alum.color,
                                   color: "#fff",
-                                  fontSize: "1.08rem",
+                                  fontWeight: 700,
                                 }}
                               >
-                                {alum.name}
-                              </span>
-                            }
-                            secondary={
-                              <span
-                                style={{
-                                  color: "rgba(255,255,255,0.8)",
-                                  fontSize: "0.98rem",
-                                }}
-                              >
-                                {licence ? <>{licence} &nbsp;|&nbsp; </> : null}
-                                {currentSchool ? currentSchool.name : "—"}{" "}
-                                &nbsp;|&nbsp; {company || "—"}
-                              </span>
-                            }
-                          />
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-                </AccordionDetails>
-              </Accordion>
-            ))}
-          </Box>
-        </Card>
+                                {alum.avatar}
+                              </Avatar>
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={
+                                <span
+                                  style={{
+                                    fontWeight: 600,
+                                    color: "#fff",
+                                    fontSize: "1.08rem",
+                                  }}
+                                >
+                                  {alum.name}
+                                </span>
+                              }
+                              secondary={
+                                <span
+                                  style={{
+                                    color: "rgba(255,255,255,0.8)",
+                                    fontSize: "0.98rem",
+                                  }}
+                                >
+                                  {licence ? (
+                                    <>{licence} &nbsp;|&nbsp; </>
+                                  ) : null}
+                                  {currentSchool ? currentSchool.name : "—"}{" "}
+                                  &nbsp;|&nbsp; {company || "—"}
+                                </span>
+                              }
+                            />
+                          </ListItem>
+                        );
+                      })}
+                    </List>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </Box>
+          </Card>
+        </Box>
       </Modal>
 
       {/* Edit Alumni Modal */}
       <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "#18181b",
-            p: 4,
-            borderRadius: 2,
-            minWidth: 320,
-            maxWidth: 420,
-            maxHeight: "80vh",
-            overflowY: "auto",
-            boxShadow: 24,
-            position: "relative",
-          }}
-        >
-          {/* Close button */}
+        <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+          {/* Fixed Close Button - positioned relative to viewport */}
           <IconButton
             onClick={() => setEditModalOpen(false)}
             sx={{
-              position: "absolute",
-              top: 16,
-              right: 16,
+              position: "fixed",
+              top: "5vh",
+              right: "5vw",
+              zIndex: 1500,
               color: "rgba(255, 255, 255, 0.7)",
               background: "rgba(0, 0, 0, 0.3)",
               backdropFilter: "blur(10px)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
-              zIndex: 30,
               width: 36,
               height: 36,
               "&:hover": {
@@ -1426,389 +1415,325 @@ export default function Alumnis() {
             <CloseIcon sx={{ fontSize: "1.2rem" }} />
           </IconButton>
 
-          <Typography variant="h6" sx={{ mb: 2, pr: 4 }}>
-            {editAlumni && String(alumniId) === String(editAlumni._id)
-              ? "Modifier ma carte"
-              : "Modifier l'alumni"}
-          </Typography>
-          <form onSubmit={handleEditSubmit}>
-            <TextField
-              label="Nom"
-              name="name"
-              value={editForm.name}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Diplôme"
-              name="degree"
-              value={editForm.degree}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Poste"
-              name="position"
-              value={editForm.position}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Domaine"
-              name="field"
-              value={editForm.field}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="LinkedIn"
-              name="profile.linkedin"
-              value={editForm.profile?.linkedin || ""}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Email"
-              name="email"
-              value={editForm.email || ""}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Profile Email"
-              name="profile.email"
-              value={editForm.profile?.email || ""}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Profile Poste Actuel"
-              name="profile.currentPosition"
-              value={editForm.profile?.currentPosition || ""}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            {/* Hide profile option for admin or self */}
-            {(isAdmin ||
-              (editAlumni && String(alumniId) === String(editAlumni._id))) && (
-              <Box sx={{ mb: 2 }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={!!editForm.hidden}
-                      onChange={(e) =>
-                        setEditForm((prev) => ({
-                          ...prev,
-                          hidden: e.target.checked,
-                        }))
-                      }
-                      name="hidden"
-                      color="primary"
-                    />
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "#18181b",
+              p: 4,
+              borderRadius: 2,
+              minWidth: 320,
+              maxWidth: 420,
+              maxHeight: "80vh",
+              overflowY: "auto",
+              boxShadow: 24,
+              scrollBehavior: "smooth",
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              {editAlumni && String(alumniId) === String(editAlumni._id)
+                ? "Modifier ma carte"
+                : "Modifier l'alumni"}
+            </Typography>
+            <form onSubmit={handleEditSubmit}>
+              <TextField
+                label="Nom"
+                name="name"
+                value={editForm.name}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Diplôme"
+                name="degree"
+                value={editForm.degree}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Poste"
+                name="position"
+                value={editForm.position}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Domaine"
+                name="field"
+                value={editForm.field}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="LinkedIn"
+                name="profile.linkedin"
+                value={editForm.profile?.linkedin || ""}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Email"
+                name="email"
+                value={editForm.email || ""}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Profile Email"
+                name="profile.email"
+                value={editForm.profile?.email || ""}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Profile Poste Actuel"
+                name="profile.currentPosition"
+                value={editForm.profile?.currentPosition || ""}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              {/* Hide profile option for admin or self */}
+              {(isAdmin ||
+                (editAlumni &&
+                  String(alumniId) === String(editAlumni._id))) && (
+                <Box sx={{ mb: 2 }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={!!editForm.hidden}
+                        onChange={(e) =>
+                          setEditForm((prev) => ({
+                            ...prev,
+                            hidden: e.target.checked,
+                          }))
+                        }
+                        name="hidden"
+                        color="primary"
+                      />
+                    }
+                    label="Masquer ma carte (seuls les admins peuvent la voir)"
+                  />
+                </Box>
+              )}
+
+              <TextField
+                label="Conseil"
+                name="conseil"
+                value={editForm.conseil || ""}
+                onChange={handleEditFormChange}
+                fullWidth
+                multiline
+                minRows={3}
+                sx={{ mb: 2 }}
+              />
+
+              <TextField
+                label="Nationalités (séparées par des virgules)"
+                name="nationalities"
+                value={editForm.nationalities || ""}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Stages, entreprises, concours, extrascolaire (texte libre)"
+                name="stagesWorkedContestsExtracurriculars"
+                value={editForm.stagesWorkedContestsExtracurriculars || ""}
+                onChange={handleEditFormChange}
+                fullWidth
+                multiline
+                minRows={2}
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Projets futurs (métiers, masters, écoles visés...)"
+                name="futureGoals"
+                value={editForm.futureGoals || ""}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Année de fin de L3 (4 chiffres)"
+                name="anneeFinL3"
+                value={editForm.anneeFinL3 || ""}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
+              />
+
+              {/* Password Change Section */}
+              <Box
+                sx={{
+                  mb: 3,
+                  p: 2,
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: 2,
+                  backgroundColor: "rgba(255, 255, 255, 0.02)",
+                }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  sx={{ mb: 2, color: "#3b82f6", fontWeight: 600 }}
+                >
+                  Changer le mot de passe
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ mb: 2, color: "rgba(255, 255, 255, 0.7)" }}
+                >
+                  Laissez vide pour ne pas changer le mot de passe
+                </Typography>
+
+                <TextField
+                  label="Nouveau mot de passe"
+                  name="newPassword"
+                  type={editForm.showPassword ? "text" : "password"}
+                  value={editForm.newPassword}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() =>
+                            setEditForm((prev) => ({
+                              ...prev,
+                              showPassword: !prev.showPassword,
+                            }))
+                          }
+                          edge="end"
+                          sx={{ color: "rgba(255, 255, 255, 0.5)" }}
+                        >
+                          {editForm.showPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  helperText="Minimum 8 caractères, 1 majuscule, 1 chiffre, 1 symbole"
+                />
+
+                <TextField
+                  label="Confirmer le nouveau mot de passe"
+                  name="confirmPassword"
+                  type={editForm.showConfirmPassword ? "text" : "password"}
+                  value={editForm.confirmPassword}
+                  onChange={handleEditFormChange}
+                  fullWidth
+                  sx={{ mb: 1 }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() =>
+                            setEditForm((prev) => ({
+                              ...prev,
+                              showConfirmPassword: !prev.showConfirmPassword,
+                            }))
+                          }
+                          edge="end"
+                          sx={{ color: "rgba(255, 255, 255, 0.5)" }}
+                        >
+                          {editForm.showConfirmPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={
+                    editForm.newPassword &&
+                    editForm.confirmPassword &&
+                    editForm.newPassword !== editForm.confirmPassword
                   }
-                  label="Cacher mon profil"
+                  helperText={
+                    editForm.newPassword &&
+                    editForm.confirmPassword &&
+                    editForm.newPassword !== editForm.confirmPassword
+                      ? "Les mots de passe ne correspondent pas"
+                      : ""
+                  }
                 />
               </Box>
-            )}
-            {/* Grades Section */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1">Notes / Diplômes</Typography>
-              {Object.entries(editForm.profile?.grades || {}).map(
-                ([key, value], idx) => (
-                  <Box key={key + idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
-                    <TextField
-                      label="Diplôme"
-                      value={key}
-                      onChange={(e) => {
-                        const newKey = e.target.value;
-                        const grades = { ...editForm.profile.grades };
-                        const val = grades[key];
-                        delete grades[key];
-                        grades[newKey] = val;
-                        setEditForm((prev) => ({
-                          ...prev,
-                          profile: { ...prev.profile, grades },
-                        }));
-                      }}
-                      size="small"
-                      sx={{ flex: 1 }}
-                    />
-                    <TextField
-                      label="Note"
-                      value={value}
-                      onChange={(e) => handleGradeChange(key, e.target.value)}
-                      size="small"
-                      sx={{ flex: 1 }}
-                    />
-                    <Button
-                      onClick={() => handleRemoveGrade(key)}
-                      color="error"
-                      size="small"
-                    >
-                      Supprimer
-                    </Button>
-                  </Box>
-                )
-              )}
-              <Button onClick={handleAddGrade} size="small" sx={{ mt: 1 }}>
-                Ajouter un diplôme/note
-              </Button>
-            </Box>
-            {/* Schools Section */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1">Écoles demandées</Typography>
-              {(editForm.profile?.schoolsApplied || []).map((school, idx) => (
-                <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+
+              {/* Only admins can edit color, gradient, and admin status */}
+              {isAdmin && (
+                <>
                   <TextField
-                    label="École"
-                    value={school.name}
-                    onChange={(e) =>
-                      handleSchoolChange(idx, "name", e.target.value)
-                    }
-                    size="small"
-                    sx={{ flex: 2 }}
+                    label="Couleur (hex)"
+                    name="color"
+                    value={editForm.color}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
                   />
                   <TextField
-                    select
-                    label="Statut"
-                    value={school.status}
-                    onChange={(e) =>
-                      handleSchoolChange(idx, "status", e.target.value)
+                    label="Dégradé (gradient)"
+                    name="gradient"
+                    value={editForm.gradient}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={!!editForm.isAdmin}
+                        onChange={(e) =>
+                          setEditForm((prev) => ({
+                            ...prev,
+                            isAdmin: e.target.checked,
+                          }))
+                        }
+                        name="isAdmin"
+                        color="primary"
+                      />
                     }
-                    size="small"
-                    sx={{ flex: 1 }}
-                    SelectProps={{ native: true }}
-                  >
-                    <option value="accepted">Accepté</option>
-                    <option value="rejected">Refusé</option>
-                  </TextField>
-                  <Button
-                    onClick={() => handleRemoveSchool(idx)}
-                    color="error"
-                    size="small"
-                  >
-                    Supprimer
-                  </Button>
-                </Box>
-              ))}
-              <Button onClick={handleAddSchool} size="small" sx={{ mt: 1 }}>
-                Ajouter une école
-              </Button>
-            </Box>
-            <TextField
-              label="Conseil"
-              name="conseil"
-              value={editForm.conseil || ""}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              multiline
-              minRows={4}
-            />
-            <TextField
-              label="Nationalités (séparées par des virgules)"
-              name="nationalities"
-              value={editForm.nationalities || ""}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Stages, entreprises, concours, extrascolaire (texte libre)"
-              name="stagesWorkedContestsExtracurriculars"
-              value={editForm.stagesWorkedContestsExtracurriculars || ""}
-              onChange={handleEditFormChange}
-              fullWidth
-              multiline
-              minRows={2}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Projets futurs (métiers, masters, écoles visés...)"
-              name="futureGoals"
-              value={editForm.futureGoals || ""}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              label="Année de fin de L3 (4 chiffres)"
-              name="anneeFinL3"
-              value={editForm.anneeFinL3 || ""}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-              inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
-            />
-
-            {/* Password Change Section */}
-            <Box
-              sx={{
-                mb: 3,
-                p: 2,
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: 2,
-                backgroundColor: "rgba(255, 255, 255, 0.02)",
-              }}
-            >
-              <Typography
-                variant="subtitle1"
-                sx={{ mb: 2, color: "#3b82f6", fontWeight: 600 }}
-              >
-                Changer le mot de passe
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ mb: 2, color: "rgba(255, 255, 255, 0.7)" }}
-              >
-                Laissez vide pour ne pas changer le mot de passe
-              </Typography>
-
-              <TextField
-                label="Nouveau mot de passe"
-                name="newPassword"
-                type={editForm.showPassword ? "text" : "password"}
-                value={editForm.newPassword}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            showPassword: !prev.showPassword,
-                          }))
-                        }
-                        edge="end"
-                        sx={{ color: "rgba(255, 255, 255, 0.5)" }}
-                      >
-                        {editForm.showPassword ? (
-                          <VisibilityOff />
-                        ) : (
-                          <Visibility />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                helperText="Minimum 8 caractères, 1 majuscule, 1 chiffre, 1 symbole"
-              />
-
-              <TextField
-                label="Confirmer le nouveau mot de passe"
-                name="confirmPassword"
-                type={editForm.showConfirmPassword ? "text" : "password"}
-                value={editForm.confirmPassword}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 1 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            showConfirmPassword: !prev.showConfirmPassword,
-                          }))
-                        }
-                        edge="end"
-                        sx={{ color: "rgba(255, 255, 255, 0.5)" }}
-                      >
-                        {editForm.showConfirmPassword ? (
-                          <VisibilityOff />
-                        ) : (
-                          <Visibility />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                error={
-                  editForm.newPassword &&
-                  editForm.confirmPassword &&
-                  editForm.newPassword !== editForm.confirmPassword
-                }
-                helperText={
-                  editForm.newPassword &&
-                  editForm.confirmPassword &&
-                  editForm.newPassword !== editForm.confirmPassword
-                    ? "Les mots de passe ne correspondent pas"
-                    : ""
-                }
-              />
-            </Box>
-
-            {/* Only admins can edit color, gradient, and admin status */}
-            {isAdmin && (
-              <>
+                    label="Donner le statut administrateur à cet utilisateur"
+                    sx={{ mb: 2 }}
+                  />
+                </>
+              )}
+              {editAlumni && editAlumni.createdAt && (
                 <TextField
-                  label="Couleur (hex)"
-                  name="color"
-                  value={editForm.color}
-                  onChange={handleEditFormChange}
+                  label="Date de création du compte"
+                  value={new Date(editAlumni.createdAt).toLocaleString("fr-FR")}
                   fullWidth
+                  InputProps={{ readOnly: true }}
                   sx={{ mb: 2 }}
                 />
-                <TextField
-                  label="Dégradé (gradient)"
-                  name="gradient"
-                  value={editForm.gradient}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={!!editForm.isAdmin}
-                      onChange={(e) =>
-                        setEditForm((prev) => ({
-                          ...prev,
-                          isAdmin: e.target.checked,
-                        }))
-                      }
-                      name="isAdmin"
-                      color="primary"
-                    />
-                  }
-                  label="Donner le statut administrateur à cet utilisateur"
-                  sx={{ mb: 2 }}
-                />
-              </>
-            )}
-            {editAlumni && editAlumni.createdAt && (
-              <TextField
-                label="Date de création du compte"
-                value={new Date(editAlumni.createdAt).toLocaleString("fr-FR")}
-                fullWidth
-                InputProps={{ readOnly: true }}
-                sx={{ mb: 2 }}
-              />
-            )}
-            {editError && (
-              <Typography color="error" sx={{ mb: 2 }}>
-                {editError}
-              </Typography>
-            )}
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button onClick={() => setEditModalOpen(false)}>Annuler</Button>
-              <Button type="submit" variant="contained">
-                Enregistrer
-              </Button>
-            </Box>
-          </form>
+              )}
+              {editError && (
+                <Typography color="error" sx={{ mb: 2 }}>
+                  {editError}
+                </Typography>
+              )}
+              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                <Button onClick={() => setEditModalOpen(false)}>Annuler</Button>
+                <Button type="submit" variant="contained">
+                  Enregistrer
+                </Button>
+              </Box>
+            </form>
+          </Box>
         </Box>
       </Modal>
     </div>

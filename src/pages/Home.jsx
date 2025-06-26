@@ -187,9 +187,9 @@ export default function Home() {
       >
         {/* Background Elements */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 0.1, scale: 1 }}
-          transition={{ duration: 2, delay: 0.5 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           style={{
             position: "absolute",
             top: "10%",
@@ -203,9 +203,9 @@ export default function Home() {
           }}
         />
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 0.1, scale: 1 }}
-          transition={{ duration: 2, delay: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
           style={{
             position: "absolute",
             bottom: "20%",
@@ -223,7 +223,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 0.6, y: 0 }}
-          transition={{ duration: 1, delay: 1.5 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
           style={{
             position: "absolute",
             top: "25%",
@@ -236,7 +236,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 0.6, y: 0 }}
-          transition={{ duration: 1, delay: 2 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
           style={{
             position: "absolute",
             bottom: "30%",
@@ -249,7 +249,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 0.6, x: 0 }}
-          transition={{ duration: 1, delay: 2.5 }}
+          transition={{ duration: 0.5, delay: 1.0 }}
           style={{
             position: "absolute",
             top: "60%",
@@ -271,9 +271,9 @@ export default function Home() {
             {/* Left Side - Text Content */}
             <Grid xs={12} md={6}>
               <motion.div
-                initial={{ opacity: 0, x: -50 }}
+                initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: 0.5 }}
               >
                 <Box
                   sx={{
