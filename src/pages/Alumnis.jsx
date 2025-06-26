@@ -1139,7 +1139,26 @@ export default function Alumnis() {
           justifyContent: "center",
         }}
       >
-        <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "95vw", sm: 500, md: 600 },
+            maxHeight: "90vh",
+            overflowY: "auto",
+            bgcolor: "background.paper",
+            borderRadius: 4,
+            boxShadow: 24,
+            p: 0,
+            outline: "none",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           {/* Fixed Close Button - positioned relative to viewport */}
           <IconButton
             onClick={closeListModal}
@@ -1227,7 +1246,7 @@ export default function Alumnis() {
               ).map(([field, group], idx, arr) => (
                 <Accordion
                   key={field}
-                  defaultExpanded={arr.length <= 3}
+                  defaultExpanded={false}
                   sx={{
                     background: "rgba(59,130,246,0.07)",
                     borderRadius: 2,
