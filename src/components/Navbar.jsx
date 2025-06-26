@@ -79,64 +79,12 @@ const Navbar = () => {
     return location.pathname.startsWith(path);
   };
 
-  // Admin state and alumni
-  const isAdmin =
-    typeof window !== "undefined" && localStorage.getItem("isAdmin") === "true";
-  const [adminAlumni, setAdminAlumni] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleProfileClick = (event) => setAnchorEl(event.currentTarget);
-  const handleProfileClose = () => setAnchorEl(null);
-
-  // Fetch admin data from database
-  useEffect(() => {
-    if (isAdmin) {
-      fetch(`${process.env.VITE_API_URL}/api/alumni`)
-        .then((res) => res.json())
-        .then((data) => {
-          const admin = data.find((a) => a.isAdmin);
-          if (admin) {
-            setAdminAlumni(admin);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching admin data:", error);
-        });
-    }
-  }, [isAdmin]);
-
-  useEffect(() => {
-    const handleProfileUpdated = () => {
-      if (isAdmin) {
-        fetch(`${process.env.VITE_API_URL}/api/alumni`)
-          .then((res) => res.json())
-          .then((data) => {
-            const admin = data.find((a) => a.isAdmin);
-            if (admin) {
-              setAdminAlumni(admin);
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching admin data:", error);
-          });
-      }
-    };
-    window.addEventListener("profileUpdated", handleProfileUpdated);
-    return () =>
-      window.removeEventListener("profileUpdated", handleProfileUpdated);
-  }, [isAdmin]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("isAdmin");
-    localStorage.removeItem("token");
-    window.location.reload();
-  };
-
-  // Alumni state
+  // Alumni state (works for both admins and non-admins)
   const [alumniUser, setAlumniUser] = useState(null);
 
-  // Function to fetch alumni user data
+  // Function to fetch alumni user data (for both admin and non-admin)
   const fetchAlumniUser = async () => {
-    if (!isAdmin && typeof window !== "undefined") {
+    if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       if (token) {
         try {
@@ -160,14 +108,12 @@ const Navbar = () => {
       } else {
         setAlumniUser(null);
       }
-    } else {
-      setAlumniUser(null);
     }
   };
 
   useEffect(() => {
     fetchAlumniUser();
-  }, [isAdmin]);
+  }, []);
 
   // Listen for storage changes (when profile is updated from other pages)
   useEffect(() => {
@@ -176,32 +122,32 @@ const Navbar = () => {
         fetchAlumniUser();
       }
     };
-
     window.addEventListener("storage", handleStorageChange);
-
     // Also listen for custom events
     const handleProfileUpdate = () => {
       fetchAlumniUser();
     };
-
     window.addEventListener("profileUpdated", handleProfileUpdate);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("profileUpdated", handleProfileUpdate);
     };
-  }, [isAdmin]);
+  }, []);
 
   // Periodic refresh every 30 seconds to ensure data is up to date
   useEffect(() => {
-    if (!isAdmin && alumniUser) {
+    if (alumniUser) {
       const interval = setInterval(() => {
         fetchAlumniUser();
       }, 30000); // 30 seconds
-
       return () => clearInterval(interval);
     }
-  }, [isAdmin, alumniUser]);
+  }, [alumniUser]);
+
+  // Add back the anchor and handlers for the profile menu (move these above any JSX usage)
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleProfileClick = (event) => setAnchorEl(event.currentTarget);
+  const handleProfileClose = () => setAnchorEl(null);
 
   const drawer = (
     <Box
@@ -275,103 +221,7 @@ const Navbar = () => {
             />
           </ListItem>
         ))}
-        {isAdmin && adminAlumni ? (
-          <Box sx={{ display: "flex", alignItems: "center", ml: 3, mt: 2 }}>
-            <Button
-              onClick={handleProfileClick}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1.5,
-                background: "rgba(255,255,255,0.10)",
-                border: "1.5px solid #3b82f6",
-                color: "#fff",
-                fontWeight: 700,
-                px: 2.5,
-                py: 1.2,
-                borderRadius: 3,
-                boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
-                textTransform: "none",
-                fontSize: "1rem",
-                "&:hover": {
-                  background: "rgba(59,130,246,0.15)",
-                  borderColor: "#2563eb",
-                },
-              }}
-            >
-              <Avatar
-                sx={{
-                  width: 32,
-                  height: 32,
-                  fontWeight: 700,
-                  background: "#3b82f6",
-                  color: "#fff",
-                  mr: 1,
-                }}
-              >
-                {adminAlumni.avatar}
-              </Avatar>
-              {adminAlumni.name.split(" ")[0]}
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleProfileClose}
-              TransitionComponent={Grow}
-              PaperProps={{
-                sx: {
-                  borderRadius: 3,
-                  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
-                  minWidth: 180,
-                  mt: 1,
-                  background: "rgba(30, 41, 59, 0.98)",
-                  color: "#fff",
-                  p: 0.5,
-                },
-              }}
-              MenuListProps={{
-                sx: {
-                  p: 0,
-                },
-              }}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-            >
-              <MenuItem
-                onClick={async () => {
-                  // Always fetch the latest admin alumni object (with username)
-                  if (adminAlumni && adminAlumni.id) {
-                    try {
-                      const res = await fetch(
-                        `${process.env.VITE_API_URL}/api/alumni/${adminAlumni.id}`
-                      );
-                      if (res.ok) {
-                        const freshAdmin = await res.json();
-                        openEditSelfModal([freshAdmin]);
-                      } else {
-                        openEditSelfModal([adminAlumni]);
-                      }
-                    } catch {
-                      openEditSelfModal([adminAlumni]);
-                    }
-                  }
-                  handleProfileClose();
-                }}
-              >
-                Modifier ma carte
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setIsAddAlumniModalOpen(true);
-                  handleProfileClose();
-                }}
-              >
-                Ajouter un alumni
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
-            </Menu>
-          </Box>
-        ) : alumniUser ? (
+        {alumniUser ? (
           <Box sx={{ display: "flex", alignItems: "center", ml: 3, mt: 2 }}>
             <Button
               onClick={handleProfileClick}
@@ -830,7 +680,7 @@ const Navbar = () => {
                   {item.name}
                 </Button>
               ))}
-              {isAdmin && adminAlumni ? (
+              {alumniUser ? (
                 <Box sx={{ display: "flex", alignItems: "center", ml: 3 }}>
                   <Button
                     onClick={handleProfileClick}
@@ -859,59 +709,17 @@ const Navbar = () => {
                         width: 32,
                         height: 32,
                         fontWeight: 700,
-                        background: "#3b82f6",
+                        background: alumniUser.color || "#3b82f6",
                         color: "#fff",
                         mr: 1,
                       }}
                     >
-                      {adminAlumni.avatar}
+                      {alumniUser.avatar}
                     </Avatar>
-                    {adminAlumni.name.split(" ")[0]}
+                    {alumniUser.name.split(" ")[0]}
                   </Button>
                 </Box>
               ) : (
-                alumniUser && (
-                  <Box sx={{ display: "flex", alignItems: "center", ml: 3 }}>
-                    <Button
-                      onClick={handleProfileClick}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1.5,
-                        background: "rgba(255,255,255,0.10)",
-                        border: "1.5px solid #3b82f6",
-                        color: "#fff",
-                        fontWeight: 700,
-                        px: 2.5,
-                        py: 1.2,
-                        borderRadius: 3,
-                        boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
-                        textTransform: "none",
-                        fontSize: "1rem",
-                        "&:hover": {
-                          background: "rgba(59,130,246,0.15)",
-                          borderColor: "#2563eb",
-                        },
-                      }}
-                    >
-                      <Avatar
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          fontWeight: 700,
-                          background: alumniUser.color || "#3b82f6",
-                          color: "#fff",
-                          mr: 1,
-                        }}
-                      >
-                        {alumniUser.avatar}
-                      </Avatar>
-                      {alumniUser.name.split(" ")[0]}
-                    </Button>
-                  </Box>
-                )
-              )}
-              {isAdmin && adminAlumni ? null : alumniUser ? null : (
                 <Button
                   variant="contained"
                   component={Link}
