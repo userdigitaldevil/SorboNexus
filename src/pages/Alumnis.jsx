@@ -1159,14 +1159,14 @@ export default function Alumnis() {
             justifyContent: "center",
           }}
         >
-          {/* Fixed Close Button - positioned relative to viewport */}
+          {/* Close Button - positioned in upper right of modal */}
           <IconButton
             onClick={closeListModal}
             sx={{
-              position: "fixed",
-              top: "5vh",
-              right: "5vw",
-              zIndex: 1500,
+              position: "absolute",
+              top: 16,
+              right: 16,
+              zIndex: 10,
               color: "rgba(255,255,255,0.7)",
               background: "rgba(0, 0, 0, 0.3)",
               backdropFilter: "blur(8px)",
@@ -1409,14 +1409,14 @@ export default function Alumnis() {
       {/* Edit Alumni Modal */}
       <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)}>
         <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
-          {/* Fixed Close Button - positioned relative to viewport */}
+          {/* Close Button - positioned in upper right of modal */}
           <IconButton
             onClick={() => setEditModalOpen(false)}
             sx={{
-              position: "fixed",
-              top: "5vh",
-              right: "5vw",
-              zIndex: 1500,
+              position: "absolute",
+              top: 16,
+              right: 16,
+              zIndex: 10,
               color: "rgba(255, 255, 255, 0.7)",
               background: "rgba(0, 0, 0, 0.3)",
               backdropFilter: "blur(10px)",
