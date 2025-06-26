@@ -53,6 +53,7 @@ import AlumniCard from "../components/AlumniCard";
 import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import { useAlumniEditModal } from "../components/AlumniEditModalContext";
 
 export default function Alumnis() {
   // Admin state (must be first)
@@ -81,36 +82,6 @@ export default function Alumnis() {
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [alumni, setAlumni] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editAlumni, setEditAlumni] = useState(null);
-  const [editForm, setEditForm] = useState({
-    name: "",
-    degree: "",
-    position: "",
-    field: "",
-    linkedin: "",
-    email: "",
-    avatar: "",
-    color: "",
-    gradient: "",
-    conseil: "",
-    grades: [],
-    schoolsApplied: [],
-    isAdmin: false,
-    hidden: false,
-    nationalities: "",
-    stagesWorkedContestsExtracurriculars: "",
-    futureGoals: "",
-    anneeFinL3: "",
-    // Username for admin editing
-    username: "",
-    // Password change fields
-    newPassword: "",
-    confirmPassword: "",
-    showPassword: false,
-    showConfirmPassword: false,
-  });
-  const [editError, setEditError] = useState("");
 
   const filters = [
     "Tous",
@@ -124,6 +95,7 @@ export default function Alumnis() {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { openEditModal } = useAlumniEditModal();
 
   const fetchAlumni = async () => {
     try {
@@ -221,6 +193,15 @@ export default function Alumnis() {
     window.addEventListener("openEditSelfModal", handler);
     return () => window.removeEventListener("openEditSelfModal", handler);
   }, [alumni]);
+
+  useEffect(() => {
+    const handleProfileUpdated = () => {
+      fetchAlumni();
+    };
+    window.addEventListener("profileUpdated", handleProfileUpdated);
+    return () =>
+      window.removeEventListener("profileUpdated", handleProfileUpdated);
+  }, []);
 
   // Compute visibleAlumni: only show non-hidden, or self, or admin
   const visibleAlumni = alumni.filter(
@@ -354,7 +335,6 @@ export default function Alumnis() {
 
   const handleEditClick = async (alum) => {
     let alumniData = alum;
-    // If admin, fetch the latest alumni data (with username) from backend
     if (isAdmin) {
       try {
         const res = await fetch(
@@ -363,203 +343,32 @@ export default function Alumnis() {
         if (res.ok) {
           alumniData = await res.json();
         }
-      } catch (e) {
-        // fallback to passed alum
-      }
+      } catch (e) {}
     }
-    setEditAlumni(alumniData);
-    setEditForm({
-      name: alumniData.name || "",
-      degree: alumniData.degree || "",
-      position: alumniData.position || "",
-      field: alumniData.field || "",
-      linkedin: alumniData.linkedin || "",
-      email: alumniData.email || "",
-      avatar: alumniData.avatar || "",
-      color: alumniData.color || "",
-      gradient: alumniData.gradient || "",
-      conseil: alumniData.conseil || "",
-      grades: Array.isArray(alumniData.grades) ? alumniData.grades : [],
-      schoolsApplied: Array.isArray(alumniData.schoolsApplied)
-        ? alumniData.schoolsApplied
-        : [],
-      isAdmin: alumniData.isAdmin || false,
-      hidden: alumniData.hidden || false,
-      nationalities: Array.isArray(alumniData.nationalities)
-        ? alumniData.nationalities.join(", ")
-        : alumniData.nationalities || "",
-      stagesWorkedContestsExtracurriculars:
-        alumniData.stagesWorkedContestsExtracurriculars || "",
-      futureGoals: alumniData.futureGoals || "",
-      anneeFinL3: alumniData.anneeFinL3 || "",
-      // Username for admin editing
-      username: alumniData.username || "",
-      newPassword: "",
-      confirmPassword: "",
-      showPassword: false,
-      showConfirmPassword: false,
-    });
-    setEditModalOpen(true);
+    openEditModal(alumniData);
   };
 
   const handleGradeChange = (idx, field, value) => {
-    setEditForm((prev) => {
-      const newGrades = [...(prev.grades || [])];
-      newGrades[idx] = { ...newGrades[idx], [field]: value };
-      return { ...prev, grades: newGrades };
-    });
+    // This function is no longer used in the new implementation
   };
   const handleAddGrade = () => {
-    setEditForm((prev) => ({
-      ...prev,
-      grades: [...(prev.grades || []), { subject: "", value: "" }],
-    }));
+    // This function is no longer used in the new implementation
   };
   const handleRemoveGrade = (idx) => {
-    setEditForm((prev) => {
-      const newGrades = [...(prev.grades || [])];
-      newGrades.splice(idx, 1);
-      return { ...prev, grades: newGrades };
-    });
+    // This function is no longer used in the new implementation
   };
   const handleSchoolChange = (idx, field, value) => {
-    setEditForm((prev) => {
-      const schools = [...(prev.schoolsApplied || [])];
-      schools[idx] = { ...schools[idx], [field]: value };
-      return { ...prev, schoolsApplied: schools };
-    });
+    // This function is no longer used in the new implementation
   };
   const handleAddSchool = () => {
-    setEditForm((prev) => ({
-      ...prev,
-      schoolsApplied: [
-        ...(prev.schoolsApplied || []),
-        { name: "", status: "accepted" },
-      ],
-    }));
+    // This function is no longer used in the new implementation
   };
   const handleRemoveSchool = (idx) => {
-    setEditForm((prev) => {
-      const schools = [...(prev.schoolsApplied || [])];
-      schools.splice(idx, 1);
-      return { ...prev, schoolsApplied: schools };
-    });
+    // This function is no longer used in the new implementation
   };
 
   const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    setEditError("");
-
-    // Validate password change if provided
-    if (editForm.newPassword || editForm.confirmPassword) {
-      if (!editForm.newPassword) {
-        setEditError("Veuillez saisir un nouveau mot de passe");
-        return;
-      }
-      if (!editForm.confirmPassword) {
-        setEditError("Veuillez confirmer le nouveau mot de passe");
-        return;
-      }
-      if (editForm.newPassword !== editForm.confirmPassword) {
-        setEditError("Les mots de passe ne correspondent pas");
-        return;
-      }
-      // Password strength validation (basic check - backend will do full validation)
-      if (editForm.newPassword.length < 8) {
-        setEditError("Le mot de passe doit contenir au moins 8 caractères");
-        return;
-      }
-    }
-
-    // Debug: log the form state before sending
-    console.log("Submitting editForm:", editForm);
-    // Build payload
-    const stringFields = [
-      "name",
-      "degree",
-      "position",
-      "field",
-      "linkedin",
-      "email",
-      "avatar",
-      "color",
-      "gradient",
-      "conseil",
-    ];
-    const payload = {
-      ...stringFields.reduce(
-        (acc, key) => ({ ...acc, [key]: editForm[key] || "" }),
-        {}
-      ),
-      isAdmin: !!editForm.isAdmin,
-      hidden: !!editForm.hidden,
-      nationalities: (editForm.nationalities || "")
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
-      stagesWorkedContestsExtracurriculars:
-        editForm.stagesWorkedContestsExtracurriculars || "",
-      futureGoals: editForm.futureGoals || "",
-      anneeFinL3: editForm.anneeFinL3 || "",
-      grades: (editForm.grades || []).map(({ subject, value }) => ({
-        subject,
-        value,
-      })),
-      schoolsApplied: (editForm.schoolsApplied || []).map(
-        ({ name, status }) => ({ name, status })
-      ),
-      updatedAt: new Date(),
-    };
-
-    // Add password change to payload if provided
-    if (
-      editForm.newPassword &&
-      editForm.confirmPassword &&
-      editForm.newPassword === editForm.confirmPassword
-    ) {
-      payload.newPassword = editForm.newPassword;
-    }
-
-    // Add username to payload if admin
-    if (isAdmin && editForm.username) {
-      payload.username = editForm.username;
-    }
-
-    // Debug: log the payload before sending
-    console.log("Submitting payload:", payload);
-    // Send to backend
-    const response = await fetch(
-      `${process.env.VITE_API_URL}/api/alumni/${editAlumni.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(payload),
-      }
-    );
-    if (response.ok) {
-      // Refresh alumni data
-      await fetchAlumni();
-      setEditModalOpen(false);
-      setEditAlumni(null);
-      setEditError("");
-      // Clear password fields
-      setEditForm((prev) => ({
-        ...prev,
-        newPassword: "",
-        confirmPassword: "",
-        showPassword: false,
-        showConfirmPassword: false,
-      }));
-      // Notify navbar to refresh user data
-      localStorage.setItem("profileUpdated", Date.now().toString());
-      window.dispatchEvent(new Event("profileUpdated"));
-    } else {
-      const err = await response.json();
-      setEditError(err.error || "Erreur lors de la mise à jour.");
-    }
+    // This function is no longer used in the new implementation
   };
 
   const handleDeleteClick = async (alum) => {
@@ -603,11 +412,7 @@ export default function Alumnis() {
 
   // Generic handler for simple fields
   const handleEditFormChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setEditForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    // This function is no longer used in the new implementation
   };
 
   return (
@@ -1480,444 +1285,6 @@ export default function Alumnis() {
               ))}
             </Box>
           </Card>
-        </Box>
-      </Modal>
-
-      {/* Edit Alumni Modal */}
-      <Modal open={editModalOpen} onClose={() => setEditModalOpen(false)}>
-        <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
-          {/* Close Button - positioned in upper right of modal */}
-          <IconButton
-            onClick={() => setEditModalOpen(false)}
-            sx={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              zIndex: 10,
-              color: "rgba(255, 255, 255, 0.7)",
-              background: "rgba(0, 0, 0, 0.3)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              width: 36,
-              height: 36,
-              "&:hover": {
-                color: "#fff",
-                background: "rgba(0, 0, 0, 0.5)",
-                transform: "scale(1.1)",
-              },
-              transition: "all 0.2s ease",
-            }}
-          >
-            <CloseIcon sx={{ fontSize: "1.2rem" }} />
-          </IconButton>
-
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "#18181b",
-              p: 4,
-              borderRadius: 2,
-              minWidth: 320,
-              maxWidth: 420,
-              maxHeight: "80vh",
-              overflowY: "auto",
-              boxShadow: 24,
-              scrollBehavior: "smooth",
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              {editAlumni && String(alumniId) === String(editAlumni.id)
-                ? "Modifier ma carte"
-                : "Modifier l'alumni"}
-            </Typography>
-            <form onSubmit={handleEditSubmit}>
-              {/* Admins can edit username */}
-              {isAdmin && (
-                <TextField
-                  label="Nom d'utilisateur"
-                  name="username"
-                  value={editForm.username || ""}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-              )}
-              <TextField
-                label="Nom"
-                name="name"
-                value={editForm.name}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Diplôme"
-                name="degree"
-                value={editForm.degree}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Poste"
-                name="position"
-                value={editForm.position}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Domaine"
-                name="field"
-                value={editForm.field}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="LinkedIn"
-                name="linkedin"
-                value={editForm.linkedin || ""}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Email"
-                name="email"
-                value={editForm.email || ""}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Profile Email"
-                name="profile.email"
-                value={editForm.profile?.email || ""}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Profile Poste Actuel"
-                name="profile.currentPosition"
-                value={editForm.profile?.currentPosition || ""}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              {/* Hide profile option for admin or self */}
-              {(isAdmin ||
-                (editAlumni && String(alumniId) === String(editAlumni.id))) && (
-                <Box sx={{ mb: 2 }}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={!!editForm.hidden}
-                        onChange={(e) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            hidden: e.target.checked,
-                          }))
-                        }
-                        name="hidden"
-                        color="primary"
-                      />
-                    }
-                    label="Masquer ma carte (seuls les admins peuvent la voir)"
-                  />
-                </Box>
-              )}
-
-              <TextField
-                label="Conseil"
-                name="conseil"
-                value={editForm.conseil || ""}
-                onChange={handleEditFormChange}
-                fullWidth
-                multiline
-                minRows={3}
-                sx={{ mb: 2 }}
-              />
-
-              <TextField
-                label="Nationalités (séparées par des virgules)"
-                name="nationalities"
-                value={editForm.nationalities || ""}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Stages, entreprises, concours, extrascolaire (texte libre)"
-                name="stagesWorkedContestsExtracurriculars"
-                value={editForm.stagesWorkedContestsExtracurriculars || ""}
-                onChange={handleEditFormChange}
-                fullWidth
-                multiline
-                minRows={2}
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Projets futurs (métiers, masters, écoles visés...)"
-                name="futureGoals"
-                value={editForm.futureGoals || ""}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Année de fin de L3 (4 chiffres)"
-                name="anneeFinL3"
-                value={editForm.anneeFinL3 || ""}
-                onChange={handleEditFormChange}
-                fullWidth
-                sx={{ mb: 2 }}
-                inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
-              />
-
-              {/* Grades Section */}
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle1">Notes / Diplômes</Typography>
-                {(editForm.grades || []).map((grade, idx) => (
-                  <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
-                    <TextField
-                      label="Diplôme"
-                      value={grade.subject || ""}
-                      onChange={(e) =>
-                        handleGradeChange(idx, "subject", e.target.value)
-                      }
-                      size="small"
-                      sx={{ flex: 1 }}
-                    />
-                    <TextField
-                      label="Note"
-                      value={grade.value || ""}
-                      onChange={(e) =>
-                        handleGradeChange(idx, "value", e.target.value)
-                      }
-                      size="small"
-                      sx={{ flex: 1 }}
-                    />
-                    <Button
-                      onClick={() => handleRemoveGrade(idx)}
-                      color="error"
-                      size="small"
-                    >
-                      Supprimer
-                    </Button>
-                  </Box>
-                ))}
-                <Button onClick={handleAddGrade} size="small" sx={{ mt: 1 }}>
-                  Ajouter un diplôme/note
-                </Button>
-              </Box>
-              {/* Schools Section */}
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle1">Écoles demandées</Typography>
-                {(editForm.schoolsApplied || []).map((school, idx) => (
-                  <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
-                    <TextField
-                      label="École"
-                      value={school.name || ""}
-                      onChange={(e) =>
-                        handleSchoolChange(idx, "name", e.target.value)
-                      }
-                      size="small"
-                      sx={{ flex: 2 }}
-                    />
-                    <TextField
-                      select
-                      label="Statut"
-                      value={school.status || "accepted"}
-                      onChange={(e) =>
-                        handleSchoolChange(idx, "status", e.target.value)
-                      }
-                      size="small"
-                      sx={{ flex: 1 }}
-                      SelectProps={{ native: true }}
-                    >
-                      <option value="accepted">Accepté</option>
-                      <option value="rejected">Refusé</option>
-                    </TextField>
-                    <Button
-                      onClick={() => handleRemoveSchool(idx)}
-                      color="error"
-                      size="small"
-                    >
-                      Supprimer
-                    </Button>
-                  </Box>
-                ))}
-                <Button onClick={handleAddSchool} size="small" sx={{ mt: 1 }}>
-                  Ajouter une école
-                </Button>
-              </Box>
-
-              {/* Password Change Section */}
-              <Box
-                sx={{
-                  mb: 3,
-                  p: 2,
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  borderRadius: 2,
-                  backgroundColor: "rgba(255, 255, 255, 0.02)",
-                }}
-              >
-                <Typography
-                  variant="subtitle1"
-                  sx={{ mb: 2, color: "#3b82f6", fontWeight: 600 }}
-                >
-                  Changer le mot de passe
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ mb: 2, color: "rgba(255, 255, 255, 0.7)" }}
-                >
-                  Laissez vide pour ne pas changer le mot de passe
-                </Typography>
-
-                <TextField
-                  label="Nouveau mot de passe"
-                  name="newPassword"
-                  type={editForm.showPassword ? "text" : "password"}
-                  value={editForm.newPassword}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() =>
-                            setEditForm((prev) => ({
-                              ...prev,
-                              showPassword: !prev.showPassword,
-                            }))
-                          }
-                          edge="end"
-                          sx={{ color: "rgba(255, 255, 255, 0.5)" }}
-                        >
-                          {editForm.showPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  helperText="Minimum 8 caractères, 1 majuscule, 1 chiffre, 1 symbole"
-                />
-
-                <TextField
-                  label="Confirmer le nouveau mot de passe"
-                  name="confirmPassword"
-                  type={editForm.showConfirmPassword ? "text" : "password"}
-                  value={editForm.confirmPassword}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 1 }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() =>
-                            setEditForm((prev) => ({
-                              ...prev,
-                              showConfirmPassword: !prev.showConfirmPassword,
-                            }))
-                          }
-                          edge="end"
-                          sx={{ color: "rgba(255, 255, 255, 0.5)" }}
-                        >
-                          {editForm.showConfirmPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={
-                    editForm.newPassword &&
-                    editForm.confirmPassword &&
-                    editForm.newPassword !== editForm.confirmPassword
-                  }
-                  helperText={
-                    editForm.newPassword &&
-                    editForm.confirmPassword &&
-                    editForm.newPassword !== editForm.confirmPassword
-                      ? "Les mots de passe ne correspondent pas"
-                      : ""
-                  }
-                />
-              </Box>
-
-              {/* Only admins can edit color, gradient, and admin status */}
-              {isAdmin && (
-                <>
-                  <TextField
-                    label="Couleur (hex)"
-                    name="color"
-                    value={editForm.color}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="Dégradé (gradient)"
-                    name="gradient"
-                    value={editForm.gradient}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={!!editForm.isAdmin}
-                        onChange={(e) =>
-                          setEditForm((prev) => ({
-                            ...prev,
-                            isAdmin: e.target.checked,
-                          }))
-                        }
-                        name="isAdmin"
-                        color="primary"
-                      />
-                    }
-                    label="Donner le statut administrateur à cet utilisateur"
-                    sx={{ mb: 2 }}
-                  />
-                </>
-              )}
-              {editAlumni && editAlumni.createdAt && (
-                <TextField
-                  label="Date de création du compte"
-                  value={new Date(editAlumni.createdAt).toLocaleString("fr-FR")}
-                  fullWidth
-                  InputProps={{ readOnly: true }}
-                  sx={{ mb: 2 }}
-                />
-              )}
-              {editError && (
-                <Typography color="error" sx={{ mb: 2 }}>
-                  {editError}
-                </Typography>
-              )}
-              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-                <Button onClick={() => setEditModalOpen(false)}>Annuler</Button>
-                <Button type="submit" variant="contained">
-                  Enregistrer
-                </Button>
-              </Box>
-            </form>
-          </Box>
         </Box>
       </Modal>
     </div>
