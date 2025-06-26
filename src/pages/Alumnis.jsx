@@ -902,6 +902,7 @@ export default function Alumnis() {
                   adminGlow={adminGlow}
                   isAdmin={isAdmin}
                   onEditClick={handleEditClick}
+                  alumniId={alumniId}
                 />
               </Grid>
             ))}

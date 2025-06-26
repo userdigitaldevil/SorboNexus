@@ -21,6 +21,7 @@ const AlumniCard = ({
   adminGlow = {},
   isAdmin = false,
   onEditClick,
+  alumniId,
 }) => {
   return (
     <motion.div
@@ -59,8 +60,10 @@ const AlumniCard = ({
               }),
         }}
       >
-        {/* Edit Button for Admins */}
-        {isAdmin && (
+        {/* Edit Button for Admins or Self */}
+        {(isAdmin ||
+          String(alum._id) === String(alumniId) ||
+          String(alum.id) === String(alumniId)) && (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
