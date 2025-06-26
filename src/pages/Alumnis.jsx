@@ -92,13 +92,8 @@ export default function Alumnis() {
     color: "",
     gradient: "",
     conseil: "",
-    profile: {
-      email: "",
-      linkedin: "",
-      currentPosition: "",
-      grades: {},
-      schoolsApplied: [],
-    },
+    grades: [],
+    schoolsApplied: [],
     isAdmin: false,
     hidden: false,
     nationalities: "",
@@ -216,7 +211,7 @@ export default function Alumnis() {
 
     // Check schools applied (accepted schools)
     const schoolsMatch =
-      alum.profile?.schoolsApplied?.some(
+      alum.schoolsApplied?.some(
         (school) =>
           school.name &&
           school.name.toLowerCase().includes(searchLower) &&
@@ -234,7 +229,7 @@ export default function Alumnis() {
         position: alum.position,
         degree: alum.degree,
         field: alum.field,
-        schoolsApplied: alum.profile?.schoolsApplied,
+        schoolsApplied: alum.schoolsApplied,
         searchQuery: searchQuery,
         hidden: alum.hidden,
       });
@@ -318,19 +313,16 @@ export default function Alumnis() {
       degree: alum.degree || "",
       position: alum.position || "",
       field: alum.field || "",
-      linkedin: alum.profile?.linkedin || "",
-      email: alum.profile?.email || "",
+      linkedin: alum.linkedin || "",
+      email: alum.email || "",
       avatar: alum.avatar || "",
       color: alum.color || "",
       gradient: alum.gradient || "",
       conseil: alum.conseil || "",
-      profile: {
-        email: alum.profile?.email || "",
-        linkedin: alum.profile?.linkedin || "",
-        currentPosition: alum.profile?.currentPosition || "",
-        grades: alum.profile?.grades || {},
-        schoolsApplied: alum.profile?.schoolsApplied || [],
-      },
+      grades: Array.isArray(alum.grades) ? alum.grades : [],
+      schoolsApplied: Array.isArray(alum.schoolsApplied)
+        ? alum.schoolsApplied
+        : [],
       isAdmin: alum.isAdmin || false,
       hidden: alum.hidden || false,
       nationalities: Array.isArray(alum.nationalities)
@@ -340,87 +332,55 @@ export default function Alumnis() {
         alum.stagesWorkedContestsExtracurriculars || "",
       futureGoals: alum.futureGoals || "",
       anneeFinL3: alum.anneeFinL3 || "",
+      newPassword: "",
+      confirmPassword: "",
+      showPassword: false,
+      showConfirmPassword: false,
     });
     setEditModalOpen(true);
   };
 
-  const handleEditFormChange = (e) => {
-    const { name, value } = e.target;
-    if (name.startsWith("profile.")) {
-      const key = name.split(".")[1];
-      setEditForm((prev) => ({
-        ...prev,
-        profile: {
-          ...prev.profile,
-          [key]: value,
-        },
-      }));
-    } else if (name === "isAdmin") {
-      setEditForm((prev) => ({ ...prev, isAdmin: value === "true" }));
-    } else {
-      setEditForm((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  // Add helpers for grades and schools
-  const handleGradeChange = (key, value) => {
-    setEditForm((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        grades: { ...prev.profile.grades, [key]: value },
-      },
-    }));
+  const handleGradeChange = (idx, field, value) => {
+    setEditForm((prev) => {
+      const newGrades = [...(prev.grades || [])];
+      newGrades[idx] = { ...newGrades[idx], [field]: value };
+      return { ...prev, grades: newGrades };
+    });
   };
   const handleAddGrade = () => {
     setEditForm((prev) => ({
       ...prev,
-      profile: {
-        ...prev.profile,
-        grades: { ...prev.profile.grades, "": "" },
-      },
+      grades: [...(prev.grades || []), { subject: "", value: "" }],
     }));
   };
-  const handleRemoveGrade = (key) => {
+  const handleRemoveGrade = (idx) => {
     setEditForm((prev) => {
-      const newGrades = { ...prev.profile.grades };
-      delete newGrades[key];
-      return {
-        ...prev,
-        profile: { ...prev.profile, grades: newGrades },
-      };
+      const newGrades = [...(prev.grades || [])];
+      newGrades.splice(idx, 1);
+      return { ...prev, grades: newGrades };
     });
   };
   const handleSchoolChange = (idx, field, value) => {
     setEditForm((prev) => {
-      const schools = [...(prev.profile.schoolsApplied || [])];
+      const schools = [...(prev.schoolsApplied || [])];
       schools[idx] = { ...schools[idx], [field]: value };
-      return {
-        ...prev,
-        profile: { ...prev.profile, schoolsApplied: schools },
-      };
+      return { ...prev, schoolsApplied: schools };
     });
   };
   const handleAddSchool = () => {
     setEditForm((prev) => ({
       ...prev,
-      profile: {
-        ...prev.profile,
-        schoolsApplied: [
-          ...(prev.profile.schoolsApplied || []),
-          { name: "", status: "accepted" },
-        ],
-      },
+      schoolsApplied: [
+        ...(prev.schoolsApplied || []),
+        { name: "", status: "accepted" },
+      ],
     }));
   };
   const handleRemoveSchool = (idx) => {
     setEditForm((prev) => {
-      const schools = [...(prev.profile.schoolsApplied || [])];
+      const schools = [...(prev.schoolsApplied || [])];
       schools.splice(idx, 1);
-      return {
-        ...prev,
-        profile: { ...prev.profile, schoolsApplied: schools },
-      };
+      return { ...prev, schoolsApplied: schools };
     });
   };
 
@@ -479,13 +439,13 @@ export default function Alumnis() {
         editForm.stagesWorkedContestsExtracurriculars || "",
       futureGoals: editForm.futureGoals || "",
       anneeFinL3: editForm.anneeFinL3 || "",
-      profile: {
-        email: editForm.profile?.email || "",
-        linkedin: editForm.profile?.linkedin || "",
-        currentPosition: editForm.profile?.currentPosition || "",
-        grades: editForm.profile?.grades || {},
-        schoolsApplied: editForm.profile?.schoolsApplied || [],
-      },
+      grades: (editForm.grades || []).map(({ subject, value }) => ({
+        subject,
+        value,
+      })),
+      schoolsApplied: (editForm.schoolsApplied || []).map(
+        ({ name, status }) => ({ name, status })
+      ),
       updatedAt: new Date(),
     };
 
@@ -502,7 +462,7 @@ export default function Alumnis() {
     console.log("Submitting payload:", payload);
     // Send to backend
     const response = await fetch(
-      `${process.env.VITE_API_URL}/api/alumni/${editAlumni._id}`,
+      `${process.env.VITE_API_URL}/api/alumni/${editAlumni.id}`,
       {
         method: "PUT",
         headers: {
@@ -545,7 +505,7 @@ export default function Alumnis() {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `${process.env.VITE_API_URL}/api/alumni/${alum._id}`,
+        `${process.env.VITE_API_URL}/api/alumni/${alum.id}`,
         {
           method: "DELETE",
           headers: {
@@ -572,6 +532,15 @@ export default function Alumnis() {
     "&:hover": {
       filter: "hue-rotate(30deg)",
     },
+  };
+
+  // Generic handler for simple fields
+  const handleEditFormChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEditForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   return (
@@ -1295,27 +1264,25 @@ export default function Alumnis() {
                     <List dense>
                       {group.map((alum) => {
                         // Find BSc/licence
-                        const licence = Object.keys(alum.profile.grades).find(
+                        const licence = Object.keys(alum.grades).find(
                           (k) =>
                             k.toLowerCase().includes("licence") ||
                             k.toLowerCase().includes("bsc")
                         );
                         // Find current school (first accepted)
-                        const currentSchool = alum.profile.schoolsApplied.find(
+                        const currentSchool = alum.schoolsApplied.find(
                           (s) => s.status === "accepted"
                         );
                         // Try to extract company from currentPosition
                         let company = "";
-                        if (alum.profile.currentPosition) {
+                        if (alum.currentPosition) {
                           const match =
-                            alum.profile.currentPosition.match(/chez ([^,]+)/i);
+                            alum.currentPosition.match(/chez ([^,]+)/i);
                           if (match) company = match[1];
                           else {
                             // fallback: last word if 'à' or 'at' present
                             const m2 =
-                              alum.profile.currentPosition.match(
-                                /(?:à|at) ([^,]+)/i
-                              );
+                              alum.currentPosition.match(/(?:à|at) ([^,]+)/i);
                             if (m2) company = m2[1];
                           }
                         }
@@ -1433,7 +1400,7 @@ export default function Alumnis() {
             }}
           >
             <Typography variant="h6" sx={{ mb: 2 }}>
-              {editAlumni && String(alumniId) === String(editAlumni._id)
+              {editAlumni && String(alumniId) === String(editAlumni.id)
                 ? "Modifier ma carte"
                 : "Modifier l'alumni"}
             </Typography>
@@ -1472,8 +1439,8 @@ export default function Alumnis() {
               />
               <TextField
                 label="LinkedIn"
-                name="profile.linkedin"
-                value={editForm.profile?.linkedin || ""}
+                name="linkedin"
+                value={editForm.linkedin || ""}
                 onChange={handleEditFormChange}
                 fullWidth
                 sx={{ mb: 2 }}
@@ -1504,8 +1471,7 @@ export default function Alumnis() {
               />
               {/* Hide profile option for admin or self */}
               {(isAdmin ||
-                (editAlumni &&
-                  String(alumniId) === String(editAlumni._id))) && (
+                (editAlumni && String(alumniId) === String(editAlumni.id))) && (
                 <Box sx={{ mb: 2 }}>
                   <FormControlLabel
                     control={
@@ -1572,6 +1538,84 @@ export default function Alumnis() {
                 sx={{ mb: 2 }}
                 inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
               />
+
+              {/* Grades Section */}
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle1">Notes / Diplômes</Typography>
+                {(editForm.grades || []).map((grade, idx) => (
+                  <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                    <TextField
+                      label="Diplôme"
+                      value={grade.subject || ""}
+                      onChange={(e) =>
+                        handleGradeChange(idx, "subject", e.target.value)
+                      }
+                      size="small"
+                      sx={{ flex: 1 }}
+                    />
+                    <TextField
+                      label="Note"
+                      value={grade.value || ""}
+                      onChange={(e) =>
+                        handleGradeChange(idx, "value", e.target.value)
+                      }
+                      size="small"
+                      sx={{ flex: 1 }}
+                    />
+                    <Button
+                      onClick={() => handleRemoveGrade(idx)}
+                      color="error"
+                      size="small"
+                    >
+                      Supprimer
+                    </Button>
+                  </Box>
+                ))}
+                <Button onClick={handleAddGrade} size="small" sx={{ mt: 1 }}>
+                  Ajouter un diplôme/note
+                </Button>
+              </Box>
+              {/* Schools Section */}
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle1">Écoles demandées</Typography>
+                {(editForm.schoolsApplied || []).map((school, idx) => (
+                  <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                    <TextField
+                      label="École"
+                      value={school.name || ""}
+                      onChange={(e) =>
+                        handleSchoolChange(idx, "name", e.target.value)
+                      }
+                      size="small"
+                      sx={{ flex: 2 }}
+                    />
+                    <TextField
+                      select
+                      label="Statut"
+                      value={school.status || "accepted"}
+                      onChange={(e) =>
+                        handleSchoolChange(idx, "status", e.target.value)
+                      }
+                      size="small"
+                      sx={{ flex: 1 }}
+                      SelectProps={{ native: true }}
+                    >
+                      <option value="accepted">Accepté</option>
+                      <option value="rejected">Refusé</option>
+                    </TextField>
+                    <Button
+                      onClick={() => handleRemoveSchool(idx)}
+                      color="error"
+                      size="small"
+                    >
+                      Supprimer
+                    </Button>
+                  </Box>
+                ))}
+                <Button onClick={handleAddSchool} size="small" sx={{ mt: 1 }}>
+                  Ajouter une école
+                </Button>
+              </Box>
 
               {/* Password Change Section */}
               <Box

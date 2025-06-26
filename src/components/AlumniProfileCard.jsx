@@ -350,77 +350,164 @@ export default function AlumniProfileCard({
             </Box>
           )}
           {/* Notes obtenues Section */}
-          {profile.grades && Object.keys(profile.grades).length > 0 && (
-            <Box sx={{ mb: 4 }}>
-              <Typography
-                variant="h6"
-                sx={{ color: "white", fontWeight: 600, mb: 2 }}
-              >
-                Notes obtenues
-              </Typography>
-              <List dense>
-                {Object.entries(profile.grades).map(([program, grade]) => (
-                  <ListItem key={program} sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 40 }}>
-                      <GradeIcon sx={{ color: "#3b82f6" }} />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={program}
-                      secondary={grade}
-                      primaryTypographyProps={{
-                        sx: { color: "white", fontWeight: 500 },
-                      }}
-                      secondaryTypographyProps={{
-                        sx: { color: "#3b82f6", fontWeight: 600 },
-                      }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          )}
-          {/* Écoles demandées Section */}
-          {profile.schoolsApplied && profile.schoolsApplied.length > 0 && (
-            <Box sx={{ mb: 4 }}>
-              <Typography
-                variant="h6"
-                sx={{ color: "white", fontWeight: 600, mb: 2 }}
-              >
-                Écoles demandées
-              </Typography>
-              <List dense>
-                {profile.schoolsApplied.map((school) => (
-                  <ListItem key={school.name} sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 40 }}>
-                      {school.status === "accepted" ? (
-                        <CheckCircleOutlineIcon sx={{ color: "#10b981" }} />
-                      ) : (
-                        <CancelIcon sx={{ color: "#ef4444" }} />
+          {profile.grades &&
+            (Array.isArray(profile.grades)
+              ? profile.grades.length > 0 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ color: "white", fontWeight: 600, mb: 2 }}
+                    >
+                      Notes obtenues
+                    </Typography>
+                    <List dense>
+                      {profile.grades.map((grade, idx) => (
+                        <ListItem key={grade.id || idx} sx={{ px: 0 }}>
+                          <ListItemIcon sx={{ minWidth: 40 }}>
+                            <GradeIcon sx={{ color: "#3b82f6" }} />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={grade.subject}
+                            secondary={grade.value}
+                            primaryTypographyProps={{
+                              sx: { color: "white", fontWeight: 500 },
+                            }}
+                            secondaryTypographyProps={{
+                              sx: { color: "#3b82f6", fontWeight: 600 },
+                            }}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                )
+              : Object.keys(profile.grades).length > 0 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ color: "white", fontWeight: 600, mb: 2 }}
+                    >
+                      Notes obtenues
+                    </Typography>
+                    <List dense>
+                      {Object.entries(profile.grades).map(
+                        ([program, grade]) => (
+                          <ListItem key={program} sx={{ px: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 40 }}>
+                              <GradeIcon sx={{ color: "#3b82f6" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={program}
+                              secondary={grade}
+                              primaryTypographyProps={{
+                                sx: { color: "white", fontWeight: 500 },
+                              }}
+                              secondaryTypographyProps={{
+                                sx: { color: "#3b82f6", fontWeight: 600 },
+                              }}
+                            />
+                          </ListItem>
+                        )
                       )}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={school.name}
-                      secondary={
-                        school.status === "accepted" ? "Accepté" : "Refusé"
-                      }
-                      primaryTypographyProps={{
-                        sx: { color: "white", fontWeight: 500 },
-                      }}
-                      secondaryTypographyProps={{
-                        sx: {
-                          color:
-                            school.status === "accepted"
-                              ? "#10b981"
-                              : "#ef4444",
-                          fontWeight: 600,
-                        },
-                      }}
-                    />
-                  </ListItem>
+                    </List>
+                  </Box>
                 ))}
-              </List>
-            </Box>
-          )}
+          {/* Écoles demandées Section */}
+          {profile.schoolsApplied &&
+            (Array.isArray(profile.schoolsApplied)
+              ? profile.schoolsApplied.length > 0 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ color: "white", fontWeight: 600, mb: 2 }}
+                    >
+                      Écoles demandées
+                    </Typography>
+                    <List dense>
+                      {profile.schoolsApplied.map((school, idx) => (
+                        <ListItem
+                          key={school.id || school.name || idx}
+                          sx={{ px: 0 }}
+                        >
+                          <ListItemIcon sx={{ minWidth: 40 }}>
+                            {school.status === "accepted" ? (
+                              <CheckCircleOutlineIcon
+                                sx={{ color: "#10b981" }}
+                              />
+                            ) : (
+                              <CancelIcon sx={{ color: "#ef4444" }} />
+                            )}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={school.name}
+                            secondary={
+                              school.status === "accepted"
+                                ? "Accepté"
+                                : "Refusé"
+                            }
+                            primaryTypographyProps={{
+                              sx: { color: "white", fontWeight: 500 },
+                            }}
+                            secondaryTypographyProps={{
+                              sx: {
+                                color:
+                                  school.status === "accepted"
+                                    ? "#10b981"
+                                    : "#ef4444",
+                                fontWeight: 600,
+                              },
+                            }}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                )
+              : profile.schoolsApplied.length > 0 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ color: "white", fontWeight: 600, mb: 2 }}
+                    >
+                      Écoles demandées
+                    </Typography>
+                    <List dense>
+                      {profile.schoolsApplied.map((school, idx) => (
+                        <ListItem key={school.name || idx} sx={{ px: 0 }}>
+                          <ListItemIcon sx={{ minWidth: 40 }}>
+                            {school.status === "accepted" ? (
+                              <CheckCircleOutlineIcon
+                                sx={{ color: "#10b981" }}
+                              />
+                            ) : (
+                              <CancelIcon sx={{ color: "#ef4444" }} />
+                            )}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={school.name}
+                            secondary={
+                              school.status === "accepted"
+                                ? "Accepté"
+                                : "Refusé"
+                            }
+                            primaryTypographyProps={{
+                              sx: { color: "white", fontWeight: 500 },
+                            }}
+                            secondaryTypographyProps={{
+                              sx: {
+                                color:
+                                  school.status === "accepted"
+                                    ? "#10b981"
+                                    : "#ef4444",
+                                fontWeight: 600,
+                              },
+                            }}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                ))}
           {/* Nationalities */}
           {alum.nationalities && alum.nationalities.length > 0 && (
             <Box sx={{ mb: 2 }}>
