@@ -923,7 +923,7 @@ export default function Conseils() {
           {selectedProfile ? (
             <AlumniProfileCard
               alum={
-                alumni.find((a) => a._id === selectedProfile._id) ||
+                alumni.find((a) => a.id === selectedProfile.id) ||
                 selectedProfile
               }
               isAdmin={false}
