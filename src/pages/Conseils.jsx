@@ -179,6 +179,7 @@ export default function Conseils() {
 
   // Preview length for conseil content
   const PREVIEW_LENGTH = 200;
+  const PREVIEW_LINES = 3;
 
   // Style constants for alignment
   const LEFT_COL_WIDTH = 220;
@@ -351,11 +352,24 @@ export default function Conseils() {
     }
   };
 
-  const isLongContent = (content) => content.length > PREVIEW_LENGTH;
+  const isLongContent = (content) => {
+    // Too long if more than PREVIEW_LENGTH chars or more than PREVIEW_LINES lines
+    return (
+      content.length > PREVIEW_LENGTH ||
+      content.split("\n").length > PREVIEW_LINES
+    );
+  };
 
   const getPreviewContent = (content) => {
-    if (content.length <= PREVIEW_LENGTH) return content;
-    return content.substring(0, PREVIEW_LENGTH) + "...";
+    // Show up to PREVIEW_LINES lines, but no more than PREVIEW_LENGTH chars
+    const lines = content.split("\n");
+    let preview = lines.slice(0, PREVIEW_LINES).join("\n");
+    if (preview.length > PREVIEW_LENGTH) {
+      preview = preview.substring(0, PREVIEW_LENGTH) + "...";
+    } else if (lines.length > PREVIEW_LINES) {
+      preview += "...";
+    }
+    return preview;
   };
 
   return (
@@ -1178,12 +1192,12 @@ export default function Conseils() {
                   <TextField
                     label="Conseil"
                     name="conseil"
-                    value={editForm.conseil || ""}
+                    value={editForm.conseil}
                     onChange={handleEditFormChange}
                     fullWidth
-                    sx={{ mb: 2 }}
                     multiline
-                    minRows={4}
+                    minRows={3}
+                    sx={{ mb: 2 }}
                   />
                   <Box
                     sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
