@@ -513,20 +513,15 @@ const Navbar = () => {
     conseil: "",
     color: "",
     gradient: "",
-    username: "",
-    password: "",
     isAdmin: false,
-    profile: {
-      currentPosition: "",
-      grades: {},
-      schoolsApplied: [],
-      email: "",
-      linkedin: "",
-    },
+    hidden: false,
     anneeFinL3: "",
     futureGoals: "",
     nationalities: "",
     stagesWorkedContestsExtracurriculars: "",
+    username: "",
+    password: "",
+    currentPosition: "",
   });
   const [addAlumniGrades, setAddAlumniGrades] = useState([
     { key: "", value: "" },
@@ -534,6 +529,34 @@ const Navbar = () => {
   const [addAlumniSchools, setAddAlumniSchools] = useState([
     { name: "", status: "accepted" },
   ]);
+
+  // Add a list of preset gradients
+  const gradientOptions = [
+    {
+      label: "Bleu-Violet",
+      value: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
+    },
+    {
+      label: "Orange-Rouge",
+      value: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
+    },
+    {
+      label: "Vert-Bleu",
+      value: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+    },
+    {
+      label: "Rose-Violet",
+      value: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)",
+    },
+    {
+      label: "Gris-Bleu",
+      value: "linear-gradient(135deg, #64748b 0%, #3b82f6 100%)",
+    },
+    { label: "Custom", value: "custom" },
+  ];
+  const [gradientSelect, setGradientSelect] = useState(
+    gradientOptions[0].value
+  );
 
   // Handlers for add alumni form
   const handleAddAlumniChange = (e) => {
@@ -580,11 +603,10 @@ const Navbar = () => {
   // Submit handler
   const handleAddAlumniSubmit = async (e) => {
     e.preventDefault();
-    // Build grades and schools objects
-    const gradesObj = {};
-    addAlumniGrades.forEach((g) => {
-      if (g.key && g.value) gradesObj[g.key] = g.value;
-    });
+    // Build grades and schools arrays
+    const gradesArr = addAlumniGrades
+      .filter((g) => g.key && g.value)
+      .map((g) => ({ subject: g.key, value: g.value }));
     const schoolsArr = addAlumniSchools.filter((s) => s.name);
     // Require all fields except conseil
     const required = [
@@ -595,9 +617,7 @@ const Navbar = () => {
       "email",
       "linkedin",
       "avatar",
-      "profile.currentPosition",
-      "username",
-      "password",
+      "currentPosition",
     ];
     for (const field of required) {
       const val = field.startsWith("profile.")
@@ -608,7 +628,7 @@ const Navbar = () => {
         return;
       }
     }
-    if (Object.keys(gradesObj).length === 0) {
+    if (gradesArr.length === 0) {
       alert("Veuillez ajouter au moins une note/diplôme.");
       return;
     }
@@ -624,22 +644,26 @@ const Navbar = () => {
         .map((s) => s.trim())
         .filter(Boolean);
     }
-    // Build alumni object
+    // Build alumni object for backend
     const alumniToSend = {
       ...addAlumniForm,
       avatar: addAlumniForm.name ? addAlumniForm.name[0].toUpperCase() : "",
-      profile: {
-        ...addAlumniForm.profile,
-        grades: gradesObj,
-        schoolsApplied: schoolsArr,
-      },
+      grades: gradesArr,
+      schoolsApplied: schoolsArr,
       isAdmin: addAlumniForm.isAdmin,
       nationalities: nationalitiesArr,
       anneeFinL3: addAlumniForm.anneeFinL3,
       futureGoals: addAlumniForm.futureGoals,
       stagesWorkedContestsExtracurriculars:
         addAlumniForm.stagesWorkedContestsExtracurriculars,
+      position: addAlumniForm.position,
+      // Do NOT include currentPosition at all
     };
+    // Remove the profile, username, password, and currentPosition fields if present
+    delete alumniToSend.profile;
+    delete alumniToSend.username;
+    delete alumniToSend.password;
+    delete alumniToSend.currentPosition;
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.VITE_API_URL}/api/alumni`, {
@@ -663,24 +687,18 @@ const Navbar = () => {
           conseil: "",
           color: "",
           gradient: "",
-          username: "",
-          password: "",
           isAdmin: false,
-          profile: {
-            currentPosition: "",
-            grades: {},
-            schoolsApplied: [],
-            email: "",
-            linkedin: "",
-          },
+          hidden: false,
           anneeFinL3: "",
           futureGoals: "",
           nationalities: "",
           stagesWorkedContestsExtracurriculars: "",
+          username: "",
+          password: "",
+          currentPosition: "",
         });
         setAddAlumniGrades([{ key: "", value: "" }]);
         setAddAlumniSchools([{ name: "", status: "accepted" }]);
-        // Optionally, refresh alumni data in parent
         window.dispatchEvent(new Event("profileUpdated"));
       } else {
         alert("Erreur lors de la création de l'alumni.");
@@ -1078,15 +1096,16 @@ const Navbar = () => {
                 sx={{ mb: 2 }}
                 required
               />
-              <TextField
-                label="Poste actuel (profile)"
-                name="profile.currentPosition"
-                value={addAlumniForm.profile.currentPosition}
-                onChange={handleAddAlumniChange}
-                fullWidth
-                sx={{ mb: 2 }}
-                required
-              />
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <TextField
+                  label="Poste actuel"
+                  name="currentPosition"
+                  value={addAlumniForm.currentPosition}
+                  onChange={handleAddAlumniChange}
+                  fullWidth
+                  required
+                />
+              </FormControl>
               {/* Grades */}
               <Typography variant="subtitle1" sx={{ mt: 2 }}>
                 Notes/Diplômes
@@ -1188,53 +1207,6 @@ const Navbar = () => {
                 minRows={2}
               />
               <TextField
-                label="Nom d'utilisateur"
-                name="username"
-                value={addAlumniForm.username}
-                onChange={handleAddAlumniChange}
-                fullWidth
-                sx={{ mb: 2 }}
-                required
-              />
-              <TextField
-                label="Mot de passe"
-                name="password"
-                value={addAlumniForm.password}
-                onChange={handleAddAlumniChange}
-                type="password"
-                fullWidth
-                sx={{ mb: 2 }}
-                required
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={addAlumniForm.isAdmin}
-                    onChange={handleAddAlumniChange}
-                    name="isAdmin"
-                    color="primary"
-                  />
-                }
-                label="Donner le statut administrateur à cet utilisateur"
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Couleur (hex)"
-                name="color"
-                value={addAlumniForm.color}
-                onChange={handleAddAlumniChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                label="Dégradé (gradient)"
-                name="gradient"
-                value={addAlumniForm.gradient}
-                onChange={handleAddAlumniChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
                 label="Nationalités (séparées par des virgules)"
                 name="nationalities"
                 value={addAlumniForm.nationalities || ""}
@@ -1268,6 +1240,120 @@ const Navbar = () => {
                 fullWidth
                 sx={{ mb: 2 }}
                 inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
+              />
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <TextField
+                  label="Nom d'utilisateur"
+                  value={addAlumniForm.username}
+                  onChange={(e) =>
+                    setAddAlumniForm((f) => ({
+                      ...f,
+                      username: e.target.value,
+                    }))
+                  }
+                  required
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <TextField
+                  label="Mot de passe"
+                  type="password"
+                  value={addAlumniForm.password}
+                  onChange={(e) =>
+                    setAddAlumniForm((f) => ({
+                      ...f,
+                      password: e.target.value,
+                    }))
+                  }
+                  required
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel shrink htmlFor="color-picker">
+                  Couleur (hex)
+                </InputLabel>
+                <input
+                  id="color-picker"
+                  type="color"
+                  name="color"
+                  value={addAlumniForm.color}
+                  onChange={handleAddAlumniChange}
+                  style={{
+                    width: 48,
+                    height: 32,
+                    border: "none",
+                    background: "none",
+                    cursor: "pointer",
+                  }}
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel id="gradient-select-label">Dégradé</InputLabel>
+                <Select
+                  labelId="gradient-select-label"
+                  value={gradientSelect}
+                  label="Dégradé"
+                  onChange={(e) => {
+                    setGradientSelect(e.target.value);
+                    setAddAlumniForm((f) => ({
+                      ...f,
+                      gradient:
+                        e.target.value === "custom" ? "" : e.target.value,
+                    }));
+                  }}
+                >
+                  {gradientOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {gradientSelect === "custom" && (
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                  <TextField
+                    label="Dégradé personnalisé (CSS linear-gradient)"
+                    name="gradient"
+                    value={addAlumniForm.gradient}
+                    onChange={handleAddAlumniChange}
+                    placeholder="linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)"
+                    fullWidth
+                  />
+                </FormControl>
+              )}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={addAlumniForm.hidden}
+                    onChange={(e) =>
+                      setAddAlumniForm((f) => ({
+                        ...f,
+                        hidden: e.target.checked,
+                      }))
+                    }
+                    name="hidden"
+                    color="primary"
+                  />
+                }
+                label="Masquer la carte (carte non visible publiquement)"
+                sx={{ mb: 2 }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={addAlumniForm.isAdmin}
+                    onChange={(e) =>
+                      setAddAlumniForm((f) => ({
+                        ...f,
+                        isAdmin: e.target.checked,
+                      }))
+                    }
+                    name="isAdmin"
+                    color="primary"
+                  />
+                }
+                label="Statut admin (donne accès à l'administration)"
+                sx={{ mb: 2 }}
               />
               <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
                 <Button onClick={() => setIsAddAlumniModalOpen(false)}>
