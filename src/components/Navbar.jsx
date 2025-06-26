@@ -696,10 +696,8 @@ const Navbar = () => {
       position: addAlumniForm.position,
       // Do NOT include currentPosition at all
     };
-    // Remove the profile, username, password, and currentPosition fields if present
+    // Remove the profile and currentPosition fields if present
     delete alumniToSend.profile;
-    delete alumniToSend.username;
-    delete alumniToSend.password;
     delete alumniToSend.currentPosition;
     try {
       const token = localStorage.getItem("token");
