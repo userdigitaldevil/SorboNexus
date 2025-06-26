@@ -851,7 +851,7 @@ export default function Conseils() {
                 backgroundClip: "text",
               }}
             >
-              Besoin de plus de conseils ?
+              Vous voulez donner un conseil ?
             </Typography>
             <Typography
               variant="h6"
@@ -862,8 +862,8 @@ export default function Conseils() {
                 margin: "0 auto",
               }}
             >
-              Rejoignez notre communauté d'alumnis pour échanger directement
-              avec nos anciens étudiants
+              Partagez votre expérience ou un conseil pour aider les futurs
+              étudiants à réussir leur parcours !
             </Typography>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
