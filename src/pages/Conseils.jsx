@@ -73,6 +73,10 @@ export default function Conseils() {
   const [loading, setLoading] = useState(true);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editAlumni, setEditAlumni] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [expandedTips, setExpandedTips] = useState(new Set());
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({
     name: "",
     degree: "",
@@ -175,11 +179,6 @@ export default function Conseils() {
 
   // Style constants for alignment
   const LEFT_COL_WIDTH = 220;
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [expandedTips, setExpandedTips] = useState(new Set());
-  const [selectedProfile, setSelectedProfile] = useState(null);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
