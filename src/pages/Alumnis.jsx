@@ -956,6 +956,7 @@ export default function Alumnis() {
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
+                      opacity: alum.hidden ? 0.5 : 1,
                       ...(alum.isAdmin
                         ? adminGlow
                         : {
