@@ -931,6 +931,8 @@ export default function Alumnis() {
                   index={index}
                   onCardClick={openProfileModal}
                   adminGlow={adminGlow}
+                  isAdmin={isAdmin}
+                  onEditClick={handleEditClick}
                 />
               </Grid>
             ))}

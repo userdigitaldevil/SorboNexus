@@ -10,10 +10,18 @@ import {
 import { motion } from "framer-motion";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EmailIcon from "@mui/icons-material/Email";
+import EditIcon from "@mui/icons-material/Edit";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-const AlumniCard = ({ alum, index, onCardClick, adminGlow = {} }) => {
+const AlumniCard = ({
+  alum,
+  index,
+  onCardClick,
+  adminGlow = {},
+  isAdmin = false,
+  onEditClick,
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -51,6 +59,35 @@ const AlumniCard = ({ alum, index, onCardClick, adminGlow = {} }) => {
               }),
         }}
       >
+        {/* Edit Button for Admins */}
+        {isAdmin && (
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              onEditClick(alum);
+            }}
+            sx={{
+              position: "absolute",
+              top: 12,
+              right: 12,
+              zIndex: 20,
+              background: "rgba(59, 130, 246, 0.9)",
+              color: "white",
+              width: 40,
+              height: 40,
+              border: "2px solid rgba(255, 255, 255, 0.3)",
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
+              "&:hover": {
+                background: "rgba(59, 130, 246, 1)",
+                transform: "scale(1.15)",
+                boxShadow: "0 6px 16px rgba(59, 130, 246, 0.6)",
+              },
+              transition: "all 0.3s ease",
+            }}
+          >
+            <EditIcon sx={{ fontSize: "1.2rem" }} />
+          </IconButton>
+        )}
         <Box
           sx={{
             height: { xs: 60, sm: 80, md: 100 },
