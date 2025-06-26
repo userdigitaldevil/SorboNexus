@@ -41,6 +41,8 @@ import {
   CheckCircleOutline as CheckCircleOutlineIcon,
   Cancel as CancelIcon,
   Close as CloseIcon,
+  Visibility,
+  VisibilityOff,
 } from "@mui/icons-material";
 import Pagination from "@mui/material/Pagination";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -101,6 +103,11 @@ export default function Alumnis() {
     stagesWorkedContestsExtracurriculars: "",
     futureGoals: "",
     anneeFinL3: "",
+    // Password change fields
+    newPassword: "",
+    confirmPassword: "",
+    showPassword: false,
+    showConfirmPassword: false,
   });
   const [editError, setEditError] = useState("");
 
@@ -414,6 +421,28 @@ export default function Alumnis() {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     setEditError("");
+
+    // Validate password change if provided
+    if (editForm.newPassword || editForm.confirmPassword) {
+      if (!editForm.newPassword) {
+        setEditError("Veuillez saisir un nouveau mot de passe");
+        return;
+      }
+      if (!editForm.confirmPassword) {
+        setEditError("Veuillez confirmer le nouveau mot de passe");
+        return;
+      }
+      if (editForm.newPassword !== editForm.confirmPassword) {
+        setEditError("Les mots de passe ne correspondent pas");
+        return;
+      }
+      // Password strength validation (basic check - backend will do full validation)
+      if (editForm.newPassword.length < 8) {
+        setEditError("Le mot de passe doit contenir au moins 8 caractères");
+        return;
+      }
+    }
+
     // Debug: log the form state before sending
     console.log("Submitting editForm:", editForm);
     // Build payload
@@ -453,6 +482,16 @@ export default function Alumnis() {
       },
       updatedAt: new Date(),
     };
+
+    // Add password change to payload if provided
+    if (
+      editForm.newPassword &&
+      editForm.confirmPassword &&
+      editForm.newPassword === editForm.confirmPassword
+    ) {
+      payload.newPassword = editForm.newPassword;
+    }
+
     // Debug: log the payload before sending
     console.log("Submitting payload:", payload);
     // Send to backend
@@ -473,6 +512,14 @@ export default function Alumnis() {
       setEditModalOpen(false);
       setEditAlumni(null);
       setEditError("");
+      // Clear password fields
+      setEditForm((prev) => ({
+        ...prev,
+        newPassword: "",
+        confirmPassword: "",
+        showPassword: false,
+        showConfirmPassword: false,
+      }));
       // Notify navbar to refresh user data
       localStorage.setItem("profileUpdated", Date.now().toString());
       window.dispatchEvent(new Event("profileUpdated"));
@@ -491,12 +538,15 @@ export default function Alumnis() {
       return;
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5001/api/alumni/${alum._id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        `${process.env.VITE_API_URL}/api/alumni/${alum._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (res.ok) {
         await fetchAlumni();
         window.dispatchEvent(new Event("profileUpdated"));
@@ -1732,6 +1782,108 @@ export default function Alumnis() {
               sx={{ mb: 2 }}
               inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
             />
+
+            {/* Password Change Section */}
+            <Box
+              sx={{
+                mb: 3,
+                p: 2,
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: 2,
+                backgroundColor: "rgba(255, 255, 255, 0.02)",
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                sx={{ mb: 2, color: "#3b82f6", fontWeight: 600 }}
+              >
+                Changer le mot de passe
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ mb: 2, color: "rgba(255, 255, 255, 0.7)" }}
+              >
+                Laissez vide pour ne pas changer le mot de passe
+              </Typography>
+
+              <TextField
+                label="Nouveau mot de passe"
+                name="newPassword"
+                type={editForm.showPassword ? "text" : "password"}
+                value={editForm.newPassword}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 2 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          setEditForm((prev) => ({
+                            ...prev,
+                            showPassword: !prev.showPassword,
+                          }))
+                        }
+                        edge="end"
+                        sx={{ color: "rgba(255, 255, 255, 0.5)" }}
+                      >
+                        {editForm.showPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                helperText="Minimum 8 caractères, 1 majuscule, 1 chiffre, 1 symbole"
+              />
+
+              <TextField
+                label="Confirmer le nouveau mot de passe"
+                name="confirmPassword"
+                type={editForm.showConfirmPassword ? "text" : "password"}
+                value={editForm.confirmPassword}
+                onChange={handleEditFormChange}
+                fullWidth
+                sx={{ mb: 1 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          setEditForm((prev) => ({
+                            ...prev,
+                            showConfirmPassword: !prev.showConfirmPassword,
+                          }))
+                        }
+                        edge="end"
+                        sx={{ color: "rgba(255, 255, 255, 0.5)" }}
+                      >
+                        {editForm.showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                error={
+                  editForm.newPassword &&
+                  editForm.confirmPassword &&
+                  editForm.newPassword !== editForm.confirmPassword
+                }
+                helperText={
+                  editForm.newPassword &&
+                  editForm.confirmPassword &&
+                  editForm.newPassword !== editForm.confirmPassword
+                    ? "Les mots de passe ne correspondent pas"
+                    : ""
+                }
+              />
+            </Box>
+
             {/* Only admins can edit color, gradient, and admin status */}
             {isAdmin && (
               <>

@@ -141,7 +141,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/alumni")
+    fetch(`${process.env.VITE_API_URL}/api/alumni`)
       .then((res) => res.json())
       .then((data) => {
         setAlumniCount(data.length);

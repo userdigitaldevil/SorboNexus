@@ -87,7 +87,7 @@ const Navbar = () => {
   // Fetch admin data from database
   useEffect(() => {
     if (isAdmin) {
-      fetch("http://localhost:5001/api/alumni")
+      fetch(`${process.env.VITE_API_URL}/api/alumni`)
         .then((res) => res.json())
         .then((data) => {
           const admin = data.find((a) => a.isAdmin);
@@ -238,7 +238,6 @@ const Navbar = () => {
                 backgroundColor: "rgba(255, 255, 255, 0.08)",
               },
             }}
-            button
           >
             <ListItemText
               primary={item.name}

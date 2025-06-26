@@ -18,6 +18,14 @@ function auth(req, res, next) {
   }
 }
 
+// Password strength validator
+function isStrongPassword(password) {
+  // At least 8 chars, 1 uppercase, 1 number, 1 symbol
+  return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(
+    password
+  );
+}
+
 // Get all alumni (public)
 router.get("/", async (req, res) => {
   const alumni = await Alumni.find();
@@ -46,7 +54,32 @@ router.put("/:id", async (req, res) => {
     }
     console.log("[PUT /api/alumni/:id] req.params.id =", req.params.id);
     console.log("[PUT /api/alumni/:id] req.body =", req.body);
-    // Only pick allowed fields
+
+    // Handle password change if provided
+    if (req.body.newPassword) {
+      // Validate password strength
+      if (!isStrongPassword(req.body.newPassword)) {
+        return res.status(400).json({
+          error:
+            "Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole.",
+        });
+      }
+
+      // Find the user associated with this alumni
+      const user = await User.findOne({ alumni: req.params.id });
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+
+      // Update the user's password
+      await User.findByIdAndUpdate(user._id, { password: hashedPassword });
+      console.log("[PUT /api/alumni/:id] Password updated for user:", user._id);
+    }
+
+    // Only pick allowed fields (excluding password fields)
     const allowedFields = [
       "name",
       "degree",
@@ -105,6 +138,13 @@ router.post("/", auth, async (req, res) => {
       return res
         .status(400)
         .json({ error: "Username and password are required" });
+    }
+    // Password strength check
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        error:
+          "Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole.",
+      });
     }
     // Check for duplicate username
     const existingUser = await User.findOne({ username });

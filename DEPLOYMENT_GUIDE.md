@@ -80,10 +80,11 @@ VITE_API_URL=http://localhost:5001
    - Connect your GitHub repo
    - Select the repository
 
-3. **Configure Backend:**
+3. **Configure Backend (EXACT SETTINGS):**
 
    - **Name:** `sorbonexus-backend`
    - **Environment:** `Node`
+   - **Root Directory:** Leave empty
    - **Build Command:** `cd backend && npm install`
    - **Start Command:** `cd backend && npm start`
    - **Plan:** `Free`
@@ -112,6 +113,7 @@ VITE_API_URL=http://localhost:5001
 
    - **Name:** `sorbonexus-frontend`
    - **Environment:** `Node`
+   - **Root Directory:** Leave empty
    - **Build Command:** `npm install && npm run build`
    - **Start Command:** `npm run preview`
    - **Plan:** `Free`
@@ -161,9 +163,12 @@ VITE_API_URL=http://localhost:5001
 
 1. **Backend won't start:**
 
+   - ✅ **SOLUTION**: Use exact settings above
+   - Root Directory: Leave empty
+   - Build Command: `cd backend && npm install`
+   - Start Command: `cd backend && npm start`
    - Check MongoDB connection string
    - Verify environment variables
-   - Check logs in Render dashboard
 
 2. **Frontend can't connect to backend:**
 
@@ -185,6 +190,15 @@ VITE_API_URL=http://localhost:5001
 # Check frontend logs
 # Go to Render dashboard → Frontend service → Logs
 ```
+
+### ✅ **Working Configuration:**
+
+- **Backend Root Directory**: Empty
+- **Backend Build Command**: `cd backend && npm install`
+- **Backend Start Command**: `cd backend && npm start`
+- **Frontend Root Directory**: Empty
+- **Frontend Build Command**: `npm install && npm run build`
+- **Frontend Start Command**: `npm run preview`
 
 ---
 

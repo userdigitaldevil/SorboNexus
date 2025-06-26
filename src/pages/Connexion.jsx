@@ -321,28 +321,6 @@ export default function Connexion() {
               </Box>
 
               <Box sx={{ mb: 3 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 1,
-                  }}
-                >
-                  <Link
-                    component="button"
-                    variant="body2"
-                    sx={{
-                      color: "#3b82f6",
-                      textDecoration: "none",
-                      "&:hover": {
-                        color: "#1e40af",
-                      },
-                    }}
-                  >
-                    Mot de passe oublié?
-                  </Link>
-                </Box>
                 <TextField
                   fullWidth
                   label="Mot de passe"
@@ -402,6 +380,27 @@ export default function Connexion() {
               </Box>
 
               <Box sx={{ mb: 3 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    mb: 1,
+                  }}
+                >
+                  <Link
+                    component="button"
+                    variant="body2"
+                    sx={{
+                      color: "#3b82f6",
+                      textDecoration: "none",
+                      "&:hover": {
+                        color: "#1e40af",
+                      },
+                    }}
+                  >
+                    Mot de passe oublié?
+                  </Link>
+                </Box>
                 <FormControlLabel
                   control={
                     <Checkbox

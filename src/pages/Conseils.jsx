@@ -97,7 +97,7 @@ export default function Conseils() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/alumni")
+    fetch(`${process.env.VITE_API_URL}/api/alumni`)
       .then((res) => res.json())
       .then((data) => {
         setAlumni(data);
@@ -292,7 +292,7 @@ export default function Conseils() {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:5001/api/alumni/${editAlumni._id}`,
+        `${process.env.VITE_API_URL}/api/alumni/${editAlumni._id}`,
         {
           method: "PUT",
           headers: {
@@ -305,7 +305,9 @@ export default function Conseils() {
 
       if (response.ok) {
         // Refresh alumni data
-        const updatedResponse = await fetch("http://localhost:5001/api/alumni");
+        const updatedResponse = await fetch(
+          `${process.env.VITE_API_URL}/api/alumni`
+        );
         const updatedData = await updatedResponse.json();
         setAlumni(updatedData);
         setEditModalOpen(false);
