@@ -179,9 +179,14 @@ router.post("/", isAdmin, async (req, res) => {
 // DELETE alumni by ID (admin only)
 router.delete("/:id", isAdmin, async (req, res) => {
   try {
-    await prisma.alumni.delete({
-      where: { id: parseInt(req.params.id) },
-    });
+    const alumniId = parseInt(req.params.id);
+    // Delete all related grades and schools
+    await prisma.grade.deleteMany({ where: { alumniId } });
+    await prisma.schoolApplied.deleteMany({ where: { alumniId } });
+    // Delete all users associated with this alumni
+    await prisma.user.deleteMany({ where: { alumniId } });
+    // Delete the alumni
+    await prisma.alumni.delete({ where: { id: alumniId } });
     res.json({ message: "Alumni deleted" });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete alumni" });
