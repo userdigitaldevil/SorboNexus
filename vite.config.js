@@ -11,5 +11,11 @@ export default defineConfig({
   },
   preview: {
     allowedHosts: ["sorbonexus-frontend.onrender.com"],
+    host: "0.0.0.0",
+    port: process.env.PORT || 4173,
+  },
+  server: {
+    host: "0.0.0.0",
+    port: process.env.PORT || 5173,
   },
 });
