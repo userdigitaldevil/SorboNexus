@@ -18,6 +18,23 @@ function auth(req, res, next) {
   }
 }
 
+// Middleware to allow admin or self
+function canEditAlumni(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ error: "No token" });
+  try {
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    // Allow admin or self (fix: use alumniId)
+    if (user.isAdmin || String(user.alumniId) === String(req.params.id)) {
+      req.user = user;
+      return next();
+    }
+    return res.status(403).json({ error: "Forbidden" });
+  } catch {
+    return res.status(401).json({ error: "Invalid token" });
+  }
+}
+
 // Password strength validator
 function isStrongPassword(password) {
   // At least 8 chars, 1 uppercase, 1 number, 1 symbol
@@ -57,8 +74,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// UPDATE alumni by ID (admin only)
-router.put("/:id", isAdmin, async (req, res) => {
+// UPDATE alumni by ID (admin or self)
+router.put("/:id", canEditAlumni, async (req, res) => {
   try {
     // Destructure and remove non-Alumni fields
     const {
