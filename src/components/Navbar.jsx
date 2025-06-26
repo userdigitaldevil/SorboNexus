@@ -317,7 +317,7 @@ const Navbar = () => {
             >
               <MenuItem
                 onClick={() => {
-                  navigate("/alumnis?editSelf=1");
+                  window.dispatchEvent(new Event("openEditSelfModal"));
                   handleProfileClose();
                 }}
               >
@@ -406,7 +406,7 @@ const Navbar = () => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  navigate("/alumnis?editSelf=1");
+                  window.dispatchEvent(new Event("openEditSelfModal"));
                   handleProfileClose();
                 }}
               >
