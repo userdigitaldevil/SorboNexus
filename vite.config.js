@@ -14,6 +14,7 @@ export default defineConfig({
       "sorbonexus-frontend.onrender.com",
       "sorbonexus.com",
       "www.sorbonexus.com",
+      "sorbonexus-frontend-production-7763.up.railway.app",
     ],
     host: "0.0.0.0",
     port: process.env.PORT || 4173,
