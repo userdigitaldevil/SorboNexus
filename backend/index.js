@@ -60,8 +60,17 @@ console.log("MONGO_URI:", process.env.MONGO_URI);
 
 const PORT = process.env.PORT || 5001;
 
+// Clean MongoDB connection options
+const mongoOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  maxPoolSize: 10,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+};
+
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, mongoOptions)
   .then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
