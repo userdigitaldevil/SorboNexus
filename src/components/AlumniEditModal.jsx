@@ -595,7 +595,7 @@ export default function AlumniEditModal({
               </>
             ) : (
               <TextField
-                label="Avatar (lettres)"
+                label="Avatar (lettres) (modifiable uniquement par un admin)"
                 name="avatar"
                 value={editForm.avatar}
                 fullWidth
