@@ -149,6 +149,10 @@ router.post("/", isAdmin, async (req, res) => {
   try {
     const { grades, schoolsApplied, username, password, ...alumniData } =
       req.body;
+    // Remove id if present to avoid unique constraint errors
+    if (alumniData.hasOwnProperty("id")) {
+      delete alumniData.id;
+    }
     let userData = undefined;
     if (username && password) {
       const hashedPassword = await bcrypt.hash(password, 10);

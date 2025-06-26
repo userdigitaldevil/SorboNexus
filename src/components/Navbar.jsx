@@ -299,6 +299,16 @@ const Navbar = () => {
               >
                 Modifier ma carte
               </MenuItem>
+              {alumniUser.isAdmin && (
+                <MenuItem
+                  onClick={() => {
+                    setIsAddAlumniModalOpen(true);
+                    handleProfileClose();
+                  }}
+                >
+                  Ajouter un alumni
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => {
                   localStorage.removeItem("token");
