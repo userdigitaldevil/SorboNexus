@@ -1136,231 +1136,250 @@ export default function Alumnis() {
           justifyContent: "center",
         }}
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 40 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 40 }}
-          transition={{ duration: 0.3 }}
+        <Card
+          elevation={24}
+          sx={{
+            background: "rgba(15, 23, 42, 0.98)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            borderRadius: "24px",
+            maxWidth: 700,
+            width: "100%",
+            maxHeight: "90vh",
+            overflow: "auto",
+            position: "relative",
+            p: 0,
+            animation: isListModalOpen ? "modalFadeIn 0.15s ease-out" : "none",
+            "@keyframes modalFadeIn": {
+              "0%": {
+                opacity: 0,
+                transform: "scale(0.95)",
+              },
+              "100%": {
+                opacity: 1,
+                transform: "scale(1)",
+              },
+            },
+          }}
         >
-          <Card
-            elevation={24}
+          {/* Fixed Close Button */}
+          <IconButton
+            onClick={closeListModal}
             sx={{
-              background: "rgba(15, 23, 42, 0.98)",
-              backdropFilter: "blur(20px)",
+              position: "absolute",
+              top: 16,
+              right: 16,
+              zIndex: 10,
+              color: "rgba(255,255,255,0.7)",
+              background: "rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(8px)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
-              borderRadius: "24px",
-              maxWidth: 700,
-              width: "100%",
-              maxHeight: "90vh",
-              overflow: "auto",
-              position: "relative",
-              p: 0,
+              width: 36,
+              height: 36,
+              "&:hover": {
+                color: "#fff",
+                background: "rgba(0, 0, 0, 0.5)",
+                transform: "scale(1.1)",
+              },
+              transition: "all 0.2s ease",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                p: 3,
-                borderBottom: "1px solid rgba(255,255,255,0.08)",
-              }}
+            <CloseIcon sx={{ fontSize: "1.2rem" }} />
+          </IconButton>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              p: 3,
+              borderBottom: "1px solid rgba(255,255,255,0.08)",
+              pr: 6, // Add right padding to avoid overlap with close button
+            }}
+          >
+            <Typography
+              id="alumni-list-modal-title"
+              variant="h5"
+              sx={{ fontWeight: 800, color: "#3b82f6" }}
             >
-              <Typography
-                id="alumni-list-modal-title"
-                variant="h5"
-                sx={{ fontWeight: 800, color: "#3b82f6" }}
+              Liste de tous les alumnis par catégorie
+            </Typography>
+          </Box>
+          <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
+            {/* Group alumni by field, use Accordions */}
+            {Object.entries(
+              alumni
+                .filter(
+                  (alum) =>
+                    !alum.hidden ||
+                    String(alum._id) === String(alumniId) ||
+                    isAdmin
+                )
+                .reduce((acc, alum) => {
+                  if (!acc[alum.field]) acc[alum.field] = [];
+                  acc[alum.field].push(alum);
+                  return acc;
+                }, {})
+            ).map(([field, group], idx, arr) => (
+              <Accordion
+                key={field}
+                defaultExpanded={arr.length <= 3}
+                sx={{
+                  background: "rgba(59,130,246,0.07)",
+                  borderRadius: 2,
+                  mb: 2,
+                  boxShadow: "none",
+                  border: "1.5px solid rgba(59,130,246,0.13)",
+                  "&:before": { display: "none" },
+                }}
               >
-                Liste de tous les alumnis par catégorie
-              </Typography>
-              <IconButton
-                onClick={closeListModal}
-                sx={{ color: "rgba(255,255,255,0.7)" }}
-              >
-                <CloseIcon />
-              </IconButton>
-            </Box>
-            <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
-              {/* Group alumni by field, use Accordions */}
-              {Object.entries(
-                alumni
-                  .filter(
-                    (alum) =>
-                      !alum.hidden ||
-                      String(alum._id) === String(alumniId) ||
-                      isAdmin
-                  )
-                  .reduce((acc, alum) => {
-                    if (!acc[alum.field]) acc[alum.field] = [];
-                    acc[alum.field].push(alum);
-                    return acc;
-                  }, {})
-              ).map(([field, group], idx, arr) => (
-                <Accordion
-                  key={field}
-                  defaultExpanded={arr.length <= 3}
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon sx={{ color: "#3b82f6" }} />}
+                  aria-controls={`panel-${field}-content`}
+                  id={`panel-${field}-header`}
                   sx={{
-                    background: "rgba(59,130,246,0.07)",
+                    background:
+                      "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                    color: "white",
                     borderRadius: 2,
-                    mb: 2,
-                    boxShadow: "none",
-                    border: "1.5px solid rgba(59,130,246,0.13)",
-                    "&:before": { display: "none" },
+                    minHeight: 56,
+                    boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
+                    fontWeight: 700,
+                    mb: 0,
                   }}
                 >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon sx={{ color: "#3b82f6" }} />}
-                    aria-controls={`panel-${field}-content`}
-                    id={`panel-${field}-header`}
-                    sx={{
-                      background:
-                        "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                      color: "white",
-                      borderRadius: 2,
-                      minHeight: 56,
-                      boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
-                      fontWeight: 700,
-                      mb: 0,
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Avatar
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          fontWeight: 700,
-                          background: group[0]?.color || "#3b82f6",
-                        }}
-                      >
-                        {field[0]}
-                      </Avatar>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: "white",
-                          fontWeight: 700,
-                          fontSize: "1.1rem",
-                          letterSpacing: 0.5,
-                          textShadow: "0 1px 4px #0002",
-                        }}
-                      >
-                        {field}
-                      </Typography>
-                      <Chip
-                        label={`${group.length} alumnis`}
-                        size="small"
-                        sx={{
-                          ml: 2,
-                          background: "rgba(255,255,255,0.13)",
-                          color: "#fff",
-                          fontWeight: 600,
-                        }}
-                      />
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails
-                    sx={{
-                      background: "rgba(15,23,42,0.97)",
-                      borderRadius: 2,
-                      p: 0,
-                    }}
-                  >
-                    <List dense>
-                      {group.map((alum) => {
-                        // Find BSc/licence
-                        const licence = Object.keys(alum.profile.grades).find(
-                          (k) =>
-                            k.toLowerCase().includes("licence") ||
-                            k.toLowerCase().includes("bsc")
-                        );
-                        // Find current school (first accepted)
-                        const currentSchool = alum.profile.schoolsApplied.find(
-                          (s) => s.status === "accepted"
-                        );
-                        // Try to extract company from currentPosition
-                        let company = "";
-                        if (alum.profile.currentPosition) {
-                          const match =
-                            alum.profile.currentPosition.match(/chez ([^,]+)/i);
-                          if (match) company = match[1];
-                          else {
-                            // fallback: last word if 'à' or 'at' present
-                            const m2 =
-                              alum.profile.currentPosition.match(
-                                /(?:à|at) ([^,]+)/i
-                              );
-                            if (m2) company = m2[1];
-                          }
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Avatar
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        fontWeight: 700,
+                        background: group[0]?.color || "#3b82f6",
+                      }}
+                    >
+                      {field[0]}
+                    </Avatar>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: "white",
+                        fontWeight: 700,
+                        fontSize: "1.1rem",
+                        letterSpacing: 0.5,
+                        textShadow: "0 1px 4px #0002",
+                      }}
+                    >
+                      {field}
+                    </Typography>
+                    <Chip
+                      label={`${group.length} alumnis`}
+                      size="small"
+                      sx={{
+                        ml: 2,
+                        background: "rgba(255,255,255,0.13)",
+                        color: "#fff",
+                        fontWeight: 600,
+                      }}
+                    />
+                  </Box>
+                </AccordionSummary>
+                <AccordionDetails
+                  sx={{
+                    background: "rgba(15,23,42,0.97)",
+                    borderRadius: 2,
+                    p: 0,
+                  }}
+                >
+                  <List dense>
+                    {group.map((alum) => {
+                      // Find BSc/licence
+                      const licence = Object.keys(alum.profile.grades).find(
+                        (k) =>
+                          k.toLowerCase().includes("licence") ||
+                          k.toLowerCase().includes("bsc")
+                      );
+                      // Find current school (first accepted)
+                      const currentSchool = alum.profile.schoolsApplied.find(
+                        (s) => s.status === "accepted"
+                      );
+                      // Try to extract company from currentPosition
+                      let company = "";
+                      if (alum.profile.currentPosition) {
+                        const match =
+                          alum.profile.currentPosition.match(/chez ([^,]+)/i);
+                        if (match) company = match[1];
+                        else {
+                          // fallback: last word if 'à' or 'at' present
+                          const m2 =
+                            alum.profile.currentPosition.match(
+                              /(?:à|at) ([^,]+)/i
+                            );
+                          if (m2) company = m2[1];
                         }
-                        return (
-                          <ListItem
-                            key={alum.id}
-                            button
-                            onClick={() => handleAlumniNameClick(alum)}
-                            sx={{
-                              px: 1.5,
-                              py: 1.2,
-                              borderRadius: 2,
-                              cursor: "pointer",
-                              transition: "background 0.2s",
-                              "&:hover": {
-                                background: "rgba(59,130,246,0.13)",
-                              },
-                              "&:active": {
-                                background: "rgba(59,130,246,0.18)",
-                              },
-                              userSelect: "none",
-                            }}
-                            aria-label={`Voir la fiche de ${alum.name}`}
-                          >
-                            <ListItemIcon sx={{ minWidth: 44 }}>
-                              <Avatar
-                                sx={{
-                                  background: alum.color,
+                      }
+                      return (
+                        <ListItem
+                          key={alum.id}
+                          button
+                          onClick={() => handleAlumniNameClick(alum)}
+                          sx={{
+                            px: 1.5,
+                            py: 1.2,
+                            borderRadius: 2,
+                            cursor: "pointer",
+                            transition: "background 0.1s ease",
+                            "&:hover": {
+                              background: "rgba(59,130,246,0.1)",
+                            },
+                            userSelect: "none",
+                          }}
+                          aria-label={`Voir la fiche de ${alum.name}`}
+                        >
+                          <ListItemIcon sx={{ minWidth: 44 }}>
+                            <Avatar
+                              sx={{
+                                background: alum.color,
+                                color: "#fff",
+                                fontWeight: 700,
+                              }}
+                            >
+                              {alum.avatar}
+                            </Avatar>
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <span
+                                style={{
+                                  fontWeight: 600,
                                   color: "#fff",
-                                  fontWeight: 700,
+                                  fontSize: "1.08rem",
                                 }}
                               >
-                                {alum.avatar}
-                              </Avatar>
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                <span
-                                  style={{
-                                    fontWeight: 600,
-                                    color: "#fff",
-                                    fontSize: "1.08rem",
-                                  }}
-                                >
-                                  {alum.name}
-                                </span>
-                              }
-                              secondary={
-                                <span
-                                  style={{
-                                    color: "rgba(255,255,255,0.8)",
-                                    fontSize: "0.98rem",
-                                  }}
-                                >
-                                  {licence ? (
-                                    <>{licence} &nbsp;|&nbsp; </>
-                                  ) : null}
-                                  {currentSchool ? currentSchool.name : "—"}{" "}
-                                  &nbsp;|&nbsp; {company || "—"}
-                                </span>
-                              }
-                            />
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
-            </Box>
-          </Card>
-        </motion.div>
+                                {alum.name}
+                              </span>
+                            }
+                            secondary={
+                              <span
+                                style={{
+                                  color: "rgba(255,255,255,0.8)",
+                                  fontSize: "0.98rem",
+                                }}
+                              >
+                                {licence ? <>{licence} &nbsp;|&nbsp; </> : null}
+                                {currentSchool ? currentSchool.name : "—"}{" "}
+                                &nbsp;|&nbsp; {company || "—"}
+                              </span>
+                            }
+                          />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </Box>
+        </Card>
       </Modal>
 
       {/* Edit Alumni Modal */}
