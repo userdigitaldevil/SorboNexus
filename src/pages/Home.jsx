@@ -28,6 +28,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import ReactMarkdown from "react-markdown";
+import FeatureCard from "../components/FeatureCard";
 
 const features = [
   {
@@ -544,89 +545,14 @@ export default function Home() {
                       >
                         {features.slice(0, 4).map((feature, index) => (
                           <Grid xs={6} key={index}>
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{
-                                duration: 0.6,
-                                delay: 1.5 + index * 0.1,
-                              }}
-                              whileHover={{ scale: 1.1 }}
-                              style={{ height: "100%" }}
-                            >
-                              <Box
-                                className="feature-highlight"
-                                onClick={() =>
-                                  handleCardNavigation(feature.path)
-                                }
-                                sx={{
-                                  p: 2,
-                                  borderRadius: 2,
-                                  background: "rgba(255, 255, 255, 0.05)",
-                                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                                  textAlign: "center",
-                                  transition: "all 0.3s ease",
-                                  cursor: "pointer",
-                                  height: "100%",
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  minHeight: 100,
-                                  textDecoration: "none",
-                                  color: "inherit",
-                                  "&:hover": {
-                                    background: "rgba(255, 255, 255, 0.15)",
-                                    transform: "translateY(-5px)",
-                                    boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
-                                  },
-                                  // Mobile optimizations
-                                  WebkitTapHighlightColor: "transparent",
-                                  userSelect: "none",
-                                  // Ensure proper touch target size on mobile
-                                  minHeight: { xs: "44px", sm: "auto" },
-                                  minWidth: { xs: "44px", sm: "auto" },
-                                  // Add touch feedback
-                                  "&:active": {
-                                    opacity: 0.7,
-                                    transform: "scale(0.98)",
-                                  },
-                                }}
-                              >
-                                <motion.div
-                                  whileHover={{ rotate: 360 }}
-                                  transition={{ duration: 0.6 }}
-                                >
-                                  <Box
-                                    sx={{
-                                      width: 40,
-                                      height: 40,
-                                      borderRadius: 2,
-                                      background: feature.gradient,
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                      margin: "0 auto 8px",
-                                      color: "white",
-                                      transition: "all 0.3s ease",
-                                    }}
-                                  >
-                                    {feature.icon}
-                                  </Box>
-                                </motion.div>
-                                <Typography
-                                  variant="body2"
-                                  sx={{
-                                    fontWeight: 600,
-                                    color: "white",
-                                    fontSize: "0.75rem",
-                                    lineHeight: 1.2,
-                                  }}
-                                >
-                                  {feature.title}
-                                </Typography>
-                              </Box>
-                            </motion.div>
+                            <FeatureCard
+                              feature={feature}
+                              index={index}
+                              variant="mini"
+                              onCardClick={() =>
+                                handleCardNavigation(feature.path)
+                              }
+                            />
                           </Grid>
                         ))}
                       </Grid>
@@ -749,88 +675,12 @@ export default function Home() {
           <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
             {features.map((feature, index) => (
               <Grid xs={12} sm={6} md={4} key={index}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Box
-                    onClick={() => handleCardNavigation(feature.path)}
-                    sx={{
-                      textDecoration: "none",
-                      color: "inherit",
-                      display: "block",
-                      cursor: "pointer",
-                      // Mobile optimizations
-                      WebkitTapHighlightColor: "transparent",
-                      userSelect: "none",
-                      // Ensure proper touch target size on mobile
-                      minHeight: { xs: "44px", sm: "auto" },
-                      minWidth: { xs: "44px", sm: "auto" },
-                      // Add touch feedback
-                      "&:active": {
-                        opacity: 0.7,
-                        transform: "scale(0.98)",
-                      },
-                    }}
-                  >
-                    <Card
-                      sx={{
-                        height: "100%",
-                        maxWidth: { xs: 280, md: 320 },
-                        mx: "auto",
-                        background: "rgba(255,255,255,0.05)",
-                        backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: 3,
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          transform: "translateY(-8px)",
-                          boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                          background: "rgba(255,255,255,0.08)",
-                        },
-                      }}
-                    >
-                      <CardContent sx={{ p: { xs: 2, md: 3 } }}>
-                        <Box
-                          sx={{
-                            width: { xs: 40, md: 48 },
-                            height: { xs: 40, md: 48 },
-                            borderRadius: 2,
-                            background: feature.gradient,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            mb: { xs: 1.5, md: 2 },
-                            color: "white",
-                          }}
-                        >
-                          {feature.icon}
-                        </Box>
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            fontWeight: 600,
-                            mb: { xs: 0.5, md: 1 },
-                            fontSize: { xs: "0.9rem", md: "1.25rem" },
-                          }}
-                        >
-                          {feature.title}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: "#a1a1aa",
-                            fontSize: { xs: "0.75rem", md: "0.875rem" },
-                          }}
-                        >
-                          {feature.description}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Box>
-                </motion.div>
+                <FeatureCard
+                  feature={feature}
+                  index={index}
+                  variant="full"
+                  onCardClick={() => handleCardNavigation(feature.path)}
+                />
               </Grid>
             ))}
           </Grid>
