@@ -57,16 +57,25 @@ import {
 } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import predefinedIcons from "../data/predefinedIcons";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const LiensUtiles = () => {
+  // ============================================================================
+  // STATE MANAGEMENT
+  // ============================================================================
+
+  // Core page state
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("Tous les liens");
   const [bookmarkedLinks, setBookmarkedLinks] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
+  const [expandedDescriptions, setExpandedDescriptions] = useState(new Set());
   const itemsPerPage = 15;
 
-  // Admin state
+  // Admin authentication and permissions
   const [isAdmin, setIsAdmin] = useState(false);
+
+  // Edit modal state management
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState(null);
   const [editForm, setEditForm] = useState({
@@ -77,11 +86,45 @@ const LiensUtiles = () => {
     icon: "",
     gradient: "",
   });
-  const [iconMode, setIconMode] = useState("predefined"); // "predefined" or "custom"
+  const [iconMode, setIconMode] = useState("predefined"); // "predefined", "custom", or "manual"
   const [customIconUrl, setCustomIconUrl] = useState("");
   const [iconSearch, setIconSearch] = useState("");
 
-  // Check if user is admin
+  // Add modal state management
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [addForm, setAddForm] = useState({
+    title: "",
+    url: "",
+    description: "",
+    category: "",
+    icon: "",
+    gradient: "",
+  });
+  const [addIconMode, setAddIconMode] = useState("predefined");
+  const [addCustomIconUrl, setAddCustomIconUrl] = useState("");
+  const [addIconSearch, setAddIconSearch] = useState("");
+
+  // ============================================================================
+  // CONSTANTS AND CONFIGURATION
+  // ============================================================================
+
+  const categories = [
+    "Tous les liens",
+    "Université",
+    "Bibliothèques",
+    "Services",
+    "Carrière",
+    "Outils",
+  ];
+
+  // ============================================================================
+  // EFFECTS
+  // ============================================================================
+
+  /**
+   * Check and set admin status based on JWT token
+   * Runs on component mount to determine user permissions
+   */
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -94,19 +137,16 @@ const LiensUtiles = () => {
     }
   }, []);
 
-  // Scroll to top when component mounts
+  /**
+   * Scroll to top when component mounts for better UX
+   */
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const categories = [
-    "Tous les liens",
-    "Université",
-    "Bibliothèques",
-    "Services",
-    "Carrière",
-    "Outils",
-  ];
+  // ============================================================================
+  // FUNCTIONS
+  // ============================================================================
 
   const [links, setLinks] = useState([
     {
@@ -596,107 +636,53 @@ const LiensUtiles = () => {
     },
   ]);
 
-  const filteredLinks = links.filter((link) => {
-    const matchesSearch =
-      link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      link.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      link.category.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      activeCategory === "Tous les liens" || link.category === activeCategory;
+  // ============================================================================
+  // UTILITY FUNCTIONS
+  // ============================================================================
 
-    return matchesSearch && matchesCategory;
-  });
-
-  const totalPages = Math.ceil(filteredLinks.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentLinks = filteredLinks.slice(startIndex, endIndex);
-
-  const toggleBookmark = (linkId) => {
-    const newBookmarked = new Set(bookmarkedLinks);
-    if (newBookmarked.has(linkId)) {
-      newBookmarked.delete(linkId);
-    } else {
-      newBookmarked.add(linkId);
-    }
-    setBookmarkedLinks(newBookmarked);
+  /**
+   * Filter predefined icons based on search query for edit modal
+   * @returns {Array} Filtered icons matching the search criteria
+   */
+  const getFilteredIconsForEdit = () => {
+    return predefinedIcons.filter(
+      (icon) =>
+        icon.label.toLowerCase().includes(iconSearch.toLowerCase()) ||
+        icon.value.toLowerCase().includes(iconSearch.toLowerCase())
+    );
   };
 
-  // Admin functions
-  const handleEditClick = (link) => {
-    setEditingLink(link);
-
-    // Determine if the current icon is a FontAwesome class or a custom URL
-    const isFontAwesomeIcon =
-      link.icon &&
-      (link.icon.startsWith("fas ") || link.icon.startsWith("fab "));
-
-    setIconMode(isFontAwesomeIcon ? "predefined" : "custom");
-    setCustomIconUrl(isFontAwesomeIcon ? "" : link.icon || "");
-
-    setEditForm({
-      title: link.title,
-      url: link.url,
-      description: link.description,
-      category: link.category,
-      icon: isFontAwesomeIcon ? link.icon : "",
-      gradient: link.gradient,
-    });
-    setEditModalOpen(true);
+  /**
+   * Filter predefined icons based on search query for add modal
+   * @returns {Array} Filtered icons matching the search criteria
+   */
+  const getFilteredIconsForAdd = () => {
+    return predefinedIcons.filter(
+      (icon) =>
+        icon.label.toLowerCase().includes(addIconSearch.toLowerCase()) ||
+        icon.value.toLowerCase().includes(addIconSearch.toLowerCase())
+    );
   };
 
-  const handleEditFormChange = (field, value) => {
-    setEditForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  /**
+   * Generate unique ID for new links
+   * @returns {number} Next available ID
+   */
+  const generateUniqueLinkId = () => {
+    return Math.max(...links.map((link) => link.id)) + 1;
   };
 
-  const handleSaveEdit = () => {
-    if (editingLink) {
-      // Prepare the icon value based on the selected mode
-      const iconValue =
-        iconMode === "predefined" ? editForm.icon : customIconUrl;
+  // ============================================================================
+  // DATA FILTERING AND COMPUTED VALUES
+  // ============================================================================
 
-      // Find and update the link in the links array
-      const linkIndex = links.findIndex((link) => link.id === editingLink.id);
-      if (linkIndex !== -1) {
-        links[linkIndex] = {
-          ...links[linkIndex],
-          ...editForm,
-          icon: iconValue,
-        };
-        // Force re-render by updating state
-        setLinks([...links]);
-      }
-    }
-    setEditModalOpen(false);
-    setEditingLink(null);
-  };
+  // Get filtered icons for edit modal
+  const filteredIcons = getFilteredIconsForEdit();
 
-  const handleDeleteLink = () => {
-    if (editingLink) {
-      // Remove the link from the links array
-      const updatedLinks = links.filter((link) => link.id !== editingLink.id);
-      setLinks(updatedLinks);
-    }
-    setEditModalOpen(false);
-    setEditingLink(null);
-  };
+  // Get filtered icons for add modal
+  const filteredAddIcons = getFilteredIconsForAdd();
 
-  const handleCloseEditModal = () => {
-    setEditModalOpen(false);
-    setEditingLink(null);
-  };
-
-  // Predefined icons for selection
-  const filteredIcons = predefinedIcons.filter(
-    (icon) =>
-      icon.label.toLowerCase().includes(iconSearch.toLowerCase()) ||
-      icon.value.toLowerCase().includes(iconSearch.toLowerCase())
-  );
-
-  // Predefined gradients based on categories
+  // Predefined gradients organized by category
   const categoryGradients = {
     Université: [
       "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
@@ -724,6 +710,232 @@ const LiensUtiles = () => {
       "linear-gradient(135deg, #b45309 0%, #d97706 100%)",
     ],
   };
+
+  // ============================================================================
+  // LINKS DATA AND FILTERING LOGIC
+  // ============================================================================
+
+  /**
+   * Filter links based on search query and active category
+   * @returns {Array} Filtered and sorted links
+   */
+  const getFilteredAndSortedLinks = () => {
+    return links
+      .filter((link) => {
+        const matchesSearch =
+          searchQuery === "" ||
+          link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          link.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          link.category.toLowerCase().includes(searchQuery.toLowerCase());
+
+        const matchesCategory =
+          activeCategory === "Tous les liens" ||
+          link.category === activeCategory;
+
+        return matchesSearch && matchesCategory;
+      })
+      .sort((a, b) => {
+        // Sort by category first, then by title
+        if (a.category !== b.category) {
+          return a.category.localeCompare(b.category);
+        }
+        return a.title.localeCompare(b.title);
+      });
+  };
+
+  // Get filtered and sorted links
+  const filteredLinks = getFilteredAndSortedLinks();
+
+  // Calculate pagination values
+  const totalPages = Math.ceil(filteredLinks.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentLinks = filteredLinks.slice(startIndex, endIndex);
+
+  // ============================================================================
+  // BOOKMARK MANAGEMENT FUNCTIONS
+  // ============================================================================
+
+  /**
+   * Toggle bookmark status for a specific link
+   * @param {number} linkId - ID of the link to toggle bookmark
+   */
+  const toggleBookmarkForLink = (linkId) => {
+    const newBookmarkedLinks = new Set(bookmarkedLinks);
+    if (newBookmarkedLinks.has(linkId)) {
+      newBookmarkedLinks.delete(linkId);
+    } else {
+      newBookmarkedLinks.add(linkId);
+    }
+    setBookmarkedLinks(newBookmarkedLinks);
+  };
+
+  const toggleDescriptionExpansion = (linkId) => {
+    const newExpandedDescriptions = new Set(expandedDescriptions);
+    if (newExpandedDescriptions.has(linkId)) {
+      newExpandedDescriptions.delete(linkId);
+    } else {
+      newExpandedDescriptions.add(linkId);
+    }
+    setExpandedDescriptions(newExpandedDescriptions);
+  };
+
+  // ============================================================================
+  // EDIT MODAL MANAGEMENT FUNCTIONS
+  // ============================================================================
+
+  /**
+   * Open edit modal and populate form with link data
+   * @param {Object} link - Link object to edit
+   */
+  const openEditModalWithLinkData = (link) => {
+    setEditingLink(link);
+    setEditForm({
+      title: link.title,
+      url: link.url,
+      description: link.description,
+      category: link.category,
+      icon: link.icon,
+      gradient: link.gradient,
+    });
+    setIconMode("predefined");
+    setCustomIconUrl("");
+    setIconSearch("");
+    setEditModalOpen(true);
+  };
+
+  /**
+   * Update specific field in edit form
+   * @param {string} field - Field name to update
+   * @param {any} value - New value for the field
+   */
+  const updateEditFormField = (field, value) => {
+    setEditForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  /**
+   * Save changes to existing link and close edit modal
+   */
+  const saveLinkChanges = () => {
+    // Determine icon value based on selected mode
+    const iconValue = iconMode === "predefined" ? editForm.icon : customIconUrl;
+
+    // Update the link in the array
+    setLinks((prevLinks) =>
+      prevLinks.map((link) =>
+        link.id === editingLink.id
+          ? {
+              ...link,
+              title: editForm.title,
+              url: editForm.url,
+              description: editForm.description,
+              category: editForm.category,
+              icon: iconValue,
+              gradient: editForm.gradient,
+            }
+          : link
+      )
+    );
+
+    closeEditModal();
+  };
+
+  /**
+   * Delete the currently editing link and close modal
+   */
+  const deleteCurrentLink = () => {
+    setLinks((prevLinks) =>
+      prevLinks.filter((link) => link.id !== editingLink.id)
+    );
+    closeEditModal();
+  };
+
+  /**
+   * Close edit modal and reset form state
+   */
+  const closeEditModal = () => {
+    setEditModalOpen(false);
+    setEditingLink(null);
+  };
+
+  // ============================================================================
+  // ADD MODAL MANAGEMENT FUNCTIONS
+  // ============================================================================
+
+  /**
+   * Open add modal and reset form to initial state
+   */
+  const openAddModalWithEmptyForm = () => {
+    setAddForm({
+      title: "",
+      url: "",
+      description: "",
+      category: "",
+      icon: "",
+      gradient: "",
+    });
+    setAddIconMode("predefined");
+    setAddCustomIconUrl("");
+    setAddIconSearch("");
+    setAddModalOpen(true);
+  };
+
+  /**
+   * Update specific field in add form
+   * @param {string} field - Field name to update
+   * @param {any} value - New value for the field
+   */
+  const updateAddFormField = (field, value) => {
+    setAddForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  /**
+   * Create new link and add to links array
+   */
+  const createAndAddNewLink = () => {
+    // Determine icon value based on selected mode
+    const iconValue =
+      addIconMode === "predefined" ? addForm.icon : addCustomIconUrl;
+
+    // Create new link with unique ID
+    const newLink = {
+      id: generateUniqueLinkId(),
+      title: addForm.title,
+      url: addForm.url,
+      description: addForm.description,
+      category: addForm.category,
+      icon: iconValue,
+      gradient: addForm.gradient,
+    };
+
+    // Add to links array
+    setLinks((prevLinks) => [...prevLinks, newLink]);
+    closeAddModal();
+  };
+
+  /**
+   * Close add modal and reset form state
+   */
+  const closeAddModal = () => {
+    setAddModalOpen(false);
+  };
+
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  // Helper to chunk array into groups of 4
+  function chunkArray(array, size) {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  }
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -814,7 +1026,7 @@ const LiensUtiles = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              sx={{ maxWidth: 600, mx: "auto" }}
+              sx={{ maxWidth: 600, mx: "auto", pb: 3 }}
             >
               <TextField
                 fullWidth
@@ -856,6 +1068,44 @@ const LiensUtiles = () => {
                 }}
               />
             </motion.div>
+
+            {/* Admin Add Button */}
+            {isAdmin && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                sx={{ mt: 4, pt: 4 }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={openAddModalWithEmptyForm}
+                  startIcon={<i className="fas fa-plus"></i>}
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    color: "white",
+                    fontWeight: 600,
+                    px: 2.5,
+                    py: 1,
+                    borderRadius: 2,
+                    textTransform: "none",
+                    fontSize: "0.875rem",
+                    minHeight: 0,
+                    minWidth: 0,
+                    lineHeight: 1.2,
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 8px 25px rgba(16, 185, 129, 0.4)",
+                    },
+                  }}
+                >
+                  Ajouter un nouveau lien
+                </Button>
+              </motion.div>
+            )}
           </Box>
         </Container>
       </motion.section>
@@ -867,8 +1117,8 @@ const LiensUtiles = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
         style={{
-          paddingTop: window.innerWidth < 600 ? "32px" : "32px",
-          paddingBottom: window.innerWidth < 600 ? "32px" : "32px",
+          paddingTop: 0,
+          paddingBottom: 0,
         }}
       >
         <Container maxWidth="lg">
@@ -939,279 +1189,747 @@ const LiensUtiles = () => {
         style={{
           paddingTop: window.innerWidth < 600 ? "48px" : "48px",
           paddingBottom: window.innerWidth < 600 ? "48px" : "48px",
+          overflow: "hidden",
         }}
       >
-        <Container maxWidth="lg">
-          <Grid
-            container
-            spacing={{ xs: 1.5, md: 2.5 }}
-            justifyContent="center"
-          >
-            {currentLinks.map((link, index) => (
-              <Grid xs={12} sm={6} md={4} key={link.id}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02 }}
+        <Container maxWidth="lg" sx={{ overflow: "hidden" }}>
+          {isMobile ? (
+            // MOBILE: 2x2 grid carousel with responsive sizing
+            <Box
+              sx={{
+                display: "flex",
+                overflowX: "auto",
+                gap: { xs: 1, sm: 1.5 },
+                pb: 2,
+                scrollSnapType: "x mandatory",
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+              }}
+            >
+              {chunkArray(currentLinks, 4).map((chunk, chunkIdx) => (
+                <Box
+                  key={chunkIdx}
+                  sx={{
+                    minWidth: 0,
+                    flex: "0 0 calc(100vw - 32px)",
+                    maxWidth: "calc(100vw - 32px)",
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gridTemplateRows: "1fr 1fr",
+                    gap: { xs: 0.8, sm: 1 },
+                    scrollSnapAlign: "start",
+                    p: { xs: 0.5, sm: 0.8 },
+                  }}
                 >
-                  <Card
-                    sx={{
-                      height: "100%",
-                      maxWidth: { xs: 180, md: 200 },
-                      mx: "auto",
-                      background: "rgba(255,255,255,0.06)",
-                      backdropFilter: "blur(20px)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: 1.5,
-                      transition: "all 0.2s ease",
-                      cursor: "pointer",
-                      position: "relative",
-                      overflow: "hidden",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                      "&:hover": {
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
-                        background: "rgba(255,255,255,0.1)",
-                        border: "1px solid rgba(59, 130, 246, 0.3)",
-                        "& .link-title": {
-                          color: "#3b82f6",
-                        },
-                      },
-                    }}
-                  >
-                    <CardContent sx={{ p: { xs: 1, md: 1.2 } }}>
-                      {/* Icon and Title Row */}
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: { xs: 0.7, md: 0.8 },
-                          mb: { xs: 0.6, md: 0.7 },
-                        }}
+                  {chunk.map((link, index) => (
+                    <Box key={link.id} sx={{ width: "100%", height: "100%" }}>
+                      {/* Card rendering (copy from existing Grid) */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: index * 0.1 }}
+                        whileHover={{ scale: 1.02 }}
+                        style={{ height: "100%" }}
                       >
-                        <Box
-                          className="link-icon"
+                        <Card
                           sx={{
-                            width: { xs: 22, md: 26 },
-                            height: { xs: 22, md: 26 },
-                            borderRadius: 1,
-                            background: link.gradient,
+                            height: "100%",
+                            width: "100%",
+                            maxWidth: { xs: 140, sm: 160 },
+                            mx: "auto",
+                            background: "rgba(255,255,255,0.06)",
+                            backdropFilter: "blur(20px)",
+                            border: "1px solid rgba(255,255,255,0.1)",
+                            borderRadius: 1.5,
+                            transition: "all 0.2s ease",
+                            cursor: "pointer",
+                            position: "relative",
+                            overflow: "hidden",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                            display: "flex",
+                            flexDirection: "column",
+                            "&:hover": {
+                              transform: "translateY(-2px)",
+                              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+                              background: "rgba(255,255,255,0.1)",
+                              border: "1px solid rgba(59, 130, 246, 0.3)",
+                              "& .link-title": {
+                                color: "#3b82f6",
+                              },
+                            },
+                          }}
+                        >
+                          <CardContent
+                            sx={{
+                              p: { xs: 0.6, sm: 0.8 },
+                              display: "flex",
+                              flexDirection: "column",
+                              height: "100%",
+                              flex: 1,
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            {/* Content wrapper */}
+                            <Box
+                              sx={{
+                                flex: 1,
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
+                            >
+                              {/* Icon and Title Row */}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: { xs: 0.4, sm: 0.6 },
+                                  mb: { xs: 0.4, sm: 0.5 },
+                                }}
+                              >
+                                <Box
+                                  className="link-icon"
+                                  sx={{
+                                    width: { xs: 20, sm: 22 },
+                                    height: { xs: 20, sm: 22 },
+                                    borderRadius: 1,
+                                    background: link.gradient,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "white",
+                                    transition: "all 0.2s ease",
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  {link.icon &&
+                                  (link.icon.startsWith("fas ") ||
+                                    link.icon.startsWith("fab ")) ? (
+                                    <i
+                                      className={`${link.icon}`}
+                                      style={{
+                                        fontSize: {
+                                          xs: "0.6rem",
+                                          sm: "0.7rem",
+                                        },
+                                      }}
+                                    ></i>
+                                  ) : link.icon ? (
+                                    <img
+                                      src={link.icon}
+                                      alt=""
+                                      style={{
+                                        width: { xs: "8px", sm: "10px" },
+                                        height: { xs: "8px", sm: "10px" },
+                                        objectFit: "contain",
+                                        filter: "brightness(0) invert(1)",
+                                      }}
+                                      onError={(e) => {
+                                        e.target.style.display = "none";
+                                        e.target.nextSibling.style.display =
+                                          "block";
+                                      }}
+                                    />
+                                  ) : (
+                                    <i
+                                      className="fas fa-link"
+                                      style={{
+                                        fontSize: {
+                                          xs: "0.6rem",
+                                          sm: "0.7rem",
+                                        },
+                                      }}
+                                    ></i>
+                                  )}
+                                  {/* Fallback icon if image fails to load */}
+                                  {link.icon &&
+                                    !(
+                                      link.icon.startsWith("fas ") ||
+                                      link.icon.startsWith("fab ")
+                                    ) && (
+                                      <i
+                                        className="fas fa-link"
+                                        style={{
+                                          display: "none",
+                                          fontSize: {
+                                            xs: "0.6rem",
+                                            sm: "0.7rem",
+                                          },
+                                        }}
+                                      ></i>
+                                    )}
+                                </Box>
+                                <Typography
+                                  variant="body2"
+                                  className="link-title"
+                                  sx={{
+                                    fontWeight: 600,
+                                    transition: "all 0.2s ease",
+                                    fontSize: { xs: "0.55rem", sm: "0.6rem" },
+                                    lineHeight: 1.2,
+                                    color: "rgba(255, 255, 255, 0.9)",
+                                    textAlign: "left",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                    flex: 1,
+                                  }}
+                                >
+                                  {link.title}
+                                </Typography>
+
+                                {/* Admin Edit Button */}
+                                {isAdmin && (
+                                  <IconButton
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openEditModalWithLinkData(link);
+                                    }}
+                                    size="small"
+                                    sx={{
+                                      color: "rgba(255, 255, 255, 0.6)",
+                                      p: 0.2,
+                                      minWidth: "auto",
+                                      width: { xs: "16px", sm: "18px" },
+                                      height: { xs: "16px", sm: "18px" },
+                                      "&:hover": {
+                                        color: "#f59e0b",
+                                        background: "rgba(245, 158, 11, 0.1)",
+                                      },
+                                    }}
+                                  >
+                                    <EditIcon
+                                      sx={{
+                                        fontSize: {
+                                          xs: "0.55rem",
+                                          sm: "0.6rem",
+                                        },
+                                      }}
+                                    />
+                                  </IconButton>
+                                )}
+
+                                <IconButton
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleBookmarkForLink(link.id);
+                                  }}
+                                  size="small"
+                                  sx={{
+                                    color: bookmarkedLinks.has(link.id)
+                                      ? "#3b82f6"
+                                      : "rgba(255, 255, 255, 0.4)",
+                                    p: 0.2,
+                                    minWidth: "auto",
+                                    width: { xs: "16px", sm: "18px" },
+                                    height: { xs: "16px", sm: "18px" },
+                                    "&:hover": {
+                                      color: "#3b82f6",
+                                      background: "rgba(59, 130, 246, 0.1)",
+                                    },
+                                  }}
+                                >
+                                  {bookmarkedLinks.has(link.id) ? (
+                                    <BookmarkFilledIcon
+                                      sx={{
+                                        fontSize: {
+                                          xs: "0.55rem",
+                                          sm: "0.6rem",
+                                        },
+                                      }}
+                                    />
+                                  ) : (
+                                    <BookmarkIcon
+                                      sx={{
+                                        fontSize: {
+                                          xs: "0.55rem",
+                                          sm: "0.6rem",
+                                        },
+                                      }}
+                                    />
+                                  )}
+                                </IconButton>
+                              </Box>
+
+                              {/* Category Badge */}
+                              <Box sx={{ mb: { xs: 0.3, sm: 0.4 } }}>
+                                <Chip
+                                  label={link.category}
+                                  size="small"
+                                  sx={{
+                                    background: "rgba(59, 130, 246, 0.1)",
+                                    color: "#3b82f6",
+                                    fontSize: { xs: "0.4rem", sm: "0.45rem" },
+                                    height: { xs: "14px", sm: "16px" },
+                                    fontWeight: 500,
+                                    border: "1px solid rgba(59, 130, 246, 0.2)",
+                                    "& .MuiChip-label": {
+                                      px: { xs: 0.4, sm: 0.5 },
+                                    },
+                                  }}
+                                />
+                              </Box>
+
+                              {/* Description */}
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  color: "rgba(255, 255, 255, 0.6)",
+                                  mb: { xs: 0.7, md: 0.8 },
+                                  lineHeight: 1.2,
+                                  fontSize: { xs: "0.5rem", md: "0.55rem" },
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: expandedDescriptions.has(
+                                    link.id
+                                  )
+                                    ? "unset"
+                                    : 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                  textAlign: "left",
+                                  minHeight: "2.4em", // Fixed height for 2 lines - always maintain this
+                                  maxHeight: expandedDescriptions.has(link.id)
+                                    ? "none"
+                                    : "2.4em", // Allow expansion but maintain base height
+                                  transition: "max-height 0.3s ease",
+                                }}
+                              >
+                                {link.description}
+                              </Typography>
+
+                              {/* Lire la suite button for long descriptions */}
+                              {link.description.length > 80 && (
+                                <Box
+                                  sx={{
+                                    mb: { xs: 0.5, md: 0.6 },
+                                    height: "1.2em", // Fixed height for button area
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Button
+                                    size="small"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleDescriptionExpansion(link.id);
+                                    }}
+                                    sx={{
+                                      color: "#3b82f6",
+                                      textTransform: "none",
+                                      fontSize: { xs: "0.35rem", sm: "0.4rem" },
+                                      fontWeight: 500,
+                                      p: 0,
+                                      minWidth: "auto",
+                                      "&:hover": {
+                                        background: "rgba(59, 130, 246, 0.1)",
+                                      },
+                                    }}
+                                  >
+                                    {expandedDescriptions.has(link.id)
+                                      ? "Voir moins"
+                                      : "Lire la suite"}
+                                  </Button>
+                                </Box>
+                              )}
+
+                              {/* Empty space for cards without "Lire la suite" button to maintain consistent height */}
+                              {link.description.length <= 80 && (
+                                <Box
+                                  sx={{
+                                    mb: { xs: 0.5, md: 0.6 },
+                                    height: "1.2em", // Same height as button area
+                                  }}
+                                />
+                              )}
+                            </Box>
+
+                            {/* Action Button */}
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <motion.div
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                              >
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  endIcon={
+                                    <ArrowRight
+                                      sx={{
+                                        fontSize: {
+                                          xs: "0.5rem",
+                                          md: "0.55rem",
+                                        },
+                                      }}
+                                    />
+                                  }
+                                  onClick={() =>
+                                    window.open(link.url, "_blank")
+                                  }
+                                  sx={{
+                                    fontWeight: 500,
+                                    px: { xs: 0.9, md: 1.1 },
+                                    py: { xs: 0.25, md: 0.3 },
+                                    borderRadius: 1,
+                                    border: "1px solid rgba(59, 130, 246, 0.3)",
+                                    color: "#3b82f6",
+                                    textTransform: "none",
+                                    fontSize: { xs: "0.45rem", md: "0.5rem" },
+                                    background: "rgba(59, 130, 246, 0.05)",
+                                    minHeight: { xs: "22px", md: "26px" },
+                                    "&:hover": {
+                                      background: "rgba(59, 130, 246, 0.1)",
+                                      border: "1px solid #3b82f6",
+                                      transform: "translateY(-1px)",
+                                      boxShadow:
+                                        "0 2px 8px rgba(59, 130, 246, 0.15)",
+                                    },
+                                  }}
+                                >
+                                  Accéder
+                                </Button>
+                              </motion.div>
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    </Box>
+                  ))}
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            // DESKTOP/TABLET: original grid
+            <Grid
+              container
+              spacing={{ xs: 1.5, md: 2.5 }}
+              justifyContent="center"
+            >
+              {currentLinks.map((link, index) => (
+                <Grid xs={12} sm={6} md={4} key={link.id}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <Card
+                      sx={{
+                        height: "100%",
+                        maxWidth: { xs: 180, md: 200 },
+                        mx: "auto",
+                        background: "rgba(255,255,255,0.06)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: 1.5,
+                        transition: "all 0.2s ease",
+                        cursor: "pointer",
+                        position: "relative",
+                        overflow: "hidden",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                        "&:hover": {
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+                          background: "rgba(255,255,255,0.1)",
+                          border: "1px solid rgba(59, 130, 246, 0.3)",
+                          "& .link-title": {
+                            color: "#3b82f6",
+                          },
+                        },
+                      }}
+                    >
+                      <CardContent sx={{ p: { xs: 1, md: 1.2 } }}>
+                        {/* Icon and Title Row */}
+                        <Box
+                          sx={{
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "center",
-                            color: "white",
-                            transition: "all 0.2s ease",
-                            flexShrink: 0,
+                            gap: { xs: 0.7, md: 0.8 },
+                            mb: { xs: 0.6, md: 0.7 },
                           }}
                         >
-                          {link.icon &&
-                          (link.icon.startsWith("fas ") ||
-                            link.icon.startsWith("fab ")) ? (
-                            <i className={`${link.icon} text-xs`}></i>
-                          ) : link.icon ? (
-                            <img
-                              src={link.icon}
-                              alt=""
-                              style={{
-                                width: "14px",
-                                height: "14px",
-                                objectFit: "contain",
-                                filter: "brightness(0) invert(1)",
-                              }}
-                              onError={(e) => {
-                                e.target.style.display = "none";
-                                e.target.nextSibling.style.display = "block";
-                              }}
-                            />
-                          ) : (
-                            <i className="fas fa-link text-xs"></i>
-                          )}
-                          {/* Fallback icon if image fails to load */}
-                          {link.icon &&
-                            !(
-                              link.icon.startsWith("fas ") ||
-                              link.icon.startsWith("fab ")
-                            ) && (
-                              <i
-                                className="fas fa-link text-xs"
-                                style={{ display: "none" }}
-                              ></i>
+                          <Box
+                            className="link-icon"
+                            sx={{
+                              width: { xs: 22, md: 26 },
+                              height: { xs: 22, md: 26 },
+                              borderRadius: 1,
+                              background: link.gradient,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              color: "white",
+                              transition: "all 0.2s ease",
+                              flexShrink: 0,
+                            }}
+                          >
+                            {link.icon &&
+                            (link.icon.startsWith("fas ") ||
+                              link.icon.startsWith("fab ")) ? (
+                              <i className={`${link.icon} text-xs`}></i>
+                            ) : link.icon ? (
+                              <img
+                                src={link.icon}
+                                alt=""
+                                style={{
+                                  width: "14px",
+                                  height: "14px",
+                                  objectFit: "contain",
+                                  filter: "brightness(0) invert(1)",
+                                }}
+                                onError={(e) => {
+                                  e.target.style.display = "none";
+                                  e.target.nextSibling.style.display = "block";
+                                }}
+                              />
+                            ) : (
+                              <i className="fas fa-link text-xs"></i>
                             )}
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          className="link-title"
-                          sx={{
-                            fontWeight: 600,
-                            transition: "all 0.2s ease",
-                            fontSize: { xs: "0.65rem", md: "0.75rem" },
-                            lineHeight: 1.2,
-                            color: "rgba(255, 255, 255, 0.9)",
-                            textAlign: "left",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            flex: 1,
-                          }}
-                        >
-                          {link.title}
-                        </Typography>
+                            {/* Fallback icon if image fails to load */}
+                            {link.icon &&
+                              !(
+                                link.icon.startsWith("fas ") ||
+                                link.icon.startsWith("fab ")
+                              ) && (
+                                <i
+                                  className="fas fa-link text-xs"
+                                  style={{ display: "none" }}
+                                ></i>
+                              )}
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            className="link-title"
+                            sx={{
+                              fontWeight: 600,
+                              transition: "all 0.2s ease",
+                              fontSize: { xs: "0.65rem", md: "0.75rem" },
+                              lineHeight: 1.2,
+                              color: "rgba(255, 255, 255, 0.9)",
+                              textAlign: "left",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              flex: 1,
+                            }}
+                          >
+                            {link.title}
+                          </Typography>
 
-                        {/* Admin Edit Button */}
-                        {isAdmin && (
+                          {/* Admin Edit Button */}
+                          {isAdmin && (
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openEditModalWithLinkData(link);
+                              }}
+                              size="small"
+                              sx={{
+                                color: "rgba(255, 255, 255, 0.6)",
+                                p: 0.3,
+                                minWidth: "auto",
+                                width: { xs: "18px", md: "22px" },
+                                height: { xs: "18px", md: "22px" },
+                                "&:hover": {
+                                  color: "#f59e0b",
+                                  background: "rgba(245, 158, 11, 0.1)",
+                                },
+                              }}
+                            >
+                              <EditIcon
+                                sx={{
+                                  fontSize: { xs: "0.65rem", md: "0.75rem" },
+                                }}
+                              />
+                            </IconButton>
+                          )}
+
                           <IconButton
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleEditClick(link);
+                              toggleBookmarkForLink(link.id);
                             }}
                             size="small"
                             sx={{
-                              color: "rgba(255, 255, 255, 0.6)",
+                              color: bookmarkedLinks.has(link.id)
+                                ? "#3b82f6"
+                                : "rgba(255, 255, 255, 0.4)",
                               p: 0.3,
                               minWidth: "auto",
                               width: { xs: "18px", md: "22px" },
                               height: { xs: "18px", md: "22px" },
                               "&:hover": {
-                                color: "#f59e0b",
-                                background: "rgba(245, 158, 11, 0.1)",
+                                color: "#3b82f6",
+                                background: "rgba(59, 130, 246, 0.1)",
                               },
                             }}
                           >
-                            <EditIcon
-                              sx={{
-                                fontSize: { xs: "0.65rem", md: "0.75rem" },
-                              }}
-                            />
-                          </IconButton>
-                        )}
-
-                        <IconButton
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleBookmark(link.id);
-                          }}
-                          size="small"
-                          sx={{
-                            color: bookmarkedLinks.has(link.id)
-                              ? "#3b82f6"
-                              : "rgba(255, 255, 255, 0.4)",
-                            p: 0.3,
-                            minWidth: "auto",
-                            width: { xs: "18px", md: "22px" },
-                            height: { xs: "18px", md: "22px" },
-                            "&:hover": {
-                              color: "#3b82f6",
-                              background: "rgba(59, 130, 246, 0.1)",
-                            },
-                          }}
-                        >
-                          {bookmarkedLinks.has(link.id) ? (
-                            <BookmarkFilledIcon
-                              sx={{
-                                fontSize: { xs: "0.65rem", md: "0.75rem" },
-                              }}
-                            />
-                          ) : (
-                            <BookmarkIcon
-                              sx={{
-                                fontSize: { xs: "0.65rem", md: "0.75rem" },
-                              }}
-                            />
-                          )}
-                        </IconButton>
-                      </Box>
-
-                      {/* Category Badge */}
-                      <Box sx={{ mb: { xs: 0.5, md: 0.6 } }}>
-                        <Chip
-                          label={link.category}
-                          size="small"
-                          sx={{
-                            background: "rgba(59, 130, 246, 0.1)",
-                            color: "#3b82f6",
-                            fontSize: { xs: "0.5rem", md: "0.55rem" },
-                            height: { xs: "16px", md: "18px" },
-                            fontWeight: 500,
-                            border: "1px solid rgba(59, 130, 246, 0.2)",
-                            "& .MuiChip-label": {
-                              px: { xs: 0.6, md: 0.7 },
-                            },
-                          }}
-                        />
-                      </Box>
-
-                      {/* Description */}
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: "rgba(255, 255, 255, 0.6)",
-                          mb: { xs: 0.7, md: 0.8 },
-                          lineHeight: 1.2,
-                          fontSize: { xs: "0.5rem", md: "0.55rem" },
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          textAlign: "left",
-                        }}
-                      >
-                        {link.description}
-                      </Typography>
-
-                      {/* Action Button */}
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <motion.div
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            endIcon={
-                              <ArrowRight
+                            {bookmarkedLinks.has(link.id) ? (
+                              <BookmarkFilledIcon
                                 sx={{
-                                  fontSize: { xs: "0.5rem", md: "0.55rem" },
+                                  fontSize: { xs: "0.65rem", md: "0.75rem" },
                                 }}
                               />
-                            }
-                            onClick={() => window.open(link.url, "_blank")}
+                            ) : (
+                              <BookmarkIcon
+                                sx={{
+                                  fontSize: { xs: "0.65rem", md: "0.75rem" },
+                                }}
+                              />
+                            )}
+                          </IconButton>
+                        </Box>
+
+                        {/* Category Badge */}
+                        <Box sx={{ mb: { xs: 0.5, md: 0.6 } }}>
+                          <Chip
+                            label={link.category}
+                            size="small"
                             sx={{
-                              fontWeight: 500,
-                              px: { xs: 0.9, md: 1.1 },
-                              py: { xs: 0.25, md: 0.3 },
-                              borderRadius: 1,
-                              border: "1px solid rgba(59, 130, 246, 0.3)",
+                              background: "rgba(59, 130, 246, 0.1)",
                               color: "#3b82f6",
-                              textTransform: "none",
-                              fontSize: { xs: "0.45rem", md: "0.5rem" },
-                              background: "rgba(59, 130, 246, 0.05)",
-                              minHeight: { xs: "22px", md: "26px" },
-                              "&:hover": {
-                                background: "rgba(59, 130, 246, 0.1)",
-                                border: "1px solid #3b82f6",
-                                transform: "translateY(-1px)",
-                                boxShadow: "0 2px 8px rgba(59, 130, 246, 0.15)",
+                              fontSize: { xs: "0.5rem", md: "0.55rem" },
+                              height: { xs: "16px", md: "18px" },
+                              fontWeight: 500,
+                              border: "1px solid rgba(59, 130, 246, 0.2)",
+                              "& .MuiChip-label": {
+                                px: { xs: 0.6, md: 0.7 },
                               },
                             }}
-                          >
-                            Accéder
-                          </Button>
-                        </motion.div>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </Grid>
-            ))}
-          </Grid>
+                          />
+                        </Box>
 
+                        {/* Description */}
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "rgba(255, 255, 255, 0.6)",
+                            mb: { xs: 0.7, md: 0.8 },
+                            lineHeight: 1.2,
+                            fontSize: { xs: "0.5rem", md: "0.55rem" },
+                            display: "-webkit-box",
+                            WebkitLineClamp: expandedDescriptions.has(link.id)
+                              ? "unset"
+                              : 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textAlign: "left",
+                            minHeight: "2.4em", // Fixed height for 2 lines - always maintain this
+                            maxHeight: expandedDescriptions.has(link.id)
+                              ? "none"
+                              : "2.4em", // Allow expansion but maintain base height
+                            transition: "max-height 0.3s ease",
+                          }}
+                        >
+                          {link.description}
+                        </Typography>
+
+                        {/* Lire la suite button for long descriptions */}
+                        {link.description.length > 80 && (
+                          <Box
+                            sx={{
+                              mb: { xs: 0.5, md: 0.6 },
+                              height: "1.2em", // Fixed height for button area
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Button
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleDescriptionExpansion(link.id);
+                              }}
+                              sx={{
+                                color: "#3b82f6",
+                                textTransform: "none",
+                                fontSize: { xs: "0.35rem", sm: "0.4rem" },
+                                fontWeight: 500,
+                                p: 0,
+                                minWidth: "auto",
+                                "&:hover": {
+                                  background: "rgba(59, 130, 246, 0.1)",
+                                },
+                              }}
+                            >
+                              {expandedDescriptions.has(link.id)
+                                ? "Voir moins"
+                                : "Lire la suite"}
+                            </Button>
+                          </Box>
+                        )}
+
+                        {/* Empty space for cards without "Lire la suite" button to maintain consistent height */}
+                        {link.description.length <= 80 && (
+                          <Box
+                            sx={{
+                              mb: { xs: 0.5, md: 0.6 },
+                              height: "1.2em", // Same height as button area
+                            }}
+                          />
+                        )}
+
+                        {/* Action Button */}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              endIcon={
+                                <ArrowRight
+                                  sx={{
+                                    fontSize: { xs: "0.5rem", md: "0.55rem" },
+                                  }}
+                                />
+                              }
+                              onClick={() => window.open(link.url, "_blank")}
+                              sx={{
+                                fontWeight: 500,
+                                px: { xs: 0.9, md: 1.1 },
+                                py: { xs: 0.25, md: 0.3 },
+                                borderRadius: 1,
+                                border: "1px solid rgba(59, 130, 246, 0.3)",
+                                color: "#3b82f6",
+                                textTransform: "none",
+                                fontSize: { xs: "0.45rem", md: "0.5rem" },
+                                background: "rgba(59, 130, 246, 0.05)",
+                                minHeight: { xs: "22px", md: "26px" },
+                                "&:hover": {
+                                  background: "rgba(59, 130, 246, 0.1)",
+                                  border: "1px solid #3b82f6",
+                                  transform: "translateY(-1px)",
+                                  boxShadow:
+                                    "0 2px 8px rgba(59, 130, 246, 0.15)",
+                                },
+                              }}
+                            >
+                              Accéder
+                            </Button>
+                          </motion.div>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                </Grid>
+              ))}
+            </Grid>
+          )}
           {/* Pagination */}
           {totalPages > 1 && (
             <motion.div
@@ -1262,7 +1980,7 @@ const LiensUtiles = () => {
       {/* Edit Modal */}
       <Dialog
         open={editModalOpen}
-        onClose={handleCloseEditModal}
+        onClose={closeEditModal}
         maxWidth="sm"
         fullWidth
         PaperProps={{
@@ -1279,16 +1997,32 @@ const LiensUtiles = () => {
             color: "white",
             fontWeight: 600,
             borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
           Modifier le lien
+          <IconButton
+            onClick={closeEditModal}
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+              ml: 1,
+              "&:hover": {
+                color: "white",
+                background: "rgba(255, 255, 255, 0.1)",
+              },
+            }}
+          >
+            <i className="fas fa-times"></i>
+          </IconButton>
         </DialogTitle>
         <DialogContent sx={{ pt: 3 }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
               label="Titre"
               value={editForm.title}
-              onChange={(e) => handleEditFormChange("title", e.target.value)}
+              onChange={(e) => updateEditFormField("title", e.target.value)}
               fullWidth
               sx={{
                 "& .MuiOutlinedInput-root": {
@@ -1315,7 +2049,7 @@ const LiensUtiles = () => {
             <TextField
               label="URL"
               value={editForm.url}
-              onChange={(e) => handleEditFormChange("url", e.target.value)}
+              onChange={(e) => updateEditFormField("url", e.target.value)}
               fullWidth
               sx={{
                 "& .MuiOutlinedInput-root": {
@@ -1343,7 +2077,7 @@ const LiensUtiles = () => {
               label="Description"
               value={editForm.description}
               onChange={(e) =>
-                handleEditFormChange("description", e.target.value)
+                updateEditFormField("description", e.target.value)
               }
               fullWidth
               multiline
@@ -1384,7 +2118,7 @@ const LiensUtiles = () => {
               <Select
                 value={editForm.category}
                 onChange={(e) =>
-                  handleEditFormChange("category", e.target.value)
+                  updateEditFormField("category", e.target.value)
                 }
                 sx={{
                   color: "white",
@@ -1545,11 +2279,11 @@ const LiensUtiles = () => {
                       background: "rgba(255, 255, 255, 0.05)",
                     }}
                   >
-                    {filteredIcons.map((iconOption) => (
+                    {getFilteredIconsForEdit().map((iconOption) => (
                       <IconButton
                         key={iconOption.value}
                         onClick={() =>
-                          handleEditFormChange("icon", iconOption.value)
+                          updateEditFormField("icon", iconOption.value)
                         }
                         sx={{
                           width: 40,
@@ -1612,7 +2346,7 @@ const LiensUtiles = () => {
                 <TextField
                   label="Classe FontAwesome (ex: fas fa-atom)"
                   value={editForm.icon}
-                  onChange={(e) => handleEditFormChange("icon", e.target.value)}
+                  onChange={(e) => updateEditFormField("icon", e.target.value)}
                   fullWidth
                   placeholder="fas fa-atom"
                   sx={{
@@ -1652,69 +2386,11 @@ const LiensUtiles = () => {
                 Gradient
               </Typography>
 
-              {editForm.category && categoryGradients[editForm.category] ? (
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gap: 1,
-                    mb: 2,
-                  }}
-                >
-                  {categoryGradients[editForm.category].map(
-                    (gradient, index) => (
-                      <Box
-                        key={index}
-                        onClick={() =>
-                          handleEditFormChange("gradient", gradient)
-                        }
-                        sx={{
-                          height: 40,
-                          background: gradient,
-                          borderRadius: 1,
-                          cursor: "pointer",
-                          border:
-                            editForm.gradient === gradient
-                              ? "2px solid #3b82f6"
-                              : "1px solid rgba(255, 255, 255, 0.2)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          "&:hover": {
-                            transform: "scale(1.05)",
-                            border: "2px solid #3b82f6",
-                          },
-                        }}
-                      >
-                        {editForm.gradient === gradient && (
-                          <CheckCircleIcon
-                            sx={{ color: "white", fontSize: "1.2rem" }}
-                          />
-                        )}
-                      </Box>
-                    )
-                  )}
-                </Box>
-              ) : (
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.5)",
-                    fontStyle: "italic",
-                    mb: 2,
-                  }}
-                >
-                  Sélectionnez d'abord une catégorie pour voir les gradients
-                  disponibles
-                </Typography>
-              )}
-
-              {/* Custom Gradient Input */}
               <TextField
                 label="Gradient personnalisé (CSS)"
                 value={editForm.gradient}
                 onChange={(e) =>
-                  handleEditFormChange("gradient", e.target.value)
+                  updateEditFormField("gradient", e.target.value)
                 }
                 fullWidth
                 placeholder="linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
@@ -1744,7 +2420,7 @@ const LiensUtiles = () => {
         </DialogContent>
         <DialogActions sx={{ p: 3, gap: 1 }}>
           <Button
-            onClick={handleDeleteLink}
+            onClick={deleteCurrentLink}
             variant="outlined"
             color="error"
             startIcon={<DeleteIcon />}
@@ -1760,7 +2436,7 @@ const LiensUtiles = () => {
             Supprimer
           </Button>
           <Button
-            onClick={handleCloseEditModal}
+            onClick={closeEditModal}
             variant="outlined"
             sx={{
               borderColor: "rgba(255, 255, 255, 0.3)",
@@ -1774,7 +2450,7 @@ const LiensUtiles = () => {
             Annuler
           </Button>
           <Button
-            onClick={handleSaveEdit}
+            onClick={saveLinkChanges}
             variant="contained"
             sx={{
               background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
@@ -1785,6 +2461,476 @@ const LiensUtiles = () => {
             }}
           >
             Enregistrer
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Add Modal */}
+      <Dialog
+        open={addModalOpen}
+        onClose={closeAddModal}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            background: "rgba(30, 41, 59, 0.95)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            borderRadius: 3,
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            color: "white",
+            fontWeight: 600,
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          Ajouter un nouveau lien
+          <IconButton
+            onClick={closeAddModal}
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+              ml: 1,
+              "&:hover": {
+                color: "white",
+                background: "rgba(255, 255, 255, 0.1)",
+              },
+            }}
+          >
+            <i className="fas fa-times"></i>
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ pt: 3 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label="Titre"
+              value={addForm.title}
+              onChange={(e) => updateAddFormField("title", e.target.value)}
+              fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                  },
+                },
+              }}
+            />
+
+            <TextField
+              label="URL"
+              value={addForm.url}
+              onChange={(e) => updateAddFormField("url", e.target.value)}
+              fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                  },
+                },
+              }}
+            />
+
+            <TextField
+              label="Description"
+              value={addForm.description}
+              onChange={(e) =>
+                updateAddFormField("description", e.target.value)
+              }
+              fullWidth
+              multiline
+              rows={3}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                  },
+                },
+              }}
+            />
+
+            <FormControl fullWidth>
+              <InputLabel
+                sx={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                  },
+                }}
+              >
+                Catégorie
+              </InputLabel>
+              <Select
+                value={addForm.category}
+                onChange={(e) => updateAddFormField("category", e.target.value)}
+                sx={{
+                  color: "white",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#3b82f6",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                  },
+                }}
+              >
+                {categories.slice(1).map((category) => (
+                  <MenuItem key={category} value={category}>
+                    {category}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Icon Selection */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontWeight: 500,
+                  mb: 1,
+                }}
+              >
+                Icône
+              </Typography>
+
+              {/* Icon Mode Toggle */}
+              <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+                <Button
+                  variant={
+                    addIconMode === "predefined" ? "contained" : "outlined"
+                  }
+                  size="small"
+                  onClick={() => setAddIconMode("predefined")}
+                  sx={{
+                    fontSize: "0.75rem",
+                    px: 2,
+                    py: 0.5,
+                    background:
+                      addIconMode === "predefined"
+                        ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
+                        : "transparent",
+                    borderColor:
+                      addIconMode === "predefined"
+                        ? "transparent"
+                        : "rgba(255, 255, 255, 0.3)",
+                    color:
+                      addIconMode === "predefined"
+                        ? "white"
+                        : "rgba(255, 255, 255, 0.7)",
+                    "&:hover": {
+                      background:
+                        addIconMode === "predefined"
+                          ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
+                          : "rgba(255, 255, 255, 0.05)",
+                    },
+                  }}
+                >
+                  Icônes prédéfinies
+                </Button>
+                <Button
+                  variant={addIconMode === "custom" ? "contained" : "outlined"}
+                  size="small"
+                  onClick={() => setAddIconMode("custom")}
+                  sx={{
+                    fontSize: "0.75rem",
+                    px: 2,
+                    py: 0.5,
+                    background:
+                      addIconMode === "custom"
+                        ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
+                        : "transparent",
+                    borderColor:
+                      addIconMode === "custom"
+                        ? "transparent"
+                        : "rgba(255, 255, 255, 0.3)",
+                    color:
+                      addIconMode === "custom"
+                        ? "white"
+                        : "rgba(255, 255, 255, 0.7)",
+                    "&:hover": {
+                      background:
+                        addIconMode === "custom"
+                          ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
+                          : "rgba(255, 255, 255, 0.05)",
+                    },
+                  }}
+                >
+                  URL personnalisée
+                </Button>
+                <Button
+                  variant={addIconMode === "manual" ? "contained" : "outlined"}
+                  size="small"
+                  onClick={() => setAddIconMode("manual")}
+                  sx={{
+                    fontSize: "0.75rem",
+                    px: 2,
+                    py: 0.5,
+                    background:
+                      addIconMode === "manual"
+                        ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
+                        : "transparent",
+                    borderColor:
+                      addIconMode === "manual"
+                        ? "transparent"
+                        : "rgba(255, 255, 255, 0.3)",
+                    color:
+                      addIconMode === "manual"
+                        ? "white"
+                        : "rgba(255, 255, 255, 0.7)",
+                    "&:hover": {
+                      background:
+                        addIconMode === "manual"
+                          ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
+                          : "rgba(255, 255, 255, 0.05)",
+                    },
+                  }}
+                >
+                  Classe FontAwesome
+                </Button>
+              </Box>
+
+              {/* Predefined Icons Grid */}
+              {addIconMode === "predefined" && (
+                <>
+                  <TextField
+                    label="Rechercher une icône"
+                    value={addIconSearch}
+                    onChange={(e) => setAddIconSearch(e.target.value)}
+                    size="small"
+                    fullWidth
+                    sx={{
+                      mb: 1,
+                      input: { color: "white" },
+                      label: { color: "rgba(255,255,255,0.7)" },
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(6, 1fr)",
+                      gap: 1,
+                      maxHeight: "200px",
+                      overflowY: "auto",
+                      p: 1,
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                      borderRadius: 1,
+                      background: "rgba(255, 255, 255, 0.05)",
+                    }}
+                  >
+                    {getFilteredIconsForAdd().map((iconOption) => (
+                      <IconButton
+                        key={iconOption.value}
+                        onClick={() =>
+                          updateAddFormField("icon", iconOption.value)
+                        }
+                        sx={{
+                          width: 40,
+                          height: 40,
+                          border:
+                            addForm.icon === iconOption.value
+                              ? "2px solid #3b82f6"
+                              : "1px solid rgba(255, 255, 255, 0.2)",
+                          background:
+                            addForm.icon === iconOption.value
+                              ? "rgba(59, 130, 246, 0.2)"
+                              : "rgba(255, 255, 255, 0.05)",
+                          color: "white",
+                          fontSize: "1.2rem",
+                          "&:hover": {
+                            background: "rgba(59, 130, 246, 0.1)",
+                            border: "1px solid #3b82f6",
+                          },
+                        }}
+                      >
+                        <i className={iconOption.value}></i>
+                      </IconButton>
+                    ))}
+                  </Box>
+                </>
+              )}
+
+              {/* Custom Icon URL Input */}
+              {addIconMode === "custom" && (
+                <TextField
+                  label="URL de l'icône"
+                  value={addCustomIconUrl}
+                  onChange={(e) => setAddCustomIconUrl(e.target.value)}
+                  fullWidth
+                  placeholder="https://example.com/icon.png"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      color: "white",
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-focused": {
+                        color: "#3b82f6",
+                      },
+                    },
+                  }}
+                />
+              )}
+
+              {addIconMode === "manual" && (
+                <TextField
+                  label="Classe FontAwesome (ex: fas fa-atom)"
+                  value={addForm.icon}
+                  onChange={(e) => updateAddFormField("icon", e.target.value)}
+                  fullWidth
+                  placeholder="fas fa-atom"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      color: "white",
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-focused": {
+                        color: "#3b82f6",
+                      },
+                    },
+                  }}
+                />
+              )}
+            </Box>
+
+            {/* Gradient Selection */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontWeight: 500,
+                  mb: 1,
+                }}
+              >
+                Gradient
+              </Typography>
+
+              <TextField
+                label="Gradient personnalisé (CSS)"
+                value={addForm.gradient}
+                onChange={(e) => updateAddFormField("gradient", e.target.value)}
+                fullWidth
+                placeholder="linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "white",
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    "&.Mui-focused": {
+                      color: "#3b82f6",
+                    },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ p: 3, gap: 1 }}>
+          <Button
+            onClick={closeAddModal}
+            variant="outlined"
+            sx={{
+              borderColor: "rgba(255, 255, 255, 0.3)",
+              color: "rgba(255, 255, 255, 0.7)",
+              "&:hover": {
+                borderColor: "rgba(255, 255, 255, 0.5)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+              },
+            }}
+          >
+            Annuler
+          </Button>
+          <Button
+            onClick={createAndAddNewLink}
+            variant="contained"
+            sx={{
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              color: "white",
+              "&:hover": {
+                background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+              },
+            }}
+          >
+            Ajouter
           </Button>
         </DialogActions>
       </Dialog>
