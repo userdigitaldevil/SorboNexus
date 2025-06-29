@@ -321,10 +321,10 @@ export default function Home() {
                       fontSize: { xs: "0.65rem", sm: "0.7rem", md: "0.75rem" },
                     }}
                   >
-                    SorboNexus est la plateforme créée par et pour les étudiants
-                    de Jussieu, dédiée à accompagner votre réussite tout au long
-                    de votre parcours universitaire et dans la préparation de
-                    vos candidatures en master ou en école, en France comme à
+                    SorboNexus est la plateforme créée pour les étudiants de
+                    Jussieu, dédiée à accompagner votre réussite tout au long de
+                    votre parcours universitaire et dans la préparation de vos
+                    candidatures en master ou en école, en France comme à
                     l'international.
                     <br />
                     <br />
@@ -361,10 +361,10 @@ export default function Home() {
                         marginTop: "0.5em",
                       }}
                     >
-                      Le projet est encore en développement, mais vous pouvez
-                      dès maintenant créer votre compte, personnaliser votre
-                      profil et contribuer à enrichir la base de connaissances
-                      pour aider les générations futures.
+                      Le site est encore en développement, mais vous pouvez dès
+                      maintenant créer votre compte, personnaliser votre profil
+                      et contribuer à enrichir la base de connaissances pour
+                      aider les générations futures.
                       <br />
                       <span
                         style={{
@@ -374,8 +374,7 @@ export default function Home() {
                           fontSize: "1.1em",
                         }}
                       >
-                        Explorez, partagez, et faites grandir la communauté
-                        SorboNexus !
+                        Explorez, partagez, et faites grandir la communauté !
                       </span>
                     </span>
                   </Typography>
