@@ -1198,6 +1198,8 @@ export default function Home() {
                       variant="outlined"
                       size="large"
                       href="mailto:sethaguila@icloud.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       startIcon={
                         <Box
                           component="span"
