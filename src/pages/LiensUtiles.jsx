@@ -273,10 +273,10 @@ const LiensUtiles = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <Typography
-                variant="h5"
+                variant="h6"
                 sx={{
-                  color: "rgba(255, 255, 255, 0.8)",
-                  mb: { xs: 3, md: 8 },
+                  color: "rgba(255, 255, 255, 0.9)",
+                  mb: { xs: 2, md: 3 },
                   fontWeight: 400,
                   lineHeight: { xs: 1.4, md: 1.6 },
                   maxWidth: 600,
@@ -284,11 +284,10 @@ const LiensUtiles = () => {
                   fontSize: { xs: "0.9rem", sm: "1.1rem", md: "1.25rem" },
                 }}
               >
-                Découvrez tous les liens essentiels vers les services
-                universitaires, bibliothèques et plateformes pédagogiques.{" "}
-                <span style={{ color: "#3b82f6", fontWeight: 600 }}>
-                  Organisez et accédez facilement à vos ressources !
-                </span>
+                Accédez facilement à tous vos services universitaires,
+                bibliothèques et plateformes pédagogiques. Retrouvez des liens
+                pour vous entraîner, vous informer et définir vos objectifs
+                académiques et professionnels.
               </Typography>
             </motion.div>
 
