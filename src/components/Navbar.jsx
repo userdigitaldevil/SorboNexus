@@ -327,12 +327,9 @@ const Navbar = () => {
               )}
               <MenuItem
                 onClick={() => {
-                  setIsLoading(true);
-                  setTimeout(() => {
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("isAdmin");
-                    window.location.reload();
-                  }, 300);
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("isAdmin");
+                  window.location.reload();
                 }}
               >
                 Déconnexion
@@ -346,7 +343,6 @@ const Navbar = () => {
               fullWidth
               component={Link}
               to="/connexion"
-              onClick={() => setIsLoading(true)}
               sx={{
                 background: "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
                 fontWeight: 700,
@@ -640,8 +636,6 @@ const Navbar = () => {
       ? (addAlumniForm.conseil || "").slice(0, conseilMaxLength) + "..."
       : addAlumniForm.conseil || "";
 
-  const [isLoading, setIsLoading] = useState(false);
-
   return (
     <>
       <AppBar
@@ -768,7 +762,6 @@ const Navbar = () => {
                   variant="contained"
                   component={Link}
                   to="/connexion"
-                  onClick={() => setIsLoading(true)}
                   sx={{
                     ml: 3,
                     background:
@@ -1428,25 +1421,6 @@ const Navbar = () => {
           </Box>
         </Box>
       </Modal>
-
-      {isLoading && (
-        <Box
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            bgcolor: "rgba(24,24,27,0.7)",
-            zIndex: 2000,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <CircularProgress color="secondary" size={60} />
-        </Box>
-      )}
     </>
   );
 };
