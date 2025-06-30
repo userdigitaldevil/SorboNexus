@@ -996,7 +996,7 @@ export default function Home() {
                         },
                       }}
                     >
-                      {/* Feature Highlights */}
+                      {/* HERO SECTION: Mini Feature Cards (4 cards in 2x2 grid) */}
                       <Grid
                         container
                         spacing={3}
@@ -1376,6 +1376,7 @@ export default function Home() {
             </Typography>
           </motion.div>
 
+          {/* FULL FEATURES SECTION: All 6 feature cards in responsive grid */}
           <Grid
             container
             spacing={{ xs: 2, sm: 3, md: 4 }}
