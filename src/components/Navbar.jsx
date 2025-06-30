@@ -642,12 +642,16 @@ const Navbar = () => {
         position="fixed"
         className="glass"
         sx={{
+          width: "100vw",
+          left: 0,
           background: "rgba(30, 41, 59, 0.7)",
           backdropFilter: "blur(24px) saturate(180%)",
           borderBottom: "1.5px solid rgba(255, 255, 255, 0.13)",
           boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
           zIndex: 1000,
           borderRadius: 0,
+          margin: 0,
+          padding: 0,
         }}
       >
         <Toolbar
@@ -657,6 +661,9 @@ const Navbar = () => {
             py: 1.5,
             minHeight: "72px",
             height: "72px",
+            width: "100%",
+            margin: 0,
+            padding: 0,
           }}
         >
           {/* Logo */}
