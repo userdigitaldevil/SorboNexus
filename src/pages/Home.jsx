@@ -49,7 +49,7 @@ const features = [
   },
   {
     icon: <Users size={24} />,
-    title: "Réseau Alumni",
+    title: "Alumnis",
     description:
       "Connectez-vous avec les anciens étudiants pour des opportunités de mentorat, de stage et de développement professionnel.",
     gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
@@ -1000,39 +1000,45 @@ export default function Home() {
                       <Box
                         sx={{
                           display: "flex",
-                          gap: 2,
-                          overflowX: "auto",
-                          overflowY: "hidden",
-                          pb: 1,
-                          scrollSnapType: "x mandatory",
-                          WebkitOverflowScrolling: "touch",
-                          "::-webkit-scrollbar": { display: "none" },
-                          mx: -2,
-                          px: 2,
+                          justifyContent: "center",
+                          width: "100%",
                         }}
                       >
-                        {features.slice(0, 4).map((feature, index) => (
-                          <Box
-                            key={index}
-                            sx={{
-                              minWidth: 120,
-                              maxWidth: 140,
-                              flex: "0 0 auto",
-                              scrollSnapAlign: "start",
-                            }}
-                          >
-                            <FeatureCard
-                              feature={feature}
-                              index={index}
-                              variant="mini"
-                              onCardClick={() =>
-                                handleCardNavigation(feature.path)
-                              }
-                            />
-                          </Box>
-                        ))}
-                        {/* Extra space at the end for proper scrolling */}
-                        <Box sx={{ minWidth: 16, flex: "0 0 auto" }} />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: { xs: 3, sm: 2 },
+                            px: { xs: 2, sm: 4 },
+                            "& > *": {
+                              flexShrink: 0,
+                            },
+                          }}
+                        >
+                          {features.slice(0, 4).map((feature, index) => (
+                            <Box
+                              key={index}
+                              sx={{
+                                minWidth: { xs: 60, sm: 100 },
+                                maxWidth: { xs: 60, sm: 100 },
+                                height: { xs: 72, sm: 120 },
+                                flex: "0 0 auto",
+                                scrollSnapAlign: "start",
+                                display: "flex",
+                                alignItems: "stretch",
+                              }}
+                            >
+                              <FeatureCard
+                                feature={feature}
+                                index={index}
+                                variant="mini"
+                                onCardClick={() =>
+                                  handleCardNavigation(feature.path)
+                                }
+                                fixedSize
+                              />
+                            </Box>
+                          ))}
+                        </Box>
                       </Box>
 
                       {/* Bottom Accent */}

@@ -2,7 +2,13 @@ import React from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import { motion } from "framer-motion";
 
-const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
+const FeatureCard = ({
+  feature,
+  index,
+  variant = "full",
+  onCardClick,
+  fixedSize = false,
+}) => {
   const isMini = variant === "mini";
 
   return (
@@ -33,11 +39,13 @@ const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
           cursor: "pointer",
           position: "relative",
           overflow: "hidden",
-          height: isMini ? "auto" : "100%",
-          maxWidth: isMini
+          height: fixedSize ? { xs: 96, sm: 120 } : isMini ? "auto" : "100%",
+          width: fixedSize ? { xs: 80, sm: 100 } : "100%",
+          maxWidth: fixedSize
+            ? { xs: 80, sm: 100 }
+            : isMini
             ? "none"
-            : { xs: "100%", sm: "280px", md: "320px", lg: "280px" },
-          width: "100%",
+            : { xs: "200px", sm: "280px", md: "320px", lg: "280px" },
           "&:hover": {
             background: "rgba(255,255,255,0.08)",
             border: "1px solid rgba(59, 130, 246, 0.3)",
@@ -72,12 +80,13 @@ const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
       >
         <CardContent
           sx={{
-            p: isMini ? 2 : 3,
+            p: isMini ? { xs: 1.5, sm: 2 } : 3,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             textAlign: "center",
             height: "100%",
+            justifyContent: fixedSize || isMini ? "center" : undefined,
           }}
         >
           <motion.div
@@ -87,17 +96,25 @@ const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
             <Box
               className="feature-icon"
               sx={{
-                width: isMini ? 40 : 60,
-                height: isMini ? 40 : 60,
+                width: fixedSize
+                  ? { xs: 36, sm: 48 }
+                  : isMini
+                  ? { xs: 32, sm: 40 }
+                  : { xs: 48, sm: 60 },
+                height: fixedSize
+                  ? { xs: 36, sm: 48 }
+                  : isMini
+                  ? { xs: 32, sm: 40 }
+                  : { xs: 48, sm: 60 },
                 borderRadius: "50%",
                 background: feature.gradient,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                mb: isMini ? 1 : 2,
+                mb: isMini ? { xs: 0.5, sm: 1 } : 2,
                 transition: "all 0.3s ease",
                 color: "white",
-                fontSize: isMini ? "1rem" : "1.5rem",
+                fontSize: isMini ? { xs: "0.8rem", sm: "1rem" } : "1.5rem",
               }}
             >
               {feature.icon}
@@ -109,15 +126,31 @@ const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
             className="feature-title"
             sx={{
               fontWeight: 600,
-              mb: isMini ? 0.5 : 1,
+              mb: isMini ? { xs: 0.25, sm: 0.5 } : 1,
               transition: "all 0.3s ease",
-              fontSize: isMini ? "0.9rem" : "1.25rem",
+              fontSize: isMini
+                ? { xs: "0.75rem", sm: "0.9rem" }
+                : { xs: "1rem", sm: "1.25rem" },
+              ...(fixedSize || isMini
+                ? {
+                    height: { xs: 32, sm: 40 }, // Fixed height for 2 lines
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    lineHeight: 1.2,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }
+                : {}),
             }}
           >
             {feature.title}
           </Typography>
 
-          {!isMini && (
+          {!isMini && !fixedSize && (
             <Typography
               variant="body2"
               sx={{
@@ -126,6 +159,7 @@ const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
                 flex: 1,
                 display: "flex",
                 alignItems: "center",
+                fontSize: { xs: "0.7rem", sm: "0.875rem" },
               }}
             >
               {feature.description}
