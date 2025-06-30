@@ -24,6 +24,10 @@ import {
   Avatar,
   Rating,
   Alert,
+  Modal,
+  TextField,
+  IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -31,6 +35,7 @@ import { jwtDecode } from "jwt-decode";
 import ReactMarkdown from "react-markdown";
 import FeatureCard from "../components/FeatureCard";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const features = [
   {
@@ -146,6 +151,206 @@ export default function Home() {
     const anneeFin = parseInt(alum.anneeFinL3);
     return !isNaN(anneeFin) && anneeFin <= currentYear;
   }).length;
+
+  // Annonces state
+  const [annonces, setAnnonces] = useState([]);
+  const [annoncesTotal, setAnnoncesTotal] = useState(0);
+  const [annoncesLoading, setAnnoncesLoading] = useState(true);
+  const [annoncesError, setAnnoncesError] = useState("");
+  const [annoncesModalOpen, setAnnoncesModalOpen] = useState(false);
+  const [annoncesPage, setAnnoncesPage] = useState(1);
+  const annoncesPerPage = 3;
+
+  // Add form (admin)
+  const [newAnnonceTitle, setNewAnnonceTitle] = useState("");
+  const [newAnnonceContent, setNewAnnonceContent] = useState("");
+  const [addLoading, setAddLoading] = useState(false);
+  const [addError, setAddError] = useState("");
+
+  // Admin detection
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setIsAdmin(!!decoded.isAdmin);
+      } catch (e) {
+        setIsAdmin(false);
+      }
+    } else {
+      setIsAdmin(false);
+    }
+  }, []);
+
+  // Fetch annonces (for home or modal)
+  const fetchAnnonces = async (page = 1, perPage = 3) => {
+    setAnnoncesLoading(true);
+    setAnnoncesError("");
+    try {
+      const res = await fetch(
+        `${process.env.VITE_API_URL}/api/annonces?skip=${
+          (page - 1) * perPage
+        }&take=${perPage}`
+      );
+      if (!res.ok) throw new Error("Erreur lors du chargement des annonces.");
+      const data = await res.json();
+      setAnnonces(data.annonces);
+      setAnnoncesTotal(data.total);
+    } catch (err) {
+      setAnnoncesError(
+        err.message || "Erreur lors du chargement des annonces."
+      );
+    } finally {
+      setAnnoncesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnnonces(1, annoncesPerPage);
+  }, []);
+
+  // Modal pagination
+  const handleOpenAnnoncesModal = () => {
+    setAnnoncesPage(1);
+    setAnnoncesModalOpen(true);
+    fetchAnnonces(1, annoncesPerPage);
+  };
+  const handleCloseAnnoncesModal = () => setAnnoncesModalOpen(false);
+  const handleAnnoncesPageChange = (page) => {
+    setAnnoncesPage(page);
+    fetchAnnonces(page, annoncesPerPage);
+  };
+
+  // Add annonce (admin)
+  const handleAddAnnonce = async (e) => {
+    e.preventDefault();
+    setAddLoading(true);
+    setAddError("");
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${process.env.VITE_API_URL}/api/annonces`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: newAnnonceTitle,
+          content: newAnnonceContent,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Erreur lors de l'ajout de l'annonce.");
+      }
+      setNewAnnonceTitle("");
+      setNewAnnonceContent("");
+      fetchAnnonces(1, annoncesPerPage);
+    } catch (err) {
+      setAddError(err.message || "Erreur lors de l'ajout de l'annonce.");
+    } finally {
+      setAddLoading(false);
+    }
+  };
+
+  // Delete annonce (admin)
+  const handleDeleteAnnonce = async (id) => {
+    if (!window.confirm("Supprimer cette annonce ?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `${process.env.VITE_API_URL}/api/annonces/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!res.ok) throw new Error("Erreur lors de la suppression.");
+      fetchAnnonces(1, annoncesPerPage);
+      if (annoncesModalOpen) fetchAnnonces(annoncesPage, annoncesPerPage);
+    } catch (err) {
+      alert(err.message || "Erreur lors de la suppression.");
+    }
+  };
+
+  // Format date
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("fr-FR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+
+  // Render annonce card
+  function AnnonceCard({ annonce, showDelete }) {
+    const author = annonce.createdBy;
+    const avatar =
+      author?.alumni?.avatar || author?.username?.[0]?.toUpperCase() || "?";
+    const name =
+      author?.alumni?.name || author?.username || "Utilisateur inconnu";
+    return (
+      <Card
+        sx={{
+          background: "rgba(59,130,246,0.08)",
+          border: "1.5px solid #3b82f6",
+          borderRadius: 3,
+          boxShadow: "0 2px 12px rgba(59,130,246,0.08)",
+          maxWidth: 600,
+          width: "100%",
+          mx: "auto",
+          p: 2,
+          textAlign: "left",
+          position: "relative",
+        }}
+      >
+        <CardContent>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Avatar
+              sx={{
+                width: 32,
+                height: 32,
+                fontWeight: 700,
+                mr: 1,
+                bgcolor: "#3b82f6",
+              }}
+            >
+              {avatar}
+            </Avatar>
+            <Typography
+              variant="subtitle2"
+              sx={{ fontWeight: 700, color: "#3b82f6", mr: 1 }}
+            >
+              {name}
+            </Typography>
+            <Typography variant="caption" sx={{ color: "#64748b" }}>
+              {formatDate(annonce.createdAt)}
+            </Typography>
+            {showDelete && (
+              <IconButton
+                size="small"
+                sx={{ ml: "auto" }}
+                onClick={() => handleDeleteAnnonce(annonce.id)}
+              >
+                <DeleteIcon fontSize="small" color="error" />
+              </IconButton>
+            )}
+          </Box>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 700, color: "#1e40af", mb: 0.5 }}
+          >
+            {annonce.title}
+          </Typography>
+          <Typography variant="body1" sx={{ color: "rgba(30,41,59,0.95)" }}>
+            {annonce.content}
+          </Typography>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Box>
@@ -689,117 +894,193 @@ export default function Home() {
             >
               Annonces
             </Typography>
-            <Stack spacing={3} alignItems="center">
-              <Card
+            {annoncesLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+                <CircularProgress color="primary" />
+              </Box>
+            ) : annoncesError ? (
+              <Alert severity="error">{annoncesError}</Alert>
+            ) : (
+              <Stack spacing={3} alignItems="center">
+                {annonces.length === 0 && (
+                  <Typography variant="body1" sx={{ color: "#64748b" }}>
+                    Aucune annonce pour le moment.
+                  </Typography>
+                )}
+                {annonces.map((annonce) => (
+                  <AnnonceCard
+                    key={annonce.id}
+                    annonce={annonce}
+                    showDelete={isAdmin}
+                  />
+                ))}
+              </Stack>
+            )}
+            <Box
+              sx={{ mt: 4, display: "flex", justifyContent: "center", gap: 2 }}
+            >
+              <Button
+                variant="outlined"
+                onClick={handleOpenAnnoncesModal}
+                sx={{ fontWeight: 600, borderRadius: 2 }}
+              >
+                Voir les annonces passées
+              </Button>
+            </Box>
+            {isAdmin && (
+              <Box
+                component="form"
+                onSubmit={handleAddAnnonce}
                 sx={{
-                  background: "rgba(59,130,246,0.08)",
-                  border: "1.5px solid #3b82f6",
-                  borderRadius: 3,
-                  boxShadow: "0 2px 12px rgba(59,130,246,0.08)",
+                  mt: 5,
                   maxWidth: 600,
-                  width: "100%",
                   mx: "auto",
-                  p: 2,
                   textAlign: "left",
+                  background: "rgba(30,41,59,0.04)",
+                  borderRadius: 2,
+                  p: 3,
+                  boxShadow: "0 2px 8px rgba(59,130,246,0.06)",
                 }}
               >
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 700, color: "#3b82f6", mb: 0.5 }}
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 700, mb: 2, color: "#3b82f6" }}
+                >
+                  Ajouter une annonce
+                </Typography>
+                <TextField
+                  label="Titre"
+                  value={newAnnonceTitle}
+                  onChange={(e) => setNewAnnonceTitle(e.target.value)}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                  required
+                />
+                <TextField
+                  label="Contenu"
+                  value={newAnnonceContent}
+                  onChange={(e) => setNewAnnonceContent(e.target.value)}
+                  fullWidth
+                  multiline
+                  minRows={2}
+                  sx={{ mb: 2 }}
+                  required
+                />
+                {addError && (
+                  <Alert severity="error" sx={{ mb: 2 }}>
+                    {addError}
+                  </Alert>
+                )}
+                <Box
+                  sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
+                >
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={addLoading}
                   >
-                    Nouvelle fonctionnalité : Annonces !
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{ color: "#64748b", fontWeight: 500 }}
-                  >
-                    27 juin 2025
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ mt: 1, color: "rgba(30,41,59,0.95)" }}
-                  >
-                    Retrouvez ici toutes les actualités importantes de la
-                    plateforme SorboNexus. Cette section sera régulièrement mise
-                    à jour avec les nouveautés, les événements à venir et les
-                    informations utiles pour la communauté.
-                  </Typography>
-                </CardContent>
-              </Card>
-              <Card
+                    {addLoading ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : (
+                      "Publier"
+                    )}
+                  </Button>
+                </Box>
+              </Box>
+            )}
+            {/* Modal for past annonces */}
+            <Modal open={annoncesModalOpen} onClose={handleCloseAnnoncesModal}>
+              <Box
                 sx={{
-                  background: "rgba(59,130,246,0.05)",
-                  border: "1.5px solid #06b6d4",
-                  borderRadius: 3,
-                  boxShadow: "0 2px 12px rgba(6,182,212,0.08)",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  bgcolor: "#18181b",
+                  p: 4,
+                  borderRadius: 2,
+                  minWidth: 320,
                   maxWidth: 600,
-                  width: "100%",
-                  mx: "auto",
-                  p: 2,
-                  textAlign: "left",
+                  maxHeight: "80vh",
+                  overflowY: "auto",
+                  boxShadow: 24,
+                  scrollBehavior: "smooth",
                 }}
               >
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 700, color: "#06b6d4", mb: 0.5 }}
+                <Typography
+                  variant="h5"
+                  sx={{
+                    mb: 3,
+                    color: "#3b82f6",
+                    fontWeight: 700,
+                    textAlign: "center",
+                  }}
+                >
+                  Annonces passées
+                </Typography>
+                {annoncesLoading ? (
+                  <Box
+                    sx={{ display: "flex", justifyContent: "center", my: 4 }}
                   >
-                    Maintenance prévue
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{ color: "#64748b", fontWeight: 500 }}
-                  >
-                    30 juin 2025
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ mt: 1, color: "rgba(30,41,59,0.95)" }}
-                  >
-                    Le site sera temporairement indisponible le 30 juin de 2h à
-                    4h du matin pour une mise à jour technique. Merci de votre
-                    compréhension !
-                  </Typography>
-                </CardContent>
-              </Card>
-              <Card
-                sx={{
-                  background: "rgba(139,92,246,0.07)",
-                  border: "1.5px solid #8b5cf6",
-                  borderRadius: 3,
-                  boxShadow: "0 2px 12px rgba(139,92,246,0.08)",
-                  maxWidth: 600,
-                  width: "100%",
-                  mx: "auto",
-                  p: 2,
-                  textAlign: "left",
-                }}
-              >
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 700, color: "#8b5cf6", mb: 0.5 }}
-                  >
-                    Appel à contributions
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{ color: "#64748b", fontWeight: 500 }}
-                  >
-                    25 juin 2025
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ mt: 1, color: "rgba(30,41,59,0.95)" }}
-                  >
-                    Vous souhaitez partager une ressource, un conseil ou
-                    organiser un événement ? Contactez l'équipe SorboNexus pour
-                    faire passer votre annonce ici !
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Stack>
+                    <CircularProgress color="primary" />
+                  </Box>
+                ) : annoncesError ? (
+                  <Alert severity="error">{annoncesError}</Alert>
+                ) : (
+                  <Stack spacing={3} alignItems="center">
+                    {annonces.length === 0 && (
+                      <Typography variant="body1" sx={{ color: "#64748b" }}>
+                        Aucune annonce pour le moment.
+                      </Typography>
+                    )}
+                    {annonces.map((annonce) => (
+                      <AnnonceCard
+                        key={annonce.id}
+                        annonce={annonce}
+                        showDelete={isAdmin}
+                      />
+                    ))}
+                  </Stack>
+                )}
+                {/* Pagination */}
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                  {annoncesTotal > annoncesPerPage && (
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Button
+                        variant="outlined"
+                        disabled={annoncesPage === 1}
+                        onClick={() =>
+                          handleAnnoncesPageChange(annoncesPage - 1)
+                        }
+                      >
+                        Précédent
+                      </Button>
+                      <Typography sx={{ color: "#3b82f6", fontWeight: 600 }}>
+                        Page {annoncesPage} /{" "}
+                        {Math.ceil(annoncesTotal / annoncesPerPage)}
+                      </Typography>
+                      <Button
+                        variant="outlined"
+                        disabled={
+                          annoncesPage ===
+                          Math.ceil(annoncesTotal / annoncesPerPage)
+                        }
+                        onClick={() =>
+                          handleAnnoncesPageChange(annoncesPage + 1)
+                        }
+                      >
+                        Suivant
+                      </Button>
+                    </Stack>
+                  )}
+                </Box>
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                  <Button onClick={handleCloseAnnoncesModal} sx={{ mt: 2 }}>
+                    Fermer
+                  </Button>
+                </Box>
+              </Box>
+            </Modal>
           </motion.div>
         </Container>
       </Box>
