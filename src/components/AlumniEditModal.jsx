@@ -8,11 +8,30 @@ import {
   Typography,
   Checkbox,
   FormControlLabel,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
+  Chip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+
+const DOMAINES = [
+  "Mathématiques",
+  "Informatique",
+  "Physique",
+  "Chimie",
+  "Mécanique",
+  "Sciences de la vie",
+  "Sciences de la Terre",
+  "Électronique",
+];
 
 export default function AlumniEditModal({
   open,
@@ -23,6 +42,13 @@ export default function AlumniEditModal({
 }) {
   const [editForm, setEditForm] = useState({});
   const [editError, setEditError] = useState("");
+  const [showFullConseil, setShowFullConseil] = useState(false);
+  const conseilMaxLength = 180;
+  const conseilIsLong = (editForm.conseil || "").length > conseilMaxLength;
+  const conseilPreview =
+    conseilIsLong && !showFullConseil
+      ? (editForm.conseil || "").slice(0, conseilMaxLength) + "..."
+      : editForm.conseil || "";
 
   useEffect(() => {
     if (alumni) {
@@ -30,7 +56,14 @@ export default function AlumniEditModal({
         name: alumni.name || "",
         degree: alumni.degree || "",
         position: alumni.position || "",
-        field: alumni.field || "",
+        field: Array.isArray(alumni.field)
+          ? alumni.field
+          : alumni.field
+          ? alumni.field
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
         linkedin: alumni.linkedin || "",
         email: alumni.email || "",
         avatar: alumni.avatar || "",
@@ -153,6 +186,9 @@ export default function AlumniEditModal({
         (acc, key) => ({ ...acc, [key]: editForm[key] || "" }),
         {}
       ),
+      field: Array.isArray(editForm.field)
+        ? editForm.field.join(",")
+        : editForm.field || "",
       isAdmin: !!editForm.isAdmin,
       hidden: !!editForm.hidden,
       nationalities: (editForm.nationalities || "")
@@ -290,15 +326,67 @@ export default function AlumniEditModal({
               onChange={handleEditFormChange}
               fullWidth
               sx={{ mb: 2 }}
+              helperText={
+                'Indiquez "Etudiant" si vous n\'avez pas de poste actuel.'
+              }
             />
-            <TextField
-              label="Domaine"
-              name="field"
-              value={editForm.field}
-              onChange={handleEditFormChange}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel id="domaines-label">Domaines</InputLabel>
+              <Select
+                labelId="domaines-label"
+                multiple
+                value={editForm.field || []}
+                onChange={(e) =>
+                  setEditForm((prev) => ({ ...prev, field: e.target.value }))
+                }
+                input={<OutlinedInput label="Domaines" />}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      backgroundColor: "rgba(30, 41, 59, 0.97)",
+                      color: "#fff",
+                    },
+                  },
+                }}
+                renderValue={(selected) => (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip
+                        key={value}
+                        label={value}
+                        sx={{
+                          background: "#3b82f6",
+                          color: "#fff",
+                          fontWeight: 600,
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )}
+              >
+                {DOMAINES.map((domaine) => (
+                  <MenuItem
+                    key={domaine}
+                    value={domaine}
+                    sx={
+                      editForm.field && editForm.field.includes(domaine)
+                        ? {
+                            background: "#3b82f6",
+                            color: "#fff",
+                            fontWeight: 700,
+                            "&:hover": { background: "#2563eb" },
+                          }
+                        : {}
+                    }
+                  >
+                    {editForm.field && editForm.field.includes(domaine) ? (
+                      <span style={{ marginRight: 8, fontWeight: 900 }}>✓</span>
+                    ) : null}
+                    {domaine}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextField
               label="LinkedIn"
               name="linkedin"
@@ -331,12 +419,29 @@ export default function AlumniEditModal({
             <TextField
               label="Conseil"
               name="conseil"
-              value={editForm.conseil || ""}
+              value={
+                showFullConseil || !conseilIsLong
+                  ? editForm.conseil || ""
+                  : conseilPreview
+              }
               onChange={handleEditFormChange}
               fullWidth
               multiline
               minRows={3}
               sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: conseilIsLong ? (
+                  <IconButton
+                    onClick={() => setShowFullConseil((v) => !v)}
+                    size="small"
+                    tabIndex={-1}
+                    aria-label={showFullConseil ? "Réduire" : "Voir plus"}
+                  >
+                    {showFullConseil ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  </IconButton>
+                ) : null,
+                readOnly: false,
+              }}
             />
             <TextField
               label="Nationalités (séparées par des virgules)"
@@ -412,10 +517,23 @@ export default function AlumniEditModal({
             {/* Schools Section */}
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle1">Écoles demandées</Typography>
+              <Typography
+                variant="body2"
+                sx={{ mb: 1, color: "#3b82f6", fontWeight: 500 }}
+              >
+                L'ordre des écoles est important : la première école (rang 1)
+                correspond à la Licence/BSc, la deuxième (rang 2) au
+                Master/École actuelle, et les suivantes sont les écoles ou
+                masters demandés. Vous pouvez réorganiser l'ordre en déplaçant
+                les écoles.
+              </Typography>
               {(editForm.schoolsApplied || []).map((school, idx) => (
-                <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                <Box
+                  key={idx}
+                  sx={{ display: "flex", gap: 1, mb: 1, alignItems: "center" }}
+                >
                   <TextField
-                    label="École"
+                    label={`École (rang ${idx + 1})`}
                     value={school.name || ""}
                     onChange={(e) =>
                       handleSchoolChange(idx, "name", e.target.value)
@@ -443,6 +561,42 @@ export default function AlumniEditModal({
                     size="small"
                   >
                     Supprimer
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (idx > 0) {
+                        setEditForm((prev) => {
+                          const schools = [...(prev.schoolsApplied || [])];
+                          [schools[idx - 1], schools[idx]] = [
+                            schools[idx],
+                            schools[idx - 1],
+                          ];
+                          return { ...prev, schoolsApplied: schools };
+                        });
+                      }
+                    }}
+                    size="small"
+                    disabled={idx === 0}
+                  >
+                    ↑
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (idx < editForm.schoolsApplied.length - 1) {
+                        setEditForm((prev) => {
+                          const schools = [...(prev.schoolsApplied || [])];
+                          [schools[idx], schools[idx + 1]] = [
+                            schools[idx + 1],
+                            schools[idx],
+                          ];
+                          return { ...prev, schoolsApplied: schools };
+                        });
+                      }
+                    }}
+                    size="small"
+                    disabled={idx === editForm.schoolsApplied.length - 1}
+                  >
+                    ↓
                   </Button>
                 </Box>
               ))}

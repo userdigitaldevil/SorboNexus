@@ -30,6 +30,7 @@ import {
   FormControlLabel,
   Checkbox,
   Chip,
+  OutlinedInput,
 } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
@@ -42,6 +43,19 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import AlumniProfileCard from "./AlumniProfileCard";
 import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import { useAlumniEditModal } from "./AlumniEditModalContext";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+
+const DOMAINES = [
+  "Mathématiques",
+  "Informatique",
+  "Physique",
+  "Chimie",
+  "Mécanique",
+  "Sciences de la vie",
+  "Sciences de la Terre",
+  "Électronique",
+];
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -403,7 +417,7 @@ const Navbar = () => {
     name: "",
     degree: "",
     position: "",
-    field: "",
+    field: [],
     email: "",
     linkedin: "",
     avatar: "",
@@ -544,6 +558,10 @@ const Navbar = () => {
     // Build alumni object for backend
     const alumniToSend = {
       ...addAlumniForm,
+      // Send field as a comma-separated string if it's an array
+      field: Array.isArray(addAlumniForm.field)
+        ? addAlumniForm.field.join(",")
+        : addAlumniForm.field || "",
       avatar: addAlumniForm.name ? addAlumniForm.name[0].toUpperCase() : "",
       grades: gradesArr,
       schoolsApplied: schoolsArr,
@@ -575,7 +593,7 @@ const Navbar = () => {
           name: "",
           degree: "",
           position: "",
-          field: "",
+          field: [],
           email: "",
           linkedin: "",
           avatar: "",
@@ -607,6 +625,14 @@ const Navbar = () => {
     useState(false);
 
   const { openEditSelfModal } = useAlumniEditModal();
+
+  const [showFullConseil, setShowFullConseil] = useState(false);
+  const conseilMaxLength = 180;
+  const conseilIsLong = (addAlumniForm.conseil || "").length > conseilMaxLength;
+  const conseilPreview =
+    conseilIsLong && !showFullConseil
+      ? (addAlumniForm.conseil || "").slice(0, conseilMaxLength) + "..."
+      : addAlumniForm.conseil || "";
 
   return (
     <>
@@ -914,16 +940,75 @@ const Navbar = () => {
                 fullWidth
                 sx={{ mb: 2 }}
                 required
+                helperText={
+                  'Indiquez "Etudiant" si vous n\'avez pas de poste actuel.'
+                }
               />
-              <TextField
-                label="Domaine"
-                name="field"
-                value={addAlumniForm.field}
-                onChange={handleAddAlumniChange}
-                fullWidth
-                sx={{ mb: 2 }}
-                required
-              />
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel id="domaines-label">Domaines</InputLabel>
+                <Select
+                  labelId="domaines-label"
+                  multiple
+                  value={addAlumniForm.field || []}
+                  onChange={(e) =>
+                    setAddAlumniForm((prev) => ({
+                      ...prev,
+                      field: e.target.value,
+                    }))
+                  }
+                  input={<OutlinedInput label="Domaines" />}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        backgroundColor: "rgba(30, 41, 59, 0.97)",
+                        color: "#fff",
+                      },
+                    },
+                  }}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Chip
+                          key={value}
+                          label={value}
+                          sx={{
+                            background: "#3b82f6",
+                            color: "#fff",
+                            fontWeight: 600,
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  )}
+                  required
+                >
+                  {DOMAINES.map((domaine) => (
+                    <MenuItem
+                      key={domaine}
+                      value={domaine}
+                      sx={
+                        addAlumniForm.field &&
+                        addAlumniForm.field.includes(domaine)
+                          ? {
+                              background: "#3b82f6",
+                              color: "#fff",
+                              fontWeight: 700,
+                              "&:hover": { background: "#2563eb" },
+                            }
+                          : {}
+                      }
+                    >
+                      {addAlumniForm.field &&
+                      addAlumniForm.field.includes(domaine) ? (
+                        <span style={{ marginRight: 8, fontWeight: 900 }}>
+                          ✓
+                        </span>
+                      ) : null}
+                      {domaine}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <TextField
                 label="Email"
                 name="email"
@@ -959,6 +1044,9 @@ const Navbar = () => {
                   onChange={handleAddAlumniChange}
                   fullWidth
                   required
+                  helperText={
+                    'Indiquez "Etudiant" si vous n\'avez pas de poste actuel.'
+                  }
                 />
               </FormControl>
               {/* Grades */}
@@ -1007,10 +1095,23 @@ const Navbar = () => {
               <Typography variant="subtitle1" sx={{ mt: 2 }}>
                 Écoles demandées
               </Typography>
+              <Typography
+                variant="body2"
+                sx={{ mb: 1, color: "#3b82f6", fontWeight: 500 }}
+              >
+                L'ordre des écoles est important : la première école (rang 1)
+                correspond à la Licence/BSc, la deuxième (rang 2) au
+                Master/École actuelle, et les suivantes sont les écoles ou
+                masters demandés. Vous pouvez réorganiser l'ordre en déplaçant
+                les écoles.
+              </Typography>
               {addAlumniSchools.map((s, idx) => (
-                <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                <Box
+                  key={idx}
+                  sx={{ display: "flex", gap: 1, mb: 1, alignItems: "center" }}
+                >
                   <TextField
-                    label="École"
+                    label={`École (rang ${idx + 1})`}
                     value={s.name}
                     onChange={(e) =>
                       handleAddAlumniSchoolChange(idx, "name", e.target.value)
@@ -1041,6 +1142,42 @@ const Navbar = () => {
                   >
                     Supprimer
                   </Button>
+                  <Button
+                    onClick={() => {
+                      if (idx > 0) {
+                        setAddAlumniSchools((prev) => {
+                          const schools = [...prev];
+                          [schools[idx - 1], schools[idx]] = [
+                            schools[idx],
+                            schools[idx - 1],
+                          ];
+                          return schools;
+                        });
+                      }
+                    }}
+                    size="small"
+                    disabled={idx === 0}
+                  >
+                    ↑
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (idx < addAlumniSchools.length - 1) {
+                        setAddAlumniSchools((prev) => {
+                          const schools = [...prev];
+                          [schools[idx], schools[idx + 1]] = [
+                            schools[idx + 1],
+                            schools[idx],
+                          ];
+                          return schools;
+                        });
+                      }
+                    }}
+                    size="small"
+                    disabled={idx === addAlumniSchools.length - 1}
+                  >
+                    ↓
+                  </Button>
                 </Box>
               ))}
               <Button
@@ -1054,12 +1191,33 @@ const Navbar = () => {
               <TextField
                 label="Conseil (optionnel)"
                 name="conseil"
-                value={addAlumniForm.conseil}
+                value={
+                  showFullConseil || !conseilIsLong
+                    ? addAlumniForm.conseil || ""
+                    : conseilPreview
+                }
                 onChange={handleAddAlumniChange}
                 fullWidth
                 sx={{ mb: 2 }}
                 multiline
                 minRows={2}
+                InputProps={{
+                  endAdornment: conseilIsLong ? (
+                    <IconButton
+                      onClick={() => setShowFullConseil((v) => !v)}
+                      size="small"
+                      tabIndex={-1}
+                      aria-label={showFullConseil ? "Réduire" : "Voir plus"}
+                    >
+                      {showFullConseil ? (
+                        <ExpandLessIcon />
+                      ) : (
+                        <ExpandMoreIcon />
+                      )}
+                    </IconButton>
+                  ) : null,
+                  readOnly: false,
+                }}
               />
               <TextField
                 label="Nationalités (séparées par des virgules)"
