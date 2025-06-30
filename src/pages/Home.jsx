@@ -665,6 +665,145 @@ export default function Home() {
           </motion.section>
         )}
 
+      {/* Annonces Section */}
+      <Box component="section" sx={{ py: { xs: 4, md: 8 }, px: 2 }}>
+        <Container maxWidth="md">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            style={{ textAlign: "center" }}
+          >
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 700,
+                background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                mb: { xs: 3, md: 5 },
+                fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+              }}
+            >
+              Annonces
+            </Typography>
+            <Stack spacing={3} alignItems="center">
+              <Card
+                sx={{
+                  background: "rgba(59,130,246,0.08)",
+                  border: "1.5px solid #3b82f6",
+                  borderRadius: 3,
+                  boxShadow: "0 2px 12px rgba(59,130,246,0.08)",
+                  maxWidth: 600,
+                  width: "100%",
+                  mx: "auto",
+                  p: 2,
+                  textAlign: "left",
+                }}
+              >
+                <CardContent>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 700, color: "#3b82f6", mb: 0.5 }}
+                  >
+                    Nouvelle fonctionnalité : Annonces !
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "#64748b", fontWeight: 500 }}
+                  >
+                    27 juin 2025
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ mt: 1, color: "rgba(30,41,59,0.95)" }}
+                  >
+                    Retrouvez ici toutes les actualités importantes de la
+                    plateforme SorboNexus. Cette section sera régulièrement mise
+                    à jour avec les nouveautés, les événements à venir et les
+                    informations utiles pour la communauté.
+                  </Typography>
+                </CardContent>
+              </Card>
+              <Card
+                sx={{
+                  background: "rgba(59,130,246,0.05)",
+                  border: "1.5px solid #06b6d4",
+                  borderRadius: 3,
+                  boxShadow: "0 2px 12px rgba(6,182,212,0.08)",
+                  maxWidth: 600,
+                  width: "100%",
+                  mx: "auto",
+                  p: 2,
+                  textAlign: "left",
+                }}
+              >
+                <CardContent>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 700, color: "#06b6d4", mb: 0.5 }}
+                  >
+                    Maintenance prévue
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "#64748b", fontWeight: 500 }}
+                  >
+                    30 juin 2025
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ mt: 1, color: "rgba(30,41,59,0.95)" }}
+                  >
+                    Le site sera temporairement indisponible le 30 juin de 2h à
+                    4h du matin pour une mise à jour technique. Merci de votre
+                    compréhension !
+                  </Typography>
+                </CardContent>
+              </Card>
+              <Card
+                sx={{
+                  background: "rgba(139,92,246,0.07)",
+                  border: "1.5px solid #8b5cf6",
+                  borderRadius: 3,
+                  boxShadow: "0 2px 12px rgba(139,92,246,0.08)",
+                  maxWidth: 600,
+                  width: "100%",
+                  mx: "auto",
+                  p: 2,
+                  textAlign: "left",
+                }}
+              >
+                <CardContent>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 700, color: "#8b5cf6", mb: 0.5 }}
+                  >
+                    Appel à contributions
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "#64748b", fontWeight: 500 }}
+                  >
+                    25 juin 2025
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ mt: 1, color: "rgba(30,41,59,0.95)" }}
+                  >
+                    Vous souhaitez partager une ressource, un conseil ou
+                    organiser un événement ? Contactez l'équipe SorboNexus pour
+                    faire passer votre annonce ici !
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Stack>
+          </motion.div>
+        </Container>
+      </Box>
+
       {/* Features Section */}
       <Box
         id="features"
