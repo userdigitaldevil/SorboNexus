@@ -37,22 +37,45 @@ import FeatureCard from "../components/FeatureCard";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AlumniProfileCard from "../components/AlumniProfileCard";
+import { DOMAIN_COLORS } from "../components/AlumniCard.jsx";
 
-// Domain colors for avatars
-const DOMAIN_COLORS = {
-  Chimie: "#ffb300", // vivid amber
-  Électronique: "#8e24aa", // deep purple
-  Informatique: "#ff80ab", // lighter pink
-  Mathématiques: "#e53935", // matte red
-  Mécanique: "#43a047", // strong green
-  Physique: "#009688", // teal
-  "Sciences de la Terre": "#3949ab", // strong blue-violet
-  "Sciences de la vie": "#00bcd4", // strong cyan
-};
+// Helper function to get alumni card color (same logic as Conseils page)
+function getAlumniCardColor(alumni) {
+  // Use domains array if available, otherwise fall back to field
+  let alumDomains = [];
 
-// Helper function to get domain color
-function getDomainColor(domain) {
-  return DOMAIN_COLORS[domain] || "#6b7280";
+  if (Array.isArray(alumni.domains) && alumni.domains.length > 0) {
+    alumDomains = alumni.domains;
+  } else if (Array.isArray(alumni.field) && alumni.field.length > 0) {
+    alumDomains = alumni.field;
+  } else if (typeof alumni.field === "string" && alumni.field.trim() !== "") {
+    // Handle comma-separated field string like "Mathématiques,Informatique"
+    alumDomains = alumni.field
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f.length > 0);
+  }
+
+  // Sort domains alphabetically for consistent gradient order
+  const sortedDomains = [...alumDomains].sort((a, b) => a.localeCompare(b));
+  const profileColors = sortedDomains.map(
+    (domain) => DOMAIN_COLORS[domain.trim()] || "#888"
+  );
+
+  let domainBg;
+  if (alumni.customCardColor && alumni.customCardColor.trim() !== "") {
+    domainBg = alumni.customCardColor;
+  } else if (alumni.color && alumni.color.trim() !== "") {
+    domainBg = alumni.color;
+  } else if (profileColors.length === 0) {
+    domainBg = "rgba(255,255,255,0.08)";
+  } else if (profileColors.length === 1) {
+    domainBg = profileColors[0];
+  } else {
+    domainBg = `linear-gradient(90deg, ${profileColors.join(", ")})`;
+  }
+
+  return domainBg;
 }
 
 const features = [
@@ -353,16 +376,7 @@ export default function Home() {
                     mr: 1,
                     fontSize: "0.875rem",
                     fontWeight: 600,
-                    background: alumniProfile.customCardColor
-                      ? alumniProfile.customCardColor
-                      : alumniProfile.domains &&
-                        alumniProfile.domains.length > 0
-                      ? `linear-gradient(135deg, ${getDomainColor(
-                          alumniProfile.domains[0]
-                        )} 0%, ${getDomainColor(
-                          alumniProfile.domains[0]
-                        )}dd 100%)`
-                      : `linear-gradient(135deg, #6b7280 0%, #4b5563 100%)`,
+                    background: getAlumniCardColor(alumniProfile),
                   }}
                 >
                   {alumniProfile.avatar || name.substring(0, 2).toUpperCase()}
