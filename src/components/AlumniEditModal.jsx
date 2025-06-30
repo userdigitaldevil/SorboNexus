@@ -21,6 +21,8 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { SketchPicker } from "react-color";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const DOMAINES = [
   "Mathématiques",
@@ -49,6 +51,7 @@ export default function AlumniEditModal({
     conseilIsLong && !showFullConseil
       ? (editForm.conseil || "").slice(0, conseilMaxLength) + "..."
       : editForm.conseil || "";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (alumni) {
@@ -149,6 +152,7 @@ export default function AlumniEditModal({
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     setEditError("");
+    setIsSubmitting(true);
     // Validate password change if provided
     if (editForm.newPassword || editForm.confirmPassword) {
       if (!editForm.newPassword) {
@@ -232,6 +236,7 @@ export default function AlumniEditModal({
     );
     if (response.ok) {
       setEditError("");
+      setIsSubmitting(false);
       onClose();
       // Optionally, you can trigger a global refresh event here
       localStorage.setItem("profileUpdated", Date.now().toString());
@@ -239,10 +244,47 @@ export default function AlumniEditModal({
     } else {
       const err = await response.json();
       setEditError(err.error || "Erreur lors de la mise à jour.");
+      setIsSubmitting(false);
     }
   };
 
-  if (!alumni) return null;
+  if (open && (!alumni || !editForm.name)) {
+    return (
+      <Modal open={open} onClose={onClose}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+            width: "100vw",
+            bgcolor: "rgba(24,24,27,0.7)",
+          }}
+        >
+          <CircularProgress color="secondary" size={60} />
+        </Box>
+      </Modal>
+    );
+  }
+
+  if (isSubmitting) {
+    return (
+      <Modal open={open} onClose={onClose}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+            width: "100vw",
+            bgcolor: "rgba(24,24,27,0.7)",
+          }}
+        >
+          <CircularProgress color="secondary" size={60} />
+        </Box>
+      </Modal>
+    );
+  }
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -713,14 +755,61 @@ export default function AlumniEditModal({
                   fullWidth
                   sx={{ mb: 2 }}
                 />
-                <TextField
-                  label="Couleur (hex)"
-                  name="color"
-                  value={editForm.color}
-                  onChange={handleEditFormChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
+                <Box sx={{ mb: 2 }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={!editForm.color}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setEditForm((prev) => ({ ...prev, color: "" }));
+                          } else {
+                            setEditForm((prev) => ({
+                              ...prev,
+                              color: "#ff80ab",
+                            })); // Default to a visible color when enabling
+                          }
+                        }}
+                      />
+                    }
+                    label="Utiliser la couleur par défaut (domaines)"
+                  />
+                  <TextField
+                    label="Couleur personnalisée (hex)"
+                    name="color"
+                    value={editForm.color || ""}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    sx={{ mt: 1 }}
+                    disabled={!editForm.color}
+                    placeholder="#ff80ab"
+                    InputProps={{
+                      endAdornment: (
+                        <Box
+                          sx={{
+                            width: 24,
+                            height: 24,
+                            bgcolor: editForm.color || "#eee",
+                            borderRadius: "50%",
+                            border: "1px solid #ccc",
+                            ml: 1,
+                          }}
+                        />
+                      ),
+                    }}
+                  />
+                  {editForm.color && (
+                    <Box sx={{ mt: 1 }}>
+                      <SketchPicker
+                        color={editForm.color}
+                        onChange={(color) =>
+                          setEditForm((prev) => ({ ...prev, color: color.hex }))
+                        }
+                        disableAlpha
+                      />
+                    </Box>
+                  )}
+                </Box>
                 <TextField
                   label="Dégradé (gradient)"
                   name="gradient"

@@ -30,6 +30,18 @@ import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+// Add DOMAIN_COLORS and color logic at the top
+const DOMAIN_COLORS = {
+  Chimie: "#ffb300", // vivid amber
+  Électronique: "#8e24aa", // deep purple
+  Informatique: "#ff80ab", // lighter pink
+  Mathématiques: "#e53935", // matte red
+  Mécanique: "#43a047", // strong green
+  Physique: "#009688", // teal
+  "Sciences de la Terre": "#3949ab", // strong blue-violet
+  "Sciences de la vie": "#00bcd4", // strong cyan
+};
+
 export default function AlumniProfileCard({
   alum,
   isAdmin,
@@ -40,6 +52,30 @@ export default function AlumniProfileCard({
 }) {
   // Support both alum.profile and flat alum for backward compatibility
   const profile = alum.profile || alum;
+
+  // Compute alumFields as array
+  let alumFields = Array.isArray(alum.field)
+    ? alum.field
+    : typeof alum.field === "string" && alum.field.includes(",")
+    ? alum.field.split(",").map((f) => f.trim())
+    : alum.field
+    ? [alum.field]
+    : [];
+  // Sort alumFields alphabetically for gradient order
+  const sortedAlumFields = [...alumFields].sort((a, b) => a.localeCompare(b));
+  const profileColors = sortedAlumFields.map(
+    (f) => DOMAIN_COLORS[f.trim()] || "#888"
+  );
+  let domainBg;
+  if (alum.color && alum.color.trim() !== "") {
+    domainBg = alum.color;
+  } else if (profileColors.length === 0) {
+    domainBg = "rgba(255,255,255,0.08)";
+  } else if (profileColors.length === 1) {
+    domainBg = profileColors[0];
+  } else {
+    domainBg = `linear-gradient(90deg, ${profileColors.join(", ")})`;
+  }
 
   // Subtle glow for admin
   const adminGlow = alum.isAdmin
@@ -60,6 +96,16 @@ export default function AlumniProfileCard({
   const conseilPreview = conseilIsLong
     ? alum.conseil.slice(0, conseilMaxLength) + "..."
     : alum.conseil;
+
+  // When displaying schools, use:
+  const licence =
+    alum.schoolsApplied && alum.schoolsApplied[0]
+      ? alum.schoolsApplied[0].name
+      : "—";
+  const masterOrEcole =
+    alum.schoolsApplied && alum.schoolsApplied[1]
+      ? alum.schoolsApplied[1].name
+      : "—";
 
   return (
     <>
@@ -152,7 +198,7 @@ export default function AlumniProfileCard({
         <Box
           sx={{
             height: 120,
-            background: alum.color,
+            background: domainBg,
             position: "relative",
           }}
         />
@@ -168,7 +214,7 @@ export default function AlumniProfileCard({
             sx={{
               width: 64,
               height: 64,
-              background: alum.hidden ? "#555" : alum.color,
+              background: alum.hidden ? "#555" : domainBg,
               border: "4px solid rgba(255, 255, 255, 0.1)",
               fontSize:
                 alum.avatar && alum.avatar.length > 4

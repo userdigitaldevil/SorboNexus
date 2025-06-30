@@ -31,6 +31,7 @@ import {
   Checkbox,
   Chip,
   OutlinedInput,
+  CircularProgress,
 } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
@@ -45,6 +46,7 @@ import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import { useAlumniEditModal } from "./AlumniEditModalContext";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { SketchPicker } from "react-color";
 
 const DOMAINES = [
   "Mathématiques",
@@ -325,9 +327,12 @@ const Navbar = () => {
               )}
               <MenuItem
                 onClick={() => {
-                  localStorage.removeItem("token");
-                  localStorage.removeItem("isAdmin");
-                  window.location.reload();
+                  setIsLoading(true);
+                  setTimeout(() => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("isAdmin");
+                    window.location.reload();
+                  }, 300);
                 }}
               >
                 Déconnexion
@@ -341,6 +346,7 @@ const Navbar = () => {
               fullWidth
               component={Link}
               to="/connexion"
+              onClick={() => setIsLoading(true)}
               sx={{
                 background: "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
                 fontWeight: 700,
@@ -634,6 +640,8 @@ const Navbar = () => {
       ? (addAlumniForm.conseil || "").slice(0, conseilMaxLength) + "..."
       : addAlumniForm.conseil || "";
 
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <>
       <AppBar
@@ -760,6 +768,7 @@ const Navbar = () => {
                   variant="contained"
                   component={Link}
                   to="/connexion"
+                  onClick={() => setIsLoading(true)}
                   sx={{
                     ml: 3,
                     background:
@@ -1281,25 +1290,64 @@ const Navbar = () => {
                   required
                 />
               </FormControl>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel shrink htmlFor="color-picker">
-                  Couleur (hex)
-                </InputLabel>
-                <input
-                  id="color-picker"
-                  type="color"
+              <Box sx={{ mb: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!addAlumniForm.color}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setAddAlumniForm((prev) => ({ ...prev, color: "" }));
+                        } else {
+                          setAddAlumniForm((prev) => ({
+                            ...prev,
+                            color: "#ff80ab",
+                          }));
+                        }
+                      }}
+                    />
+                  }
+                  label="Utiliser la couleur par défaut (domaines)"
+                />
+                <TextField
+                  label="Couleur personnalisée (hex)"
                   name="color"
-                  value={addAlumniForm.color}
+                  value={addAlumniForm.color || ""}
                   onChange={handleAddAlumniChange}
-                  style={{
-                    width: 48,
-                    height: 32,
-                    border: "none",
-                    background: "none",
-                    cursor: "pointer",
+                  fullWidth
+                  sx={{ mt: 1 }}
+                  disabled={!addAlumniForm.color}
+                  placeholder="#ff80ab"
+                  InputProps={{
+                    endAdornment: (
+                      <Box
+                        sx={{
+                          width: 24,
+                          height: 24,
+                          bgcolor: addAlumniForm.color || "#eee",
+                          borderRadius: "50%",
+                          border: "1px solid #ccc",
+                          ml: 1,
+                        }}
+                      />
+                    ),
                   }}
                 />
-              </FormControl>
+                {addAlumniForm.color && (
+                  <Box sx={{ mt: 1 }}>
+                    <SketchPicker
+                      color={addAlumniForm.color}
+                      onChange={(color) =>
+                        setAddAlumniForm((prev) => ({
+                          ...prev,
+                          color: color.hex,
+                        }))
+                      }
+                      disableAlpha
+                    />
+                  </Box>
+                )}
+              </Box>
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel id="gradient-select-label">Dégradé</InputLabel>
                 <Select
@@ -1380,6 +1428,25 @@ const Navbar = () => {
           </Box>
         </Box>
       </Modal>
+
+      {isLoading && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            bgcolor: "rgba(24,24,27,0.7)",
+            zIndex: 2000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CircularProgress color="secondary" size={60} />
+        </Box>
+      )}
     </>
   );
 };

@@ -14,6 +14,60 @@ import EditIcon from "@mui/icons-material/Edit";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+const DOMAIN_COLORS = {
+  Chimie: "#ffb300", // vivid amber
+  Électronique: "#8e24aa", // deep purple
+  Informatique: "#ff80ab", // lighter pink
+  Mathématiques: "#e53935", // matte red
+  Mécanique: "#43a047", // strong green
+  Physique: "#009688", // teal
+  "Sciences de la Terre": "#3949ab", // strong blue-violet
+  "Sciences de la vie": "#00bcd4", // strong cyan
+};
+
+// Helper to normalize domain names
+function normalizeDomain(str) {
+  return str
+    ? str
+        .normalize("NFD")
+        .replace(/\p{Diacritic}/gu, "")
+        .trim()
+        .toLowerCase()
+    : "";
+}
+
+function hexToRgb(hex) {
+  hex = hex.replace("#", "");
+  if (hex.length === 3) {
+    hex = hex
+      .split("")
+      .map((x) => x + x)
+      .join("");
+  }
+  const num = parseInt(hex, 16);
+  return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+}
+
+function rgbToHex([r, g, b]) {
+  return (
+    "#" +
+    [r, g, b]
+      .map((x) => {
+        const hex = x.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+      })
+      .join("")
+  );
+}
+
+function averageColors(colors) {
+  const rgbs = colors.map(hexToRgb);
+  const avg = [0, 1, 2].map((i) =>
+    Math.round(rgbs.reduce((sum, rgb) => sum + rgb[i], 0) / colors.length)
+  );
+  return rgbToHex(avg);
+}
+
 const AlumniCard = ({
   alum,
   index,
@@ -22,7 +76,33 @@ const AlumniCard = ({
   isAdmin = false,
   onEditClick,
   alumniId,
+  activeFilters = [],
+  filters = [],
 }) => {
+  // Compute alumFields as array
+  let alumFields = Array.isArray(alum.field)
+    ? alum.field
+    : typeof alum.field === "string" && alum.field.includes(",")
+    ? alum.field.split(",").map((f) => f.trim())
+    : alum.field
+    ? [alum.field]
+    : [];
+  // Sort alumFields alphabetically for gradient order
+  const sortedAlumFields = [...alumFields].sort((a, b) => a.localeCompare(b));
+  const profileColors = sortedAlumFields.map(
+    (f) => DOMAIN_COLORS[f.trim()] || "#888"
+  );
+  let domainBg;
+  if (alum.color && alum.color.trim() !== "") {
+    domainBg = alum.color;
+  } else if (profileColors.length === 0) {
+    domainBg = "rgba(255,255,255,0.08)";
+  } else if (profileColors.length === 1) {
+    domainBg = profileColors[0];
+  } else {
+    domainBg = `linear-gradient(90deg, ${profileColors.join(", ")})`;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -94,7 +174,7 @@ const AlumniCard = ({
         <Box
           sx={{
             height: { xs: 60, sm: 80, md: 100 },
-            background: alum.color,
+            background: domainBg,
             position: "relative",
           }}
         />
@@ -119,7 +199,7 @@ const AlumniCard = ({
               sx={{
                 width: { xs: 40, sm: 48, md: 56 },
                 height: { xs: 40, sm: 48, md: 56 },
-                background: alum.color,
+                background: domainBg,
                 border: "4px solid rgba(255, 255, 255, 0.1)",
                 fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },
                 fontWeight: 700,
