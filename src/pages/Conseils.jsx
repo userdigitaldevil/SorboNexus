@@ -52,8 +52,47 @@ import { useNavigate } from "react-router-dom";
 import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { DOMAIN_COLORS } from "../components/AlumniCard.jsx";
 
 const tipsPerPage = 9;
+
+function getAlumniCardColor(tip) {
+  // Use domains array if available, otherwise fall back to field
+  let alumDomains = [];
+
+  if (Array.isArray(tip.domains) && tip.domains.length > 0) {
+    alumDomains = tip.domains;
+  } else if (Array.isArray(tip.field) && tip.field.length > 0) {
+    alumDomains = tip.field;
+  } else if (typeof tip.field === "string" && tip.field.trim() !== "") {
+    // Handle comma-separated field string like "Mathématiques,Informatique"
+    alumDomains = tip.field
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f.length > 0);
+  }
+
+  // Sort domains alphabetically for consistent gradient order
+  const sortedDomains = [...alumDomains].sort((a, b) => a.localeCompare(b));
+  const profileColors = sortedDomains.map(
+    (domain) => DOMAIN_COLORS[domain.trim()] || "#888"
+  );
+
+  let domainBg;
+  if (tip.customCardColor && tip.customCardColor.trim() !== "") {
+    domainBg = tip.customCardColor;
+  } else if (tip.color && tip.color.trim() !== "") {
+    domainBg = tip.color;
+  } else if (profileColors.length === 0) {
+    domainBg = "rgba(255,255,255,0.08)";
+  } else if (profileColors.length === 1) {
+    domainBg = profileColors[0];
+  } else {
+    domainBg = `linear-gradient(90deg, ${profileColors.join(", ")})`;
+  }
+
+  return domainBg;
+}
 
 export default function Conseils() {
   // Admin state
@@ -129,10 +168,13 @@ export default function Conseils() {
     position: alum.position,
     avatar: alum.avatar,
     category: alum.field,
+    field: alum.field, // Add this line to pass field to the color function
     profile: alum.profile,
     gradient: alum.gradient,
     conseil: alum.conseil,
     color: alum.color,
+    domains: alum.domains,
+    customCardColor: alum.customCardColor,
     hidden: alum.hidden,
     isAdmin: alum.isAdmin || false,
   }));
@@ -631,7 +673,7 @@ export default function Conseils() {
                         sx={{
                           width: { xs: 36, md: 44 },
                           height: { xs: 36, md: 44 },
-                          background: tip.color,
+                          background: getAlumniCardColor(tip),
                           fontSize: { xs: "0.8rem", md: "1rem" },
                           fontWeight: 600,
                           cursor: "pointer",
@@ -640,7 +682,7 @@ export default function Conseils() {
                           },
                         }}
                       >
-                        {tip.avatar}
+                        {tip.avatar || tip.author.substring(0, 2).toUpperCase()}
                       </Avatar>
                     </motion.div>
                     <Box

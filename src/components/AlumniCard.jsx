@@ -14,7 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-const DOMAIN_COLORS = {
+export const DOMAIN_COLORS = {
   Chimie: "#ffb300", // vivid amber
   Électronique: "#8e24aa", // deep purple
   Informatique: "#ff80ab", // lighter pink

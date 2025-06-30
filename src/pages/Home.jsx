@@ -38,6 +38,23 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AlumniProfileCard from "../components/AlumniProfileCard";
 
+// Domain colors for avatars
+const DOMAIN_COLORS = {
+  Chimie: "#ffb300", // vivid amber
+  Électronique: "#8e24aa", // deep purple
+  Informatique: "#ff80ab", // lighter pink
+  Mathématiques: "#e53935", // matte red
+  Mécanique: "#43a047", // strong green
+  Physique: "#009688", // teal
+  "Sciences de la Terre": "#3949ab", // strong blue-violet
+  "Sciences de la vie": "#00bcd4", // strong cyan
+};
+
+// Helper function to get domain color
+function getDomainColor(domain) {
+  return DOMAIN_COLORS[domain] || "#6b7280";
+}
+
 const features = [
   {
     icon: <BookOpen size={24} />,
@@ -328,6 +345,29 @@ export default function Home() {
         >
           <CardContent>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              {alumniProfile && (
+                <Avatar
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    mr: 1,
+                    fontSize: "0.875rem",
+                    fontWeight: 600,
+                    background: alumniProfile.customCardColor
+                      ? alumniProfile.customCardColor
+                      : alumniProfile.domains &&
+                        alumniProfile.domains.length > 0
+                      ? `linear-gradient(135deg, ${getDomainColor(
+                          alumniProfile.domains[0]
+                        )} 0%, ${getDomainColor(
+                          alumniProfile.domains[0]
+                        )}dd 100%)`
+                      : `linear-gradient(135deg, #6b7280 0%, #4b5563 100%)`,
+                  }}
+                >
+                  {alumniProfile.avatar || name.substring(0, 2).toUpperCase()}
+                </Avatar>
+              )}
               <Typography
                 variant="subtitle2"
                 sx={{
@@ -969,6 +1009,9 @@ export default function Home() {
                         p: 4,
                         position: "relative",
                         overflow: "hidden",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
                         "&::before": {
                           content: '""',
                           position: "absolute",
@@ -1001,6 +1044,7 @@ export default function Home() {
                         sx={{
                           display: "flex",
                           justifyContent: "center",
+                          alignItems: "center",
                           width: "100%",
                         }}
                       >
@@ -1008,7 +1052,7 @@ export default function Home() {
                           sx={{
                             display: "flex",
                             gap: { xs: 3, sm: 2 },
-                            px: { xs: 2, sm: 4 },
+                            px: { xs: 0, sm: 4 },
                             "& > *": {
                               flexShrink: 0,
                             },
@@ -1051,7 +1095,7 @@ export default function Home() {
                           height: "2px",
                           background:
                             "linear-gradient(90deg, transparent, #3b82f6, transparent)",
-                          marginTop: 24,
+                          marginTop: 40,
                           transition: "all 0.3s ease",
                         }}
                       />
