@@ -20,6 +20,7 @@ model User {
   isAdmin   Boolean @default(false)
   alumni    Alumni? @relation(fields: [alumniId], references: [id])
   alumniId  Int?
+  annonces  Annonce[]
 }
 
 model Alumni {
@@ -65,4 +66,15 @@ model Grade {
   value     String
   alumni    Alumni @relation(fields: [alumniId], references: [id])
   alumniId  Int
+}
+
+model Annonce {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  createdBy User     @relation(fields: [createdById], references: [id])
+  createdById Int
 }
