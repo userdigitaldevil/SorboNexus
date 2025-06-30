@@ -1262,29 +1262,20 @@ export default function Alumnis() {
                   >
                     <List dense>
                       {group.map((alum) => {
-                        // Find BSc/licence
-                        const licence = Object.keys(alum.grades).find(
-                          (k) =>
-                            k.toLowerCase().includes("licence") ||
-                            k.toLowerCase().includes("bsc")
-                        );
-                        // Find current school (first accepted)
-                        const currentSchool = alum.schoolsApplied.find(
-                          (s) => s.status === "accepted"
-                        );
-                        // Try to extract company from currentPosition
-                        let company = "";
-                        if (alum.currentPosition) {
-                          const match =
-                            alum.currentPosition.match(/chez ([^,]+)/i);
-                          if (match) company = match[1];
-                          else {
-                            // fallback: last word if 'à' or 'at' present
-                            const m2 =
-                              alum.currentPosition.match(/(?:à|at) ([^,]+)/i);
-                            if (m2) company = m2[1];
-                          }
-                        }
+                        // Récupère la première école ajoutée (rang 1) comme Licence/BSc
+                        const licence =
+                          alum.schoolsApplied && alum.schoolsApplied[0]
+                            ? alum.schoolsApplied[0].name
+                            : "—";
+                        // Récupère la deuxième école ajoutée (rang 2) comme Master/École actuelle
+                        const currentSchool =
+                          alum.schoolsApplied && alum.schoolsApplied[1]
+                            ? alum.schoolsApplied[1].name
+                            : "—";
+                        // Récupère l'année de fin de L3
+                        const anneeFinL3 = alum.anneeFinL3
+                          ? alum.anneeFinL3
+                          : "—";
                         return (
                           <ListItem
                             key={alum.id}
@@ -1333,11 +1324,9 @@ export default function Alumnis() {
                                     fontSize: "0.98rem",
                                   }}
                                 >
-                                  {licence ? (
-                                    <>{licence} &nbsp;|&nbsp; </>
-                                  ) : null}
-                                  {currentSchool ? currentSchool.name : "—"}{" "}
-                                  &nbsp;|&nbsp; {company || "—"}
+                                  {/* Affiche : Licence/BSc | Master/École actuelle | Année de fin de L3 */}
+                                  {licence} &nbsp;|&nbsp; {currentSchool}{" "}
+                                  &nbsp;|&nbsp; {anneeFinL3}
                                 </span>
                               }
                             />
