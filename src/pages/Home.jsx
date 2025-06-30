@@ -36,6 +36,7 @@ import ReactMarkdown from "react-markdown";
 import FeatureCard from "../components/FeatureCard";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AlumniProfileCard from "../components/AlumniProfileCard";
 
 const features = [
   {
@@ -286,144 +287,293 @@ export default function Home() {
 
   // Render annonce card
   function AnnonceCard({ annonce, showDelete }) {
-    const author = annonce.createdBy;
-    const avatar =
-      author?.alumni?.avatar || author?.username?.[0]?.toUpperCase() || "?";
+    const [expanded, setExpanded] = useState(false);
+    const [profileModalOpen, setProfileModalOpen] = useState(false);
+    // Find the alumni in the main alumni list by user ID (any user in users array)
+    const alumniFromList = alumni.find(
+      (a) =>
+        Array.isArray(a.users) &&
+        a.users.some((u) => u.id === annonce.createdBy.id)
+    );
+    const alumniProfile = alumniFromList || annonce.createdBy.alumni;
     const name =
-      author?.alumni?.name || author?.username || "Utilisateur inconnu";
+      alumniProfile?.name ||
+      annonce.createdBy?.username ||
+      "Utilisateur inconnu";
+    // Simple logic: if content > 350 chars or > 8 lines, show 'Lire la suite'
+    const maxChars = 350;
+    const maxLines = 8;
+    const contentLines = (annonce.content || "").split(/\r?\n/);
+    const isLong =
+      (annonce.content && annonce.content.length > maxChars) ||
+      contentLines.length > maxLines;
+    const previewContent = isLong
+      ? contentLines.slice(0, maxLines).join("\n").slice(0, maxChars)
+      : annonce.content;
     return (
-      <Card
-        sx={{
-          background: "rgba(59,130,246,0.08)",
-          border: "1.5px solid #3b82f6",
-          borderRadius: 3,
-          boxShadow: "0 2px 12px rgba(59,130,246,0.08)",
-          maxWidth: 600,
-          width: "100%",
-          mx: "auto",
-          p: 2,
-          textAlign: "left",
-          position: "relative",
-        }}
-      >
-        <CardContent>
-          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-            <Avatar
-              sx={{
-                width: 32,
-                height: 32,
-                fontWeight: 700,
-                mr: 1,
-                bgcolor: "#3b82f6",
-              }}
-            >
-              {avatar}
-            </Avatar>
-            <Typography
-              variant="subtitle2"
-              sx={{ fontWeight: 700, color: "#3b82f6", mr: 1 }}
-            >
-              {name}
-            </Typography>
-            <Typography variant="caption" sx={{ color: "#64748b" }}>
-              {formatDate(annonce.createdAt)}
-            </Typography>
-            {showDelete && (
-              <IconButton
-                size="small"
-                sx={{ ml: "auto" }}
-                onClick={() => handleDeleteAnnonce(annonce.id)}
+      <>
+        <Card
+          sx={{
+            background: "rgba(59,130,246,0.08)",
+            border: "1.5px solid #3b82f6",
+            borderRadius: 3,
+            boxShadow: "0 2px 12px rgba(59,130,246,0.08)",
+            maxWidth: 600,
+            width: "100%",
+            mx: "auto",
+            p: 2,
+            textAlign: "left",
+            position: "relative",
+          }}
+        >
+          <CardContent>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: 700,
+                  color: "#3b82f6",
+                  mr: 1,
+                  cursor: alumniProfile ? "pointer" : "default",
+                  textDecoration: alumniProfile ? "underline" : "none",
+                }}
+                onClick={() => alumniProfile && setProfileModalOpen(true)}
               >
-                <DeleteIcon fontSize="small" color="error" />
-              </IconButton>
-            )}
-          </Box>
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: 700, color: "#1e40af", mb: 0.5 }}
-          >
-            {annonce.title}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: "#f3f4f6",
-              fontSize: "1.05rem",
-              lineHeight: 1.7,
-              wordBreak: "break-word",
-              whiteSpace: "pre-line",
-              mt: 1,
-            }}
-            component="div"
-          >
-            <ReactMarkdown
-              children={annonce.content}
-              components={{
-                p: ({ node, ...props }) => (
-                  <span
-                    {...props}
-                    style={{ display: "block", marginBottom: 8 }}
-                  />
-                ),
-                li: ({ node, ...props }) => (
-                  <li style={{ marginLeft: 16, marginBottom: 4 }} {...props} />
-                ),
-                ul: ({ node, ...props }) => (
-                  <ul style={{ marginLeft: 16, marginBottom: 8 }} {...props} />
-                ),
-                ol: ({ node, ...props }) => (
-                  <ol style={{ marginLeft: 16, marginBottom: 8 }} {...props} />
-                ),
-                code: ({ node, ...props }) => (
-                  <code
-                    style={{
-                      background: "#222",
-                      color: "#fff",
-                      borderRadius: 4,
-                      padding: "2px 6px",
-                      fontSize: "0.95em",
-                    }}
-                    {...props}
-                  />
-                ),
-                pre: ({ node, ...props }) => (
-                  <pre
-                    style={{
-                      background: "#222",
-                      color: "#fff",
-                      borderRadius: 6,
-                      padding: 12,
-                      fontSize: "0.98em",
-                      overflowX: "auto",
-                    }}
-                    {...props}
-                  />
-                ),
-                blockquote: ({ node, ...props }) => (
-                  <blockquote
-                    style={{
-                      borderLeft: "3px solid #3b82f6",
-                      margin: "8px 0",
-                      padding: "4px 16px",
-                      color: "#cbd5e1",
-                      fontStyle: "italic",
-                      background: "rgba(59,130,246,0.07)",
-                    }}
-                    {...props}
-                  />
-                ),
-                a: ({ node, ...props }) => (
-                  <a
-                    style={{ color: "#60a5fa", textDecoration: "underline" }}
-                    {...props}
-                  />
-                ),
+                {name}
+              </Typography>
+              <Typography variant="caption" sx={{ color: "#64748b" }}>
+                {formatDate(annonce.createdAt)}
+              </Typography>
+              {showDelete && (
+                <IconButton
+                  size="small"
+                  sx={{ ml: "auto" }}
+                  onClick={() => handleDeleteAnnonce(annonce.id)}
+                >
+                  <DeleteIcon fontSize="small" color="error" />
+                </IconButton>
+              )}
+            </Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 700,
+                color: "#f3f4f6",
+                mb: 0.5,
+                lineHeight: 1.4,
+                wordBreak: "break-word",
               }}
-              skipHtml={false}
-            />
-          </Typography>
-        </CardContent>
-      </Card>
+              component="div"
+            >
+              <ReactMarkdown
+                children={annonce.title}
+                components={{
+                  strong: ({ node, ...props }) => (
+                    <strong style={{ color: "#fff" }} {...props} />
+                  ),
+                  em: ({ node, ...props }) => (
+                    <em style={{ color: "#e0e7ef" }} {...props} />
+                  ),
+                  code: ({ node, ...props }) => (
+                    <code
+                      style={{
+                        background: "#222",
+                        color: "#fff",
+                        borderRadius: 4,
+                        padding: "2px 6px",
+                        fontSize: "0.98em",
+                      }}
+                      {...props}
+                    />
+                  ),
+                  h1: ({ node, ...props }) => (
+                    <h1
+                      style={{
+                        fontSize: "1.3em",
+                        color: "#fff",
+                        fontWeight: 800,
+                        margin: 0,
+                      }}
+                      {...props}
+                    />
+                  ),
+                  h2: ({ node, ...props }) => (
+                    <h2
+                      style={{
+                        fontSize: "1.15em",
+                        color: "#fff",
+                        fontWeight: 700,
+                        margin: 0,
+                      }}
+                      {...props}
+                    />
+                  ),
+                  h3: ({ node, ...props }) => (
+                    <h3
+                      style={{
+                        fontSize: "1.05em",
+                        color: "#fff",
+                        fontWeight: 700,
+                        margin: 0,
+                      }}
+                      {...props}
+                    />
+                  ),
+                  p: ({ node, ...props }) => (
+                    <span
+                      {...props}
+                      style={{ display: "block", marginBottom: 4 }}
+                    />
+                  ),
+                }}
+                skipHtml={false}
+              />
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#f3f4f6",
+                fontSize: "0.85rem",
+                lineHeight: 1.7,
+                wordBreak: "break-word",
+                whiteSpace: "pre-line",
+                mt: 1,
+                mb: 0.5,
+                minHeight: 0,
+              }}
+              component="div"
+            >
+              <ReactMarkdown
+                children={
+                  expanded || !isLong
+                    ? annonce.content
+                    : previewContent + (isLong ? "..." : "")
+                }
+                components={{
+                  p: ({ node, ...props }) => (
+                    <span
+                      {...props}
+                      style={{ display: "block", marginBottom: 8 }}
+                    />
+                  ),
+                  li: ({ node, ...props }) => (
+                    <li
+                      style={{ marginLeft: 16, marginBottom: 4 }}
+                      {...props}
+                    />
+                  ),
+                  ul: ({ node, ...props }) => (
+                    <ul
+                      style={{ marginLeft: 16, marginBottom: 8 }}
+                      {...props}
+                    />
+                  ),
+                  ol: ({ node, ...props }) => (
+                    <ol
+                      style={{ marginLeft: 16, marginBottom: 8 }}
+                      {...props}
+                    />
+                  ),
+                  code: ({ node, ...props }) => (
+                    <code
+                      style={{
+                        background: "#222",
+                        color: "#fff",
+                        borderRadius: 4,
+                        padding: "2px 6px",
+                        fontSize: "0.95em",
+                      }}
+                      {...props}
+                    />
+                  ),
+                  pre: ({ node, ...props }) => (
+                    <pre
+                      style={{
+                        background: "#222",
+                        color: "#fff",
+                        borderRadius: 6,
+                        padding: 12,
+                        fontSize: "0.98em",
+                        overflowX: "auto",
+                      }}
+                      {...props}
+                    />
+                  ),
+                  blockquote: ({ node, ...props }) => (
+                    <blockquote
+                      style={{
+                        borderLeft: "3px solid #3b82f6",
+                        margin: "8px 0",
+                        padding: "4px 16px",
+                        color: "#cbd5e1",
+                        fontStyle: "italic",
+                        background: "rgba(59,130,246,0.07)",
+                      }}
+                      {...props}
+                    />
+                  ),
+                  a: ({ node, ...props }) => (
+                    <a
+                      style={{ color: "#60a5fa", textDecoration: "underline" }}
+                      {...props}
+                    />
+                  ),
+                }}
+                skipHtml={false}
+              />
+              {isLong && (
+                <Button
+                  size="small"
+                  sx={{
+                    color: "#60a5fa",
+                    textTransform: "none",
+                    fontWeight: 600,
+                    ml: 0,
+                    mt: 1,
+                    fontSize: "0.85rem",
+                  }}
+                  onClick={() => setExpanded((v) => !v)}
+                >
+                  {expanded ? "Réduire" : "Lire la suite"}
+                </Button>
+              )}
+            </Typography>
+          </CardContent>
+        </Card>
+        {/* Alumni Profile Modal */}
+        {alumniProfile && (
+          <Modal
+            open={profileModalOpen}
+            onClose={() => setProfileModalOpen(false)}
+            aria-labelledby="alumni-profile-modal-title"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 2,
+            }}
+          >
+            <Box
+              sx={{
+                maxWidth: 600,
+                width: "100%",
+                maxHeight: { xs: "90vh", md: "80vh" },
+                overflowY: "auto",
+                outline: "none",
+                bgcolor: "transparent",
+                borderRadius: 3,
+                boxShadow: 24,
+              }}
+            >
+              <AlumniProfileCard
+                alum={alumniProfile}
+                isAdmin={false}
+                onClose={() => setProfileModalOpen(false)}
+              />
+            </Box>
+          </Modal>
+        )}
+      </>
     );
   }
 
@@ -1024,12 +1174,29 @@ export default function Home() {
                   Ajouter une annonce
                 </Typography>
                 <TextField
-                  label="Titre"
+                  label="Titre (Markdown supporté)"
                   value={newAnnonceTitle}
                   onChange={(e) => setNewAnnonceTitle(e.target.value)}
                   fullWidth
-                  sx={{ mb: 2 }}
+                  multiline
+                  minRows={2}
+                  sx={{
+                    mb: 2,
+                    fontFamily: "inherit",
+                    color: "#f3f4f6",
+                    background: "rgba(59,130,246,0.04)",
+                  }}
+                  inputProps={{
+                    style: {
+                      color: "#f3f4f6",
+                      fontFamily: "inherit",
+                      background: "rgba(59,130,246,0.04)",
+                    },
+                  }}
                   required
+                  placeholder={
+                    "Vous pouvez utiliser du Markdown, des titres, etc."
+                  }
                 />
                 <TextField
                   label="Contenu (Markdown supporté)"

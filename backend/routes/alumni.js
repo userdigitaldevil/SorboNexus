@@ -47,7 +47,7 @@ function isStrongPassword(password) {
 router.get("/", async (req, res) => {
   try {
     const alumni = await prisma.alumni.findMany({
-      include: { grades: true, schoolsApplied: true },
+      include: { grades: true, schoolsApplied: true, users: true },
     });
     res.json(alumni);
   } catch (err) {
