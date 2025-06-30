@@ -344,8 +344,83 @@ export default function Home() {
           >
             {annonce.title}
           </Typography>
-          <Typography variant="body1" sx={{ color: "rgba(30,41,59,0.95)" }}>
-            {annonce.content}
+          <Typography
+            variant="body1"
+            sx={{
+              color: "#f3f4f6",
+              fontSize: "1.05rem",
+              lineHeight: 1.7,
+              wordBreak: "break-word",
+              whiteSpace: "pre-line",
+              mt: 1,
+            }}
+            component="div"
+          >
+            <ReactMarkdown
+              children={annonce.content}
+              components={{
+                p: ({ node, ...props }) => (
+                  <span
+                    {...props}
+                    style={{ display: "block", marginBottom: 8 }}
+                  />
+                ),
+                li: ({ node, ...props }) => (
+                  <li style={{ marginLeft: 16, marginBottom: 4 }} {...props} />
+                ),
+                ul: ({ node, ...props }) => (
+                  <ul style={{ marginLeft: 16, marginBottom: 8 }} {...props} />
+                ),
+                ol: ({ node, ...props }) => (
+                  <ol style={{ marginLeft: 16, marginBottom: 8 }} {...props} />
+                ),
+                code: ({ node, ...props }) => (
+                  <code
+                    style={{
+                      background: "#222",
+                      color: "#fff",
+                      borderRadius: 4,
+                      padding: "2px 6px",
+                      fontSize: "0.95em",
+                    }}
+                    {...props}
+                  />
+                ),
+                pre: ({ node, ...props }) => (
+                  <pre
+                    style={{
+                      background: "#222",
+                      color: "#fff",
+                      borderRadius: 6,
+                      padding: 12,
+                      fontSize: "0.98em",
+                      overflowX: "auto",
+                    }}
+                    {...props}
+                  />
+                ),
+                blockquote: ({ node, ...props }) => (
+                  <blockquote
+                    style={{
+                      borderLeft: "3px solid #3b82f6",
+                      margin: "8px 0",
+                      padding: "4px 16px",
+                      color: "#cbd5e1",
+                      fontStyle: "italic",
+                      background: "rgba(59,130,246,0.07)",
+                    }}
+                    {...props}
+                  />
+                ),
+                a: ({ node, ...props }) => (
+                  <a
+                    style={{ color: "#60a5fa", textDecoration: "underline" }}
+                    {...props}
+                  />
+                ),
+              }}
+              skipHtml={false}
+            />
           </Typography>
         </CardContent>
       </Card>
@@ -957,14 +1032,29 @@ export default function Home() {
                   required
                 />
                 <TextField
-                  label="Contenu"
+                  label="Contenu (Markdown supporté)"
                   value={newAnnonceContent}
                   onChange={(e) => setNewAnnonceContent(e.target.value)}
                   fullWidth
                   multiline
-                  minRows={2}
-                  sx={{ mb: 2 }}
+                  minRows={4}
+                  sx={{
+                    mb: 2,
+                    fontFamily: "inherit",
+                    color: "#f3f4f6",
+                    background: "rgba(59,130,246,0.04)",
+                  }}
+                  inputProps={{
+                    style: {
+                      color: "#f3f4f6",
+                      fontFamily: "inherit",
+                      background: "rgba(59,130,246,0.04)",
+                    },
+                  }}
                   required
+                  placeholder={
+                    "Vous pouvez utiliser du Markdown, des listes, des titres, etc."
+                  }
                 />
                 {addError && (
                   <Alert severity="error" sx={{ mb: 2 }}>
