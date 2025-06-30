@@ -72,7 +72,7 @@ const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
       >
         <CardContent
           sx={{
-            p: isMini ? { xs: 1, sm: 1.5, md: 2 } : 3,
+            p: isMini ? 2 : 3,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -87,19 +87,17 @@ const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
             <Box
               className="feature-icon"
               sx={{
-                width: isMini ? { xs: 24, sm: 32, md: 40 } : 60,
-                height: isMini ? { xs: 24, sm: 32, md: 40 } : 60,
+                width: isMini ? 40 : 60,
+                height: isMini ? 40 : 60,
                 borderRadius: "50%",
                 background: feature.gradient,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                mb: isMini ? { xs: 0.5, sm: 0.75, md: 1 } : 2,
+                mb: isMini ? 1 : 2,
                 transition: "all 0.3s ease",
                 color: "white",
-                fontSize: isMini
-                  ? { xs: "0.7rem", sm: "0.85rem", md: "1rem" }
-                  : "1.5rem",
+                fontSize: isMini ? "1rem" : "1.5rem",
               }}
             >
               {feature.icon}
@@ -111,11 +109,9 @@ const FeatureCard = ({ feature, index, variant = "full", onCardClick }) => {
             className="feature-title"
             sx={{
               fontWeight: 600,
-              mb: isMini ? { xs: 0.25, sm: 0.5, md: 0.5 } : 1,
+              mb: isMini ? 0.5 : 1,
               transition: "all 0.3s ease",
-              fontSize: isMini
-                ? { xs: "0.65rem", sm: "0.75rem", md: "0.9rem" }
-                : "1.25rem",
+              fontSize: isMini ? "0.9rem" : "1.25rem",
             }}
           >
             {feature.title}

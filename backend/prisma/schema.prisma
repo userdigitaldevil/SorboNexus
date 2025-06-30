@@ -28,6 +28,7 @@ model Alumni {
   degree    String?
   position  String?
   field     String?
+  domains   String[]
   gradient  String?
   color     String?
   linkedin  String?

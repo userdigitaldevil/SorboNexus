@@ -75,7 +75,6 @@ export default function Alumnis() {
   }
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState("Tous");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedAlumni, setSelectedAlumni] = useState(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -84,15 +83,20 @@ export default function Alumnis() {
   const [loading, setLoading] = useState(true);
   const [shuffledOrder, setShuffledOrder] = useState(null);
 
-  const filters = [
-    "Tous",
-    "Informatique",
-    "Droit",
-    "Économie",
-    "Lettres",
-    "Sciences",
-    "Médecine",
-  ];
+  // Available domains with their color codes
+  const DOMAIN_COLORS = {
+    Chimie: "#ffb300", // vivid amber
+    Électronique: "#8e24aa", // deep purple
+    Informatique: "#ff80ab", // lighter pink
+    Mathématiques: "#e53935", // matte red
+    Mécanique: "#43a047", // strong green
+    Physique: "#009688", // teal
+    "Sciences de la Terre": "#3949ab", // strong blue-violet
+    "Sciences de la vie": "#00bcd4", // strong cyan
+  };
+
+  const availableDomains = Object.keys(DOMAIN_COLORS);
+  const [selectedDomains, setSelectedDomains] = useState([]);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -233,7 +237,11 @@ export default function Alumnis() {
       ) || false;
     const matchesSearch = basicMatch || schoolsMatch;
     const matchesFilter =
-      activeFilter === "Tous" || alum.field === activeFilter;
+      selectedDomains.length === 0 ||
+      (alum.domains &&
+        selectedDomains.every((domain) => alum.domains.includes(domain))) ||
+      (alum.field &&
+        selectedDomains.every((domain) => alum.field.includes(domain)));
     return matchesSearch && matchesFilter;
   });
 
@@ -312,7 +320,7 @@ export default function Alumnis() {
   // Reset shuffle if filters/search change
   useEffect(() => {
     setShuffledOrder(null);
-  }, [searchQuery, activeFilter, alumni, isAdmin, alumniId]);
+  }, [searchQuery, selectedDomains, alumni, isAdmin, alumniId]);
 
   const openProfileModal = (alum) => {
     setSelectedAlumni(alum);
@@ -330,8 +338,17 @@ export default function Alumnis() {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
   };
-  const handleFilterChange = (filter) => {
-    setActiveFilter(filter);
+  const handleDomainToggle = (domain) => {
+    setSelectedDomains((prev) =>
+      prev.includes(domain)
+        ? prev.filter((d) => d !== domain)
+        : [...prev, domain]
+    );
+    setCurrentPage(1);
+  };
+
+  const clearAllFilters = () => {
+    setSelectedDomains([]);
     setCurrentPage(1);
   };
 
@@ -709,55 +726,91 @@ export default function Alumnis() {
             <Box
               sx={{
                 display: "flex",
-                flexWrap: "wrap",
-                gap: { xs: 1, md: 2 },
-                justifyContent: "center",
-                pt: { xs: 2, md: 4 },
-                mt: 0,
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 2,
               }}
             >
-              {filters.map((filter, index) => (
+              {/* Clear All Filters Button */}
+              {selectedDomains.length > 0 && (
                 <motion.div
-                  key={filter}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 * index }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <Chip
-                    label={filter}
-                    onClick={() => handleFilterChange(filter)}
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={clearAllFilters}
                     sx={{
-                      background:
-                        activeFilter === filter
-                          ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                          : "rgba(255, 255, 255, 0.08)",
-                      color:
-                        activeFilter === filter
-                          ? "white"
-                          : "rgba(255, 255, 255, 0.8)",
-                      border:
-                        activeFilter === filter
-                          ? "none"
-                          : "1px solid rgba(255, 255, 255, 0.2)",
-                      backdropFilter: "blur(20px)",
+                      color: "#ef4444",
+                      borderColor: "#ef4444",
                       fontWeight: 600,
-                      fontSize: { xs: "0.7rem", md: "0.875rem" },
-                      padding: { xs: "6px 12px", md: "8px 16px" },
-                      height: { xs: "28px", md: "auto" },
+                      fontSize: { xs: "0.6rem", md: "0.7rem" },
+                      px: { xs: 1, md: 1.5 },
+                      py: { xs: 0.5, md: 0.75 },
+                      minWidth: "auto",
                       "&:hover": {
-                        background:
-                          activeFilter === filter
-                            ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
-                            : "rgba(255, 255, 255, 0.12)",
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
+                        background: "rgba(239, 68, 68, 0.1)",
+                        borderColor: "#dc2626",
                       },
                     }}
-                  />
+                  >
+                    Effacer tous les filtres ({selectedDomains.length})
+                  </Button>
                 </motion.div>
-              ))}
+              )}
+
+              {/* Domain Filter Chips */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: { xs: 1, md: 2 },
+                  justifyContent: "center",
+                  pt: { xs: 2, md: 4 },
+                  mt: 0,
+                }}
+              >
+                {availableDomains.map((domain, index) => (
+                  <motion.div
+                    key={domain}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 * index }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Chip
+                      label={domain}
+                      onClick={() => handleDomainToggle(domain)}
+                      sx={{
+                        background: selectedDomains.includes(domain)
+                          ? DOMAIN_COLORS[domain]
+                          : "rgba(255, 255, 255, 0.08)",
+                        color: selectedDomains.includes(domain)
+                          ? "white"
+                          : "rgba(255, 255, 255, 0.8)",
+                        border: selectedDomains.includes(domain)
+                          ? "none"
+                          : `1px solid ${DOMAIN_COLORS[domain]}40`,
+                        backdropFilter: "blur(20px)",
+                        fontWeight: 600,
+                        fontSize: { xs: "0.7rem", md: "0.875rem" },
+                        padding: { xs: "6px 12px", md: "8px 16px" },
+                        height: { xs: "28px", md: "auto" },
+                        "&:hover": {
+                          background: selectedDomains.includes(domain)
+                            ? DOMAIN_COLORS[domain]
+                            : `${DOMAIN_COLORS[domain]}20`,
+                          transform: "translateY(-2px)",
+                          boxShadow: `0 8px 25px ${DOMAIN_COLORS[domain]}40`,
+                        },
+                      }}
+                    />
+                  </motion.div>
+                ))}
+              </Box>
             </Box>
           </Box>
         </Container>
@@ -1176,167 +1229,229 @@ export default function Alumnis() {
               </Typography>
             </Box>
             <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
-              {/* Group alumni by field, use Accordions */}
-              {Object.entries(
-                alumni
-                  .filter(
+              {/* Group alumni by the 8 available domains, use Accordions */}
+              {(() => {
+                const DOMAINES = [
+                  "Mathématiques",
+                  "Informatique",
+                  "Physique",
+                  "Chimie",
+                  "Mécanique",
+                  "Sciences de la vie",
+                  "Sciences de la Terre",
+                  "Électronique",
+                ];
+
+                const domainColors = {
+                  Chimie: "#ffb300", // vivid amber
+                  Électronique: "#8e24aa", // deep purple
+                  Informatique: "#ff80ab", // lighter pink
+                  Mathématiques: "#e53935", // matte red
+                  Mécanique: "#43a047", // strong green
+                  Physique: "#009688", // teal
+                  "Sciences de la Terre": "#3949ab", // strong blue-violet
+                  "Sciences de la vie": "#00bcd4", // strong cyan
+                };
+
+                // Helper function to compute alumni card color (same logic as AlumniCard)
+                const getAlumniCardColor = (alum) => {
+                  // Compute alumFields as array
+                  let alumFields = Array.isArray(alum.field)
+                    ? alum.field
+                    : typeof alum.field === "string" && alum.field.includes(",")
+                    ? alum.field.split(",").map((f) => f.trim())
+                    : alum.field
+                    ? [alum.field]
+                    : [];
+
+                  // Sort alumFields alphabetically for gradient order
+                  const sortedAlumFields = [...alumFields].sort((a, b) =>
+                    a.localeCompare(b)
+                  );
+                  const profileColors = sortedAlumFields.map(
+                    (f) => domainColors[f.trim()] || "#888"
+                  );
+
+                  if (alum.color && alum.color.trim() !== "") {
+                    return alum.color;
+                  } else if (profileColors.length === 0) {
+                    return "rgba(255,255,255,0.08)";
+                  } else if (profileColors.length === 1) {
+                    return profileColors[0];
+                  } else {
+                    return `linear-gradient(90deg, ${profileColors.join(
+                      ", "
+                    )})`;
+                  }
+                };
+
+                // Group alumni by domains
+                const groupedAlumni = DOMAINES.reduce((acc, domain) => {
+                  acc[domain] = alumni.filter(
                     (alum) =>
-                      !alum.hidden ||
-                      String(alum._id) === String(alumniId) ||
-                      isAdmin
-                  )
-                  .reduce((acc, alum) => {
-                    if (!acc[alum.field]) acc[alum.field] = [];
-                    acc[alum.field].push(alum);
-                    return acc;
-                  }, {})
-              ).map(([field, group], idx, arr) => (
-                <Accordion
-                  key={field}
-                  defaultExpanded={false}
-                  sx={{
-                    background: "rgba(59,130,246,0.07)",
-                    borderRadius: 2,
-                    mb: 2,
-                    boxShadow: "none",
-                    border: "1.5px solid rgba(59,130,246,0.13)",
-                    "&:before": { display: "none" },
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon sx={{ color: "#3b82f6" }} />}
-                    aria-controls={`panel-${field}-content`}
-                    id={`panel-${field}-header`}
-                    sx={{
-                      background:
-                        "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                      color: "white",
-                      borderRadius: 2,
-                      minHeight: 56,
-                      boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
-                      fontWeight: 700,
-                      mb: 0,
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Avatar
+                      (!alum.hidden ||
+                        String(alum._id) === String(alumniId) ||
+                        isAdmin) &&
+                      (alum.domains?.includes(domain) ||
+                        (alum.field && alum.field.includes(domain)))
+                  );
+                  return acc;
+                }, {});
+
+                return Object.entries(groupedAlumni)
+                  .filter(([domain, group]) => group.length > 0) // Only show domains with alumni
+                  .map(([domain, group], idx, arr) => (
+                    <Accordion
+                      key={domain}
+                      defaultExpanded={false}
+                      sx={{
+                        background: "rgba(59,130,246,0.07)",
+                        borderRadius: 2,
+                        mb: 2,
+                        boxShadow: "none",
+                        border: "1.5px solid rgba(59,130,246,0.13)",
+                        "&:before": { display: "none" },
+                      }}
+                    >
+                      <AccordionSummary
+                        expandIcon={
+                          <ExpandMoreIcon sx={{ color: "#3b82f6" }} />
+                        }
+                        aria-controls={`panel-${domain}-content`}
+                        id={`panel-${domain}-header`}
                         sx={{
-                          width: 32,
-                          height: 32,
-                          fontWeight: 700,
-                          background: group[0]?.color || "#3b82f6",
-                        }}
-                      >
-                        {field[0]}
-                      </Avatar>
-                      <Typography
-                        variant="h6"
-                        sx={{
+                          background:
+                            "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                           color: "white",
+                          borderRadius: 2,
+                          minHeight: 56,
+                          boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
                           fontWeight: 700,
-                          fontSize: "1.1rem",
-                          letterSpacing: 0.5,
-                          textShadow: "0 1px 4px #0002",
+                          mb: 0,
                         }}
                       >
-                        {field}
-                      </Typography>
-                      <Chip
-                        label={`${group.length} alumnis`}
-                        size="small"
-                        sx={{
-                          ml: 2,
-                          background: "rgba(255,255,255,0.13)",
-                          color: "#fff",
-                          fontWeight: 600,
-                        }}
-                      />
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails
-                    sx={{
-                      background: "rgba(15,23,42,0.97)",
-                      borderRadius: 2,
-                      p: 0,
-                    }}
-                  >
-                    <List dense>
-                      {group.map((alum) => {
-                        // Récupère la première école ajoutée (rang 1) comme Licence/BSc
-                        const licence =
-                          alum.schoolsApplied && alum.schoolsApplied[0]
-                            ? alum.schoolsApplied[0].name
-                            : "—";
-                        // Récupère la deuxième école ajoutée (rang 2) comme Master/École actuelle
-                        const currentSchool =
-                          alum.schoolsApplied && alum.schoolsApplied[1]
-                            ? alum.schoolsApplied[1].name
-                            : "—";
-                        // Récupère l'année de fin de L3
-                        const anneeFinL3 = alum.anneeFinL3
-                          ? alum.anneeFinL3
-                          : "—";
-                        return (
-                          <ListItem
-                            key={alum.id}
-                            button
-                            onClick={() => handleAlumniNameClick(alum)}
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                        >
+                          <Avatar
                             sx={{
-                              px: 1.5,
-                              py: 1.2,
-                              borderRadius: 2,
-                              cursor: "pointer",
-                              transition: "background 0.1s ease",
-                              "&:hover": {
-                                background: "rgba(59,130,246,0.1)",
-                              },
-                              userSelect: "none",
+                              width: 32,
+                              height: 32,
+                              fontWeight: 700,
+                              background: domainColors[domain] || "#3b82f6",
                             }}
-                            aria-label={`Voir la fiche de ${alum.name}`}
                           >
-                            <ListItemIcon sx={{ minWidth: 44 }}>
-                              <Avatar
+                            {domain[0]}
+                          </Avatar>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              color: "white",
+                              fontWeight: 700,
+                              fontSize: "1.1rem",
+                              letterSpacing: 0.5,
+                              textShadow: "0 1px 4px #0002",
+                            }}
+                          >
+                            {domain}
+                          </Typography>
+                          <Chip
+                            label={`${group.length} alumnis`}
+                            size="small"
+                            sx={{
+                              ml: 2,
+                              background: "rgba(255,255,255,0.13)",
+                              color: "#fff",
+                              fontWeight: 600,
+                            }}
+                          />
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails
+                        sx={{
+                          background: "rgba(15,23,42,0.97)",
+                          borderRadius: 2,
+                          p: 0,
+                        }}
+                      >
+                        <List dense>
+                          {group.map((alum) => {
+                            // Récupère la première école ajoutée (rang 1) comme Licence/BSc
+                            const licence =
+                              alum.schoolsApplied && alum.schoolsApplied[0]
+                                ? alum.schoolsApplied[0].name
+                                : "—";
+                            // Récupère la deuxième école ajoutée (rang 2) comme Master/École actuelle
+                            const currentSchool =
+                              alum.schoolsApplied && alum.schoolsApplied[1]
+                                ? alum.schoolsApplied[1].name
+                                : "—";
+                            // Récupère l'année de fin de L3
+                            const anneeFinL3 = alum.anneeFinL3
+                              ? alum.anneeFinL3
+                              : "—";
+                            return (
+                              <ListItem
+                                key={alum.id}
+                                button
+                                onClick={() => handleAlumniNameClick(alum)}
                                 sx={{
-                                  background: alum.color,
-                                  color: "#fff",
-                                  fontWeight: 700,
+                                  px: 1.5,
+                                  py: 1.2,
+                                  borderRadius: 2,
+                                  cursor: "pointer",
+                                  transition: "background 0.1s ease",
+                                  "&:hover": {
+                                    background: "rgba(59,130,246,0.1)",
+                                  },
+                                  userSelect: "none",
                                 }}
+                                aria-label={`Voir la fiche de ${alum.name}`}
                               >
-                                {alum.avatar}
-                              </Avatar>
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                <span
-                                  style={{
-                                    fontWeight: 600,
-                                    color: "#fff",
-                                    fontSize: "1.08rem",
-                                  }}
-                                >
-                                  {alum.name}
-                                </span>
-                              }
-                              secondary={
-                                <span
-                                  style={{
-                                    color: "rgba(255,255,255,0.8)",
-                                    fontSize: "0.98rem",
-                                  }}
-                                >
-                                  {/* Affiche : Licence/BSc | Master/École actuelle | Année de fin de L3 */}
-                                  {licence} &nbsp;|&nbsp; {currentSchool}{" "}
-                                  &nbsp;|&nbsp; {anneeFinL3}
-                                </span>
-                              }
-                            />
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
+                                <ListItemIcon sx={{ minWidth: 44 }}>
+                                  <Avatar
+                                    sx={{
+                                      background: getAlumniCardColor(alum),
+                                      color: "#fff",
+                                      fontWeight: 700,
+                                    }}
+                                  >
+                                    {alum.avatar}
+                                  </Avatar>
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={
+                                    <span
+                                      style={{
+                                        fontWeight: 600,
+                                        color: "#fff",
+                                        fontSize: "1.08rem",
+                                      }}
+                                    >
+                                      {alum.name}
+                                    </span>
+                                  }
+                                  secondary={
+                                    <span
+                                      style={{
+                                        color: "rgba(255,255,255,0.8)",
+                                        fontSize: "0.98rem",
+                                      }}
+                                    >
+                                      {/* Affiche : Licence/BSc | Master/École actuelle | Année de fin de L3 */}
+                                      {licence} &nbsp;|&nbsp; {currentSchool}{" "}
+                                      &nbsp;|&nbsp; {anneeFinL3}
+                                    </span>
+                                  }
+                                />
+                              </ListItem>
+                            );
+                          })}
+                        </List>
+                      </AccordionDetails>
+                    </Accordion>
+                  ));
+              })()}
             </Box>
           </Card>
         </Box>

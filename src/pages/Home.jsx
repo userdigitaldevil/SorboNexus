@@ -996,14 +996,31 @@ export default function Home() {
                         },
                       }}
                     >
-                      {/* HERO SECTION: Mini Feature Cards (4 cards in 2x2 grid) */}
-                      <Grid
-                        container
-                        spacing={3}
-                        sx={{ justifyContent: "center", alignItems: "center" }}
+                      {/* HERO SECTION: Mini Feature Cards (horizontal scroll) */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 2,
+                          overflowX: "auto",
+                          overflowY: "hidden",
+                          pb: 1,
+                          scrollSnapType: "x mandatory",
+                          WebkitOverflowScrolling: "touch",
+                          "::-webkit-scrollbar": { display: "none" },
+                          mx: -2,
+                          px: 2,
+                        }}
                       >
                         {features.slice(0, 4).map((feature, index) => (
-                          <Grid xs={6} key={index}>
+                          <Box
+                            key={index}
+                            sx={{
+                              minWidth: 120,
+                              maxWidth: 140,
+                              flex: "0 0 auto",
+                              scrollSnapAlign: "start",
+                            }}
+                          >
                             <FeatureCard
                               feature={feature}
                               index={index}
@@ -1012,9 +1029,11 @@ export default function Home() {
                                 handleCardNavigation(feature.path)
                               }
                             />
-                          </Grid>
+                          </Box>
                         ))}
-                      </Grid>
+                        {/* Extra space at the end for proper scrolling */}
+                        <Box sx={{ minWidth: 16, flex: "0 0 auto" }} />
+                      </Box>
 
                       {/* Bottom Accent */}
                       <motion.div
