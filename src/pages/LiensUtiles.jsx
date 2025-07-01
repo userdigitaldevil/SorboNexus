@@ -69,7 +69,6 @@ const LiensUtiles = () => {
   const [activeCategory, setActiveCategory] = useState("Tous les liens");
   const [bookmarkedLinks, setBookmarkedLinks] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [expandedDescriptions, setExpandedDescriptions] = useState(new Set());
   const itemsPerPage = 15;
 
   // Admin authentication and permissions
@@ -103,6 +102,9 @@ const LiensUtiles = () => {
   const [addIconMode, setAddIconMode] = useState("predefined");
   const [addCustomIconUrl, setAddCustomIconUrl] = useState("");
   const [addIconSearch, setAddIconSearch] = useState("");
+
+  // Add back expansion/collapse state
+  const [expandedDescriptions, setExpandedDescriptions] = useState(new Set());
 
   // ============================================================================
   // CONSTANTS AND CONFIGURATION
@@ -797,16 +799,6 @@ const LiensUtiles = () => {
     setBookmarkedLinks(newBookmarkedLinks);
   };
 
-  const toggleDescriptionExpansion = (linkId) => {
-    const newExpandedDescriptions = new Set(expandedDescriptions);
-    if (newExpandedDescriptions.has(linkId)) {
-      newExpandedDescriptions.delete(linkId);
-    } else {
-      newExpandedDescriptions.add(linkId);
-    }
-    setExpandedDescriptions(newExpandedDescriptions);
-  };
-
   // ============================================================================
   // EDIT MODAL MANAGEMENT FUNCTIONS
   // ============================================================================
@@ -966,32 +958,17 @@ const LiensUtiles = () => {
     return result;
   }
 
-  const [truncatedDescriptions, setTruncatedDescriptions] = useState({});
-
-  useEffect(() => {
-    // After rendering, check which descriptions are truncated
-    const newTruncated = {};
-    document.querySelectorAll("[data-link-desc-id]").forEach((el) => {
-      if (el.scrollHeight > el.clientHeight + 1) {
-        newTruncated[el.getAttribute("data-link-desc-id")] = true;
+  const toggleDescriptionExpansion = (linkId) => {
+    setExpandedDescriptions((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(linkId)) {
+        newSet.delete(linkId);
+      } else {
+        newSet.add(linkId);
       }
+      return newSet;
     });
-    // Only update state if changed
-    const prev = truncatedDescriptions;
-    const keys = Object.keys(newTruncated);
-    let changed = keys.length !== Object.keys(prev).length;
-    if (!changed) {
-      for (const k of keys) {
-        if (prev[k] !== newTruncated[k]) {
-          changed = true;
-          break;
-        }
-      }
-    }
-    if (changed) {
-      setTruncatedDescriptions(newTruncated);
-    }
-  }, [currentLinks, expandedDescriptions]);
+  };
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -1282,8 +1259,10 @@ const LiensUtiles = () => {
                     <Box
                       key={link.id}
                       sx={{
-                        width: "100%",
-                        height: "100%",
+                        width: "44vw",
+                        minWidth: "44vw",
+                        maxWidth: "44vw",
+                        height: { xs: 170, sm: 190 }, // Reduced height for less dead space
                         p: 0.5,
                         boxSizing: "border-box",
                       }}
@@ -1298,9 +1277,10 @@ const LiensUtiles = () => {
                       >
                         <Card
                           sx={{
-                            height: { xs: "100%", md: 150 }, // Reduced height for less dead space
-                            maxWidth: { xs: 180, md: 200 },
-                            mx: "auto",
+                            height: "100%", // Card fills its container
+                            width: "100%",
+                            maxWidth: "none",
+                            mx: 0,
                             background: "rgba(255,255,255,0.06)",
                             backdropFilter: "blur(20px)",
                             border: "1px solid rgba(255,255,255,0.1)",
@@ -1325,15 +1305,14 @@ const LiensUtiles = () => {
                         >
                           <CardContent
                             sx={{
-                              p: 1.2,
-                              pb: 0.5,
-                              height: { xs: "auto", md: 100 },
+                              p: { xs: 1, md: 1.2 },
                               flex: "1 1 auto",
                               minHeight: 0,
                               display: "flex",
                               flexDirection: "column",
                               justifyContent: "flex-start",
                               overflow: "hidden",
+                              pb: 3.5, // Reduced bottom padding for a more compact button area
                             }}
                           >
                             {/* Content wrapper */}
@@ -1504,31 +1483,41 @@ const LiensUtiles = () => {
                                   mb: { xs: 0.7, md: 0.8 },
                                   lineHeight: 1.2,
                                   fontSize: { xs: "0.5rem", md: "0.55rem" },
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: expandedDescriptions.has(
-                                    link.id
-                                  )
-                                    ? "unset"
-                                    : 2,
-                                  WebkitBoxOrient: "vertical",
-                                  overflow: "hidden",
+                                  ...(isMobile
+                                    ? {
+                                        display: "block",
+                                        overflow: "visible",
+                                        minHeight: undefined,
+                                        maxHeight: undefined,
+                                      }
+                                    : expandedDescriptions.has(link.id)
+                                    ? {
+                                        display: "block",
+                                        overflow: "visible",
+                                        minHeight: undefined,
+                                        maxHeight: undefined,
+                                      }
+                                    : {
+                                        display: "-webkit-box",
+                                        WebkitLineClamp: 3,
+                                        WebkitBoxOrient: "vertical",
+                                        overflow: "hidden",
+                                        minHeight: "3.6em",
+                                        maxHeight: "3.6em",
+                                      }),
                                   textAlign: "left",
-                                  minHeight: "2.4em", // Fixed height for 2 lines - always maintain this
-                                  maxHeight: expandedDescriptions.has(link.id)
-                                    ? "none"
-                                    : "2.4em", // Allow expansion but maintain base height
                                   transition: "max-height 0.3s ease",
                                 }}
                               >
                                 {link.description}
                               </Typography>
-
-                              {/* Lire la suite button for long descriptions */}
-                              {link.description.length > 80 && (
+                              {((!isMobile && link.description.length > 121) ||
+                                (!isMobile &&
+                                  link.description.length > 121)) && (
                                 <Box
                                   sx={{
                                     mb: { xs: 0.5, md: 0.6 },
-                                    height: "1.2em", // Fixed height for button area
+                                    height: "1.2em",
                                     display: "flex",
                                     alignItems: "center",
                                   }}
@@ -1557,20 +1546,19 @@ const LiensUtiles = () => {
                                   </Button>
                                 </Box>
                               )}
-
-                              {/* Empty space for cards without "Lire la suite" button to maintain consistent height */}
-                              {link.description.length <= 80 && (
-                                <Box
-                                  sx={{
-                                    mb: { xs: 0.5, md: 0.6 },
-                                    height: "1.2em", // Same height as button area
-                                  }}
-                                />
-                              )}
                             </Box>
                           </CardContent>
-                          <Box sx={{ mt: "auto", p: 1, pt: 0, width: "100%" }}>
-                            {/* Accéder button code here, always at the bottom */}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              width: "100%",
+                              p: 1,
+                              pt: 0,
+                            }}
+                          >
                             <Box
                               sx={{
                                 display: "flex",
@@ -1578,49 +1566,39 @@ const LiensUtiles = () => {
                                 alignItems: "center",
                               }}
                             >
-                              <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                endIcon={
+                                  <ArrowRight
+                                    sx={{
+                                      fontSize: { xs: "0.5rem", md: "0.55rem" },
+                                    }}
+                                  />
+                                }
+                                onClick={() => window.open(link.url, "_blank")}
+                                sx={{
+                                  fontWeight: 500,
+                                  px: { xs: 0.9, md: 1.1 },
+                                  py: { xs: 0.25, md: 0.3 },
+                                  borderRadius: 1,
+                                  border: "1px solid rgba(59, 130, 246, 0.3)",
+                                  color: "#3b82f6",
+                                  textTransform: "none",
+                                  fontSize: { xs: "0.45rem", md: "0.5rem" },
+                                  background: "rgba(59, 130, 246, 0.05)",
+                                  minHeight: { xs: "22px", md: "26px" },
+                                  "&:hover": {
+                                    background: "rgba(59, 130, 246, 0.1)",
+                                    border: "1px solid #3b82f6",
+                                    transform: "translateY(-1px)",
+                                    boxShadow:
+                                      "0 2px 8px rgba(59, 130, 246, 0.15)",
+                                  },
+                                }}
                               >
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  endIcon={
-                                    <ArrowRight
-                                      sx={{
-                                        fontSize: {
-                                          xs: "0.5rem",
-                                          md: "0.55rem",
-                                        },
-                                      }}
-                                    />
-                                  }
-                                  onClick={() =>
-                                    window.open(link.url, "_blank")
-                                  }
-                                  sx={{
-                                    fontWeight: 500,
-                                    px: { xs: 0.9, md: 1.1 },
-                                    py: { xs: 0.25, md: 0.3 },
-                                    borderRadius: 1,
-                                    border: "1px solid rgba(59, 130, 246, 0.3)",
-                                    color: "#3b82f6",
-                                    textTransform: "none",
-                                    fontSize: { xs: "0.45rem", md: "0.5rem" },
-                                    background: "rgba(59, 130, 246, 0.05)",
-                                    minHeight: { xs: "22px", md: "26px" },
-                                    "&:hover": {
-                                      background: "rgba(59, 130, 246, 0.1)",
-                                      border: "1px solid #3b82f6",
-                                      transform: "translateY(-1px)",
-                                      boxShadow:
-                                        "0 2px 8px rgba(59, 130, 246, 0.15)",
-                                    },
-                                  }}
-                                >
-                                  Accéder
-                                </Button>
-                              </motion.div>
+                                Accéder
+                              </Button>
                             </Box>
                           </Box>
                         </Card>
@@ -1647,7 +1625,7 @@ const LiensUtiles = () => {
                   >
                     <Card
                       sx={{
-                        height: { xs: "100%", md: 150 }, // Reduced height for less dead space
+                        height: { xs: "100%", md: 170 },
                         maxWidth: { xs: 180, md: 200 },
                         mx: "auto",
                         background: "rgba(255,255,255,0.06)",
@@ -1659,6 +1637,8 @@ const LiensUtiles = () => {
                         position: "relative",
                         overflow: "hidden",
                         boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                        display: "flex",
+                        flexDirection: "column",
                         "&:hover": {
                           transform: "translateY(-2px)",
                           boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
@@ -1826,57 +1806,36 @@ const LiensUtiles = () => {
                             mb: { xs: 0.7, md: 0.8 },
                             lineHeight: 1.2,
                             fontSize: { xs: "0.5rem", md: "0.55rem" },
-                            display: "-webkit-box",
-                            WebkitLineClamp: expandedDescriptions.has(link.id)
-                              ? "unset"
-                              : 3,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
+                            ...(isMobile
+                              ? {
+                                  display: "block",
+                                  overflow: "visible",
+                                  minHeight: undefined,
+                                  maxHeight: undefined,
+                                }
+                              : expandedDescriptions.has(link.id)
+                              ? {
+                                  display: "block",
+                                  overflow: "visible",
+                                  minHeight: undefined,
+                                  maxHeight: undefined,
+                                }
+                              : {
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 3,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                  minHeight: "3.6em",
+                                  maxHeight: "3.6em",
+                                }),
                             textAlign: "left",
-                            minHeight: "3.6em",
-                            maxHeight: expandedDescriptions.has(link.id)
-                              ? "none"
-                              : "3.6em",
                             transition: "max-height 0.3s ease",
                           }}
                         >
                           {link.description}
                         </Typography>
-
-                        {/* Lire la suite button for visually truncated descriptions */}
-                        {truncatedDescriptions[link.id] &&
-                          !expandedDescriptions.has(link.id) && (
-                            <Box
-                              sx={{
-                                mb: { xs: 0.5, md: 0.6 },
-                                height: "1.2em",
-                                display: "flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Button
-                                size="small"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleDescriptionExpansion(link.id);
-                                }}
-                                sx={{
-                                  color: "#3b82f6",
-                                  textTransform: "none",
-                                  fontSize: { xs: "0.35rem", sm: "0.4rem" },
-                                  fontWeight: 500,
-                                  p: 0,
-                                  minWidth: "auto",
-                                  "&:hover": {
-                                    background: "rgba(59, 130, 246, 0.1)",
-                                  },
-                                }}
-                              >
-                                Lire la suite
-                              </Button>
-                            </Box>
-                          )}
-                        {expandedDescriptions.has(link.id) && (
+                        {((!isMobile && link.description.length > 121) ||
+                          (!isMobile && link.description.length > 121)) && (
                           <Box
                             sx={{
                               mb: { xs: 0.5, md: 0.6 },
@@ -1903,22 +1862,24 @@ const LiensUtiles = () => {
                                 },
                               }}
                             >
-                              Voir moins
+                              {expandedDescriptions.has(link.id)
+                                ? "Voir moins"
+                                : "Lire la suite"}
                             </Button>
                           </Box>
                         )}
-
-                        {/* Empty space for cards without "Lire la suite" button to maintain consistent height */}
-                        {link.description.length <= 80 && (
-                          <Box
-                            sx={{
-                              mb: { xs: 0.5, md: 0.6 },
-                              height: "1.2em", // Same height as button area
-                            }}
-                          />
-                        )}
-
-                        {/* Action Button */}
+                      </CardContent>
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          width: "100%",
+                          p: 1,
+                          pt: 0,
+                        }}
+                      >
                         <Box
                           sx={{
                             display: "flex",
@@ -1926,46 +1887,40 @@ const LiensUtiles = () => {
                             alignItems: "center",
                           }}
                         >
-                          <motion.div
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            endIcon={
+                              <ArrowRight
+                                sx={{
+                                  fontSize: { xs: "0.5rem", md: "0.55rem" },
+                                }}
+                              />
+                            }
+                            onClick={() => window.open(link.url, "_blank")}
+                            sx={{
+                              fontWeight: 500,
+                              px: { xs: 0.9, md: 1.1 },
+                              py: { xs: 0.25, md: 0.3 },
+                              borderRadius: 1,
+                              border: "1px solid rgba(59, 130, 246, 0.3)",
+                              color: "#3b82f6",
+                              textTransform: "none",
+                              fontSize: { xs: "0.45rem", md: "0.5rem" },
+                              background: "rgba(59, 130, 246, 0.05)",
+                              minHeight: { xs: "22px", md: "26px" },
+                              "&:hover": {
+                                background: "rgba(59, 130, 246, 0.1)",
+                                border: "1px solid #3b82f6",
+                                transform: "translateY(-1px)",
+                                boxShadow: "0 2px 8px rgba(59, 130, 246, 0.15)",
+                              },
+                            }}
                           >
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              endIcon={
-                                <ArrowRight
-                                  sx={{
-                                    fontSize: { xs: "0.5rem", md: "0.55rem" },
-                                  }}
-                                />
-                              }
-                              onClick={() => window.open(link.url, "_blank")}
-                              sx={{
-                                fontWeight: 500,
-                                px: { xs: 0.9, md: 1.1 },
-                                py: { xs: 0.25, md: 0.3 },
-                                borderRadius: 1,
-                                border: "1px solid rgba(59, 130, 246, 0.3)",
-                                color: "#3b82f6",
-                                textTransform: "none",
-                                fontSize: { xs: "0.45rem", md: "0.5rem" },
-                                background: "rgba(59, 130, 246, 0.05)",
-                                minHeight: { xs: "22px", md: "26px" },
-                                "&:hover": {
-                                  background: "rgba(59, 130, 246, 0.1)",
-                                  border: "1px solid #3b82f6",
-                                  transform: "translateY(-1px)",
-                                  boxShadow:
-                                    "0 2px 8px rgba(59, 130, 246, 0.15)",
-                                },
-                              }}
-                            >
-                              Accéder
-                            </Button>
-                          </motion.div>
+                            Accéder
+                          </Button>
                         </Box>
-                      </CardContent>
+                      </Box>
                     </Card>
                   </motion.div>
                 </Grid>
