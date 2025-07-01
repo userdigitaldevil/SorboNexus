@@ -1298,10 +1298,9 @@ const LiensUtiles = () => {
                       >
                         <Card
                           sx={{
-                            height: "100%",
-                            width: "100%",
-                            m: 0,
-                            boxSizing: "border-box",
+                            height: { xs: "100%", md: 170 }, // Further reduced height on desktop
+                            maxWidth: { xs: 180, md: 200 },
+                            mx: "auto",
                             background: "rgba(255,255,255,0.06)",
                             backdropFilter: "blur(20px)",
                             border: "1px solid rgba(255,255,255,0.1)",
@@ -1326,12 +1325,13 @@ const LiensUtiles = () => {
                         >
                           <CardContent
                             sx={{
-                              p: { xs: 0.6, sm: 0.8 },
+                              p: 1.2,
+                              pb: 0.5,
+                              height: { xs: "auto", md: 120 }, // Further reduced content height on desktop
+                              flex: "1 1 auto",
                               display: "flex",
                               flexDirection: "column",
-                              height: "100%",
-                              flex: 1,
-                              justifyContent: "space-between",
+                              justifyContent: "flex-start",
                             }}
                           >
                             {/* Content wrapper */}
@@ -1644,7 +1644,7 @@ const LiensUtiles = () => {
                   >
                     <Card
                       sx={{
-                        height: "100%",
+                        height: { xs: "100%", md: 170 }, // Further reduced height on desktop
                         maxWidth: { xs: 180, md: 200 },
                         mx: "auto",
                         background: "rgba(255,255,255,0.06)",
@@ -1667,7 +1667,9 @@ const LiensUtiles = () => {
                         },
                       }}
                     >
-                      <CardContent sx={{ p: { xs: 1, md: 1.2 } }}>
+                      <CardContent
+                        sx={{ p: { xs: 1, md: 1.2 }, height: { md: 140 } }}
+                      >
                         {/* Icon and Title Row */}
                         <Box
                           sx={{
