@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   Typography,
@@ -116,6 +116,30 @@ const LiensUtiles = () => {
     "Carrière",
     "Outils",
   ];
+
+  // Predefined gradients and colors for each category
+  const CATEGORY_STYLES = {
+    Université: {
+      gradient: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+      color: "#3b82f6",
+    },
+    Bibliothèques: {
+      gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+      color: "#8b5cf6",
+    },
+    Services: {
+      gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      color: "#10b981",
+    },
+    Carrière: {
+      gradient: "linear-gradient(135deg, #ef4444 0%, #ec4899 100%)",
+      color: "#ef4444",
+    },
+    Outils: {
+      gradient: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
+      color: "#f59e0b",
+    },
+  };
 
   // ============================================================================
   // EFFECTS
@@ -722,16 +746,19 @@ const LiensUtiles = () => {
   const getFilteredAndSortedLinks = () => {
     return links
       .filter((link) => {
+        if (!link || typeof link !== "object") return false;
+        const title = (link.title || "").toLowerCase();
+        const description = (link.description || "").toLowerCase();
+        const category = (link.category || "").toLowerCase();
+        const query = (searchQuery || "").toLowerCase();
         const matchesSearch =
-          searchQuery === "" ||
-          link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          link.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          link.category.toLowerCase().includes(searchQuery.toLowerCase());
-
+          !query ||
+          title.includes(query) ||
+          description.includes(query) ||
+          category.includes(query);
         const matchesCategory =
           activeCategory === "Tous les liens" ||
           link.category === activeCategory;
-
         return matchesSearch && matchesCategory;
       })
       .sort((a, b) => {
@@ -927,6 +954,8 @@ const LiensUtiles = () => {
   };
 
   const isMobile = useMediaQuery("(max-width:600px)");
+  const isSmallMobile = useMediaQuery("(max-width:400px)");
+  const isTinyMobile = useMediaQuery("(max-width:300px)");
 
   // Helper to chunk array into groups of 4
   function chunkArray(array, size) {
@@ -936,6 +965,33 @@ const LiensUtiles = () => {
     }
     return result;
   }
+
+  const [truncatedDescriptions, setTruncatedDescriptions] = useState({});
+
+  useEffect(() => {
+    // After rendering, check which descriptions are truncated
+    const newTruncated = {};
+    document.querySelectorAll("[data-link-desc-id]").forEach((el) => {
+      if (el.scrollHeight > el.clientHeight + 1) {
+        newTruncated[el.getAttribute("data-link-desc-id")] = true;
+      }
+    });
+    // Only update state if changed
+    const prev = truncatedDescriptions;
+    const keys = Object.keys(newTruncated);
+    let changed = keys.length !== Object.keys(prev).length;
+    if (!changed) {
+      for (const k of keys) {
+        if (prev[k] !== newTruncated[k]) {
+          changed = true;
+          break;
+        }
+      }
+    }
+    if (changed) {
+      setTruncatedDescriptions(newTruncated);
+    }
+  }, [currentLinks, expandedDescriptions]);
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -1194,13 +1250,13 @@ const LiensUtiles = () => {
       >
         <Container maxWidth="lg" sx={{ overflow: "hidden" }}>
           {isMobile ? (
-            // MOBILE: 2x2 grid carousel with responsive sizing
+            // MOBILE: always 2 columns x 3 rows grid carousel
             <Box
               sx={{
                 display: "flex",
                 overflowX: "auto",
-                gap: { xs: 1, sm: 1.5 },
-                pb: 2,
+                gap: 0.5, // reduce gap between chunks
+                pb: 1,
                 scrollSnapType: "x mandatory",
                 "&::-webkit-scrollbar": {
                   display: "none",
@@ -1209,173 +1265,359 @@ const LiensUtiles = () => {
                 scrollbarWidth: "none",
               }}
             >
-              {chunkArray(currentLinks, 4).map((chunk, chunkIdx) => (
+              {chunkArray(currentLinks, 6).map((chunk, chunkIdx) => (
                 <Box
                   key={chunkIdx}
                   sx={{
-                    minWidth: 0,
-                    flex: "0 0 calc(100vw - 32px)",
-                    maxWidth: "calc(100vw - 32px)",
+                    width: "100vw",
                     display: "grid",
                     gridTemplateColumns: "1fr 1fr",
-                    gridTemplateRows: "1fr 1fr",
-                    gap: 2,
+                    gridTemplateRows: "1fr 1fr 1fr",
+                    gap: 0,
+                    p: 0,
                     scrollSnapAlign: "start",
-                    p: 1,
                   }}
                 >
                   {chunk.map((link, index) => (
-                    <Box key={link.id} sx={{ width: "100%", height: "100%" }}>
+                    <Box
+                      key={link.id}
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        p: 0.5,
+                        boxSizing: "border-box",
+                      }}
+                    >
                       {/* Card rendering (copy from existing Grid) */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: index * 0.1 }}
                         whileHover={{ scale: 1.02 }}
+                        style={{ height: "100%" }}
                       >
                         <Card
                           sx={{
                             height: "100%",
-                            maxWidth: { xs: 280, md: 320 },
-                            mx: "auto",
-                            background: "rgba(255,255,255,0.05)",
+                            width: "100%",
+                            m: 0,
+                            boxSizing: "border-box",
+                            background: "rgba(255,255,255,0.06)",
                             backdropFilter: "blur(20px)",
                             border: "1px solid rgba(255,255,255,0.1)",
-                            borderRadius: 3,
-                            transition: "all 0.3s ease",
+                            borderRadius: 1.5,
+                            transition: "all 0.2s ease",
                             cursor: "pointer",
                             position: "relative",
                             overflow: "hidden",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                            display: "flex",
+                            flexDirection: "column",
                             "&:hover": {
-                              transform: "translateY(-8px)",
-                              boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                              background: "rgba(255,255,255,0.08)",
+                              transform: "translateY(-2px)",
+                              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+                              background: "rgba(255,255,255,0.1)",
                               border: "1px solid rgba(59, 130, 246, 0.3)",
-                              "& .resource-icon": {
-                                transform: "scale(1.1) rotate(5deg)",
+                              "& .link-title": {
+                                color: "#3b82f6",
                               },
-                              "& .resource-title": {
-                                background:
-                                  "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                                backgroundClip: "text",
-                              },
-                            },
-                            "&::before": {
-                              content: '""',
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              height: "2px",
-                              background: link.gradient,
-                              opacity: 0,
-                              transition: "opacity 0.3s ease",
-                            },
-                            "&:hover::before": {
-                              opacity: 1,
                             },
                           }}
                         >
-                          <CardContent sx={{ p: { xs: 2, md: 4 } }}>
-                            <Box
-                              className="resource-icon"
-                              sx={{
-                                width: { xs: 40, md: 48 },
-                                height: { xs: 40, md: 48 },
-                                borderRadius: 2,
-                                background: link.gradient,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                mb: { xs: 2, md: 3 },
-                                color: "white",
-                                transition: "all 0.3s ease",
-                              }}
-                            >
-                              <i className={`${link.icon} text-xl`}></i>
-                            </Box>
-                            <Typography
-                              variant="h6"
-                              className="resource-title"
-                              sx={{
-                                fontWeight: 600,
-                                mb: { xs: 1, md: 2 },
-                                transition: "all 0.3s ease",
-                                fontSize: { xs: "0.9rem", md: "1.25rem" },
-                              }}
-                            >
-                              {link.title}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                color: "#3b82f6",
-                                fontWeight: 500,
-                                mb: { xs: 1, md: 2 },
-                                fontSize: { xs: "0.7rem", md: "0.875rem" },
-                              }}
-                            >
-                              {link.category}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                color: "#a1a1aa",
-                                mb: { xs: 2, md: 3 },
-                                lineHeight: 1.6,
-                                fontSize: { xs: "0.75rem", md: "0.875rem" },
-                              }}
-                            >
-                              {link.description}
-                            </Typography>
+                          <CardContent
+                            sx={{
+                              p: { xs: 0.6, sm: 0.8 },
+                              display: "flex",
+                              flexDirection: "column",
+                              height: "100%",
+                              flex: 1,
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            {/* Content wrapper */}
                             <Box
                               sx={{
+                                flex: 1,
                                 display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
+                                flexDirection: "column",
                               }}
                             >
-                              <Chip
-                                label="Lien"
-                                size="small"
+                              {/* Icon and Title Row */}
+                              <Box
                                 sx={{
-                                  background: "rgba(59, 130, 246, 0.1)",
-                                  color: "#3b82f6",
-                                  border: "1px solid rgba(59, 130, 246, 0.2)",
-                                  fontSize: { xs: "0.6rem", md: "0.75rem" },
-                                  height: { xs: "20px", md: "24px" },
-                                }}
-                              />
-                              <Button
-                                variant="contained"
-                                size="small"
-                                endIcon={<ArrowRight />}
-                                onClick={() => window.open(link.url, "_blank")}
-                                sx={{
-                                  fontWeight: 700,
-                                  px: 2,
-                                  py: 0.5,
-                                  borderRadius: 2,
-                                  background: "#2563eb",
-                                  color: "#fff",
-                                  textTransform: "none",
-                                  fontSize: "0.95rem",
-                                  minHeight: "32px",
-                                  boxShadow: "0 2px 8px rgba(59,130,246,0.10)",
-                                  transition:
-                                    "all 0.2s cubic-bezier(.4,2,.6,1)",
-                                  "&:hover": {
-                                    background: "#1e40af",
-                                    color: "#fff",
-                                    boxShadow:
-                                      "0 4px 16px rgba(59,130,246,0.16)",
-                                  },
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: { xs: 0.4, sm: 0.6 },
+                                  mb: { xs: 0.4, sm: 0.5 },
                                 }}
                               >
-                                Accéder
-                              </Button>
+                                <Box
+                                  className="link-icon"
+                                  sx={{
+                                    width: { xs: 18, md: 22 },
+                                    height: { xs: 18, md: 22 },
+                                    borderRadius: "50%",
+                                    background:
+                                      CATEGORY_STYLES[link.category]
+                                        ?.gradient ||
+                                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                                    color: "#fff",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    boxShadow: "0 2px 8px 0 rgba(0,0,0,0.10)",
+                                    mb: 0.7,
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  <i
+                                    className={link.icon}
+                                    style={{
+                                      fontSize: "0.55rem", // 15% of the circle
+                                      width: "0.55em",
+                                      height: "0.55em",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  />
+                                </Box>
+                                <Typography
+                                  variant="body2"
+                                  className="link-title"
+                                  sx={{
+                                    fontWeight: 600,
+                                    transition: "all 0.2s ease",
+                                    fontSize: { xs: "0.55rem", sm: "0.6rem" },
+                                    lineHeight: 1.2,
+                                    color: "rgba(255, 255, 255, 0.9)",
+                                    textAlign: "left",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                    flex: 1,
+                                  }}
+                                >
+                                  {link.title}
+                                </Typography>
+
+                                {/* Admin Edit Button */}
+                                {isAdmin && (
+                                  <IconButton
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openEditModalWithLinkData(link);
+                                    }}
+                                    size="small"
+                                    sx={{
+                                      color: "rgba(255, 255, 255, 0.6)",
+                                      p: 0.2,
+                                      minWidth: "auto",
+                                      width: { xs: "16px", sm: "18px" },
+                                      height: { xs: "16px", sm: "18px" },
+                                      "&:hover": {
+                                        color: "#f59e0b",
+                                        background: "rgba(245, 158, 11, 0.1)",
+                                      },
+                                    }}
+                                  >
+                                    <EditIcon
+                                      sx={{
+                                        fontSize: {
+                                          xs: "0.55rem",
+                                          sm: "0.6rem",
+                                        },
+                                      }}
+                                    />
+                                  </IconButton>
+                                )}
+
+                                <IconButton
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleBookmarkForLink(link.id);
+                                  }}
+                                  size="small"
+                                  sx={{
+                                    color: bookmarkedLinks.has(link.id)
+                                      ? "#3b82f6"
+                                      : "rgba(255, 255, 255, 0.4)",
+                                    p: 0.2,
+                                    minWidth: "auto",
+                                    width: { xs: "16px", sm: "18px" },
+                                    height: { xs: "16px", sm: "18px" },
+                                    "&:hover": {
+                                      color: "#3b82f6",
+                                      background: "rgba(59, 130, 246, 0.1)",
+                                    },
+                                  }}
+                                >
+                                  {bookmarkedLinks.has(link.id) ? (
+                                    <BookmarkFilledIcon
+                                      sx={{
+                                        fontSize: {
+                                          xs: "0.55rem",
+                                          sm: "0.6rem",
+                                        },
+                                      }}
+                                    />
+                                  ) : (
+                                    <BookmarkIcon
+                                      sx={{
+                                        fontSize: {
+                                          xs: "0.55rem",
+                                          sm: "0.6rem",
+                                        },
+                                      }}
+                                    />
+                                  )}
+                                </IconButton>
+                              </Box>
+
+                              {/* Category Badge */}
+                              <Box sx={{ mb: { xs: 0.3, sm: 0.4 } }}>
+                                <Chip
+                                  label={link.category}
+                                  size="small"
+                                  sx={{
+                                    background: "rgba(59, 130, 246, 0.1)",
+                                    color: "#3b82f6",
+                                    fontSize: { xs: "0.4rem", sm: "0.45rem" },
+                                    height: { xs: "14px", sm: "16px" },
+                                    fontWeight: 500,
+                                    border: "1px solid rgba(59, 130, 246, 0.2)",
+                                    "& .MuiChip-label": {
+                                      px: { xs: 0.4, sm: 0.5 },
+                                    },
+                                  }}
+                                />
+                              </Box>
+
+                              {/* Description */}
+                              <Typography
+                                variant="caption"
+                                data-link-desc-id={link.id}
+                                sx={{
+                                  color: "rgba(255, 255, 255, 0.6)",
+                                  mb: { xs: 0.7, md: 0.8 },
+                                  lineHeight: 1.2,
+                                  fontSize: { xs: "0.5rem", md: "0.55rem" },
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: expandedDescriptions.has(
+                                    link.id
+                                  )
+                                    ? "unset"
+                                    : 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                  textAlign: "left",
+                                  minHeight: "2.4em", // Fixed height for 2 lines - always maintain this
+                                  maxHeight: expandedDescriptions.has(link.id)
+                                    ? "none"
+                                    : "2.4em", // Allow expansion but maintain base height
+                                  transition: "max-height 0.3s ease",
+                                }}
+                              >
+                                {link.description}
+                              </Typography>
+
+                              {/* Lire la suite button for long descriptions */}
+                              {link.description.length > 80 && (
+                                <Box
+                                  sx={{
+                                    mb: { xs: 0.5, md: 0.6 },
+                                    height: "1.2em", // Fixed height for button area
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Button
+                                    size="small"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleDescriptionExpansion(link.id);
+                                    }}
+                                    sx={{
+                                      color: "#3b82f6",
+                                      textTransform: "none",
+                                      fontSize: { xs: "0.35rem", sm: "0.4rem" },
+                                      fontWeight: 500,
+                                      p: 0,
+                                      minWidth: "auto",
+                                      "&:hover": {
+                                        background: "rgba(59, 130, 246, 0.1)",
+                                      },
+                                    }}
+                                  >
+                                    {expandedDescriptions.has(link.id)
+                                      ? "Voir moins"
+                                      : "Lire la suite"}
+                                  </Button>
+                                </Box>
+                              )}
+
+                              {/* Empty space for cards without "Lire la suite" button to maintain consistent height */}
+                              {link.description.length <= 80 && (
+                                <Box
+                                  sx={{
+                                    mb: { xs: 0.5, md: 0.6 },
+                                    height: "1.2em", // Same height as button area
+                                  }}
+                                />
+                              )}
+                            </Box>
+
+                            {/* Action Button */}
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <motion.div
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                              >
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  endIcon={
+                                    <ArrowRight
+                                      sx={{
+                                        fontSize: {
+                                          xs: "0.5rem",
+                                          md: "0.55rem",
+                                        },
+                                      }}
+                                    />
+                                  }
+                                  onClick={() =>
+                                    window.open(link.url, "_blank")
+                                  }
+                                  sx={{
+                                    fontWeight: 500,
+                                    px: { xs: 0.9, md: 1.1 },
+                                    py: { xs: 0.25, md: 0.3 },
+                                    borderRadius: 1,
+                                    border: "1px solid rgba(59, 130, 246, 0.3)",
+                                    color: "#3b82f6",
+                                    textTransform: "none",
+                                    fontSize: { xs: "0.45rem", md: "0.5rem" },
+                                    background: "rgba(59, 130, 246, 0.05)",
+                                    minHeight: { xs: "22px", md: "26px" },
+                                    "&:hover": {
+                                      background: "rgba(59, 130, 246, 0.1)",
+                                      border: "1px solid #3b82f6",
+                                      transform: "translateY(-1px)",
+                                      boxShadow:
+                                        "0 2px 8px rgba(59, 130, 246, 0.15)",
+                                    },
+                                  }}
+                                >
+                                  Accéder
+                                </Button>
+                              </motion.div>
                             </Box>
                           </CardContent>
                         </Card>
@@ -1387,15 +1629,13 @@ const LiensUtiles = () => {
             </Box>
           ) : (
             // DESKTOP/TABLET: original grid
-            <Grid container spacing={{ xs: 2, md: 3 }} justifyContent="center">
+            <Grid
+              container
+              spacing={{ xs: 1.5, md: 2.5 }}
+              justifyContent="center"
+            >
               {currentLinks.map((link, index) => (
-                <Grid
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  key={link.id}
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
+                <Grid xs={12} sm={6} md={4} key={link.id}>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -1405,144 +1645,320 @@ const LiensUtiles = () => {
                     <Card
                       sx={{
                         height: "100%",
-                        maxWidth: { xs: 280, md: 320 },
+                        maxWidth: { xs: 180, md: 200 },
                         mx: "auto",
-                        background: "rgba(255,255,255,0.05)",
+                        background: "rgba(255,255,255,0.06)",
                         backdropFilter: "blur(20px)",
                         border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: 3,
-                        transition: "all 0.3s ease",
+                        borderRadius: 1.5,
+                        transition: "all 0.2s ease",
                         cursor: "pointer",
                         position: "relative",
                         overflow: "hidden",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                         "&:hover": {
-                          transform: "translateY(-8px)",
-                          boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                          background: "rgba(255,255,255,0.08)",
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+                          background: "rgba(255,255,255,0.1)",
                           border: "1px solid rgba(59, 130, 246, 0.3)",
-                          "& .resource-icon": {
-                            transform: "scale(1.1) rotate(5deg)",
+                          "& .link-title": {
+                            color: "#3b82f6",
                           },
-                          "& .resource-title": {
-                            background:
-                              "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                            WebkitBackgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                            backgroundClip: "text",
-                          },
-                        },
-                        "&::before": {
-                          content: '""',
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          height: "2px",
-                          background: link.gradient,
-                          opacity: 0,
-                          transition: "opacity 0.3s ease",
-                        },
-                        "&:hover::before": {
-                          opacity: 1,
                         },
                       }}
                     >
-                      <CardContent sx={{ p: { xs: 2, md: 4 } }}>
+                      <CardContent sx={{ p: { xs: 1, md: 1.2 } }}>
+                        {/* Icon and Title Row */}
                         <Box
-                          className="resource-icon"
                           sx={{
-                            width: { xs: 40, md: 48 },
-                            height: { xs: 40, md: 48 },
-                            borderRadius: 2,
-                            background: link.gradient,
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "center",
-                            mb: { xs: 2, md: 3 },
-                            color: "white",
-                            transition: "all 0.3s ease",
+                            gap: { xs: 0.7, md: 0.8 },
+                            mb: { xs: 0.6, md: 0.7 },
                           }}
                         >
-                          <i className={`${link.icon} text-xl`}></i>
+                          <Box
+                            className="link-icon"
+                            sx={{
+                              width: { xs: 18, md: 22 },
+                              height: { xs: 18, md: 22 },
+                              borderRadius: "50%",
+                              background:
+                                CATEGORY_STYLES[link.category]?.gradient ||
+                                "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                              color: "#fff",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              boxShadow: "0 2px 8px 0 rgba(0,0,0,0.10)",
+                              mb: 0.7,
+                              flexShrink: 0,
+                            }}
+                          >
+                            <i
+                              className={link.icon}
+                              style={{
+                                fontSize: "0.55rem", // 15% of the circle
+                                width: "0.55em",
+                                height: "0.55em",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            />
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            className="link-title"
+                            sx={{
+                              fontWeight: 600,
+                              transition: "all 0.2s ease",
+                              fontSize: { xs: "0.65rem", md: "0.75rem" },
+                              lineHeight: 1.2,
+                              color: "rgba(255, 255, 255, 0.9)",
+                              textAlign: "left",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "normal",
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              flex: 1,
+                            }}
+                          >
+                            {link.title}
+                          </Typography>
+
+                          {/* Admin Edit Button */}
+                          {isAdmin && (
+                            <IconButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openEditModalWithLinkData(link);
+                              }}
+                              size="small"
+                              sx={{
+                                color: "rgba(255, 255, 255, 0.6)",
+                                p: 0.3,
+                                minWidth: "auto",
+                                width: { xs: "18px", md: "22px" },
+                                height: { xs: "18px", md: "22px" },
+                                "&:hover": {
+                                  color: "#f59e0b",
+                                  background: "rgba(245, 158, 11, 0.1)",
+                                },
+                              }}
+                            >
+                              <EditIcon
+                                sx={{
+                                  fontSize: { xs: "0.65rem", md: "0.75rem" },
+                                }}
+                              />
+                            </IconButton>
+                          )}
+
+                          <IconButton
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleBookmarkForLink(link.id);
+                            }}
+                            size="small"
+                            sx={{
+                              color: bookmarkedLinks.has(link.id)
+                                ? "#3b82f6"
+                                : "rgba(255, 255, 255, 0.4)",
+                              p: 0.3,
+                              minWidth: "auto",
+                              width: { xs: "18px", md: "22px" },
+                              height: { xs: "18px", md: "22px" },
+                              "&:hover": {
+                                color: "#3b82f6",
+                                background: "rgba(59, 130, 246, 0.1)",
+                              },
+                            }}
+                          >
+                            {bookmarkedLinks.has(link.id) ? (
+                              <BookmarkFilledIcon
+                                sx={{
+                                  fontSize: { xs: "0.65rem", md: "0.75rem" },
+                                }}
+                              />
+                            ) : (
+                              <BookmarkIcon
+                                sx={{
+                                  fontSize: { xs: "0.65rem", md: "0.75rem" },
+                                }}
+                              />
+                            )}
+                          </IconButton>
                         </Box>
-                        <Typography
-                          variant="h6"
-                          className="resource-title"
-                          sx={{
-                            fontWeight: 600,
-                            mb: { xs: 1, md: 2 },
-                            transition: "all 0.3s ease",
-                            fontSize: { xs: "0.9rem", md: "1.25rem" },
-                          }}
-                        >
-                          {link.title}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: "#3b82f6",
-                            fontWeight: 500,
-                            mb: { xs: 1, md: 2 },
-                            fontSize: { xs: "0.7rem", md: "0.875rem" },
-                          }}
-                        >
-                          {link.category}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: "#a1a1aa",
-                            mb: { xs: 2, md: 3 },
-                            lineHeight: 1.6,
-                            fontSize: { xs: "0.75rem", md: "0.875rem" },
-                          }}
-                        >
-                          {link.description}
-                        </Typography>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
+
+                        {/* Category Badge */}
+                        <Box sx={{ mb: { xs: 0.5, md: 0.6 } }}>
                           <Chip
-                            label="Lien"
+                            label={link.category}
                             size="small"
                             sx={{
                               background: "rgba(59, 130, 246, 0.1)",
                               color: "#3b82f6",
+                              fontSize: { xs: "0.5rem", md: "0.55rem" },
+                              height: { xs: "16px", md: "18px" },
+                              fontWeight: 500,
                               border: "1px solid rgba(59, 130, 246, 0.2)",
-                              fontSize: { xs: "0.6rem", md: "0.75rem" },
-                              height: { xs: "20px", md: "24px" },
-                            }}
-                          />
-                          <Button
-                            variant="contained"
-                            size="small"
-                            endIcon={<ArrowRight />}
-                            onClick={() => window.open(link.url, "_blank")}
-                            sx={{
-                              fontWeight: 700,
-                              px: 2,
-                              py: 0.5,
-                              borderRadius: 2,
-                              background: "#2563eb",
-                              color: "#fff",
-                              textTransform: "none",
-                              fontSize: "0.95rem",
-                              minHeight: "32px",
-                              boxShadow: "0 2px 8px rgba(59,130,246,0.10)",
-                              transition: "all 0.2s cubic-bezier(.4,2,.6,1)",
-                              "&:hover": {
-                                background: "#1e40af",
-                                color: "#fff",
-                                boxShadow: "0 4px 16px rgba(59,130,246,0.16)",
+                              "& .MuiChip-label": {
+                                px: { xs: 0.6, md: 0.7 },
                               },
                             }}
+                          />
+                        </Box>
+
+                        {/* Description */}
+                        <Typography
+                          variant="caption"
+                          data-link-desc-id={link.id}
+                          sx={{
+                            color: "rgba(255, 255, 255, 0.6)",
+                            mb: { xs: 0.7, md: 0.8 },
+                            lineHeight: 1.2,
+                            fontSize: { xs: "0.5rem", md: "0.55rem" },
+                            display: "-webkit-box",
+                            WebkitLineClamp: expandedDescriptions.has(link.id)
+                              ? "unset"
+                              : 3,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textAlign: "left",
+                            minHeight: "3.6em",
+                            maxHeight: expandedDescriptions.has(link.id)
+                              ? "none"
+                              : "3.6em",
+                            transition: "max-height 0.3s ease",
+                          }}
+                        >
+                          {link.description}
+                        </Typography>
+
+                        {/* Lire la suite button for visually truncated descriptions */}
+                        {truncatedDescriptions[link.id] &&
+                          !expandedDescriptions.has(link.id) && (
+                            <Box
+                              sx={{
+                                mb: { xs: 0.5, md: 0.6 },
+                                height: "1.2em",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Button
+                                size="small"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleDescriptionExpansion(link.id);
+                                }}
+                                sx={{
+                                  color: "#3b82f6",
+                                  textTransform: "none",
+                                  fontSize: { xs: "0.35rem", sm: "0.4rem" },
+                                  fontWeight: 500,
+                                  p: 0,
+                                  minWidth: "auto",
+                                  "&:hover": {
+                                    background: "rgba(59, 130, 246, 0.1)",
+                                  },
+                                }}
+                              >
+                                Lire la suite
+                              </Button>
+                            </Box>
+                          )}
+                        {expandedDescriptions.has(link.id) && (
+                          <Box
+                            sx={{
+                              mb: { xs: 0.5, md: 0.6 },
+                              height: "1.2em",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
                           >
-                            Accéder
-                          </Button>
+                            <Button
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleDescriptionExpansion(link.id);
+                              }}
+                              sx={{
+                                color: "#3b82f6",
+                                textTransform: "none",
+                                fontSize: { xs: "0.35rem", sm: "0.4rem" },
+                                fontWeight: 500,
+                                p: 0,
+                                minWidth: "auto",
+                                "&:hover": {
+                                  background: "rgba(59, 130, 246, 0.1)",
+                                },
+                              }}
+                            >
+                              Voir moins
+                            </Button>
+                          </Box>
+                        )}
+
+                        {/* Empty space for cards without "Lire la suite" button to maintain consistent height */}
+                        {link.description.length <= 80 && (
+                          <Box
+                            sx={{
+                              mb: { xs: 0.5, md: 0.6 },
+                              height: "1.2em", // Same height as button area
+                            }}
+                          />
+                        )}
+
+                        {/* Action Button */}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              endIcon={
+                                <ArrowRight
+                                  sx={{
+                                    fontSize: { xs: "0.5rem", md: "0.55rem" },
+                                  }}
+                                />
+                              }
+                              onClick={() => window.open(link.url, "_blank")}
+                              sx={{
+                                fontWeight: 500,
+                                px: { xs: 0.9, md: 1.1 },
+                                py: { xs: 0.25, md: 0.3 },
+                                borderRadius: 1,
+                                border: "1px solid rgba(59, 130, 246, 0.3)",
+                                color: "#3b82f6",
+                                textTransform: "none",
+                                fontSize: { xs: "0.45rem", md: "0.5rem" },
+                                background: "rgba(59, 130, 246, 0.05)",
+                                minHeight: { xs: "22px", md: "26px" },
+                                "&:hover": {
+                                  background: "rgba(59, 130, 246, 0.1)",
+                                  border: "1px solid #3b82f6",
+                                  transform: "translateY(-1px)",
+                                  boxShadow:
+                                    "0 2px 8px rgba(59, 130, 246, 0.15)",
+                                },
+                              }}
+                            >
+                              Accéder
+                            </Button>
+                          </motion.div>
                         </Box>
                       </CardContent>
                     </Card>
