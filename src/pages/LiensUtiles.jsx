@@ -1298,7 +1298,7 @@ const LiensUtiles = () => {
                       >
                         <Card
                           sx={{
-                            height: { xs: "100%", md: 170 }, // Further reduced height on desktop
+                            height: { xs: "100%", md: 150 }, // Reduced height for less dead space
                             maxWidth: { xs: 180, md: 200 },
                             mx: "auto",
                             background: "rgba(255,255,255,0.06)",
@@ -1327,11 +1327,13 @@ const LiensUtiles = () => {
                             sx={{
                               p: 1.2,
                               pb: 0.5,
-                              height: { xs: "auto", md: 120 }, // Further reduced content height on desktop
+                              height: { xs: "auto", md: 100 },
                               flex: "1 1 auto",
+                              minHeight: 0,
                               display: "flex",
                               flexDirection: "column",
                               justifyContent: "flex-start",
+                              overflow: "hidden",
                             }}
                           >
                             {/* Content wrapper */}
@@ -1566,8 +1568,9 @@ const LiensUtiles = () => {
                                 />
                               )}
                             </Box>
-
-                            {/* Action Button */}
+                          </CardContent>
+                          <Box sx={{ mt: "auto", p: 1, pt: 0, width: "100%" }}>
+                            {/* Accéder button code here, always at the bottom */}
                             <Box
                               sx={{
                                 display: "flex",
@@ -1619,7 +1622,7 @@ const LiensUtiles = () => {
                                 </Button>
                               </motion.div>
                             </Box>
-                          </CardContent>
+                          </Box>
                         </Card>
                       </motion.div>
                     </Box>
@@ -1644,7 +1647,7 @@ const LiensUtiles = () => {
                   >
                     <Card
                       sx={{
-                        height: { xs: "100%", md: 170 }, // Further reduced height on desktop
+                        height: { xs: "100%", md: 150 }, // Reduced height for less dead space
                         maxWidth: { xs: 180, md: 200 },
                         mx: "auto",
                         background: "rgba(255,255,255,0.06)",
