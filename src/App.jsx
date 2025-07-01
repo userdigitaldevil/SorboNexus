@@ -1,5 +1,10 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Navbar from "./components/Navbar";
@@ -10,6 +15,8 @@ import Conseils from "./pages/Conseils";
 import Alumnis from "./pages/Alumnis";
 import LiensUtiles from "./pages/LiensUtiles";
 import Connexion from "./pages/Connexion";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import { AlumniEditModalProvider } from "./components/AlumniEditModalContext";
 
 // Create a dark theme inspired by Cursor AI
@@ -94,6 +101,29 @@ const theme = createTheme({
   },
 });
 
+// Component to handle title changes
+function TitleUpdater() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const titles = {
+      "/": "SorboNexus - Accueil",
+      "/ressources": "SorboNexus - Ressources",
+      "/conseils": "SorboNexus - Conseils des Alumnis",
+      "/alumnis": "SorboNexus - Alumnis",
+      "/liens-utiles": "SorboNexus - Liens Utiles",
+      "/connexion": "SorboNexus - Connexion",
+      "/terms": "SorboNexus - Conditions d'utilisation",
+      "/privacy": "SorboNexus - Politique de confidentialité",
+    };
+
+    const title = titles[location.pathname] || "SorboNexus";
+    document.title = title;
+  }, [location.pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -101,6 +131,7 @@ function App() {
       <Router>
         <AlumniEditModalProvider>
           <div>
+            <TitleUpdater />
             <Navbar />
             <main>
               <Routes>
@@ -110,6 +141,8 @@ function App() {
                 <Route path="/alumnis" element={<Alumnis />} />
                 <Route path="/liens-utiles" element={<LiensUtiles />} />
                 <Route path="/connexion" element={<Connexion />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
               </Routes>
             </main>
             <Footer />
