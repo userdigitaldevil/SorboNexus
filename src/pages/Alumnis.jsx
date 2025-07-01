@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -103,6 +103,9 @@ export default function Alumnis() {
   const location = useLocation();
   const navigate = useNavigate();
   const { openEditModal } = useAlumniEditModal();
+
+  const sectionRef = useRef(null);
+  const filtersRef = useRef(null);
 
   const fetchAlumni = async () => {
     try {
@@ -228,7 +231,10 @@ export default function Alumnis() {
       (alum.position && alum.position.toLowerCase().includes(searchLower)) ||
       (alum.degree && alum.degree.toLowerCase().includes(searchLower)) ||
       (alum.field && alum.field.toLowerCase().includes(searchLower)) ||
-      (alum.avatar && alum.avatar.toLowerCase().includes(searchLower));
+      (alum.avatar && alum.avatar.toLowerCase().includes(searchLower)) ||
+      (alum.futureGoals &&
+        alum.futureGoals.toLowerCase().includes(searchLower)) ||
+      (alum.anneeFinL3 && alum.anneeFinL3.toLowerCase().includes(searchLower));
     // Check schools applied (accepted schools)
     const schoolsMatch =
       alum.schoolsApplied?.some(
@@ -457,6 +463,13 @@ export default function Alumnis() {
   }, [alumni, alumniId]);
 
   console.log("currentAlumni:", currentAlumni);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+    if (filtersRef.current) {
+      filtersRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -724,7 +737,10 @@ export default function Alumnis() {
         }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: "center", mb: { xs: 6, md: 12 } }}>
+          <Box
+            ref={filtersRef}
+            sx={{ textAlign: "center", mb: { xs: 6, md: 12 } }}
+          >
             <Box
               sx={{
                 display: "flex",
@@ -835,7 +851,7 @@ export default function Alumnis() {
               variant="h2"
               sx={{
                 fontWeight: 800,
-                mb: { xs: 2, md: 4 },
+                mb: { xs: 1, md: 4 },
                 fontSize: {
                   xs: "1.5rem",
                   sm: "2rem",
@@ -856,12 +872,12 @@ export default function Alumnis() {
               sx={{
                 mb: 2,
                 fontWeight: 700,
-                borderRadius: 2,
-                px: 3,
-                py: 1.2,
+                borderRadius: { xs: 1, md: 2 },
+                px: { xs: 1.5, md: 3 },
+                py: { xs: 0.7, md: 1.2 },
                 background: "rgba(59, 130, 246, 0.08)",
                 boxShadow: "0 2px 8px rgba(59, 130, 246, 0.08)",
-                fontSize: { xs: "0.8rem", md: "1rem" },
+                fontSize: { xs: "0.7rem", md: "1rem" },
                 border: "1.5px solid #3b82f6",
                 color: "#3b82f6",
                 "&:hover": {
@@ -895,8 +911,8 @@ export default function Alumnis() {
 
           <Grid
             container
-            rowSpacing={6}
-            columnSpacing={2}
+            rowSpacing={{ xs: 0.5, md: 6 }}
+            columnSpacing={1}
             justifyContent="center"
             sx={{
               maxWidth: "100%",
@@ -953,10 +969,7 @@ export default function Alumnis() {
               <Pagination
                 count={totalPages}
                 page={currentPage}
-                onChange={(_, value) => {
-                  setCurrentPage(value);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
+                onChange={handlePageChange}
                 size="large"
                 sx={{
                   "& .MuiPaginationItem-root": {
