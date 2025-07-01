@@ -60,32 +60,6 @@ export default function Ressources() {
     {
       id: 1,
       title: "Test",
-      subject: "Licence 3 - Informatique",
-      description:
-        "Cours complet sur les algorithmes avancés avec exemples et exercices pratiques. Inclut les graphes, algorithmes de tri et complexité.",
-      icon: "fas fa-file-pdf",
-      gradient: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-      type: "PDF",
-      pages: "42 pages",
-      category: "Informatique",
-      filter: "Cours",
-    },
-    {
-      id: 2,
-      title: "Test",
-      subject: "Licence 2 - Mathématiques",
-      description:
-        "Notes de cours complètes sur l'analyse réelle, suites et séries, fonctions de plusieurs variables. Avec corrigés d'exercices.",
-      icon: "fas fa-file-alt",
-      gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
-      type: "PDF",
-      pages: "120 pages",
-      category: "Mathématiques",
-      filter: "Cours",
-    },
-    {
-      id: 3,
-      title: "Test",
       subject: "Licence 1 - Chimie",
       description:
         "Guide complet de travaux pratiques avec protocoles expérimentaux, fiches techniques et conseils de sécurité.",
@@ -97,7 +71,7 @@ export default function Ressources() {
       filter: "TD",
     },
     {
-      id: 4,
+      id: 2,
       title: "Guide FUF Polytechnique",
       subject: "Préparation aux concours",
       description:
