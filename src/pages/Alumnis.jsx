@@ -25,6 +25,7 @@ import {
   FormControlLabel,
   Checkbox,
   Alert,
+  Snackbar,
 } from "@mui/material";
 import {
   ArrowRight,
@@ -82,6 +83,7 @@ export default function Alumnis() {
   const [alumni, setAlumni] = useState([]);
   const [loading, setLoading] = useState(true);
   const [shuffledOrder, setShuffledOrder] = useState(null);
+  const [alreadyConnectedOpen, setAlreadyConnectedOpen] = useState(false);
 
   // Available domains with their color codes
   const DOMAIN_COLORS = {
@@ -1081,10 +1083,31 @@ export default function Alumnis() {
                   position: "relative",
                   zIndex: 10,
                 }}
+                onClick={() => {
+                  if (!alumniId) {
+                    navigate("/connexion");
+                  } else {
+                    setAlreadyConnectedOpen(true);
+                  }
+                }}
               >
                 Rejoindre le réseau
               </Button>
             </motion.div>
+            <Snackbar
+              open={alreadyConnectedOpen}
+              autoHideDuration={3500}
+              onClose={() => setAlreadyConnectedOpen(false)}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+              <Alert
+                severity="info"
+                onClose={() => setAlreadyConnectedOpen(false)}
+                sx={{ width: "100%" }}
+              >
+                Vous êtes déjà connecté.
+              </Alert>
+            </Snackbar>
           </Box>
         </Container>
       </motion.section>

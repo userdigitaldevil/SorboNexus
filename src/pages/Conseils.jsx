@@ -25,6 +25,7 @@ import {
   FormControlLabel,
   Checkbox,
   Alert,
+  Snackbar,
 } from "@mui/material";
 import {
   School as SchoolIcon,
@@ -53,6 +54,7 @@ import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { DOMAIN_COLORS } from "../components/AlumniCard.jsx";
+import AlumniEditModal from "../components/AlumniEditModal";
 
 const tipsPerPage = 9;
 
@@ -141,6 +143,7 @@ export default function Conseils() {
     },
     isAdmin: false,
   });
+  const [alreadyConnectedOpen, setAlreadyConnectedOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -870,11 +873,12 @@ export default function Conseils() {
           </Box>
         </motion.div>
 
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.4 }}
+        {/* Join Network Section */}
+        <Box
+          sx={{
+            transform: { xs: "scale(0.88)", sm: "scale(1)", md: "scale(1)" },
+            transformOrigin: "top center",
+          }}
         >
           <Card
             elevation={0}
@@ -883,7 +887,7 @@ export default function Conseils() {
               backdropFilter: "blur(20px)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
               borderRadius: "24px",
-              p: 6,
+              p: { xs: 2, sm: 4, md: 6 },
               textAlign: "center",
               mt: 8,
               position: "relative",
@@ -910,9 +914,10 @@ export default function Conseils() {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
+                fontSize: { xs: "1.2rem", sm: "1.5rem", md: "2.1rem" },
               }}
             >
-              Vous voulez donner un conseil ?
+              Faites partie de notre réseau
             </Typography>
             <Typography
               variant="h6"
@@ -921,38 +926,53 @@ export default function Conseils() {
                 mb: 4,
                 maxWidth: "600px",
                 margin: "0 auto",
+                fontSize: { xs: "0.95rem", sm: "1.1rem", md: "1.25rem" },
               }}
             >
-              Partagez votre expérience ou un conseil pour aider les futurs
-              étudiants à réussir leur parcours !
+              Vous êtes un ancien étudiant de la Sorbonne ? Rejoignez notre
+              réseau d'alumnis pour partager votre expérience et aider les
+              étudiants actuels.
             </Typography>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="contained"
-                size="large"
-                sx={{
-                  background:
-                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                  color: "white",
-                  fontWeight: 600,
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: 2,
-                  textTransform: "none",
-                  fontSize: "1.1rem",
-                  "&:hover": {
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              style={{ width: "100%" }}
+            >
+              <Box sx={{ pt: { xs: 2, sm: 3, md: 4 } }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  sx={{
                     background:
-                      "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 10px 25px rgba(59, 130, 246, 0.4)",
-                  },
-                }}
-              >
-                Rejoindre la communauté
-              </Button>
+                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                    color: "white",
+                    fontWeight: 600,
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 2,
+                    textTransform: "none",
+                    fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.1rem" },
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 10px 25px rgba(59, 130, 246, 0.4)",
+                    },
+                  }}
+                  onClick={() => {
+                    if (!alumniId) {
+                      navigate("/connexion");
+                    } else {
+                      setAlreadyConnectedOpen(true);
+                    }
+                  }}
+                >
+                  Rejoindre le réseau
+                </Button>
+              </Box>
             </motion.div>
           </Card>
-        </motion.div>
+        </Box>
       </Container>
 
       {/* Profile Modal */}
@@ -996,272 +1016,28 @@ export default function Conseils() {
       </Modal>
 
       {/* Edit Modal */}
-      <Modal
+      <AlumniEditModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
-        aria-labelledby="edit-modal-title"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          p: 2,
-        }}
-      >
-        <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
-          {/* Fixed Close Button - positioned relative to viewport */}
-          <IconButton
-            onClick={() => setEditModalOpen(false)}
-            sx={{
-              position: "fixed",
-              top: "5vh",
-              right: "5vw",
-              zIndex: 1500,
-              color: "rgba(255, 255, 255, 0.7)",
-              background: "rgba(0, 0, 0, 0.3)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              width: 36,
-              height: 36,
-              "&:hover": {
-                color: "#fff",
-                background: "rgba(0, 0, 0, 0.5)",
-                transform: "scale(1.1)",
-              },
-              transition: "all 0.2s ease",
-            }}
-          >
-            <CloseIcon sx={{ fontSize: "1.2rem" }} />
-          </IconButton>
+        alumni={editAlumni}
+        setAlumni={setEditAlumni}
+        isAdmin={isAdmin}
+      />
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Card
-              elevation={24}
-              sx={{
-                background: "rgba(15, 23, 42, 0.98)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: "24px",
-                maxWidth: 600,
-                width: "100%",
-                maxHeight: "90vh",
-                overflow: "auto",
-                position: "relative",
-                scrollBehavior: "smooth",
-              }}
-            >
-              <Box sx={{ p: 4 }}>
-                <Typography
-                  id="edit-modal-title"
-                  variant="h5"
-                  sx={{
-                    fontWeight: 800,
-                    color: "#3b82f6",
-                    mb: 3,
-                    textAlign: "center",
-                  }}
-                >
-                  Modifier ma carte
-                </Typography>
-                <form onSubmit={handleEditSubmit}>
-                  <TextField
-                    label="Nom"
-                    name="name"
-                    value={editForm.name}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="Diplôme"
-                    name="degree"
-                    value={editForm.degree}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="Poste"
-                    name="position"
-                    value={editForm.position}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="Domaine"
-                    name="field"
-                    value={editForm.field}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="LinkedIn"
-                    name="profile.linkedin"
-                    value={editForm.profile?.linkedin || ""}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="Email"
-                    name="email"
-                    value={editForm.email || ""}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="Profile Email"
-                    name="profile.email"
-                    value={editForm.profile?.email || ""}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="Profile Poste Actuel"
-                    name="profile.currentPosition"
-                    value={editForm.profile?.currentPosition || ""}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                  />
-                  {/* Grades Section */}
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle1">
-                      Notes / Diplômes
-                    </Typography>
-                    {Object.entries(editForm.profile?.grades || {}).map(
-                      ([key, value], idx) => (
-                        <Box
-                          key={key + idx}
-                          sx={{ display: "flex", gap: 1, mb: 1 }}
-                        >
-                          <TextField
-                            label="Diplôme"
-                            value={key}
-                            onChange={(e) => {
-                              const newKey = e.target.value;
-                              const grades = { ...editForm.profile.grades };
-                              const val = grades[key];
-                              delete grades[key];
-                              grades[newKey] = val;
-                              setEditForm((prev) => ({
-                                ...prev,
-                                profile: { ...prev.profile, grades },
-                              }));
-                            }}
-                            size="small"
-                            sx={{ flex: 1 }}
-                          />
-                          <TextField
-                            label="Note"
-                            value={value}
-                            onChange={(e) =>
-                              handleGradeChange(key, e.target.value)
-                            }
-                            size="small"
-                            sx={{ flex: 1 }}
-                          />
-                          <Button
-                            onClick={() => handleRemoveGrade(key)}
-                            color="error"
-                            size="small"
-                          >
-                            Supprimer
-                          </Button>
-                        </Box>
-                      )
-                    )}
-                    <Button
-                      onClick={handleAddGrade}
-                      size="small"
-                      sx={{ mt: 1 }}
-                    >
-                      Ajouter un diplôme/note
-                    </Button>
-                  </Box>
-                  {/* Schools Section */}
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle1">
-                      Écoles demandées
-                    </Typography>
-                    {(editForm.profile?.schoolsApplied || []).map(
-                      (school, idx) => (
-                        <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
-                          <TextField
-                            label="École"
-                            value={school.name}
-                            onChange={(e) =>
-                              handleSchoolChange(idx, "name", e.target.value)
-                            }
-                            size="small"
-                            sx={{ flex: 2 }}
-                          />
-                          <TextField
-                            select
-                            label="Statut"
-                            value={school.status}
-                            onChange={(e) =>
-                              handleSchoolChange(idx, "status", e.target.value)
-                            }
-                            size="small"
-                            sx={{ flex: 1 }}
-                            SelectProps={{ native: true }}
-                          >
-                            <option value="accepted">Accepté</option>
-                            <option value="rejected">Refusé</option>
-                          </TextField>
-                          <Button
-                            onClick={() => handleRemoveSchool(idx)}
-                            color="error"
-                            size="small"
-                          >
-                            Supprimer
-                          </Button>
-                        </Box>
-                      )
-                    )}
-                    <Button
-                      onClick={handleAddSchool}
-                      size="small"
-                      sx={{ mt: 1 }}
-                    >
-                      Ajouter une école
-                    </Button>
-                  </Box>
-                  <TextField
-                    label="Conseil"
-                    name="conseil"
-                    value={editForm.conseil}
-                    onChange={handleEditFormChange}
-                    fullWidth
-                    multiline
-                    minRows={3}
-                    sx={{ mb: 2 }}
-                  />
-                  <Box
-                    sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
-                  >
-                    <Button onClick={() => setEditModalOpen(false)}>
-                      Annuler
-                    </Button>
-                    <Button type="submit" variant="contained">
-                      Enregistrer
-                    </Button>
-                  </Box>
-                </form>
-              </Box>
-            </Card>
-          </motion.div>
-        </Box>
-      </Modal>
+      <Snackbar
+        open={alreadyConnectedOpen}
+        autoHideDuration={3500}
+        onClose={() => setAlreadyConnectedOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          severity="info"
+          onClose={() => setAlreadyConnectedOpen(false)}
+          sx={{ width: "100%" }}
+        >
+          Vous êtes déjà connecté.
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
