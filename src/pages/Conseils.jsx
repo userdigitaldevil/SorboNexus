@@ -190,6 +190,7 @@ export default function Conseils() {
     customCardColor: alum.customCardColor,
     hidden: alum.hidden,
     isAdmin: alum.isAdmin || false,
+    updatedAt: alum.updatedAt, // Add updatedAt for sorting
   }));
 
   // Only include alumni with a non-empty conseil and not hidden, or self, or admin
@@ -225,9 +226,17 @@ export default function Conseils() {
     adminTips = filteredAlumniTips.filter((tip) => tip.isAdmin);
     otherTips = filteredAlumniTips.filter((tip) => !tip.isAdmin);
   }
-  // Sort admins and others alphabetically by author
+  // Sort admins alphabetically by author
   adminTips.sort((a, b) => a.author.localeCompare(b.author));
-  otherTips.sort((a, b) => a.author.localeCompare(b.author));
+  // Sort others by most recently updated
+  otherTips.sort((a, b) => {
+    if (a.updatedAt && b.updatedAt) {
+      return new Date(b.updatedAt) - new Date(a.updatedAt);
+    }
+    if (a.updatedAt) return -1;
+    if (b.updatedAt) return 1;
+    return 0;
+  });
 
   // Final ordered list: user first (if present), then admins, then others
   const orderedAlumniTips = [
