@@ -802,7 +802,7 @@ export default function Home() {
                     des écoles prestigieuses telles que{" "}
                     <b>
                       Polytechnique, ENS, CentraleSupélec, Dauphine, Sorbonne,
-                      Paris-Saclay
+                      Paris-Saclay, Télécom
                     </b>{" "}
                     et bien d'autres.
                     <br />
