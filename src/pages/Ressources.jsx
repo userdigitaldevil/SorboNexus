@@ -96,6 +96,20 @@ export default function Ressources() {
       category: "Physique",
       filter: "TD",
     },
+    {
+      id: 4,
+      title: "Guide FUF Polytechnique",
+      subject: "Préparation aux concours",
+      description:
+        "Guide complet pour la préparation aux concours de l'École Polytechnique. Inclut conseils, méthodologie et ressources pour réussir les épreuves.",
+      icon: "fas fa-graduation-cap",
+      gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      type: "PDF",
+      pages: "85 pages",
+      category: "Autres",
+      filter: "Livres",
+      pdfUrl: "/pdfs/Guide_FUF.pdf",
+    },
   ];
 
   // Memoize filtered resources to prevent recalculation on every render
@@ -380,6 +394,11 @@ export default function Ressources() {
                   whileHover={{ scale: 1.02 }}
                 >
                   <Card
+                    onClick={() => {
+                      if (resource.pdfUrl) {
+                        window.open(resource.pdfUrl, "_blank");
+                      }
+                    }}
                     sx={{
                       height: "100%",
                       maxWidth: { xs: 280, md: 320 },
@@ -389,7 +408,7 @@ export default function Ressources() {
                       border: "1px solid rgba(255,255,255,0.1)",
                       borderRadius: 3,
                       transition: "all 0.3s ease",
-                      cursor: "pointer",
+                      cursor: resource.pdfUrl ? "pointer" : "default",
                       position: "relative",
                       overflow: "hidden",
                       "&:hover": {
@@ -494,15 +513,20 @@ export default function Ressources() {
                             height: { xs: "20px", md: "24px" },
                           }}
                         />
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: "rgba(255, 255, 255, 0.6)",
-                            fontSize: { xs: "0.6rem", md: "0.75rem" },
-                          }}
-                        >
-                          {resource.pages}
-                        </Typography>
+                        {resource.pdfUrl && (
+                          <i
+                            className="fas fa-download"
+                            style={{
+                              color: "#10b981",
+                              fontSize: "0.7rem",
+                              cursor: "pointer",
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(resource.pdfUrl, "_blank");
+                            }}
+                          />
+                        )}
                       </Box>
                     </CardContent>
                   </Card>
