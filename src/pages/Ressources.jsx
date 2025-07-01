@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -30,13 +30,31 @@ export default function Ressources() {
 
   const categories = [
     "Toutes les ressources",
-    "Informatique",
     "Mathématiques",
     "Physique",
-    "Histoire",
+    "Informatique",
+    "Chimie",
+    "Électronique",
+    "Mécanique",
+    "Sciences de la Terre",
+    "Sciences de la vie",
+    "Autres",
   ];
 
-  const filters = ["Tous", "Cours", "TD", "Examens", "Livres"];
+  const filters = [
+    "Tous",
+    "Cours",
+    "TD",
+    "Examens",
+    "Livres",
+    "Exercices",
+    "Vidéos",
+    "Témoignages",
+    "Concours",
+    "CV",
+    "Lettres",
+    "Autres",
+  ];
 
   const resources = [
     {
@@ -158,24 +176,22 @@ export default function Ressources() {
     },
   ];
 
-  const filteredResources = resources.filter((resource) => {
-    const matchesSearch =
-      resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      resource.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      resource.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      activeCategory === "Toutes les ressources" ||
-      resource.category === activeCategory;
-    const matchesFilter =
-      activeFilter === "Tous" || resource.filter === activeFilter;
+  // Memoize filtered resources to prevent recalculation on every render
+  const filteredResources = useMemo(() => {
+    return resources.filter((resource) => {
+      const matchesSearch =
+        resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        resource.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        resource.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        activeCategory === "Toutes les ressources" ||
+        resource.category === activeCategory;
+      const matchesFilter =
+        activeFilter === "Tous" || resource.filter === activeFilter;
 
-    return matchesSearch && matchesCategory && matchesFilter;
-  });
-
-  const totalPages = Math.ceil(filteredResources.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentResources = filteredResources.slice(startIndex, endIndex);
+      return matchesSearch && matchesCategory && matchesFilter;
+    });
+  }, [searchQuery, activeCategory, activeFilter]);
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -184,7 +200,7 @@ export default function Ressources() {
         className="absolute inset-0 z-0 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
+        transition={{ duration: 0.8 }}
       >
         <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-gradient-to-br from-blue-700/40 via-teal-400/20 to-purple-600/30 rounded-full blur-3xl animate-pulse-slow" />
         <div className="absolute top-1/2 right-0 w-[350px] h-[350px] bg-gradient-to-br from-pink-500/30 via-blue-400/10 to-teal-400/30 rounded-full blur-2xl animate-pulse-slower" />
@@ -195,7 +211,7 @@ export default function Ressources() {
         className="relative pt-20 pb-16 px-4 bg-gradient-to-r from-blue-900/30 to-teal-900/30 z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
         style={{
           paddingTop: window.innerWidth < 600 ? "80px" : "80px",
           paddingBottom: window.innerWidth < 600 ? "64px" : "64px",
@@ -205,7 +221,7 @@ export default function Ressources() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             style={{ textAlign: "center" }}
           >
             <Typography
@@ -256,7 +272,7 @@ export default function Ressources() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
             <Typography
@@ -299,7 +315,6 @@ export default function Ressources() {
                   width: "100%",
                   "& .MuiOutlinedInput-root": {
                     background: "rgba(255,255,255,0.05)",
-                    backdropFilter: "blur(20px)",
                     border: "1px solid rgba(255,255,255,0.1)",
                     borderRadius: 3,
                     color: "white",
@@ -434,7 +449,7 @@ export default function Ressources() {
       >
         <Container maxWidth="lg">
           <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
-            {currentResources.map((resource, index) => (
+            {filteredResources.map((resource, index) => (
               <Grid xs={12} sm={6} md={4} key={resource.id}>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -575,7 +590,7 @@ export default function Ressources() {
           </Grid>
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {filteredResources.length > itemsPerPage && (
             <Box
               sx={{
                 display: "flex",
@@ -584,7 +599,7 @@ export default function Ressources() {
               }}
             >
               <Pagination
-                count={totalPages}
+                count={Math.ceil(filteredResources.length / itemsPerPage)}
                 page={currentPage}
                 onChange={(event, value) => {
                   setCurrentPage(value);
