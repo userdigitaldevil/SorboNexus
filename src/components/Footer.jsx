@@ -186,6 +186,68 @@ export default function Footer() {
             </a>
           </Stack>
         </Stack>
+        <Box sx={{ mt: 3, mb: 1 }}>
+          <Typography
+            variant="caption"
+            sx={{ color: "#aaa", fontWeight: 400, display: "block", mb: 0.5 }}
+          >
+            <strong>Réglementation :</strong> Ce site respecte la réglementation
+            en vigueur concernant la protection des données personnelles (RGPD)
+            et la propriété intellectuelle. Les informations partagées ici sont
+            destinées à la communauté étudiante et alumni, dans un cadre non
+            commercial et éducatif.
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{ color: "#aaa", fontWeight: 400, display: "block", mb: 0.5 }}
+          >
+            <strong>Politiques d'utilisation :</strong> L'utilisation de
+            SorboNexus implique le respect de la bienveillance, de l'entraide et
+            de la confidentialité. Toute utilisation abusive, spam, ou
+            publication de contenu inapproprié entraînera la suppression du
+            compte ou des messages concernés. Les utilisateurs sont invités à
+            partager uniquement des ressources et conseils dont ils détiennent
+            les droits ou l'autorisation.
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "#aaa",
+              fontWeight: 400,
+              display: "block",
+              mb: 0.5,
+              fontStyle: "italic",
+            }}
+          >
+            <strong>Disclaimer :</strong> Ce site n'est pas un site officiel de
+            Sorbonne Université et n'est ni affilié ni validé par
+            l'établissement. Il s'agit d'une initiative indépendante à but non
+            lucratif, créée par et pour la communauté Sorbonne Sciences Jussieu.
+          </Typography>
+          <Box sx={{ mt: 1 }}>
+            <Link
+              to="/terms"
+              style={{
+                color: "#3b82f6",
+                marginRight: 16,
+                textDecoration: "underline",
+                fontSize: "0.95em",
+              }}
+            >
+              Terms of Use
+            </Link>
+            <Link
+              to="/privacy"
+              style={{
+                color: "#3b82f6",
+                textDecoration: "underline",
+                fontSize: "0.95em",
+              }}
+            >
+              Privacy Policy
+            </Link>
+          </Box>
+        </Box>
         <Typography
           variant="caption"
           sx={{
