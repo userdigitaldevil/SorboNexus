@@ -59,7 +59,7 @@ export default function Ressources() {
   const resources = [
     {
       id: 1,
-      title: "Algorithmique Avancée",
+      title: "Test",
       subject: "Licence 3 - Informatique",
       description:
         "Cours complet sur les algorithmes avancés avec exemples et exercices pratiques. Inclut les graphes, algorithmes de tri et complexité.",
@@ -72,7 +72,7 @@ export default function Ressources() {
     },
     {
       id: 2,
-      title: "Analyse Mathématique",
+      title: "Test",
       subject: "Licence 2 - Mathématiques",
       description:
         "Notes de cours complètes sur l'analyse réelle, suites et séries, fonctions de plusieurs variables. Avec corrigés d'exercices.",
@@ -85,7 +85,7 @@ export default function Ressources() {
     },
     {
       id: 3,
-      title: "TP Chimie Organique",
+      title: "Test",
       subject: "Licence 1 - Chimie",
       description:
         "Guide complet de travaux pratiques avec protocoles expérimentaux, fiches techniques et conseils de sécurité.",
@@ -95,84 +95,6 @@ export default function Ressources() {
       pages: "TP",
       category: "Physique",
       filter: "TD",
-    },
-    {
-      id: 4,
-      title: "Histoire Moderne",
-      subject: "Licence 2 - Histoire",
-      description:
-        "Chronologie détaillée de la période moderne (1492-1789) avec analyses des événements clés et biographies des figures importantes.",
-      icon: "fas fa-history",
-      gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-      type: "PDF",
-      pages: "85 pages",
-      category: "Histoire",
-      filter: "Cours",
-    },
-    {
-      id: 5,
-      title: "Grammaire Anglaise",
-      subject: "Licence 1 - Langues",
-      description:
-        "Guide complet de grammaire anglaise avec exercices corrigés, listes de vocabulaire et conseils pour la prononciation.",
-      icon: "fas fa-language",
-      gradient: "linear-gradient(135deg, #ef4444 0%, #ec4899 100%)",
-      type: "PDF",
-      pages: "64 pages",
-      category: "Histoire",
-      filter: "Livres",
-    },
-    {
-      id: 6,
-      title: "Web Development",
-      subject: "Master 1 - Informatique",
-      description:
-        "Projet complet de développement web avec HTML, CSS, JavaScript et React. Inclut les bonnes pratiques et optimisation.",
-      icon: "fas fa-laptop-code",
-      gradient: "linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)",
-      type: "Projet",
-      pages: "Projet",
-      category: "Informatique",
-      filter: "TD",
-    },
-    {
-      id: 7,
-      title: "Physique Quantique",
-      subject: "Licence 3 - Physique",
-      description:
-        "Cours approfondi sur les principes de la mécanique quantique avec applications pratiques et exercices résolus.",
-      icon: "fas fa-atom",
-      gradient: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
-      type: "PDF",
-      pages: "95 pages",
-      category: "Physique",
-      filter: "Cours",
-    },
-    {
-      id: 8,
-      title: "Examen Final Mathématiques",
-      subject: "Licence 2 - Mathématiques",
-      description:
-        "Sujet d'examen avec corrigé détaillé pour l'évaluation finale en analyse et algèbre linéaire.",
-      icon: "fas fa-file-alt",
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
-      type: "PDF",
-      pages: "Examen",
-      category: "Mathématiques",
-      filter: "Examens",
-    },
-    {
-      id: 9,
-      title: "Livre de Référence - Histoire",
-      subject: "Licence 3 - Histoire",
-      description:
-        "Ouvrage de référence complet sur l'histoire contemporaine avec bibliographie et index détaillés.",
-      icon: "fas fa-book",
-      gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
-      type: "PDF",
-      pages: "320 pages",
-      category: "Histoire",
-      filter: "Livres",
     },
   ];
 
