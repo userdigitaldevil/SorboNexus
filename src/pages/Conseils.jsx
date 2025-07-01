@@ -55,6 +55,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { DOMAIN_COLORS } from "../components/AlumniCard.jsx";
 import AlumniEditModal from "../components/AlumniEditModal";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const tipsPerPage = 9;
 
@@ -147,6 +148,15 @@ export default function Conseils() {
 
   const navigate = useNavigate();
 
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  // Set preview length and lines based on device
+  const PREVIEW_LENGTH = isMobile ? 90 : 200;
+  const PREVIEW_LINES = isMobile ? 2 : 3;
+
+  // Style constants for alignment
+  const LEFT_COL_WIDTH = 220;
+
   useEffect(() => {
     fetch(`${process.env.VITE_API_URL}/api/alumni`)
       .then((res) => res.json())
@@ -232,13 +242,6 @@ export default function Conseils() {
     (currentPage - 1) * tipsPerPage,
     currentPage * tipsPerPage
   );
-
-  // Preview length for conseil content
-  const PREVIEW_LENGTH = 200;
-  const PREVIEW_LINES = 3;
-
-  // Style constants for alignment
-  const LEFT_COL_WIDTH = 220;
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
@@ -641,7 +644,7 @@ export default function Conseils() {
                     overflow: "visible",
                     position: "relative",
                     transition: "box-shadow 0.2s",
-                    minHeight: { xs: 80, md: 100 },
+                    minHeight: { xs: 60, md: 100 },
                     display: "flex",
                     alignItems: "center",
                     opacity:
