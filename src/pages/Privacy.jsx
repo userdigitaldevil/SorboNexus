@@ -1,6 +1,11 @@
 import { Container, Typography, Box, List, ListItem } from "@mui/material";
+import { useEffect } from "react";
 
 export default function Privacy() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Container maxWidth="md" sx={{ py: { xs: 4, md: 8 } }}>
       <Box>
