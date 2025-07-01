@@ -303,7 +303,7 @@ export default function Alumnis() {
   }
   // Pagination is applied after ordering, so the most recently updated alumni will always be right after the admins, regardless of page.
   let displayOrdered = shuffledOrder ? shuffledOrder : ordered;
-  const itemsPerPage = 9;
+  const itemsPerPage = 12;
   const totalPages = Math.ceil(displayOrdered.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -829,7 +829,7 @@ export default function Alumnis() {
           paddingBottom: window.innerWidth < 600 ? "80px" : "96px",
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="xl">
           <Box sx={{ textAlign: "center", mb: { xs: 4, md: 8 } }}>
             <Typography
               variant="h2"
@@ -895,7 +895,8 @@ export default function Alumnis() {
 
           <Grid
             container
-            spacing={{ xs: 2, sm: 3, md: 4 }}
+            rowSpacing={6}
+            columnSpacing={2}
             justifyContent="center"
             sx={{
               maxWidth: "100%",
