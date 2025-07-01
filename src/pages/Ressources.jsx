@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -21,6 +21,7 @@ export default function Ressources() {
   const [activeFilter, setActiveFilter] = useState("Tous");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+  const categoriesRef = useRef(null);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -322,7 +323,7 @@ export default function Ressources() {
             </Box>
 
             {/* Categories */}
-            <Box sx={{ mb: { xs: 2, md: 3 } }}>
+            <Box sx={{ mb: { xs: 2, md: 3 } }} ref={categoriesRef}>
               <Typography
                 variant="h6"
                 sx={{
@@ -585,7 +586,15 @@ export default function Ressources() {
               <Pagination
                 count={totalPages}
                 page={currentPage}
-                onChange={(event, value) => setCurrentPage(value)}
+                onChange={(event, value) => {
+                  setCurrentPage(value);
+                  if (categoriesRef.current) {
+                    categoriesRef.current.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }
+                }}
                 color="primary"
                 size={window.innerWidth < 600 ? "small" : "medium"}
                 sx={{
