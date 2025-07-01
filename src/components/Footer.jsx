@@ -53,17 +53,24 @@ export default function Footer() {
 
           {/* Navigation Links */}
           <Stack
-            direction="row"
+            direction={{ xs: "row", md: "row" }}
             spacing={3}
             alignItems="center"
             justifyContent="center"
-            sx={{ flexGrow: 1 }}
+            sx={{
+              flexGrow: 1,
+              flexWrap: { xs: "wrap", md: "nowrap" },
+              width: "100%",
+              maxWidth: "100vw",
+              overflowX: "auto",
+            }}
           >
             {[
               { label: "Accueil", path: "/" },
               { label: "Ressources", path: "/ressources" },
               { label: "Alumnis", path: "/alumnis" },
               { label: "Conseils", path: "/conseils" },
+              { label: "Liens Utiles", path: "/liens-utiles" },
             ].map((item) => (
               <Box
                 key={item.label}
@@ -72,7 +79,7 @@ export default function Footer() {
                   cursor: "pointer",
                   color: "#fff",
                   fontWeight: 500,
-                  fontSize: { xs: "1rem", md: "1.05rem" },
+                  fontSize: { xs: "0.85rem", md: "1.05rem" },
                   transition: "all 0.2s",
                   borderRadius: 1,
                   px: 1,
@@ -88,31 +95,6 @@ export default function Footer() {
                 {item.label}
               </Box>
             ))}
-            <a
-              href="mailto:sethaguila@icloud.com"
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                sx={{
-                  cursor: "pointer",
-                  color: "#fff",
-                  fontWeight: 500,
-                  fontSize: { xs: "1rem", md: "1.05rem" },
-                  transition: "all 0.2s",
-                  borderRadius: 1,
-                  px: 1,
-                  py: 0.5,
-                  textAlign: "center",
-                  "&:hover": {
-                    color: "#3b82f6",
-                    background: "rgba(59,130,246,0.08)",
-                    transform: "translateY(-2px)",
-                  },
-                }}
-              >
-                Contact
-              </Box>
-            </a>
           </Stack>
 
           {/* Social Links */}
@@ -123,7 +105,11 @@ export default function Footer() {
             justifyContent="center"
             sx={{
               width: { xs: "100%", md: 240 },
-              justifyContent: { md: "flex-end" },
+              justifyContent: { xs: "center", md: "flex-end" },
+              flexWrap: "wrap",
+              maxWidth: "100vw",
+              overflowX: "auto",
+              mt: { xs: 2, md: 0 },
             }}
           >
             <a
