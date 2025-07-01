@@ -1665,7 +1665,7 @@ export default function Home() {
                 fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
               }}
             >
-              Seth est ouvert à tous vos feedbacks, pull requests et
+              Ce projet est ouvert à tous vos feedbacks, pull requests et
               contributions !<br />
               Vous êtes invités à compléter votre profil alumni et à partager
               les conseils et ressources qui vous ont aidé dans votre parcours

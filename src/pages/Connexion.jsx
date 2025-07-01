@@ -489,7 +489,8 @@ export default function Connexion() {
             >
               En vous connectant, vous acceptez nos{" "}
               <Link
-                href="#"
+                component={RouterLink}
+                to="/terms"
                 sx={{
                   color: "#3b82f6",
                   textDecoration: "none",
@@ -502,7 +503,8 @@ export default function Connexion() {
               </Link>{" "}
               et notre{" "}
               <Link
-                href="#"
+                component={RouterLink}
+                to="/privacy"
                 sx={{
                   color: "#3b82f6",
                   textDecoration: "none",
