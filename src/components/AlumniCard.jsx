@@ -114,7 +114,7 @@ const AlumniCard = ({
       <Card
         onClick={() => onCardClick(alum)}
         sx={{
-          transform: { xs: "scale(0.88)", sm: "scale(1)" },
+          transform: "scale(1)",
           transformOrigin: "top center",
           background: "rgba(255, 255, 255, 0.05)",
           backdropFilter: "blur(10px)",
@@ -124,11 +124,11 @@ const AlumniCard = ({
           position: "relative",
           cursor: "pointer",
           transition: "all 0.3s ease",
-          minHeight: { xs: 280, sm: 320, md: 360 },
+          minHeight: 320,
           height: "100%",
-          minWidth: { xs: 260, sm: 260, md: 320 },
-          maxWidth: { xs: 320, sm: 320, md: 320 },
-          width: { xs: 260, sm: 260, md: 320 },
+          minWidth: 320,
+          maxWidth: 320,
+          width: 320,
           mx: 2,
           display: "flex",
           flexDirection: "column",

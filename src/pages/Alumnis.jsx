@@ -467,7 +467,20 @@ export default function Alumnis() {
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
     if (filtersRef.current) {
-      filtersRef.current.scrollIntoView({ behavior: "smooth" });
+      if (window.innerWidth < 600) {
+        // On mobile, scroll with offset for sticky headers
+        const rect = filtersRef.current.getBoundingClientRect();
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        // Offset of 12px for padding, adjust if you have a sticky header
+        const offset = 12;
+        window.scrollTo({
+          top: rect.top + scrollTop - offset,
+          behavior: "smooth",
+        });
+      } else {
+        filtersRef.current.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
@@ -911,7 +924,7 @@ export default function Alumnis() {
 
           <Grid
             container
-            rowSpacing={{ xs: 0.5, md: 6 }}
+            rowSpacing={{ xs: 2, md: 6 }}
             columnSpacing={1}
             justifyContent="center"
             sx={{
@@ -932,11 +945,13 @@ export default function Alumnis() {
                   display: "flex",
                   justifyContent: "center",
                   maxWidth: { xs: "100%", sm: "50%", md: "25%" },
+                  height: "100%",
                 }}
               >
                 <Box
                   sx={{
                     width: "100%",
+                    height: "100%",
                     opacity:
                       (String(alum._id) === String(alumniId) ||
                         String(alum.id) === String(alumniId)) &&
