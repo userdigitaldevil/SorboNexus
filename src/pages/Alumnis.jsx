@@ -106,6 +106,7 @@ export default function Alumnis() {
 
   const sectionRef = useRef(null);
   const filtersRef = useRef(null);
+  const listButtonRef = useRef(null);
 
   const fetchAlumni = async () => {
     try {
@@ -466,13 +467,26 @@ export default function Alumnis() {
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
+    if (window.innerWidth < 600) {
+      // On mobile, scroll to the 'Liste de tous les alumnis' button
+      if (listButtonRef.current) {
+        const rect = listButtonRef.current.getBoundingClientRect();
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        // Offset for sticky header if needed
+        const offset = 12;
+        window.scrollTo({
+          top: rect.top + scrollTop - offset,
+          behavior: "smooth",
+        });
+        return;
+      }
+    }
     if (filtersRef.current) {
       if (window.innerWidth < 600) {
-        // On mobile, scroll with offset for sticky headers
         const rect = filtersRef.current.getBoundingClientRect();
         const scrollTop =
           window.pageYOffset || document.documentElement.scrollTop;
-        // Offset of 12px for padding, adjust if you have a sticky header
         const offset = 12;
         window.scrollTo({
           top: rect.top + scrollTop - offset,
@@ -616,6 +630,7 @@ export default function Alumnis() {
                 <Button
                   variant="outlined"
                   onClick={openListModal}
+                  ref={listButtonRef}
                   sx={{
                     color: "#3b82f6",
                     border: "1.5px solid #3b82f6",
