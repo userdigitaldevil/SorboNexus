@@ -39,12 +39,26 @@ const FeatureCard = ({
           cursor: "pointer",
           position: "relative",
           overflow: "hidden",
-          height: fixedSize ? { xs: 96, sm: 120 } : isMini ? "auto" : "100%",
-          width: fixedSize ? { xs: 80, sm: 100 } : "100%",
+          height: fixedSize
+            ? { xs: 96, sm: 120 }
+            : isMini
+            ? "auto"
+            : variant === "full"
+            ? { xs: 220, sm: 240, md: 260 }
+            : "100%",
+          width: fixedSize
+            ? { xs: 80, sm: 100 }
+            : isMini
+            ? "100%"
+            : variant === "full"
+            ? { xs: 200, sm: 260, md: 280 }
+            : "100%",
           maxWidth: fixedSize
             ? { xs: 80, sm: 100 }
             : isMini
             ? "none"
+            : variant === "full"
+            ? { xs: 200, sm: 260, md: 280 }
             : { xs: "200px", sm: "280px", md: "320px", lg: "280px" },
           "&:hover": {
             background: "rgba(255,255,255,0.08)",
