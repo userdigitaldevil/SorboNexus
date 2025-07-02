@@ -468,7 +468,7 @@ export default function Alumnis() {
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
     if (window.innerWidth < 600) {
-      // On mobile, scroll to the 'Liste de tous les alumnis' button
+      // On mobile, scroll to the 'Liste de tous les alumni' button
       if (listButtonRef.current) {
         const rect = listButtonRef.current.getBoundingClientRect();
         const scrollTop =
@@ -551,7 +551,7 @@ export default function Alumnis() {
                 }}
               >
                 <span style={{ display: "block" }}>Réseau des</span>
-                <span style={{ display: "block" }}>Alumnis</span>
+                <span style={{ display: "block" }}>Alumni</span>
               </Typography>
             </motion.div>
 
@@ -647,7 +647,7 @@ export default function Alumnis() {
                     },
                   }}
                 >
-                  Liste de tous les alumnis
+                  Liste de tous les alumni
                 </Button>
               </Box>
             </motion.div>
@@ -1094,7 +1094,7 @@ export default function Alumnis() {
                 }}
               >
                 Vous êtes un ancien étudiant de la Sorbonne ? Rejoignez notre
-                réseau d'alumnis pour partager votre expérience et aider les
+                réseau d'alumni pour partager votre expérience et aider les
                 étudiants actuels.
               </Typography>
             </motion.div>
@@ -1292,7 +1292,7 @@ export default function Alumnis() {
                 variant="h5"
                 sx={{ fontWeight: 800, color: "#3b82f6" }}
               >
-                Liste de tous les alumnis par catégorie
+                Liste de tous les alumni par catégorie
               </Typography>
             </Box>
             <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
@@ -1423,7 +1423,7 @@ export default function Alumnis() {
                             {domain}
                           </Typography>
                           <Chip
-                            label={`${group.length} alumnis`}
+                            label={`${group.length} alumni`}
                             size="small"
                             sx={{
                               ml: 2,
