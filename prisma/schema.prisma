@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -52,4 +51,14 @@ model User {
   isAdmin   Boolean @default(false)
   alumniId  Int?
   alumni    Alumni? @relation(fields: [alumniId], references: [id], name: "AlumniUsers")
+}
+
+model Link {
+  id          Int      @id @default(autoincrement())
+  title       String
+  url         String
+  description String
+  category    String
+  icon        String
+  gradient    String
 } 

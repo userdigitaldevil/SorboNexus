@@ -110,10 +110,13 @@ async function main() {
   }
 
   console.log("Seeded links!");
+
+  await seedLinks(prisma);
+  await seedRessources(prisma);
 }
 
 // SEED LINKS DATA
-async function seedLinks() {
+async function seedLinks(prisma) {
   const links = [
     {
       title: "Bibliothèque Sainte-Geneviève",
@@ -607,23 +610,96 @@ async function seedLinks() {
   }
 }
 
-if (require.main === module) {
-  seedLinks()
-    .then(() => {
-      console.log("Links seeded successfully");
-      process.exit(0);
-    })
-    .catch((err) => {
-      console.error("Error seeding links:", err);
-      process.exit(1);
-    });
+// Add seeding for Ressource model
+async function seedRessources(prisma) {
+  const userId = 21;
+  // Remove all existing ressources first (idempotency)
+  await prisma.ressource.deleteMany();
+
+  const ressources = [
+    {
+      title: "Guide FUF Polytechnique",
+      subject: "Préparation aux concours",
+      description:
+        "Guide complet pour la préparation aux concours de l'École Polytechnique. Inclut conseils, méthodologie et ressources pour réussir les épreuves.",
+      icon: "fas fa-graduation-cap",
+      gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      type: "PDF",
+      category: "Autres",
+      filter: "Livres",
+      resourceUrl: "/pdfs/Guide_FUF.pdf",
+      format: "pdf",
+      createdById: userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      title: "Cours de Physique Quantique",
+      subject: "Licence 3 - Physique",
+      description:
+        "Cours complet de physique quantique avec exercices corrigés et illustrations.",
+      icon: "fas fa-atom",
+      gradient: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
+      type: "PDF",
+      category: "Physique",
+      filter: "Cours",
+      resourceUrl: "https://example.com/physique-quantique.pdf",
+      format: "pdf",
+      createdById: userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      title: "Exercices de Mathématiques",
+      subject: "Mathématiques - Tous niveaux",
+      description:
+        "Recueil d'exercices de mathématiques pour tous niveaux, avec solutions détaillées.",
+      icon: "fas fa-square-root-alt",
+      gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+      type: "PDF",
+      category: "Mathématiques",
+      filter: "Exercices",
+      resourceUrl: "https://example.com/exercices-maths.pdf",
+      format: "pdf",
+      createdById: userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      title: "Poster Informatique 2024",
+      subject: "Informatique - L1",
+      description:
+        "Poster récapitulatif des concepts clés de l'informatique pour la première année.",
+      icon: "fas fa-desktop",
+      gradient: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+      type: "Image",
+      category: "Informatique",
+      filter: "Autres",
+      resourceUrl: "https://example.com/poster-info-2024.jpg",
+      format: "image",
+      createdById: userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
+
+  for (const ressource of ressources) {
+    try {
+      await prisma.ressource.create({ data: ressource });
+      console.log(`Seeded ressource: ${ressource.title}`);
+    } catch (err) {
+      console.error(`Error seeding ressource: ${ressource.title}`, err);
+    }
+  }
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+if (require.main === module) {
+  main()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
