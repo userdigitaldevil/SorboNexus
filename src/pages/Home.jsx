@@ -790,8 +790,11 @@ export default function Home() {
                     SorboNexus est la plateforme créée pour les étudiants de
                     Jussieu, dédiée à accompagner votre réussite tout au long de
                     votre parcours universitaire et dans la préparation de vos
-                    candidatures en master ou en école, en France comme à
-                    l'international.
+                    candidatures en master ou en école, en{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      France comme à l'international
+                    </span>
+                    .
                     <br />
                     <br />
                     L'objectif, c'est vraiment d'
@@ -912,8 +915,11 @@ export default function Home() {
                       GEI-UNIV
                     </span>{" "}
                     (admissions parallèles), des oraux, et des intégrations dans
-                    des écoles prestigieuses (en France comme à l'international)
-                    telles que
+                    des écoles prestigieuses (en{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      France comme à l'international
+                    </span>
+                    ) telles que
                     <span style={{ color: "#3b82f6", fontWeight: 700 }}>
                       {" "}
                       Polytechnique
@@ -957,11 +963,8 @@ export default function Home() {
                     <br />
                     <br />
                     Le site propose aussi des fiches sur les écoles, des astuces
-                    pour les candidatures à l'étranger,{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      exemples de CV
-                    </span>
-                    , ainsi que des conseils pour les entretiens.
+                    pour les candidatures à l'étranger, exemples de CV, ainsi
+                    que des conseils pour les entretiens.
                     <br />
                     <br />
                     Ton parcours aidera et motivera les L1 l'année pro, mais
