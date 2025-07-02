@@ -30,7 +30,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { jwtDecode } from "jwt-decode";
 import ReactMarkdown from "react-markdown";
 import FeatureCard from "../components/FeatureCard";
@@ -631,6 +631,12 @@ export default function Home() {
     );
   }
 
+  // Add at the top of the Home component:
+  const annoncesRef = useRef(null);
+  const handleScrollToAnnonces = () => {
+    annoncesRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <Box>
       {/* Hero Section */}
@@ -788,56 +794,203 @@ export default function Home() {
                     l'international.
                     <br />
                     <br />
-                    L'objectif, c'est vraiment d'inspirer les élèves de Sorbonne
-                    Université, afin qu'ils intègrent à leur tour les meilleurs
-                    parcours, comme toi. Cela contribue à renforcer le
-                    rayonnement de l'université, à consolider le réseau des
-                    alumni, et à le faire perdurer pour les générations futures.
+                    L'objectif, c'est vraiment d'
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      inspirer les élèves
+                    </span>{" "}
+                    de Sorbonne Université, afin qu'ils intègrent à leur tour{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      les meilleurs parcours
+                    </span>
+                    , comme toi. Cela contribue à renforcer le{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      rayonnement de l'université
+                    </span>
+                    , à consolider le{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      réseau des alumni
+                    </span>
+                    , et à le faire perdurer pour les générations futures.
                     <br />
                     <br />
-                    Vous y trouverez une multitude de ressources utiles :
-                    modèles de lettres de motivation, informations détaillées
-                    sur les UE, guides pour constituer vos dossiers, et conseils
-                    pratiques pour chaque étape de votre cursus.
+                    <span style={{ fontWeight: 700, fontStyle: "italic" }}>
+                      Dans la section Conseil, tu peux partager tout ce qui
+                      pourrait être utile à d'autres utilisateurs. Même si t'es
+                      encore en L2 ou L3, tu pourrais déjà donner des conseils
+                      pour les L1 qui arrive la rentrée prochaine! Ils vont plus
+                      pourront plus facilement s'intégrer avec vos conseils et
+                      retours!
+                    </span>
+                    <br />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        my: 2,
+                      }}
+                    >
+                      <Button
+                        onClick={handleScrollToAnnonces}
+                        variant="contained"
+                        sx={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          fontWeight: 600,
+                          fontSize: {
+                            xs: "0.75rem",
+                            sm: "0.9rem",
+                            md: "0.95rem",
+                          },
+                          px: { xs: 1, sm: 2 },
+                          py: { xs: 0.4, sm: 0.7 },
+                          borderRadius: 3,
+                          background:
+                            "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                          color: "#fff",
+                          boxShadow: "0 4px 16px rgba(59,130,246,0.13)",
+                          textTransform: "none",
+                          transition: "all 0.2s",
+                          "&:hover": {
+                            background:
+                              "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                            color: "#fff",
+                            transform: "scale(1.07)",
+                          },
+                        }}
+                        endIcon={
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            style={{ verticalAlign: "middle" }}
+                          >
+                            <path
+                              d="M12 5v14m0 0l-7-7m7 7l7-7"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        }
+                      >
+                        Voir les idées/exemples en bas
+                      </Button>
+                    </Box>
+                    <br />
+                    L'idée est de transmettre ce que tu aurais aimé savoir
+                    avant. Cela peut être un texte court ou plus détaillé, selon
+                    ce que tu souhaites partager.
+                    <br />
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      Chaque conseil compte
+                    </span>{" "}
+                    et peut vraiment aider d'autres étudiants à avancer plus
+                    sereinement.
                     <br />
                     <br />
-                    Découvrez également des retours d'expérience et témoignages
-                    d'élèves sur les licences et masters que vous souhaitez
-                    suivre, ainsi que des témoignages d'élèves ayant réussi des
-                    concours comme <b>GEI-UNIV</b> (admissions parallèles), des
-                    oraux, et des intégrations dans des écoles prestigieuses (en
-                    France comme à l'international) telles que{" "}
-                    <b>
-                      Polytechnique, ENS, Princeton, CentraleSupélec, Télécom,
-                      Dauphine, Sorbonne, Paris-Saclay
-                    </b>{" "}
+                    Vous y trouverez une multitude de{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      ressources utiles
+                    </span>{" "}
+                    :<b>modèles de lettres de motivation</b>,{" "}
+                    <b>informations détaillées sur les UE</b>,
+                    <b>guides pour constituer vos dossiers</b>, et{" "}
+                    <b>conseils pratiques</b> pour chaque étape de votre cursus.
+                    <br />
+                    <br />
+                    Découvrez également des{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      retours d'expérience et témoignages d'élèves sur les
+                      licences et masters
+                    </span>{" "}
+                    que vous souhaitez suivre, ainsi que des témoignages
+                    d'élèves ayant réussi des concours comme{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      GEI-UNIV
+                    </span>{" "}
+                    (admissions parallèles), des oraux, et des intégrations dans
+                    des écoles prestigieuses (en France comme à l'international)
+                    telles que
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      Polytechnique
+                    </span>
+                    ,
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      ENS
+                    </span>
+                    ,
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      Princeton
+                    </span>
+                    ,
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      CentraleSupélec
+                    </span>
+                    ,
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      Télécom
+                    </span>
+                    ,
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      Dauphine
+                    </span>
+                    ,
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      Sorbonne
+                    </span>
+                    ,
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      Paris-Saclay
+                    </span>{" "}
                     et bien d'autres.
                     <br />
                     <br />
                     Le site propose aussi des fiches sur les écoles, des astuces
-                    pour les candidatures à l'étranger, des exemples de CV,
-                    ainsi que des conseils pour les entretiens.
+                    pour les candidatures à l'étranger,{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      exemples de CV
+                    </span>
+                    , ainsi que des conseils pour les entretiens.
                     <br />
                     <br />
-                    <b>
-                      <i>
-                        Le site est encore en développement, mais vous pouvez
-                        dès maintenant créer votre compte, personnaliser votre
-                        profil et contribuer à enrichir la base de connaissances
-                        pour aider les générations futures.
-                        <br />
-                        <span
-                          style={{
-                            color: "#3b82f6",
-                            fontWeight: 700,
-                            fontStyle: "italic",
-                          }}
-                        >
-                          [Explorez, partagez, et faites grandir la communauté
-                          !]
-                        </span>
-                      </i>
-                    </b>
+                    Ton parcours aidera et motivera les L1 l'année pro, mais
+                    aussi les L2 et les L3 qui souhaitent faire le même parcours
+                    que toi. Le site a besoin des parcours comme le tien, et on
+                    aimerait bien recevoir des conseils, témoignages venant de
+                    toi mais aussi des ressources utiles qui t'ont aidé durant
+                    ton parcours.
+                    <br />
+                    <br />
+                    <span style={{ fontStyle: "italic" }}>
+                      Le site est encore en développement, mais vous pouvez dès
+                      maintenant créer votre compte, personnaliser votre profil
+                      et contribuer à enrichir la base de connaissances pour
+                      aider les générations futures.
+                    </span>
+                    <br />
+                    <span
+                      style={{
+                        color: "#3b82f6",
+                        fontWeight: 700,
+                        display: "block",
+                        textAlign: "center",
+                        marginTop: 8,
+                        fontSize: "1.25rem",
+                      }}
+                    >
+                      Explorez, partagez, et faites grandir la communauté !
+                    </span>
                   </Typography>
 
                   {/* Action Buttons */}
@@ -1180,7 +1333,11 @@ export default function Home() {
         )}
 
       {/* Annonces Section */}
-      <Box component="section" sx={{ py: { xs: 4, md: 8 }, px: 2 }}>
+      <Box
+        component="section"
+        ref={annoncesRef}
+        sx={{ py: { xs: 4, md: 8 }, px: 2 }}
+      >
         <Container maxWidth="md">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
