@@ -589,12 +589,17 @@ export default function AlumniProfileCard({
               >
                 Stages / Extrascolaire / Associations / Expérience Pro
               </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "rgba(255,255,255,0.85)" }}
+              <Box
+                sx={{
+                  color: "rgba(255,255,255,0.85)",
+                  fontSize: "1rem",
+                  mt: 0.5,
+                }}
               >
-                {alum.stagesWorkedContestsExtracurriculars}
-              </Typography>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {alum.stagesWorkedContestsExtracurriculars}
+                </ReactMarkdown>
+              </Box>
             </Box>
           )}
           {/* Future Goals */}
