@@ -795,14 +795,14 @@ export default function Home() {
                     <br />
                     <br />
                     Découvrez également des retours d'expérience et témoignages
-                    d'élèves ayant réussi les concours comme <b>
-                      GEI-UNIV
-                    </b>{" "}
-                    (admissions parallèles), des oraux, et des intégrations dans
-                    des écoles prestigieuses telles que{" "}
+                    d'élèves sur les licences que vous voulez faire, mais aussi
+                    les témoignages des élèves ayant réussi les concours comme{" "}
+                    <b>GEI-UNIV</b> (admissions parallèles), des oraux, et des
+                    intégrations dans des écoles prestigieuses (en France comme
+                    à l'international) telles que{" "}
                     <b>
-                      Polytechnique, ENS, CentraleSupélec, Dauphine, Sorbonne,
-                      Paris-Saclay, Télécom
+                      Polytechnique, ENS, Princeton, CentraleSupélec, Télécom,
+                      Dauphine, Sorbonne, Paris-Saclay
                     </b>{" "}
                     et bien d'autres.
                     <br />
