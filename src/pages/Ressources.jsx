@@ -435,7 +435,7 @@ export default function Ressources() {
                 maxWidth: 800,
                 mx: "auto",
                 mb: { xs: 3, md: 4 },
-                fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },
+                fontSize: { xs: "0.95rem", sm: "1.15rem", md: "1.5rem" },
                 lineHeight: { xs: 1.4, md: 1.5 },
               }}
             >
@@ -619,6 +619,40 @@ export default function Ressources() {
                   />
                 ))}
               </Box>
+            </Box>
+            {/* Add small 'ajouter une ressource' button below filters */}
+            <Box
+              sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 2 }}
+            >
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<i className="fas fa-plus"></i>}
+                sx={{
+                  fontSize: { xs: "0.65rem", md: "0.75rem" },
+                  px: 1.5,
+                  py: 0.5,
+                  borderRadius: 2,
+                  color: "#3b82f6",
+                  borderColor: "#3b82f6",
+                  minWidth: "auto",
+                  textTransform: "none",
+                  "&:hover": {
+                    background: "rgba(59, 130, 246, 0.08)",
+                    borderColor: "#2563eb",
+                  },
+                }}
+                onClick={() => {
+                  const section = document.getElementById(
+                    "partagez-vos-ressources"
+                  );
+                  if (section) {
+                    section.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+              >
+                Ajouter une ressource
+              </Button>
             </Box>
           </motion.div>
         </Container>
@@ -918,6 +952,7 @@ export default function Ressources() {
       {/* Upload Section */}
       <motion.section
         className="py-24 px-6 bg-gradient-to-r from-blue-900/40 to-teal-900/40 z-10 relative"
+        id="partagez-vos-ressources"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.7 }}
@@ -978,6 +1013,7 @@ export default function Ressources() {
                   mx: "auto",
                   position: "relative",
                   zIndex: 10,
+                  fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.25rem" },
                 }}
               >
                 Vous avez des notes de cours, des résumés ou des exercices
