@@ -817,6 +817,27 @@ export default function Home() {
                     Le site propose aussi des fiches sur les écoles, des astuces
                     pour les candidatures à l'étranger, des exemples de CV,
                     ainsi que des conseils pour les entretiens.
+                    <br />
+                    <br />
+                    <b>
+                      <i>
+                        Le site est encore en développement, mais vous pouvez
+                        dès maintenant créer votre compte, personnaliser votre
+                        profil et contribuer à enrichir la base de connaissances
+                        pour aider les générations futures.
+                        <br />
+                        <span
+                          style={{
+                            color: "#3b82f6",
+                            fontWeight: 700,
+                            fontStyle: "italic",
+                          }}
+                        >
+                          [Explorez, partagez, et faites grandir la communauté
+                          !]
+                        </span>
+                      </i>
+                    </b>
                   </Typography>
 
                   {/* Action Buttons */}
