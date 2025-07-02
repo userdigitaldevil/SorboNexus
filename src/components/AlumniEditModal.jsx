@@ -470,7 +470,7 @@ export default function AlumniEditModal({
               fullWidth
               multiline
               minRows={3}
-              sx={{ mb: 2 }}
+              sx={{ mb: 0.5 }}
               InputProps={{
                 endAdornment: conseilIsLong ? (
                   <IconButton
@@ -485,6 +485,13 @@ export default function AlumniEditModal({
                 readOnly: false,
               }}
             />
+            <Typography
+              variant="caption"
+              sx={{ color: "#3b82f6", mb: 1, display: "block" }}
+            >
+              Astuce : la syntaxe <b>Markdown</b> est supportée (listes, gras,
+              italique, etc.)
+            </Typography>
             <TextField
               label="Nationalités (séparées par des virgules)"
               name="nationalities"
