@@ -149,7 +149,7 @@ export default function Ressources() {
 
   // Fetch resources from backend, with error handling
   useEffect(() => {
-    fetch("/api/ressources")
+    fetch(`${import.meta.env.VITE_API_URL || ""}/api/ressources`)
       .then((res) => {
         if (!res.ok)
           throw new Error("Erreur lors du chargement des ressources");
@@ -986,6 +986,11 @@ export default function Ressources() {
                   Contribuez à enrichir la communauté SorboNexus
                 </span>{" "}
                 en partageant vos ressources.
+                <br />
+                <span style={{ color: "#10b981", fontWeight: 500 }}>
+                  Vous pouvez aussi ajouter vos modèles de CV, modèles de
+                  lettres de motivation, ou des sujets de concours/oraux !
+                </span>
               </Typography>
             </motion.div>
 

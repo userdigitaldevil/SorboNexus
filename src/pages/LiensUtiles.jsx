@@ -111,7 +111,7 @@ const LiensUtiles = () => {
 
   // Fetch links from backend on mount, with error handling
   useEffect(() => {
-    fetch("/api/links")
+    fetch(`${import.meta.env.VITE_API_URL || ""}/api/links`)
       .then((res) => {
         if (!res.ok) throw new Error("Erreur lors du chargement des liens");
         return res.json();
