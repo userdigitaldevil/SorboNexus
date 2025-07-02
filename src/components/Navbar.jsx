@@ -866,6 +866,10 @@ const Navbar = () => {
               alum={alumniUser}
               isAdmin={alumniUser.isAdmin}
               onClose={() => setIsAlumniProfileModalOpen(false)}
+              handleEditClick={() => {
+                setIsAlumniProfileModalOpen(false);
+                openEditSelfModal([alumniUser]);
+              }}
             />
           ) : null}
         </Box>
