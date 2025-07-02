@@ -21,6 +21,8 @@ model User {
   alumni    Alumni? @relation(fields: [alumniId], references: [id])
   alumniId  Int?
   annonces  Annonce[]
+  links     Link[]
+  ressources Ressource[]
 }
 
 model Alumni {
@@ -77,4 +79,35 @@ model Annonce {
   deletedAt DateTime?
   createdBy User     @relation(fields: [createdById], references: [id])
   createdById Int
+}
+
+model Link {
+  id          Int      @id @default(autoincrement())
+  title       String
+  url         String
+  description String
+  category    String
+  icon        String
+  gradient    String
+
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdById Int
+}
+
+model Ressource {
+  id          Int      @id @default(autoincrement())
+  title       String
+  subject     String
+  description String
+  icon        String
+  gradient    String
+  type        String
+  category    String
+  filter      String
+  resourceUrl String?
+  format      String?
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdById Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
