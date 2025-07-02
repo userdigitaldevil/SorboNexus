@@ -788,6 +788,13 @@ export default function Home() {
                     l'international.
                     <br />
                     <br />
+                    L'objectif, c'est vraiment d'inspirer les élèves de Sorbonne
+                    Université, afin qu'ils intègrent à leur tour les meilleurs
+                    parcours, comme toi. Cela contribue à renforcer le
+                    rayonnement de l'université, à consolider le réseau des
+                    alumni, et à le faire perdurer pour les générations futures.
+                    <br />
+                    <br />
                     Vous y trouverez une multitude de ressources utiles :
                     modèles de lettres de motivation, informations détaillées
                     sur les UE, guides pour constituer vos dossiers, et conseils
@@ -795,11 +802,11 @@ export default function Home() {
                     <br />
                     <br />
                     Découvrez également des retours d'expérience et témoignages
-                    d'élèves sur les licences que vous voulez faire, mais aussi
-                    les témoignages des élèves ayant réussi les concours comme{" "}
-                    <b>GEI-UNIV</b> (admissions parallèles), des oraux, et des
-                    intégrations dans des écoles prestigieuses (en France comme
-                    à l'international) telles que{" "}
+                    d'élèves sur les licences et masters que vous souhaitez
+                    suivre, ainsi que des témoignages d'élèves ayant réussi des
+                    concours comme <b>GEI-UNIV</b> (admissions parallèles), des
+                    oraux, et des intégrations dans des écoles prestigieuses (en
+                    France comme à l'international) telles que{" "}
                     <b>
                       Polytechnique, ENS, Princeton, CentraleSupélec, Télécom,
                       Dauphine, Sorbonne, Paris-Saclay
@@ -808,35 +815,8 @@ export default function Home() {
                     <br />
                     <br />
                     Le site propose aussi des fiches sur les écoles, des astuces
-                    pour les candidatures à l'étranger, des exemples de CV, des
-                    conseils pour les entretiens.
-                    <br />
-                    <br />
-                    <span
-                      style={{
-                        fontStyle: "italic",
-                        fontWeight: "bold",
-                        fontSize: "1.05em",
-                        display: "block",
-                        marginTop: "0.5em",
-                      }}
-                    >
-                      Le site est encore en développement, mais vous pouvez dès
-                      maintenant créer votre compte, personnaliser votre profil
-                      et contribuer à enrichir la base de connaissances pour
-                      aider les générations futures.
-                      <br />
-                      <span
-                        style={{
-                          color: "#3b82f6",
-                          fontWeight: 700,
-                          fontStyle: "italic",
-                          fontSize: "1.1em",
-                        }}
-                      >
-                        Explorez, partagez, et faites grandir la communauté !
-                      </span>
-                    </span>
+                    pour les candidatures à l'étranger, des exemples de CV,
+                    ainsi que des conseils pour les entretiens.
                   </Typography>
 
                   {/* Action Buttons */}
