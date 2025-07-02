@@ -1,6 +1,4 @@
-<!--
-DISCLAIMER: This is a personal project by Seth Aguila. SorboNexus is not an official website of Sorbonne Université and is not affiliated with or endorsed by the university.
--->
+> **Disclaimer:** This is a personal project by Seth Aguila. SorboNexus is not an official website of Sorbonne Université and is not affiliated with or endorsed by the university.
 
 # [SorboNexus](https://sorbonexus.com/) - https://sorbonexus.com/
 
