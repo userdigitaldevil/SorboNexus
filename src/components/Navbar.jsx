@@ -1115,78 +1115,83 @@ const Navbar = () => {
                 les écoles.
               </Typography>
               {addAlumniSchools.map((s, idx) => (
-                <Box
-                  key={idx}
-                  sx={{ display: "flex", gap: 1, mb: 1, alignItems: "center" }}
-                >
-                  <TextField
-                    label={`École (rang ${idx + 1})`}
-                    value={s.name}
-                    onChange={(e) =>
-                      handleAddAlumniSchoolChange(idx, "name", e.target.value)
-                    }
-                    size="small"
-                    sx={{ flex: 2 }}
-                    required
-                  />
-                  <TextField
-                    select
-                    label="Statut"
-                    value={s.status}
-                    onChange={(e) =>
-                      handleAddAlumniSchoolChange(idx, "status", e.target.value)
-                    }
-                    size="small"
-                    sx={{ flex: 1 }}
-                    SelectProps={{ native: true }}
-                    required
-                  >
-                    <option value="accepted">Accepté</option>
-                    <option value="rejected">Refusé</option>
-                  </TextField>
-                  <Button
-                    onClick={() => handleAddAlumniRemoveSchool(idx)}
-                    color="error"
-                    size="small"
-                  >
-                    Supprimer
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (idx > 0) {
-                        setAddAlumniSchools((prev) => {
-                          const schools = [...prev];
-                          [schools[idx - 1], schools[idx]] = [
-                            schools[idx],
-                            schools[idx - 1],
-                          ];
-                          return schools;
-                        });
+                <Box key={idx} sx={{ mb: 1 }}>
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    <TextField
+                      label={`École (rang ${idx + 1})`}
+                      value={s.name}
+                      onChange={(e) =>
+                        handleAddAlumniSchoolChange(idx, "name", e.target.value)
                       }
-                    }}
-                    size="small"
-                    disabled={idx === 0}
-                  >
-                    ↑
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (idx < addAlumniSchools.length - 1) {
-                        setAddAlumniSchools((prev) => {
-                          const schools = [...prev];
-                          [schools[idx], schools[idx + 1]] = [
-                            schools[idx + 1],
-                            schools[idx],
-                          ];
-                          return schools;
-                        });
+                      size="small"
+                      sx={{ flex: 2, minWidth: 250 }}
+                      required
+                    />
+                    <TextField
+                      select
+                      label="Statut"
+                      value={s.status}
+                      onChange={(e) =>
+                        handleAddAlumniSchoolChange(
+                          idx,
+                          "status",
+                          e.target.value
+                        )
                       }
-                    }}
-                    size="small"
-                    disabled={idx === addAlumniSchools.length - 1}
-                  >
-                    ↓
-                  </Button>
+                      size="small"
+                      sx={{ flex: 1, minWidth: 120 }}
+                      SelectProps={{ native: true }}
+                      required
+                    >
+                      <option value="accepted">Accepté</option>
+                      <option value="rejected">Refusé</option>
+                    </TextField>
+                  </Box>
+                  <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                    <Button
+                      onClick={() => handleAddAlumniRemoveSchool(idx)}
+                      color="error"
+                      size="small"
+                    >
+                      Supprimer
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        if (idx > 0) {
+                          setAddAlumniSchools((prev) => {
+                            const schools = [...prev];
+                            [schools[idx - 1], schools[idx]] = [
+                              schools[idx],
+                              schools[idx - 1],
+                            ];
+                            return schools;
+                          });
+                        }
+                      }}
+                      size="small"
+                      disabled={idx === 0}
+                    >
+                      ↑
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        if (idx < addAlumniSchools.length - 1) {
+                          setAddAlumniSchools((prev) => {
+                            const schools = [...prev];
+                            [schools[idx], schools[idx + 1]] = [
+                              schools[idx + 1],
+                              schools[idx],
+                            ];
+                            return schools;
+                          });
+                        }
+                      }}
+                      size="small"
+                      disabled={idx === addAlumniSchools.length - 1}
+                    >
+                      ↓
+                    </Button>
+                  </Box>
                 </Box>
               ))}
               <Button

@@ -584,76 +584,77 @@ export default function AlumniEditModal({
                 les écoles.
               </Typography>
               {(editForm.schoolsApplied || []).map((school, idx) => (
-                <Box
-                  key={idx}
-                  sx={{ display: "flex", gap: 1, mb: 1, alignItems: "center" }}
-                >
-                  <TextField
-                    label={`École (rang ${idx + 1})`}
-                    value={school.name || ""}
-                    onChange={(e) =>
-                      handleSchoolChange(idx, "name", e.target.value)
-                    }
-                    size="small"
-                    sx={{ flex: 2 }}
-                  />
-                  <TextField
-                    select
-                    label="Statut"
-                    value={school.status || "accepted"}
-                    onChange={(e) =>
-                      handleSchoolChange(idx, "status", e.target.value)
-                    }
-                    size="small"
-                    sx={{ flex: 1 }}
-                    SelectProps={{ native: true }}
-                  >
-                    <option value="accepted">Accepté</option>
-                    <option value="rejected">Refusé</option>
-                  </TextField>
-                  <Button
-                    onClick={() => handleRemoveSchool(idx)}
-                    color="error"
-                    size="small"
-                  >
-                    Supprimer
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (idx > 0) {
-                        setEditForm((prev) => {
-                          const schools = [...(prev.schoolsApplied || [])];
-                          [schools[idx - 1], schools[idx]] = [
-                            schools[idx],
-                            schools[idx - 1],
-                          ];
-                          return { ...prev, schoolsApplied: schools };
-                        });
+                <Box key={idx} sx={{ mb: 1 }}>
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    <TextField
+                      label={`École (rang ${idx + 1})`}
+                      value={school.name || ""}
+                      onChange={(e) =>
+                        handleSchoolChange(idx, "name", e.target.value)
                       }
-                    }}
-                    size="small"
-                    disabled={idx === 0}
-                  >
-                    ↑
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      if (idx < editForm.schoolsApplied.length - 1) {
-                        setEditForm((prev) => {
-                          const schools = [...(prev.schoolsApplied || [])];
-                          [schools[idx], schools[idx + 1]] = [
-                            schools[idx + 1],
-                            schools[idx],
-                          ];
-                          return { ...prev, schoolsApplied: schools };
-                        });
+                      size="small"
+                      sx={{ flex: 2, minWidth: 250 }}
+                    />
+                    <TextField
+                      select
+                      label="Statut"
+                      value={school.status || "accepted"}
+                      onChange={(e) =>
+                        handleSchoolChange(idx, "status", e.target.value)
                       }
-                    }}
-                    size="small"
-                    disabled={idx === editForm.schoolsApplied.length - 1}
-                  >
-                    ↓
-                  </Button>
+                      size="small"
+                      sx={{ flex: 1, minWidth: 120 }}
+                      SelectProps={{ native: true }}
+                    >
+                      <option value="accepted">Accepté</option>
+                      <option value="rejected">Refusé</option>
+                    </TextField>
+                  </Box>
+                  <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                    <Button
+                      onClick={() => handleRemoveSchool(idx)}
+                      color="error"
+                      size="small"
+                    >
+                      Supprimer
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        if (idx > 0) {
+                          setEditForm((prev) => {
+                            const schools = [...(prev.schoolsApplied || [])];
+                            [schools[idx - 1], schools[idx]] = [
+                              schools[idx],
+                              schools[idx - 1],
+                            ];
+                            return { ...prev, schoolsApplied: schools };
+                          });
+                        }
+                      }}
+                      size="small"
+                      disabled={idx === 0}
+                    >
+                      ↑
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        if (idx < editForm.schoolsApplied.length - 1) {
+                          setEditForm((prev) => {
+                            const schools = [...(prev.schoolsApplied || [])];
+                            [schools[idx], schools[idx + 1]] = [
+                              schools[idx + 1],
+                              schools[idx],
+                            ];
+                            return { ...prev, schoolsApplied: schools };
+                          });
+                        }
+                      }}
+                      size="small"
+                      disabled={idx === editForm.schoolsApplied.length - 1}
+                    >
+                      ↓
+                    </Button>
+                  </Box>
                 </Box>
               ))}
               <Button onClick={handleAddSchool} size="small" sx={{ mt: 1 }}>
