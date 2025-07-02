@@ -84,6 +84,21 @@ export default function Ressources() {
       filter: "Livres",
       pdfUrl: "/pdfs/Guide_FUF.pdf",
     },
+    {
+      id: 3,
+      title: "Bible de Mathématiques",
+      subject: "Mathématiques - Tous niveaux",
+      description:
+        "Collection exhaustive de plus centaines de livres de mathématiques couvrant l'algèbre, la géométrie, l'analyse, la topologie, les probabilités et plus encore. Inclut des ouvrages de référence et des manuels de préparation aux concours également.",
+      icon: "fas fa-book",
+      gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+      type: "Drive",
+      pages: "50+ livres",
+      category: "Mathématiques",
+      filter: "Livres",
+      pdfUrl:
+        "https://drive.google.com/drive/folders/16oejsXtitYQcaNXR0XWY14-aESHcvX6D",
+    },
   ];
 
   // Memoize filtered resources to prevent recalculation on every render
