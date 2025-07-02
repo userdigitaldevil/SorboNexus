@@ -1,22 +1,62 @@
-# SorboNexus
+<!--
+DISCLAIMER: This is a personal project by Seth Aguila. SorboNexus is not an official website of Sorbonne Université and is not affiliated with or endorsed by the university.
+-->
 
-> **Project History:**
-> This is the second version of the SorboNexus repository. The project was initially started as a static website on another repo that I have made privaate now. It has now been fully migrated to a modern React frontend, and a backend (Node.js/Express + MongoDB) has been added to replace local/static data with a dynamic API and database.
->
-> **Author & Mission:**
-> Developed by Seth Aguila as a personal initiative during the summer following his first year at Sorbonne Université, this project aims to empower students by bridging information gaps and promoting equal access to academic and professional resources.
+# [SorboNexus](https://sorbonexus.com/) - https://sorbonexus.com/
 
-SorboNexus is a modern web platform for students and alumni of Sorbonne University. It provides a collaborative space to access resources, connect with alumni, share advice, and discover useful links and events.
+SorboNexus is the platform created for Jussieu students, dedicated to supporting your success throughout your university journey and in preparing your applications for master's programs or schools, both in France and internationally.
 
-## Features
+The goal is truly to inspire Sorbonne University students so that they, in turn, join the best programs—just like you. This helps to enhance the university's reputation, strengthen the alumni network, and ensure it endures for future generations.
 
-- **Ressources Complètes**: Access a library of educational resources, course materials, and reference documents for all levels.
-- **Réseau Alumni**: Connect with alumni for mentorship, internships, and professional development.
-- **Conseils Pratiques**: Get expert advice for academic success, time management, and career preparation.
-- **Liens Utiles**: Find essential links to university services, libraries, and educational platforms.
-- **Événements**: Stay informed about university events, conferences, workshops, and professional meetings.
-- **Communauté**: Join an active community of students and graduates to exchange, collaborate, and support each other.
-- **Authentication**: Secure login for users and admin, with JWT-based authentication.
+You'll find a wealth of useful resources: cover letter templates, detailed information on course units, guides for assembling your applications, and practical advice for every stage of your studies.
+
+You'll also discover feedback and testimonials from students about the bachelor's and master's programs you're interested in, as well as stories from students who have succeeded in competitive exams like GEI-UNIV (parallel admissions), oral exams, and admissions to prestigious schools (in France and internationally) such as Polytechnique, ENS, Princeton, CentraleSupélec, Télécom, Dauphine, Sorbonne, Paris-Saclay, and many more.
+
+The site also offers school profiles, tips for applying abroad, CV examples, and interview advice.
+
+The site is still under development, but you can already create your account, personalize your profile, and help enrich the knowledge base to support future generations.
+
+[Explore, share, and help grow the community!]
+
+## Main Features
+
+- 📚 **Shared Resources**: All logged-in users can add, edit, and delete their own resources (course notes, summaries, exercises, CV templates, cover letters, competition/oral subjects, etc.).
+- 🔍 **Advanced Search**: Search for resources by title, subject, or description, and filter by category/type.
+- 🖼️ **File Uploads**: All users can upload files (PDFs, images, links) to share with the community.
+- 📝 **Markdown Descriptions**: Resource descriptions support Markdown for rich formatting.
+- 🏷️ **Useful Links**: Access a dynamic list of essential links for students.
+- 👤 **Personalized Profiles**: Create and personalize your profile, share your journey and advice.
+- 🛡️ **Permission Management**: Admins can manage all resources, but each user controls their own contributions.
+- 📈 **Growing Community**: Contribute to the knowledge base to help future generations.
+
+---
+
+# Français
+
+SorboNexus est la plateforme créée pour les étudiants de Jussieu, dédiée à accompagner votre réussite tout au long de votre parcours universitaire et dans la préparation de vos candidatures en master ou en école, en France comme à l'international.
+
+L'objectif, c'est vraiment d'inspirer les élèves de Sorbonne Université, afin qu'ils intègrent à leur tour les meilleurs parcours, comme toi. Cela contribue à renforcer le rayonnement de l'université, à consolider le réseau des alumni, et à le faire perdurer pour les générations futures.
+
+Vous y trouverez une multitude de ressources utiles : modèles de lettres de motivation, informations détaillées sur les UE, guides pour constituer vos dossiers, et conseils pratiques pour chaque étape de votre cursus.
+
+Découvrez également des retours d'expérience et témoignages d'élèves sur les licences et masters que vous souhaitez suivre, ainsi que des témoignages d'élèves ayant réussi des concours comme GEI-UNIV (admissions parallèles), des oraux, et des intégrations dans des écoles prestigieuses (en France comme à l'international) telles que Polytechnique, ENS, Princeton, CentraleSupélec, Télécom, Dauphine, Sorbonne, Paris-Saclay et bien d'autres.
+
+Le site propose aussi des fiches sur les écoles, des astuces pour les candidatures à l'étranger, des exemples de CV, ainsi que des conseils pour les entretiens.
+
+Le site est encore en développement, mais vous pouvez dès maintenant créer votre compte, personnaliser votre profil et contribuer à enrichir la base de connaissances pour aider les générations futures.
+
+[Explorez, partagez, et faites grandir la communauté !]
+
+## Fonctionnalités principales
+
+- 📚 **Ressources partagées** : Tous les utilisateurs connectés peuvent ajouter, éditer et supprimer leurs propres ressources (notes de cours, résumés, exercices, modèles de CV, lettres de motivation, sujets de concours/oraux, etc.).
+- 🔍 **Recherche avancée** : Recherchez des ressources par titre, sujet ou description, et filtrez par catégorie/type.
+- 🖼️ **Upload de fichiers** : Tous les utilisateurs peuvent uploader des fichiers (PDF, images, liens) pour les partager avec la communauté.
+- 📝 **Descriptions en Markdown** : Les descriptions de ressources supportent le Markdown pour une mise en forme riche.
+- 🏷️ **Liens utiles** : Accédez à une liste dynamique de liens essentiels pour les étudiants.
+- 👤 **Profils personnalisés** : Créez et personnalisez votre profil, partagez votre parcours et vos conseils.
+- 🛡️ **Gestion des permissions** : Les administrateurs peuvent gérer toutes les ressources, mais chaque utilisateur contrôle ses propres ajouts.
+- 📈 **Communauté en croissance** : Participez à l'enrichissement de la base de connaissances pour aider les générations futures.
 
 ---
 
