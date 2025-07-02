@@ -459,7 +459,14 @@ export default function AlumniEditModal({
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Conseil"
+              label={
+                <span>
+                  Conseil{" "}
+                  <span style={{ color: "red", fontWeight: 600 }}>
+                    (important)
+                  </span>
+                </span>
+              }
               name="conseil"
               value={
                 showFullConseil || !conseilIsLong
