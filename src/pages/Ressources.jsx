@@ -12,8 +12,62 @@ import {
   InputAdornment,
   Chip,
   Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { ArrowRight, Search } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
+import predefinedIcons from "../data/predefinedIcons";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { useNavigate } from "react-router-dom";
+
+// CATEGORY_STYLES for resource categories
+const CATEGORY_STYLES = {
+  Mathématiques: {
+    gradient: "linear-gradient(135deg, #e53935 0%, #ffb300 100%)",
+    color: "#e53935",
+  },
+  Physique: {
+    gradient: "linear-gradient(135deg, #009688 0%, #43e97b 100%)",
+    color: "#009688",
+  },
+  Informatique: {
+    gradient: "linear-gradient(135deg, #ff80ab 0%, #3b82f6 100%)",
+    color: "#ff80ab",
+  },
+  Chimie: {
+    gradient: "linear-gradient(135deg, #ffb300 0%, #ff7043 100%)",
+    color: "#ffb300",
+  },
+  Électronique: {
+    gradient: "linear-gradient(135deg, #8e24aa 0%, #00bcd4 100%)",
+    color: "#8e24aa",
+  },
+  Mécanique: {
+    gradient: "linear-gradient(135deg, #43a047 0%, #00bcd4 100%)",
+    color: "#43a047",
+  },
+  "Sciences de la Terre": {
+    gradient: "linear-gradient(135deg, #3949ab 0%, #00bcd4 100%)",
+    color: "#3949ab",
+  },
+  "Sciences de la vie": {
+    gradient: "linear-gradient(135deg, #00bcd4 0%, #43e97b 100%)",
+    color: "#00bcd4",
+  },
+  Autres: {
+    gradient: "linear-gradient(135deg, #f59e42 0%, #7e57c2 100%)",
+    color: "#f59e42",
+  },
+};
 
 export default function Ressources() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,10 +76,104 @@ export default function Ressources() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const categoriesRef = useRef(null);
+  const [resources, setResources] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [addForm, setAddForm] = useState({
+    title: "",
+    subject: "",
+    description: "",
+    icon: "",
+    gradient: "",
+    type: "PDF",
+    category: "Autres",
+    filter: "Livres",
+    resourceUrl: "",
+    format: "pdf",
+  });
+  const [addLoading, setAddLoading] = useState(false);
+  const [addError, setAddError] = useState("");
+  const [addIconMode, setAddIconMode] = useState("predefined");
+  const [addCustomIconUrl, setAddCustomIconUrl] = useState("");
+  const [addIconSearch, setAddIconSearch] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const fileInputRef = useRef();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState(null);
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [resourceToDelete, setResourceToDelete] = useState(null);
+  const [editIconMode, setEditIconMode] = useState("predefined");
+  const [editCustomIconUrl, setEditCustomIconUrl] = useState("");
+  const [editIconSearch, setEditIconSearch] = useState("");
+  // Add state for expanded descriptions
+  const [expandedDescriptions, setExpandedDescriptions] = useState(new Set());
+  const PREVIEW_LENGTH = 200;
+  const PREVIEW_LINES = 3;
+  const isLongDescription = (desc) =>
+    desc &&
+    (desc.length > PREVIEW_LENGTH || desc.split("\n").length > PREVIEW_LINES);
+  const getPreviewDescription = (desc) => {
+    if (!desc) return "";
+    const lines = desc.split("\n");
+    let preview = lines.slice(0, PREVIEW_LINES).join("\n");
+    if (preview.length > PREVIEW_LENGTH) {
+      preview = preview.substring(0, PREVIEW_LENGTH) + "...";
+    } else if (lines.length > PREVIEW_LINES) {
+      preview += "...";
+    }
+    return preview;
+  };
+  const toggleDescriptionExpansion = (id) => {
+    setExpandedDescriptions((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const navigate = useNavigate();
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
+  const [userId, setUserId] = useState(null);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  // Fetch resources from backend, with error handling
+  useEffect(() => {
+    fetch("/api/ressources")
+      .then((res) => {
+        if (!res.ok)
+          throw new Error("Erreur lors du chargement des ressources");
+        return res.json();
+      })
+      .then((data) => setResources(data))
+      .catch((err) => {
+        alert("Erreur lors du chargement des ressources: " + err.message);
+      });
+  }, []);
+
+  // Admin detection
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setIsAdmin(decoded.isAdmin || false);
+        setUserId(decoded.id);
+      } catch (error) {
+        setIsAdmin(false);
+        setUserId(null);
+      }
+    }
   }, []);
 
   const categories = [
@@ -53,52 +201,9 @@ export default function Ressources() {
     "Concours",
     "CV",
     "Lettres",
+    "Astuces",
+    "Codes",
     "Autres",
-  ];
-
-  const resources = [
-    {
-      id: 1,
-      title: "Test",
-      subject: "Licence 1 - Chimie",
-      description:
-        "Guide complet de travaux pratiques avec protocoles expérimentaux, fiches techniques et conseils de sécurité.",
-      icon: "fas fa-vial",
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
-      type: "TP",
-      pages: "TP",
-      category: "Physique",
-      filter: "TD",
-    },
-    {
-      id: 2,
-      title: "Guide FUF Polytechnique",
-      subject: "Préparation aux concours",
-      description:
-        "Guide complet pour la préparation aux concours de l'École Polytechnique. Inclut conseils, méthodologie et ressources pour réussir les épreuves.",
-      icon: "fas fa-graduation-cap",
-      gradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-      type: "PDF",
-      pages: "85 pages",
-      category: "Autres",
-      filter: "Livres",
-      pdfUrl: "/pdfs/Guide_FUF.pdf",
-    },
-    {
-      id: 3,
-      title: "Bible de Mathématiques",
-      subject: "Mathématiques - Tous niveaux",
-      description:
-        "Collection exhaustive de plus centaines de livres de mathématiques couvrant l'algèbre, la géométrie, l'analyse, la topologie, les probabilités et plus encore. Inclut des ouvrages de référence et des manuels de préparation aux concours également.",
-      icon: "fas fa-book",
-      gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
-      type: "Drive",
-      pages: "50+ livres",
-      category: "Mathématiques",
-      filter: "Livres",
-      pdfUrl:
-        "https://drive.google.com/drive/folders/16oejsXtitYQcaNXR0XWY14-aESHcvX6D",
-    },
   ];
 
   // Memoize filtered resources to prevent recalculation on every render
@@ -116,7 +221,165 @@ export default function Ressources() {
 
       return matchesSearch && matchesCategory && matchesFilter;
     });
-  }, [searchQuery, activeCategory, activeFilter]);
+  }, [resources, searchQuery, activeCategory, activeFilter]);
+
+  // Helper for icon search
+  const getFilteredIconsForAdd = () =>
+    predefinedIcons.filter(
+      (icon) =>
+        icon.label.toLowerCase().includes(addIconSearch.toLowerCase()) ||
+        icon.value.toLowerCase().includes(addIconSearch.toLowerCase())
+    );
+  const getFilteredIconsForEdit = () =>
+    predefinedIcons.filter(
+      (icon) =>
+        icon.label.toLowerCase().includes(editIconSearch.toLowerCase()) ||
+        icon.value.toLowerCase().includes(editIconSearch.toLowerCase())
+    );
+
+  // Add modal handlers
+  const openAddModal = () => {
+    setAddForm({
+      title: "",
+      subject: "",
+      description: "",
+      icon: "",
+      gradient: "",
+      type: "PDF",
+      category: "Autres",
+      filter: "Livres",
+      resourceUrl: "",
+      format: "pdf",
+    });
+    setAddError("");
+    setAddModalOpen(true);
+  };
+  const closeAddModal = () => setAddModalOpen(false);
+  const updateAddFormField = (field, value) => {
+    setAddForm((prev) => ({ ...prev, [field]: value }));
+  };
+  const handleAddResource = async () => {
+    setAddLoading(true);
+    setAddError("");
+    try {
+      const token = localStorage.getItem("token");
+      let iconValue = addForm.icon;
+      if (addIconMode === "custom") iconValue = addCustomIconUrl;
+      if (addIconMode === "manual") iconValue = addForm.icon;
+      if (!iconValue) {
+        setAddError("Veuillez choisir une icône.");
+        setAddLoading(false);
+        return;
+      }
+      const payload = { ...addForm, icon: iconValue, format: addForm.type };
+      if (addForm.type === "Text") delete payload.resourceUrl;
+      const res = await fetch("/api/ressources", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(
+          errData.error || "Erreur lors de l'ajout de la ressource."
+        );
+      }
+      const newResource = await res.json();
+      setResources((prev) => [newResource, ...prev]);
+      closeAddModal();
+    } catch (err) {
+      setAddError(err.message);
+    } finally {
+      setAddLoading(false);
+    }
+  };
+
+  // Open edit modal with resource data
+  const openEditModal = (resource) => {
+    setEditForm({ ...resource });
+    setEditError("");
+    setEditModalOpen(true);
+  };
+  const closeEditModal = () => setEditModalOpen(false);
+  const updateEditFormField = (field, value) => {
+    setEditForm((prev) => ({ ...prev, [field]: value }));
+  };
+  const handleEditResource = async () => {
+    setEditLoading(true);
+    setEditError("");
+    try {
+      const token = localStorage.getItem("token");
+      let editIconValue = editForm.icon;
+      if (editIconMode === "custom") editIconValue = editCustomIconUrl;
+      if (editIconMode === "manual") editIconValue = editForm.icon;
+      if (!editIconValue) {
+        setEditError("Veuillez choisir une icône.");
+        setEditLoading(false);
+        return;
+      }
+      const payload = {
+        ...editForm,
+        icon: editIconValue,
+        format: editForm.type,
+      };
+      if (editForm.type === "Text") delete payload.resourceUrl;
+      const res = await fetch(`/api/ressources/${editForm.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(
+          errData.error || "Erreur lors de la modification de la ressource."
+        );
+      }
+      const updatedResource = await res.json();
+      setResources((prev) =>
+        prev.map((r) => (r.id === updatedResource.id ? updatedResource : r))
+      );
+      closeEditModal();
+    } catch (err) {
+      setEditError(err.message);
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  // Delete logic
+  const openDeleteDialog = (resource) => {
+    setResourceToDelete(resource);
+    setDeleteDialogOpen(true);
+  };
+  const closeDeleteDialog = () => setDeleteDialogOpen(false);
+  const handleDeleteResource = async () => {
+    if (!resourceToDelete) return;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`/api/ressources/${resourceToDelete.id}`, {
+        method: "DELETE",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(
+          errData.error || "Erreur lors de la suppression de la ressource."
+        );
+      }
+      setResources((prev) => prev.filter((r) => r.id !== resourceToDelete.id));
+      closeDeleteDialog();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -384,8 +647,8 @@ export default function Ressources() {
                 >
                   <Card
                     onClick={() => {
-                      if (resource.pdfUrl) {
-                        window.open(resource.pdfUrl, "_blank");
+                      if (resource.resourceUrl) {
+                        window.open(resource.resourceUrl, "_blank");
                       }
                     }}
                     sx={{
@@ -397,7 +660,7 @@ export default function Ressources() {
                       border: "1px solid rgba(255,255,255,0.1)",
                       borderRadius: 3,
                       transition: "all 0.3s ease",
-                      cursor: resource.pdfUrl ? "pointer" : "default",
+                      cursor: resource.resourceUrl ? "pointer" : "default",
                       position: "relative",
                       overflow: "hidden",
                       "&:hover": {
@@ -439,7 +702,9 @@ export default function Ressources() {
                           width: { xs: 40, md: 48 },
                           height: { xs: 40, md: 48 },
                           borderRadius: 2,
-                          background: resource.gradient,
+                          background:
+                            CATEGORY_STYLES[resource.category]?.gradient ||
+                            "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -473,17 +738,53 @@ export default function Ressources() {
                       >
                         {resource.subject}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#a1a1aa",
-                          mb: { xs: 2, md: 3 },
-                          lineHeight: 1.6,
-                          fontSize: { xs: "0.75rem", md: "0.875rem" },
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          p: ({ node, ...props }) => (
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "#a1a1aa",
+                                mb: { xs: 2, md: 3 },
+                                lineHeight: 1.6,
+                                fontSize: { xs: "0.75rem", md: "0.875rem" },
+                                whiteSpace: "pre-line",
+                                wordBreak: "break-word",
+                              }}
+                              {...props}
+                            />
+                          ),
                         }}
                       >
-                        {resource.description}
-                      </Typography>
+                        {expandedDescriptions.has(resource.id)
+                          ? resource.description
+                          : getPreviewDescription(resource.description)}
+                      </ReactMarkdown>
+                      {isLongDescription(resource.description) && (
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDescriptionExpansion(resource.id);
+                          }}
+                          sx={{
+                            color: "#3b82f6",
+                            textTransform: "none",
+                            fontWeight: 600,
+                            p: 0,
+                            minWidth: "auto",
+                            fontSize: { xs: "0.75rem", md: "0.875rem" },
+                            mb: 1,
+                            "&:hover": {
+                              background: "rgba(59, 130, 246, 0.1)",
+                            },
+                          }}
+                        >
+                          {expandedDescriptions.has(resource.id)
+                            ? "Voir moins"
+                            : "Lire la suite"}
+                        </Button>
+                      )}
                       <Box
                         sx={{
                           display: "flex",
@@ -502,7 +803,7 @@ export default function Ressources() {
                             height: { xs: "20px", md: "24px" },
                           }}
                         />
-                        {resource.pdfUrl && (
+                        {resource.resourceUrl && (
                           <i
                             className="fas fa-download"
                             style={{
@@ -512,11 +813,55 @@ export default function Ressources() {
                             }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              window.open(resource.pdfUrl, "_blank");
+                              window.open(resource.resourceUrl, "_blank");
                             }}
                           />
                         )}
+                        {(isAdmin || userId === resource.createdById) && (
+                          <Box sx={{ display: "flex", gap: 1, ml: 1 }}>
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openEditModal(resource);
+                              }}
+                              sx={{ color: "#f59e42" }}
+                              title="Modifier"
+                            >
+                              <i className="fas fa-edit"></i>
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openDeleteDialog(resource);
+                              }}
+                              sx={{ color: "#ef4444" }}
+                              title="Supprimer"
+                            >
+                              <i className="fas fa-trash"></i>
+                            </IconButton>
+                          </Box>
+                        )}
                       </Box>
+                      {resource.createdAt && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            display: "block",
+                            color: "#888",
+                            mt: 2,
+                            textAlign: "right",
+                            fontSize: "0.75rem",
+                          }}
+                        >
+                          Ajouté le{" "}
+                          {new Date(resource.createdAt).toLocaleDateString(
+                            "fr-FR",
+                            { year: "numeric", month: "long", day: "numeric" }
+                          )}
+                        </Typography>
+                      )}
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -644,43 +989,1303 @@ export default function Ressources() {
               </Typography>
             </motion.div>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative z-10"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.0 }}
-            >
-              <Button
-                variant="contained"
-                size="large"
-                startIcon={<i className="fas fa-plus"></i>}
-                endIcon={<ArrowRight size={20} />}
-                sx={{
-                  fontWeight: 700,
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: 3,
-                  background:
-                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                  boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                  fontSize: "1rem",
-                  textTransform: "none",
-                  "&:hover": {
-                    background:
-                      "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                    boxShadow: "0 15px 40px rgba(59, 130, 246, 0.4)",
-                    transform: "translateY(-2px)",
-                  },
-                }}
+            {isLoggedIn && (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative z-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.0 }}
               >
-                Ajouter une ressource
-              </Button>
-            </motion.div>
+                <Button
+                  variant="contained"
+                  size="large"
+                  startIcon={<i className="fas fa-plus"></i>}
+                  endIcon={<ArrowRight size={20} />}
+                  onClick={openAddModal}
+                  sx={{
+                    fontWeight: 700,
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 3,
+                    background:
+                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                    boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
+                    fontSize: "1rem",
+                    textTransform: "none",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                      boxShadow: "0 15px 40px rgba(59, 130, 246, 0.4)",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                >
+                  Ajouter une ressource
+                </Button>
+              </motion.div>
+            )}
+            {!isLoggedIn && (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative z-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.0 }}
+              >
+                <Button
+                  variant="contained"
+                  size="large"
+                  startIcon={<i className="fas fa-plus"></i>}
+                  endIcon={<ArrowRight size={20} />}
+                  onClick={() => navigate("/connexion")}
+                  sx={{
+                    fontWeight: 700,
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 3,
+                    background:
+                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                    boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
+                    fontSize: "1rem",
+                    textTransform: "none",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                      boxShadow: "0 15px 40px rgba(59, 130, 246, 0.4)",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                >
+                  Ajouter une ressource
+                </Button>
+              </motion.div>
+            )}
           </Box>
         </Container>
       </motion.section>
+
+      {/* Add Resource Modal */}
+      <Dialog
+        open={addModalOpen}
+        onClose={closeAddModal}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            background: "rgba(30, 41, 59, 0.95)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            borderRadius: 3,
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            color: "white",
+            fontWeight: 600,
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          Ajouter une ressource
+          <IconButton
+            onClick={closeAddModal}
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+              ml: 1,
+              "&:hover": {
+                color: "white",
+                background: "rgba(255, 255, 255, 0.1)",
+              },
+            }}
+          >
+            <i className="fas fa-times"></i>
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ pt: 3 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label="Titre"
+              value={addForm.title}
+              onChange={(e) => updateAddFormField("title", e.target.value)}
+              fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
+                  "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": { color: "#3b82f6" },
+                },
+              }}
+            />
+            <TextField
+              label="Sujet"
+              value={addForm.subject}
+              onChange={(e) => updateAddFormField("subject", e.target.value)}
+              fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
+                  "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": { color: "#3b82f6" },
+                },
+              }}
+            />
+            <TextField
+              label="Description"
+              value={addForm.description}
+              onChange={(e) =>
+                updateAddFormField("description", e.target.value)
+              }
+              fullWidth
+              multiline
+              minRows={2}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  color: "white",
+                  "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": { color: "#3b82f6" },
+                },
+              }}
+            />
+            <Typography variant="caption" sx={{ color: "#3b82f6", mt: 0.5 }}>
+              Markdown supporté (titres, listes, gras, italique, liens, etc.)
+            </Typography>
+            <FormControl fullWidth>
+              <InputLabel
+                sx={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": { color: "#3b82f6" },
+                }}
+              >
+                Catégorie
+              </InputLabel>
+              <Select
+                value={addForm.category}
+                onChange={(e) => updateAddFormField("category", e.target.value)}
+                sx={{
+                  color: "white",
+                  background: "rgba(30, 41, 59, 0.95)",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#3b82f6",
+                  },
+                  "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      background: "rgba(30, 41, 59, 0.98)",
+                      color: "white",
+                    },
+                  },
+                }}
+              >
+                {categories.slice(1).map((category) => (
+                  <MenuItem
+                    key={category}
+                    value={category}
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    {category}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {/* Icon Selection */}
+            <Typography
+              variant="body2"
+              sx={{ color: "rgba(255, 255, 255, 0.7)", fontWeight: 500, mb: 1 }}
+            >
+              Icône
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              <Button
+                variant={
+                  addIconMode === "predefined" ? "contained" : "outlined"
+                }
+                size="small"
+                onClick={() => setAddIconMode("predefined")}
+                sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+              >
+                Icônes prédéfinies
+              </Button>
+              <Button
+                variant={addIconMode === "custom" ? "contained" : "outlined"}
+                size="small"
+                onClick={() => setAddIconMode("custom")}
+                sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+              >
+                URL personnalisée
+              </Button>
+              <Button
+                variant={addIconMode === "manual" ? "contained" : "outlined"}
+                size="small"
+                onClick={() => setAddIconMode("manual")}
+                sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+              >
+                Classe FontAwesome
+              </Button>
+            </Box>
+            {addIconMode === "predefined" && (
+              <>
+                <TextField
+                  label="Rechercher une icône"
+                  value={addIconSearch}
+                  onChange={(e) => setAddIconSearch(e.target.value)}
+                  size="small"
+                  fullWidth
+                  sx={{
+                    mb: 1,
+                    input: { color: "white" },
+                    label: { color: "rgba(255,255,255,0.7)" },
+                  }}
+                />
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(6, 1fr)",
+                    gap: 1,
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                    p: 1,
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    borderRadius: 1,
+                    background: "rgba(255,255,255,0.05)",
+                  }}
+                >
+                  {getFilteredIconsForAdd().map((iconOption) => (
+                    <IconButton
+                      key={iconOption.value}
+                      onClick={() =>
+                        updateAddFormField("icon", iconOption.value)
+                      }
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        border:
+                          addForm.icon === iconOption.value
+                            ? "2px solid #3b82f6"
+                            : "1px solid rgba(255,255,255,0.2)",
+                        background:
+                          addForm.icon === iconOption.value
+                            ? "rgba(59,130,246,0.2)"
+                            : "rgba(255,255,255,0.05)",
+                        color: "white",
+                        fontSize: "1.2rem",
+                        "&:hover": {
+                          background: "rgba(59,130,246,0.1)",
+                          border: "1px solid #3b82f6",
+                        },
+                      }}
+                    >
+                      <i className={iconOption.value}></i>
+                    </IconButton>
+                  ))}
+                </Box>
+              </>
+            )}
+            {addIconMode === "custom" && (
+              <TextField
+                label="URL de l'icône"
+                value={addCustomIconUrl}
+                onChange={(e) => setAddCustomIconUrl(e.target.value)}
+                fullWidth
+                placeholder="https://example.com/icon.png"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "white",
+                    "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)",
+                    },
+                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)",
+                    "&.Mui-focused": { color: "#3b82f6" },
+                  },
+                }}
+              />
+            )}
+            {addIconMode === "manual" && (
+              <TextField
+                label="Classe FontAwesome (ex: fas fa-atom)"
+                value={addForm.icon}
+                onChange={(e) => updateAddFormField("icon", e.target.value)}
+                fullWidth
+                placeholder="fas fa-atom"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "white",
+                    "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255,255,255,0.3)",
+                    },
+                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255,255,255,0.7)",
+                    "&.Mui-focused": { color: "#3b82f6" },
+                  },
+                }}
+              />
+            )}
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel
+                sx={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": { color: "#3b82f6" },
+                }}
+              >
+                Type
+              </InputLabel>
+              <Select
+                value={addForm.type}
+                onChange={(e) => updateAddFormField("type", e.target.value)}
+                sx={{
+                  color: "white",
+                  background: "rgba(30, 41, 59, 0.95)",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#3b82f6",
+                  },
+                  "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      background: "rgba(30, 41, 59, 0.98)",
+                      color: "white",
+                    },
+                  },
+                }}
+              >
+                <MenuItem
+                  value="PDF"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  PDF
+                </MenuItem>
+                <MenuItem
+                  value="Image"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Image
+                </MenuItem>
+                <MenuItem
+                  value="Lien"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Lien
+                </MenuItem>
+                <MenuItem
+                  value="Text"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Text
+                </MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel
+                sx={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": { color: "#3b82f6" },
+                }}
+              >
+                Filtre
+              </InputLabel>
+              <Select
+                value={addForm.filter}
+                onChange={(e) => updateAddFormField("filter", e.target.value)}
+                sx={{
+                  color: "white",
+                  background: "rgba(30, 41, 59, 0.95)",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#3b82f6",
+                  },
+                  "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      background: "rgba(30, 41, 59, 0.98)",
+                      color: "white",
+                    },
+                  },
+                }}
+              >
+                <MenuItem
+                  value="Cours"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Cours
+                </MenuItem>
+                <MenuItem
+                  value="TD"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  TD
+                </MenuItem>
+                <MenuItem
+                  value="Examens"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Examens
+                </MenuItem>
+                <MenuItem
+                  value="Livres"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Livres
+                </MenuItem>
+                <MenuItem
+                  value="Exercices"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Exercices
+                </MenuItem>
+                <MenuItem
+                  value="Vidéos"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Vidéos
+                </MenuItem>
+                <MenuItem
+                  value="Témoignages"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Témoignages
+                </MenuItem>
+                <MenuItem
+                  value="Concours"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Concours
+                </MenuItem>
+                <MenuItem
+                  value="CV"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  CV
+                </MenuItem>
+                <MenuItem
+                  value="Lettres"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Lettres
+                </MenuItem>
+                <MenuItem
+                  value="Astuces"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Astuces
+                </MenuItem>
+                <MenuItem
+                  value="Codes"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Codes
+                </MenuItem>
+                <MenuItem
+                  value="Autres"
+                  sx={{ background: "none !important", color: "white" }}
+                >
+                  Autres
+                </MenuItem>
+              </Select>
+            </FormControl>
+            {addForm.type === "PDF" || addForm.type === "Image" ? (
+              <Box sx={{ mt: 2 }}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  disabled={uploading}
+                  sx={{
+                    color: uploading ? "#aaa" : "#3b82f6",
+                    borderColor: uploading ? "#aaa" : "#3b82f6",
+                    mb: 1,
+                  }}
+                >
+                  {uploading ? "Uploading..." : "Upload your file"}
+                  <input
+                    type="file"
+                    accept={addForm.type === "PDF" ? ".pdf" : "image/*"}
+                    hidden
+                    ref={fileInputRef}
+                    onChange={async (e) => {
+                      setUploadError("");
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      setUploading(true);
+                      const formData = new FormData();
+                      formData.append("file", file);
+                      try {
+                        const token = localStorage.getItem("token");
+                        const res = await fetch("/api/upload", {
+                          method: "POST",
+                          headers: token
+                            ? { Authorization: `Bearer ${token}` }
+                            : {},
+                          body: formData,
+                        });
+                        if (!res.ok)
+                          throw new Error("Erreur lors de l'upload du fichier");
+                        const data = await res.json();
+                        if (!data.url)
+                          throw new Error("Réponse d'upload invalide");
+                        updateAddFormField("resourceUrl", data.url);
+                      } catch (err) {
+                        setUploadError(err.message);
+                      } finally {
+                        setUploading(false);
+                      }
+                    }}
+                  />
+                </Button>
+                {addForm.resourceUrl && (
+                  <Typography variant="caption" sx={{ color: "#10b981" }}>
+                    Fichier prêt à être ajouté :{" "}
+                    {addForm.resourceUrl.split("/").pop()}
+                  </Typography>
+                )}
+                {uploadError && (
+                  <Typography variant="caption" sx={{ color: "red" }}>
+                    {uploadError}
+                  </Typography>
+                )}
+              </Box>
+            ) : addForm.type === "Text" ? null : (
+              <TextField
+                label="URL de la ressource"
+                value={addForm.resourceUrl}
+                onChange={(e) =>
+                  updateAddFormField("resourceUrl", e.target.value)
+                }
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "white",
+                    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    "&.Mui-focused": { color: "#3b82f6" },
+                  },
+                }}
+              />
+            )}
+            {addError && <Typography color="error">{addError}</Typography>}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ p: 3, gap: 1 }}>
+          <Button
+            onClick={closeAddModal}
+            variant="outlined"
+            sx={{
+              borderColor: "rgba(255, 255, 255, 0.3)",
+              color: "rgba(255, 255, 255, 0.7)",
+              "&:hover": {
+                borderColor: "rgba(255, 255, 255, 0.5)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+              },
+            }}
+          >
+            Annuler
+          </Button>
+          <Button
+            onClick={handleAddResource}
+            variant="contained"
+            sx={{
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              color: "white",
+              "&:hover": {
+                background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+              },
+            }}
+            disabled={addLoading}
+          >
+            {addLoading ? "Ajout..." : "Ajouter"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Resource Modal */}
+      <Dialog
+        open={editModalOpen}
+        onClose={closeEditModal}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            background: "rgba(30, 41, 59, 0.95)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            borderRadius: 3,
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            color: "white",
+            fontWeight: 600,
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          Modifier la ressource
+          <IconButton
+            onClick={closeEditModal}
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+              ml: 1,
+              "&:hover": {
+                color: "white",
+                background: "rgba(255, 255, 255, 0.1)",
+              },
+            }}
+          >
+            <i className="fas fa-times"></i>
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ pt: 3 }}>
+          {editForm && (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <TextField
+                label="Titre"
+                value={editForm.title}
+                onChange={(e) => updateEditFormField("title", e.target.value)}
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "white",
+                    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    "&.Mui-focused": { color: "#3b82f6" },
+                  },
+                }}
+              />
+              <TextField
+                label="Sujet"
+                value={editForm.subject}
+                onChange={(e) => updateEditFormField("subject", e.target.value)}
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "white",
+                    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    "&.Mui-focused": { color: "#3b82f6" },
+                  },
+                }}
+              />
+              <TextField
+                label="Description"
+                value={editForm.description}
+                onChange={(e) =>
+                  updateEditFormField("description", e.target.value)
+                }
+                fullWidth
+                multiline
+                minRows={2}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "white",
+                    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    "&.Mui-focused": { color: "#3b82f6" },
+                  },
+                }}
+              />
+              <Typography variant="caption" sx={{ color: "#3b82f6", mt: 0.5 }}>
+                Markdown supporté (titres, listes, gras, italique, liens, etc.)
+              </Typography>
+              <FormControl fullWidth>
+                <InputLabel
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.7)",
+                    "&.Mui-focused": { color: "#3b82f6" },
+                  }}
+                >
+                  Catégorie
+                </InputLabel>
+                <Select
+                  value={editForm.category}
+                  onChange={(e) =>
+                    updateEditFormField("category", e.target.value)
+                  }
+                  sx={{
+                    color: "white",
+                    background: "rgba(30, 41, 59, 0.95)",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#3b82f6",
+                    },
+                    "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        background: "rgba(30, 41, 59, 0.98)",
+                        color: "white",
+                      },
+                    },
+                  }}
+                >
+                  {categories.slice(1).map((category) => (
+                    <MenuItem
+                      key={category}
+                      value={category}
+                      sx={{ background: "none !important", color: "white" }}
+                    >
+                      {category}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {/* Icon Selection */}
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontWeight: 500,
+                  mb: 1,
+                }}
+              >
+                Icône
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+                <Button
+                  variant={
+                    editIconMode === "predefined" ? "contained" : "outlined"
+                  }
+                  size="small"
+                  onClick={() => setEditIconMode("predefined")}
+                  sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+                >
+                  Icônes prédéfinies
+                </Button>
+                <Button
+                  variant={editIconMode === "custom" ? "contained" : "outlined"}
+                  size="small"
+                  onClick={() => setEditIconMode("custom")}
+                  sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+                >
+                  URL personnalisée
+                </Button>
+                <Button
+                  variant={editIconMode === "manual" ? "contained" : "outlined"}
+                  size="small"
+                  onClick={() => setEditIconMode("manual")}
+                  sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+                >
+                  Classe FontAwesome
+                </Button>
+              </Box>
+              {editIconMode === "predefined" && (
+                <>
+                  <TextField
+                    label="Rechercher une icône"
+                    value={editIconSearch}
+                    onChange={(e) => setEditIconSearch(e.target.value)}
+                    size="small"
+                    fullWidth
+                    sx={{
+                      mb: 1,
+                      input: { color: "white" },
+                      label: { color: "rgba(255,255,255,0.7)" },
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(6, 1fr)",
+                      gap: 1,
+                      maxHeight: "200px",
+                      overflowY: "auto",
+                      p: 1,
+                      border: "1px solid rgba(255,255,255,0.2)",
+                      borderRadius: 1,
+                      background: "rgba(255,255,255,0.05)",
+                    }}
+                  >
+                    {getFilteredIconsForEdit().map((iconOption) => (
+                      <IconButton
+                        key={iconOption.value}
+                        onClick={() =>
+                          updateEditFormField("icon", iconOption.value)
+                        }
+                        sx={{
+                          width: 40,
+                          height: 40,
+                          border:
+                            editForm.icon === iconOption.value
+                              ? "2px solid #3b82f6"
+                              : "1px solid rgba(255,255,255,0.2)",
+                          background:
+                            editForm.icon === iconOption.value
+                              ? "rgba(59,130,246,0.2)"
+                              : "rgba(255,255,255,0.05)",
+                          color: "white",
+                          fontSize: "1.2rem",
+                          "&:hover": {
+                            background: "rgba(59,130,246,0.1)",
+                            border: "1px solid #3b82f6",
+                          },
+                        }}
+                      >
+                        <i className={iconOption.value}></i>
+                      </IconButton>
+                    ))}
+                  </Box>
+                </>
+              )}
+              {editIconMode === "custom" && (
+                <TextField
+                  label="URL de l'icône"
+                  value={editCustomIconUrl}
+                  onChange={(e) => setEditCustomIconUrl(e.target.value)}
+                  fullWidth
+                  placeholder="https://example.com/icon.png"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      color: "white",
+                      "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255,255,255,0.3)",
+                      },
+                      "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255,255,255,0.7)",
+                      "&.Mui-focused": { color: "#3b82f6" },
+                    },
+                  }}
+                />
+              )}
+              {editIconMode === "manual" && (
+                <TextField
+                  label="Classe FontAwesome (ex: fas fa-atom)"
+                  value={editForm.icon}
+                  onChange={(e) => updateEditFormField("icon", e.target.value)}
+                  fullWidth
+                  placeholder="fas fa-atom"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      color: "white",
+                      "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255,255,255,0.3)",
+                      },
+                      "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255,255,255,0.7)",
+                      "&.Mui-focused": { color: "#3b82f6" },
+                    },
+                  }}
+                />
+              )}
+              <FormControl fullWidth sx={{ mt: 2 }}>
+                <InputLabel
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.7)",
+                    "&.Mui-focused": { color: "#3b82f6" },
+                  }}
+                >
+                  Type
+                </InputLabel>
+                <Select
+                  value={editForm.type}
+                  onChange={(e) => updateEditFormField("type", e.target.value)}
+                  sx={{
+                    color: "white",
+                    background: "rgba(30, 41, 59, 0.95)",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#3b82f6",
+                    },
+                    "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        background: "rgba(30, 41, 59, 0.98)",
+                        color: "white",
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem
+                    value="PDF"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    PDF
+                  </MenuItem>
+                  <MenuItem
+                    value="Image"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Image
+                  </MenuItem>
+                  <MenuItem
+                    value="Lien"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Lien
+                  </MenuItem>
+                  <MenuItem
+                    value="Text"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Text
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth sx={{ mt: 2 }}>
+                <InputLabel
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.7)",
+                    "&.Mui-focused": { color: "#3b82f6" },
+                  }}
+                >
+                  Filtre
+                </InputLabel>
+                <Select
+                  value={editForm.filter}
+                  onChange={(e) =>
+                    updateEditFormField("filter", e.target.value)
+                  }
+                  sx={{
+                    color: "white",
+                    background: "rgba(30, 41, 59, 0.95)",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#3b82f6",
+                    },
+                    "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        background: "rgba(30, 41, 59, 0.98)",
+                        color: "white",
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem
+                    value="Cours"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Cours
+                  </MenuItem>
+                  <MenuItem
+                    value="TD"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    TD
+                  </MenuItem>
+                  <MenuItem
+                    value="Examens"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Examens
+                  </MenuItem>
+                  <MenuItem
+                    value="Livres"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Livres
+                  </MenuItem>
+                  <MenuItem
+                    value="Exercices"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Exercices
+                  </MenuItem>
+                  <MenuItem
+                    value="Vidéos"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Vidéos
+                  </MenuItem>
+                  <MenuItem
+                    value="Témoignages"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Témoignages
+                  </MenuItem>
+                  <MenuItem
+                    value="Concours"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Concours
+                  </MenuItem>
+                  <MenuItem
+                    value="CV"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    CV
+                  </MenuItem>
+                  <MenuItem
+                    value="Lettres"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Lettres
+                  </MenuItem>
+                  <MenuItem
+                    value="Astuces"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Astuces
+                  </MenuItem>
+                  <MenuItem
+                    value="Codes"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Codes
+                  </MenuItem>
+                  <MenuItem
+                    value="Autres"
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    Autres
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              {editForm.type === "PDF" || editForm.type === "Image" ? (
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    disabled={uploading}
+                    sx={{
+                      color: uploading ? "#aaa" : "#3b82f6",
+                      borderColor: uploading ? "#aaa" : "#3b82f6",
+                      mb: 1,
+                    }}
+                  >
+                    {uploading ? "Uploading..." : "Upload your file"}
+                    <input
+                      type="file"
+                      accept={editForm.type === "PDF" ? ".pdf" : "image/*"}
+                      hidden
+                      ref={fileInputRef}
+                      onChange={async (e) => {
+                        setUploadError("");
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setUploading(true);
+                        const formData = new FormData();
+                        formData.append("file", file);
+                        try {
+                          const token = localStorage.getItem("token");
+                          const res = await fetch("/api/upload", {
+                            method: "POST",
+                            headers: token
+                              ? { Authorization: `Bearer ${token}` }
+                              : {},
+                            body: formData,
+                          });
+                          if (!res.ok)
+                            throw new Error(
+                              "Erreur lors de l'upload du fichier"
+                            );
+                          const data = await res.json();
+                          if (!data.url)
+                            throw new Error("Réponse d'upload invalide");
+                          updateEditFormField("resourceUrl", data.url);
+                        } catch (err) {
+                          setUploadError(err.message);
+                        } finally {
+                          setUploading(false);
+                        }
+                      }}
+                    />
+                  </Button>
+                  {editForm.resourceUrl && (
+                    <Typography variant="caption" sx={{ color: "#10b981" }}>
+                      Fichier prêt à être ajouté :{" "}
+                      {editForm.resourceUrl.split("/").pop()}
+                    </Typography>
+                  )}
+                  {uploadError && (
+                    <Typography variant="caption" sx={{ color: "red" }}>
+                      {uploadError}
+                    </Typography>
+                  )}
+                </Box>
+              ) : editForm.type === "Text" ? null : (
+                <TextField
+                  label="URL de la ressource"
+                  value={editForm.resourceUrl}
+                  onChange={(e) =>
+                    updateEditFormField("resourceUrl", e.target.value)
+                  }
+                  fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      color: "white",
+                      "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                      },
+                      "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-focused": { color: "#3b82f6" },
+                    },
+                  }}
+                />
+              )}
+              {editError && <Typography color="error">{editError}</Typography>}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 3, gap: 1 }}>
+          <Button
+            onClick={closeEditModal}
+            variant="outlined"
+            sx={{
+              borderColor: "rgba(255, 255, 255, 0.3)",
+              color: "rgba(255, 255, 255, 0.7)",
+              "&:hover": {
+                borderColor: "rgba(255, 255, 255, 0.5)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+              },
+            }}
+          >
+            Annuler
+          </Button>
+          <Button
+            onClick={handleEditResource}
+            variant="contained"
+            sx={{
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              color: "white",
+              "&:hover": {
+                background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+              },
+            }}
+            disabled={editLoading}
+          >
+            {editLoading ? "Modification..." : "Enregistrer"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete confirmation dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={closeDeleteDialog}
+        PaperProps={{
+          sx: {
+            background: "rgba(30,41,59,1)",
+            color: "white",
+            borderRadius: 3,
+            boxShadow: 24,
+          },
+        }}
+      >
+        <DialogTitle>Confirmer la suppression</DialogTitle>
+        <DialogContent>
+          Voulez-vous vraiment supprimer cette ressource ? Cette action est
+          irréversible.
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDeleteDialog}>Annuler</Button>
+          <Button
+            onClick={handleDeleteResource}
+            color="error"
+            variant="contained"
+          >
+            Supprimer
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
