@@ -820,9 +820,8 @@ export default function Home() {
                       Dans la section Conseil, tu peux partager tout ce qui
                       pourrait être utile à d'autres utilisateurs. Même si t'es
                       encore en L2 ou L3, tu pourrais déjà donner des conseils
-                      pour les L1 qui arrive la rentrée prochaine! Ils vont plus
-                      pourront plus facilement s'intégrer avec vos conseils et
-                      retours!
+                      pour les L1 qui arrive la rentrée prochaine! Ils pourront
+                      plus facilement s'intégrer avec vos conseils et retours!
                     </span>
                     <br />
                     <Box
