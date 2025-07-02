@@ -18,7 +18,7 @@ The site is still under development, but you can already create your account, pe
 
 ## Main Features
 
-- 📚 **Shared Resources**: All logged-in users can add, edit, and delete their own resources (course notes, summaries, exercises, CV templates, cover letters, competition/oral subjects, etc.).
+- 📚 **Shared Resources**: All logged-in users can add, edit, and delete their own resources (course notes, summaries, exercises, CV templates, cover letters, entrance exams/oral subjects, etc.).
 - 🔍 **Advanced Search**: Search for resources by title, subject, or description, and filter by category/type.
 - 🖼️ **File Uploads**: All users can upload files (PDFs, images, links) to share with the community.
 - 📝 **Markdown Descriptions**: Resource descriptions support Markdown for rich formatting.
