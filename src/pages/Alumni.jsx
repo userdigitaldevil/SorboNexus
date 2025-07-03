@@ -56,7 +56,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { useAlumniEditModal } from "../components/AlumniEditModalContext";
 
-export default function Alumnis() {
+export default function Alumni() {
   // Admin state (must be first)
   const isAdmin =
     typeof window !== "undefined" && localStorage.getItem("isAdmin") === "true";

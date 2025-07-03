@@ -68,7 +68,7 @@ export default function Footer() {
             {[
               { label: "Accueil", path: "/" },
               { label: "Ressources", path: "/ressources" },
-              { label: "Alumni", path: "/alumnis" },
+              { label: "Alumni", path: "/alumni" },
               { label: "Conseils", path: "/conseils" },
               { label: "Liens Utiles", path: "/liens-utiles" },
             ].map((item) => (

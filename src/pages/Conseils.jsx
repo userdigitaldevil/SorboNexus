@@ -553,7 +553,7 @@ export default function Conseils() {
                   fontSize: { xs: "1.5rem", sm: "2rem", md: "3.5rem" },
                 }}
               >
-                Conseils des Alumnis
+                Conseils des Alumni
               </Typography>
               <Typography
                 variant="h5"
@@ -942,7 +942,7 @@ export default function Conseils() {
               }}
             >
               Vous êtes un ancien étudiant de la Sorbonne ? Rejoignez notre
-              réseau d'alumnis pour partager votre expérience et aider les
+              réseau d'alumni pour partager votre expérience et aider les
               étudiants actuels.
             </Typography>
             <motion.div

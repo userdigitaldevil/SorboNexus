@@ -12,7 +12,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Ressources from "./pages/Ressources";
 import Conseils from "./pages/Conseils";
-import Alumnis from "./pages/Alumnis";
+import Alumni from "./pages/Alumni";
 import LiensUtiles from "./pages/LiensUtiles";
 import Connexion from "./pages/Connexion";
 import Terms from "./pages/Terms";
@@ -109,8 +109,8 @@ function TitleUpdater() {
     const titles = {
       "/": "SorboNexus - Accueil",
       "/ressources": "SorboNexus - Ressources",
-      "/conseils": "SorboNexus - Conseils des Alumnis",
-      "/alumnis": "SorboNexus - Alumnis",
+      "/conseils": "SorboNexus - Conseils des Alumni",
+      "/alumni": "SorboNexus - Alumni",
       "/liens-utiles": "SorboNexus - Liens Utiles",
       "/connexion": "SorboNexus - Connexion",
       "/terms": "SorboNexus - Conditions d'utilisation",
@@ -138,7 +138,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/ressources" element={<Ressources />} />
                 <Route path="/conseils" element={<Conseils />} />
-                <Route path="/alumnis" element={<Alumnis />} />
+                <Route path="/alumni" element={<Alumni />} />
                 <Route path="/liens-utiles" element={<LiensUtiles />} />
                 <Route path="/connexion" element={<Connexion />} />
                 <Route path="/terms" element={<Terms />} />

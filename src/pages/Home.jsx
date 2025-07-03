@@ -89,11 +89,11 @@ const features = [
   },
   {
     icon: <Users size={24} />,
-    title: "Alumnis",
+    title: "Alumni",
     description:
       "Connectez-vous avec les anciens étudiants pour des opportunités de mentorat, de stage et de développement professionnel.",
     gradient: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
-    path: "/alumnis",
+    path: "/alumni",
   },
   {
     icon: <Lightbulb size={24} />,
@@ -131,7 +131,7 @@ const features = [
 
 const stats = [
   { value: "1.5K+", label: "Étudiants actifs" },
-  { value: "850+", label: "Alumnis inscrits" },
+  { value: "850+", label: "Alumni inscrits" },
   { value: "2.7K+", label: "Ressources" },
   { value: "98%", label: "Satisfaction" },
 ];
@@ -1009,7 +1009,7 @@ export default function Home() {
                       whileTap={{ scale: 0.95 }}
                     >
                       <Button
-                        onClick={() => handleCardNavigation("/alumnis")}
+                        onClick={() => handleCardNavigation("/alumni")}
                         variant="contained"
                         size="large"
                         endIcon={<ArrowRight size={20} />}
@@ -1029,7 +1029,7 @@ export default function Home() {
                           },
                         }}
                       >
-                        Découvrez nos alumnis
+                        Découvrez nos alumni
                       </Button>
                     </motion.div>
                     <motion.div
@@ -1124,7 +1124,7 @@ export default function Home() {
                             fontSize: { xs: "0.7rem", md: "0.875rem" },
                           }}
                         >
-                          Alumnis qui ont eu leur licence avant {currentYear}
+                          Alumni qui ont eu leur licence avant {currentYear}
                         </Typography>
                       </Box>
                     </motion.div>
@@ -1773,7 +1773,7 @@ export default function Home() {
                     fontSize: { xs: "0.75rem", md: "0.9rem" },
                   }}
                 >
-                  Alumnis qui ont eu leur licence avant {currentYear}
+                  Alumni qui ont eu leur licence avant {currentYear}
                 </Typography>
               </motion.div>
             </div>

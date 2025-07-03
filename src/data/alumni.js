@@ -1,4 +1,4 @@
-// Shared alumni data for Alumnis and Conseils
+// Shared alumni data for Alumni and Conseils
 export const alumni = [
   {
     id: 1,
