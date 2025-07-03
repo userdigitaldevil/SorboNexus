@@ -21,6 +21,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Checkbox,
 } from "@mui/material";
 import { ArrowRight, Search } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
@@ -71,8 +72,10 @@ const CATEGORY_STYLES = {
 
 export default function Ressources() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("Toutes les ressources");
-  const [activeFilter, setActiveFilter] = useState("Tous");
+  const [activeCategory, setActiveCategory] = useState([
+    "Toutes les ressources",
+  ]);
+  const [activeFilter, setActiveFilter] = useState(["Tous"]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const categoriesRef = useRef(null);
@@ -86,8 +89,8 @@ export default function Ressources() {
     icon: "",
     gradient: "",
     type: "PDF",
-    category: "Autres",
-    filter: "Livres",
+    category: ["Autres"],
+    filter: ["Livres"],
     resourceUrl: "",
     format: "pdf",
   });
@@ -214,10 +217,19 @@ export default function Ressources() {
         resource.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
         resource.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory =
-        activeCategory === "Toutes les ressources" ||
-        resource.category === activeCategory;
+        activeCategory.includes("Toutes les ressources") ||
+        (Array.isArray(resource.category) &&
+          resource.category.some((cat) => activeCategory.includes(cat)));
       const matchesFilter =
-        activeFilter === "Tous" || resource.filter === activeFilter;
+        activeFilter.includes("Tous") ||
+        (typeof resource.filter === "string"
+          ? resource.filter
+              .split(",")
+              .map((f) => f.trim())
+              .some((f) => activeFilter.includes(f))
+          : Array.isArray(resource.filter)
+          ? resource.filter.some((f) => activeFilter.includes(f))
+          : false);
 
       return matchesSearch && matchesCategory && matchesFilter;
     });
@@ -239,20 +251,20 @@ export default function Ressources() {
 
   // Add modal handlers
   const openAddModal = () => {
-    setAddForm({
-      title: "",
-      subject: "",
-      description: "",
-      icon: "",
-      gradient: "",
-      type: "PDF",
-      category: "Autres",
-      filter: "Livres",
-      resourceUrl: "",
-      format: "pdf",
-    });
-    setAddError("");
     setAddModalOpen(true);
+    setAddForm((prev) => ({
+      ...prev,
+      filter: Array.isArray(prev.filter)
+        ? prev.filter
+        : typeof prev.filter === "string" && prev.filter.length > 0
+        ? prev.filter.split(",").map((f) => f.trim())
+        : [],
+      category: Array.isArray(prev.category)
+        ? prev.category
+        : typeof prev.category === "string" && prev.category.length > 0
+        ? prev.category.split(",").map((c) => c.trim())
+        : ["Autres"],
+    }));
   };
   const closeAddModal = () => setAddModalOpen(false);
   const updateAddFormField = (field, value) => {
@@ -262,34 +274,24 @@ export default function Ressources() {
     setAddLoading(true);
     setAddError("");
     try {
-      const token = localStorage.getItem("token");
-      let iconValue = addForm.icon;
-      if (addIconMode === "custom") iconValue = addCustomIconUrl;
-      if (addIconMode === "manual") iconValue = addForm.icon;
-      if (!iconValue) {
-        setAddError("Veuillez choisir une icône.");
-        setAddLoading(false);
-        return;
-      }
-      const payload = { ...addForm, icon: iconValue, format: addForm.type };
-      if (addForm.type === "Text") delete payload.resourceUrl;
-      const res = await fetch("/api/ressources", {
+      const payload = {
+        ...addForm,
+        filter: Array.isArray(addForm.filter)
+          ? addForm.filter.join(",")
+          : addForm.filter,
+      };
+      const res = await fetch(`/api/ressources`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(
-          errData.error || "Erreur lors de l'ajout de la ressource."
-        );
-      }
-      const newResource = await res.json();
-      setResources((prev) => [newResource, ...prev]);
-      closeAddModal();
+      if (!res.ok) throw new Error("Erreur lors de l'ajout de la ressource");
+      const data = await res.json();
+      setResources((prev) => [data, ...prev]);
+      setAddModalOpen(false);
     } catch (err) {
       setAddError(err.message);
     } finally {
@@ -299,7 +301,19 @@ export default function Ressources() {
 
   // Open edit modal with resource data
   const openEditModal = (resource) => {
-    setEditForm({ ...resource });
+    setEditForm({
+      ...resource,
+      filter: Array.isArray(resource.filter)
+        ? resource.filter
+        : typeof resource.filter === "string" && resource.filter.length > 0
+        ? resource.filter.split(",").map((f) => f.trim())
+        : [],
+      category: Array.isArray(resource.category)
+        ? resource.category
+        : typeof resource.category === "string" && resource.category.length > 0
+        ? resource.category.split(",").map((c) => c.trim())
+        : ["Autres"],
+    });
     setEditError("");
     setEditModalOpen(true);
   };
@@ -311,40 +325,25 @@ export default function Ressources() {
     setEditLoading(true);
     setEditError("");
     try {
-      const token = localStorage.getItem("token");
-      let editIconValue = editForm.icon;
-      if (editIconMode === "custom") editIconValue = editCustomIconUrl;
-      if (editIconMode === "manual") editIconValue = editForm.icon;
-      if (!editIconValue) {
-        setEditError("Veuillez choisir une icône.");
-        setEditLoading(false);
-        return;
-      }
       const payload = {
         ...editForm,
-        icon: editIconValue,
-        format: editForm.type,
+        filter: Array.isArray(editForm.filter)
+          ? editForm.filter.join(",")
+          : editForm.filter,
       };
-      if (editForm.type === "Text") delete payload.resourceUrl;
       const res = await fetch(`/api/ressources/${editForm.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(
-          errData.error || "Erreur lors de la modification de la ressource."
-        );
-      }
-      const updatedResource = await res.json();
-      setResources((prev) =>
-        prev.map((r) => (r.id === updatedResource.id ? updatedResource : r))
-      );
-      closeEditModal();
+      if (!res.ok)
+        throw new Error("Erreur lors de la modification de la ressource");
+      const data = await res.json();
+      setResources((prev) => prev.map((r) => (r.id === data.id ? data : r)));
+      setEditModalOpen(false);
     } catch (err) {
       setEditError(err.message);
     } finally {
@@ -551,12 +550,26 @@ export default function Ressources() {
                   <Chip
                     key={category}
                     label={category}
-                    onClick={() => setActiveCategory(category)}
+                    onClick={() => {
+                      setActiveCategory((prev) => {
+                        if (category === "Toutes les ressources")
+                          return ["Toutes les ressources"];
+                        if (prev.includes(category)) {
+                          const next = prev.filter((c) => c !== category);
+                          return next.length === 0
+                            ? ["Toutes les ressources"]
+                            : next;
+                        } else {
+                          return prev
+                            .filter((c) => c !== "Toutes les ressources")
+                            .concat(category);
+                        }
+                      });
+                    }}
                     sx={{
-                      background:
-                        activeCategory === category
-                          ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                          : "rgba(255,255,255,0.05)",
+                      background: activeCategory.includes(category)
+                        ? "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)"
+                        : "rgba(255,255,255,0.05)",
                       color: "white",
                       border: "1px solid rgba(255,255,255,0.1)",
                       cursor: "pointer",
@@ -564,8 +577,8 @@ export default function Ressources() {
                       fontSize: { xs: "0.7rem", md: "0.875rem" },
                       height: { xs: "28px", md: "32px" },
                       "&:hover": {
-                        background: "rgba(59, 130, 246, 0.2)",
-                        border: "1px solid rgba(59, 130, 246, 0.3)",
+                        background: "rgba(139, 92, 246, 0.2)",
+                        border: "1px solid rgba(139, 92, 246, 0.3)",
                       },
                     }}
                   />
@@ -599,12 +612,23 @@ export default function Ressources() {
                   <Chip
                     key={filter}
                     label={filter}
-                    onClick={() => setActiveFilter(filter)}
+                    onClick={() => {
+                      setActiveFilter((prev) => {
+                        if (filter === "Tous") return ["Tous"];
+                        if (prev.includes(filter)) {
+                          const next = prev.filter((f) => f !== filter);
+                          return next.length === 0 ? ["Tous"] : next;
+                        } else {
+                          return prev
+                            .filter((f) => f !== "Tous")
+                            .concat(filter);
+                        }
+                      });
+                    }}
                     sx={{
-                      background:
-                        activeFilter === filter
-                          ? "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)"
-                          : "rgba(255,255,255,0.05)",
+                      background: activeFilter.includes(filter)
+                        ? "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)"
+                        : "rgba(255,255,255,0.05)",
                       color: "white",
                       border: "1px solid rgba(255,255,255,0.1)",
                       cursor: "pointer",
@@ -761,6 +785,28 @@ export default function Ressources() {
                       >
                         {resource.title}
                       </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: 0.5,
+                          mb: { xs: 1, md: 2 },
+                        }}
+                      >
+                        {Array.isArray(resource.category) &&
+                          resource.category.map((cat) => (
+                            <Chip
+                              key={cat}
+                              label={cat}
+                              size="small"
+                              sx={{
+                                background: "#3b82f6",
+                                color: "white",
+                                fontWeight: 500,
+                              }}
+                            />
+                          ))}
+                      </Box>
                       <Typography
                         variant="body2"
                         sx={{
@@ -1227,8 +1273,16 @@ export default function Ressources() {
                 Catégorie
               </InputLabel>
               <Select
+                multiple
                 value={addForm.category}
-                onChange={(e) => updateAddFormField("category", e.target.value)}
+                onChange={(e) =>
+                  updateAddFormField(
+                    "category",
+                    typeof e.target.value === "string"
+                      ? e.target.value.split(",")
+                      : e.target.value
+                  )
+                }
                 sx={{
                   color: "white",
                   background: "rgba(30, 41, 59, 0.95)",
@@ -1248,9 +1302,14 @@ export default function Ressources() {
                     sx: {
                       background: "rgba(30, 41, 59, 0.98)",
                       color: "white",
+                      maxHeight: 200,
+                      minWidth: 180,
                     },
                   },
                 }}
+                renderValue={(selected) =>
+                  Array.isArray(selected) ? selected.join(", ") : selected
+                }
               >
                 {categories.slice(1).map((category) => (
                   <MenuItem
@@ -1258,6 +1317,10 @@ export default function Ressources() {
                     value={category}
                     sx={{ background: "none !important", color: "white" }}
                   >
+                    <Checkbox
+                      checked={addForm.category.indexOf(category) > -1}
+                      sx={{ color: "#3b82f6", p: 0.5, mr: 1 }}
+                    />
                     {category}
                   </MenuItem>
                 ))}
@@ -1473,8 +1536,16 @@ export default function Ressources() {
                 Filtre
               </InputLabel>
               <Select
+                multiple
                 value={addForm.filter}
-                onChange={(e) => updateAddFormField("filter", e.target.value)}
+                onChange={(e) =>
+                  updateAddFormField(
+                    "filter",
+                    typeof e.target.value === "string"
+                      ? e.target.value.split(",")
+                      : e.target.value
+                  )
+                }
                 sx={{
                   color: "white",
                   background: "rgba(30, 41, 59, 0.95)",
@@ -1494,88 +1565,40 @@ export default function Ressources() {
                     sx: {
                       background: "rgba(30, 41, 59, 0.98)",
                       color: "white",
+                      maxHeight: 200,
+                      minWidth: 180,
                     },
                   },
                 }}
+                renderValue={(selected) => selected.join(", ")}
               >
-                <MenuItem
-                  value="Cours"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Cours
-                </MenuItem>
-                <MenuItem
-                  value="TD"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  TD
-                </MenuItem>
-                <MenuItem
-                  value="Examens"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Examens
-                </MenuItem>
-                <MenuItem
-                  value="Livres"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Livres
-                </MenuItem>
-                <MenuItem
-                  value="Exercices"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Exercices
-                </MenuItem>
-                <MenuItem
-                  value="Vidéos"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Vidéos
-                </MenuItem>
-                <MenuItem
-                  value="Témoignages"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Témoignages
-                </MenuItem>
-                <MenuItem
-                  value="Concours"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Concours
-                </MenuItem>
-                <MenuItem
-                  value="CV"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  CV
-                </MenuItem>
-                <MenuItem
-                  value="Lettres"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Lettres
-                </MenuItem>
-                <MenuItem
-                  value="Astuces"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Astuces
-                </MenuItem>
-                <MenuItem
-                  value="Codes"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Codes
-                </MenuItem>
-                <MenuItem
-                  value="Autres"
-                  sx={{ background: "none !important", color: "white" }}
-                >
-                  Autres
-                </MenuItem>
+                {[
+                  "Cours",
+                  "TD",
+                  "Examens",
+                  "Livres",
+                  "Exercices",
+                  "Vidéos",
+                  "Témoignages",
+                  "Concours",
+                  "CV",
+                  "Lettres",
+                  "Astuces",
+                  "Codes",
+                  "Autres",
+                ].map((filter) => (
+                  <MenuItem
+                    key={filter}
+                    value={filter}
+                    sx={{ background: "none !important", color: "white" }}
+                  >
+                    <Checkbox
+                      checked={addForm.filter.indexOf(filter) > -1}
+                      sx={{ color: "#3b82f6", p: 0.5, mr: 1 }}
+                    />
+                    {filter}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             {addForm.type === "PDF" || addForm.type === "Image" ? (
@@ -1817,9 +1840,15 @@ export default function Ressources() {
                   Catégorie
                 </InputLabel>
                 <Select
+                  multiple
                   value={editForm.category}
                   onChange={(e) =>
-                    updateEditFormField("category", e.target.value)
+                    updateEditFormField(
+                      "category",
+                      typeof e.target.value === "string"
+                        ? e.target.value.split(",")
+                        : e.target.value
+                    )
                   }
                   sx={{
                     color: "white",
@@ -1840,9 +1869,14 @@ export default function Ressources() {
                       sx: {
                         background: "rgba(30, 41, 59, 0.98)",
                         color: "white",
+                        maxHeight: 200,
+                        minWidth: 180,
                       },
                     },
                   }}
+                  renderValue={(selected) =>
+                    Array.isArray(selected) ? selected.join(", ") : selected
+                  }
                 >
                   {categories.slice(1).map((category) => (
                     <MenuItem
@@ -1850,6 +1884,10 @@ export default function Ressources() {
                       value={category}
                       sx={{ background: "none !important", color: "white" }}
                     >
+                      <Checkbox
+                        checked={editForm.category.indexOf(category) > -1}
+                        sx={{ color: "#3b82f6", p: 0.5, mr: 1 }}
+                      />
                       {category}
                     </MenuItem>
                   ))}
@@ -2069,9 +2107,15 @@ export default function Ressources() {
                   Filtre
                 </InputLabel>
                 <Select
+                  multiple
                   value={editForm.filter}
                   onChange={(e) =>
-                    updateEditFormField("filter", e.target.value)
+                    updateEditFormField(
+                      "filter",
+                      typeof e.target.value === "string"
+                        ? e.target.value.split(",")
+                        : e.target.value
+                    )
                   }
                   sx={{
                     color: "white",
@@ -2092,88 +2136,40 @@ export default function Ressources() {
                       sx: {
                         background: "rgba(30, 41, 59, 0.98)",
                         color: "white",
+                        maxHeight: 200,
+                        minWidth: 180,
                       },
                     },
                   }}
+                  renderValue={(selected) => selected.join(", ")}
                 >
-                  <MenuItem
-                    value="Cours"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Cours
-                  </MenuItem>
-                  <MenuItem
-                    value="TD"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    TD
-                  </MenuItem>
-                  <MenuItem
-                    value="Examens"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Examens
-                  </MenuItem>
-                  <MenuItem
-                    value="Livres"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Livres
-                  </MenuItem>
-                  <MenuItem
-                    value="Exercices"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Exercices
-                  </MenuItem>
-                  <MenuItem
-                    value="Vidéos"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Vidéos
-                  </MenuItem>
-                  <MenuItem
-                    value="Témoignages"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Témoignages
-                  </MenuItem>
-                  <MenuItem
-                    value="Concours"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Concours
-                  </MenuItem>
-                  <MenuItem
-                    value="CV"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    CV
-                  </MenuItem>
-                  <MenuItem
-                    value="Lettres"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Lettres
-                  </MenuItem>
-                  <MenuItem
-                    value="Astuces"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Astuces
-                  </MenuItem>
-                  <MenuItem
-                    value="Codes"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Codes
-                  </MenuItem>
-                  <MenuItem
-                    value="Autres"
-                    sx={{ background: "none !important", color: "white" }}
-                  >
-                    Autres
-                  </MenuItem>
+                  {[
+                    "Cours",
+                    "TD",
+                    "Examens",
+                    "Livres",
+                    "Exercices",
+                    "Vidéos",
+                    "Témoignages",
+                    "Concours",
+                    "CV",
+                    "Lettres",
+                    "Astuces",
+                    "Codes",
+                    "Autres",
+                  ].map((filter) => (
+                    <MenuItem
+                      key={filter}
+                      value={filter}
+                      sx={{ background: "none !important", color: "white" }}
+                    >
+                      <Checkbox
+                        checked={editForm.filter.indexOf(filter) > -1}
+                        sx={{ color: "#3b82f6", p: 0.5, mr: 1 }}
+                      />
+                      {filter}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               {editForm.type === "PDF" || editForm.type === "Image" ? (
