@@ -906,7 +906,8 @@ export default function Home() {
                     Découvrez également des{" "}
                     <span style={{ color: "#3b82f6", fontWeight: 700 }}>
                       retours d'expérience et témoignages d'élèves sur les
-                      licences et masters
+                      licences de SU (simple, bi-disciplinaire, intensives) et
+                      masters dans differentes universités
                     </span>{" "}
                     que vous souhaitez suivre, ainsi que des témoignages
                     d'élèves ayant réussi des concours comme{" "}
@@ -914,7 +915,7 @@ export default function Home() {
                       GEI-UNIV
                     </span>{" "}
                     (admissions parallèles), des oraux, et des intégrations dans
-                    des écoles prestigieuses (en{" "}
+                    des écoles (en{" "}
                     <span style={{ color: "#3b82f6", fontWeight: 700 }}>
                       France comme à l'international
                     </span>
@@ -957,6 +958,16 @@ export default function Home() {
                     <span style={{ color: "#3b82f6", fontWeight: 700 }}>
                       {" "}
                       Paris-Saclay
+                    </span>
+                    ,
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      ESPCI
+                    </span>
+                    ,
+                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                      {" "}
+                      Paris Cité
                     </span>{" "}
                     et bien d'autres.
                     <br />
@@ -966,9 +977,9 @@ export default function Home() {
                     que des conseils pour les entretiens.
                     <br />
                     <br />
-                    Ton parcours aidera et motivera les L1 l'année pro, mais
-                    aussi les L2 et les L3 qui souhaitent faire le même parcours
-                    que toi. Le site a besoin des parcours comme le tien, et on
+                    Ton parcours aidera et motivera les nouveaux L1 , mais aussi
+                    les L2 et les L3 qui souhaitent faire le même parcours que
+                    toi. Le site a besoin des parcours comme le tien, et on
                     aimerait bien recevoir des conseils, témoignages venant de
                     toi mais aussi des ressources utiles qui t'ont aidé durant
                     ton parcours.
