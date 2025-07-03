@@ -75,6 +75,12 @@ router.post("/", isAuthenticated, async (req, res) => {
       });
     }
     const createdById = req.user.id;
+    // Ensure category is always an array
+    const categoryArray = Array.isArray(category)
+      ? category
+      : typeof category === "string" && category.length > 0
+      ? category.split(",").map((c) => c.trim())
+      : [];
     const newResource = await prisma.ressource.create({
       data: {
         title,
@@ -82,7 +88,7 @@ router.post("/", isAuthenticated, async (req, res) => {
         description,
         icon,
         type,
-        category,
+        category: categoryArray,
         filter,
         resourceUrl,
         format,
@@ -120,6 +126,12 @@ router.put("/:id", isAuthenticated, async (req, res) => {
       resourceUrl,
       format,
     } = req.body;
+    // Ensure category is always an array
+    const categoryArray = Array.isArray(category)
+      ? category
+      : typeof category === "string" && category.length > 0
+      ? category.split(",").map((c) => c.trim())
+      : [];
     const updated = await prisma.ressource.update({
       where: { id: Number(id) },
       data: {
@@ -128,7 +140,7 @@ router.put("/:id", isAuthenticated, async (req, res) => {
         description,
         icon,
         type,
-        category,
+        category: categoryArray,
         filter,
         resourceUrl,
         format,

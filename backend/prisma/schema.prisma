@@ -102,7 +102,7 @@ model Ressource {
   icon        String
   gradient    String
   type        String
-  category    String
+  category    String[]
   filter      String
   resourceUrl String?
   format      String?
