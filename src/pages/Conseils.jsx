@@ -565,8 +565,9 @@ export default function Conseils() {
                   lineHeight: { xs: 1.4, md: 1.5 },
                 }}
               >
-                Découvrez les conseils précieux de nos anciens étudiants pour
-                réussir votre parcours universitaire et professionnel
+                Découvrez les conseils, retours, témoignages et messages
+                précieux de nos anciens étudiants pour réussir votre parcours
+                universitaire et professionnel
               </Typography>
             </motion.div>
           </Box>

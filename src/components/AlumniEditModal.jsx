@@ -461,7 +461,7 @@ export default function AlumniEditModal({
             <TextField
               label={
                 <span>
-                  Conseil{" "}
+                  Conseils/Retours/Témoignages/Messages{" "}
                   <span style={{ color: "red", fontWeight: 600 }}>
                     (important)
                   </span>
