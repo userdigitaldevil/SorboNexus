@@ -43,13 +43,27 @@ function isStrongPassword(password) {
   );
 }
 
+// Helper to sanitize alumni user fields
+function sanitizeAlumni(alumni) {
+  if (!alumni) return alumni;
+  // If alumni.users exists, map to only safe fields
+  const safeUsers = Array.isArray(alumni.users)
+    ? alumni.users.map((u) => ({
+        id: u.id, // Only include if needed for frontend logic
+        username: u.username,
+        isAdmin: u.isAdmin,
+      }))
+    : [];
+  return { ...alumni, users: safeUsers };
+}
+
 // GET all alumni
 router.get("/", async (req, res) => {
   try {
     const alumni = await prisma.alumni.findMany({
       include: { grades: true, schoolsApplied: true, users: true },
     });
-    res.json(alumni);
+    res.json(alumni.map(sanitizeAlumni));
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch alumni" });
   }
@@ -68,7 +82,7 @@ router.get("/:id", async (req, res) => {
     if (alumni.users && alumni.users.length > 0) {
       username = alumni.users[0].username;
     }
-    res.json({ ...alumni, username });
+    res.json({ ...sanitizeAlumni(alumni), username });
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch alumni" });
   }
@@ -137,7 +151,7 @@ router.put("/:id", canEditAlumni, async (req, res) => {
         data: userUpdate,
       });
     }
-    res.json(alumni);
+    res.json(sanitizeAlumni(alumni));
   } catch (err) {
     console.error("Alumni update error:", err);
     res.status(500).json({ error: "Internal server error" });
@@ -173,7 +187,7 @@ router.post("/", isAdmin, async (req, res) => {
       },
       include: { users: true },
     });
-    res.status(201).json(alumni);
+    res.status(201).json(sanitizeAlumni(alumni));
   } catch (err) {
     console.error("[ERROR] Failed to create alumni:", err);
     res.status(500).json({ error: err.message || "Failed to create alumni" });
@@ -210,7 +224,7 @@ router.patch("/:id/hidden", auth, async (req, res) => {
       data: { hidden: !!hidden },
     });
     if (!alumni) return res.status(404).json({ error: "Not found" });
-    res.json(alumni);
+    res.json(sanitizeAlumni(alumni));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
