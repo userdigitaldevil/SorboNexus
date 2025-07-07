@@ -144,6 +144,8 @@ export default function Ressources() {
   const navigate = useNavigate();
   const isLoggedIn = Boolean(localStorage.getItem("token"));
   const [userId, setUserId] = useState(null);
+  // Add a state to store the original uploaded file name
+  const [uploadedOriginalName, setUploadedOriginalName] = useState("");
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -1641,6 +1643,7 @@ export default function Ressources() {
                         if (!data.url)
                           throw new Error("Réponse d'upload invalide");
                         updateAddFormField("resourceUrl", data.url);
+                        setUploadedOriginalName(data.originalName || "");
                       } catch (err) {
                         setUploadError(err.message);
                       } finally {
@@ -1652,7 +1655,8 @@ export default function Ressources() {
                 {addForm.resourceUrl && (
                   <Typography variant="caption" sx={{ color: "#10b981" }}>
                     Fichier prêt à être ajouté :{" "}
-                    {addForm.resourceUrl.split("/").pop()}
+                    {uploadedOriginalName ||
+                      addForm.resourceUrl.split("/").pop()}
                   </Typography>
                 )}
                 {uploadError && (

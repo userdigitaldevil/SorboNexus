@@ -16,10 +16,24 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + "-" + file.originalname.replace(/\s+/g, "_"));
+    // Sanitize filename: only allow alphanumeric, dash, underscore, and dot
+    const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_");
+    cb(null, uniqueSuffix + "-" + safeName);
   },
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    const allowed = ["application/pdf", "image/png", "image/jpeg"];
+    if (allowed.includes(file.mimetype)) cb(null, true);
+    else
+      cb(
+        new Error("Invalid file type. Only PDF, PNG, and JPEG allowed."),
+        false
+      );
+  },
+});
 
 // POST / - handle file upload
 router.post("/", isAuthenticated, upload.single("file"), (req, res) => {
@@ -27,7 +41,7 @@ router.post("/", isAuthenticated, upload.single("file"), (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
   const fileUrl = `/uploads/${req.file.filename}`;
-  res.json({ url: fileUrl });
+  res.json({ url: fileUrl, originalName: req.file.originalname });
 });
 
 module.exports = router;
