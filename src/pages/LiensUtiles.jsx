@@ -1153,7 +1153,10 @@ const LiensUtiles = () => {
               justifyContent="center"
             >
               {currentLinks.map((link, index) => (
-                <Grid xs={12} sm={6} md={4} key={link.id}>
+                <Grid
+                  gridColumn={{ xs: "span 12", sm: "span 6", md: "span 4" }}
+                  key={link.id}
+                >
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

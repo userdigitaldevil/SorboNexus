@@ -737,7 +737,7 @@ export default function Home() {
             justifyContent="center"
           >
             {/* Left Side - Text Content */}
-            <Grid xs={12} md={6}>
+            <Grid gridColumn={{ xs: "span 12", md: "span 6" }}>
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -1145,7 +1145,7 @@ export default function Home() {
             </Grid>
 
             {/* Right Side - Visual Card */}
-            <Grid xs={12} md={6}>
+            <Grid gridColumn={{ xs: "span 12", md: "span 6" }}>
               <motion.div
                 initial={{ opacity: 0, x: 50, rotateY: 15 }}
                 animate={{ opacity: 1, x: 0, rotateY: 0 }}
@@ -1642,7 +1642,10 @@ export default function Home() {
             }}
           >
             {features.map((feature, index) => (
-              <Grid xs={12} sm={6} md={4} lg={3} key={index}>
+              <Grid
+                gridColumn={{ xs: "span 12", md: "span 4", lg: "span 3" }}
+                key={index}
+              >
                 <FeatureCard
                   feature={feature}
                   index={index}

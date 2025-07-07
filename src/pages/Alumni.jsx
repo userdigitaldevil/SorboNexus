@@ -949,12 +949,13 @@ export default function Alumni() {
           >
             {currentAlumni.map((alum, index) => (
               <Grid
-                item
-                xs={12}
-                sm={6}
-                md={3}
-                lg={3}
-                xl={3}
+                gridColumn={{
+                  xs: "span 12",
+                  sm: "span 6",
+                  md: "span 3",
+                  lg: "span 3",
+                  xl: "span 3",
+                }}
                 key={alum.id || alum._id}
                 sx={{
                   display: "flex",
