@@ -38,6 +38,7 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import { DOMAIN_COLORS } from "../components/AlumniCard.jsx";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 // Helper function to get alumni card color (same logic as Conseils page)
 function getAlumniCardColor(alumni) {
@@ -637,6 +638,37 @@ export default function Home() {
     annoncesRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Add handleScrollToConseils function above the return if not present
+  const conseilsRef = useRef(null);
+  const handleScrollToConseils = () => {
+    if (conseilsRef.current) {
+      conseilsRef.current.scrollIntoView({ behavior: "smooth" });
+    } else {
+      // fallback: scroll to top or a default position
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const sorboNexusRef = useRef(null);
+  const handleScrollToSorboNexus = () => {
+    sorboNexusRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const [showArrow, setShowArrow] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Hide arrow if scrolled more than 80vh
+      if (window.scrollY > window.innerHeight * 0.8) {
+        setShowArrow(false);
+      } else {
+        setShowArrow(true);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="glassy-bg min-h-screen">
       {/* Hero Section */}
@@ -756,8 +788,8 @@ export default function Home() {
                       fontWeight: 900,
                       mb: { xs: 2, md: 3 },
                       fontSize: {
-                        xs: "1.8rem",
-                        sm: "2.2rem",
+                        xs: "2.5rem", // was 1.8rem, now larger for mobile
+                        sm: "2.7rem",
                         md: "3.5rem",
                         lg: "4rem",
                       },
@@ -772,238 +804,6 @@ export default function Home() {
                   >
                     Bienvenue sur{" "}
                     <span style={{ display: "block" }}>SorboNexus</span>
-                  </Typography>
-
-                  {/* Subtitle */}
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      color: "rgba(255, 255, 255, 0.8)",
-                      mb: { xs: 3, md: 4 },
-                      fontWeight: 400,
-                      lineHeight: 1.6,
-                      maxWidth: 900,
-                      mx: { xs: "auto", md: 0 },
-                      fontSize: { xs: "0.65rem", sm: "0.7rem", md: "0.75rem" },
-                    }}
-                  >
-                    SorboNexus est la plateforme créée pour les étudiants de
-                    Jussieu, dédiée à accompagner votre réussite tout au long de
-                    votre parcours universitaire et dans la préparation de vos
-                    candidatures en master ou en école, en{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      France comme à l'international
-                    </span>
-                    .
-                    <br />
-                    <br />
-                    L'objectif, c'est vraiment d'
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      inspirer les élèves
-                    </span>{" "}
-                    de Sorbonne Université, afin qu'ils intègrent à leur tour{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      les meilleurs parcours
-                    </span>
-                    , comme toi. Cela contribue à renforcer le{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      rayonnement de l'université
-                    </span>
-                    , à consolider le{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      réseau des alumni
-                    </span>
-                    , et à le faire perdurer pour les générations futures.
-                    <br />
-                    <br />
-                    <span style={{ fontWeight: 700, fontStyle: "italic" }}>
-                      Dans la section Conseil, tu peux partager tout ce qui
-                      pourrait être utile à d'autres utilisateurs. Même si t'es
-                      encore en L2 ou L3, tu pourrais déjà donner des conseils
-                      pour les L1 qui arrive la rentrée prochaine! Ils pourront
-                      plus facilement s'intégrer avec vos conseils et retours!
-                    </span>
-                    <br />
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        my: 2,
-                      }}
-                    >
-                      <Button
-                        onClick={handleScrollToAnnonces}
-                        variant="contained"
-                        sx={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          fontWeight: 600,
-                          fontSize: {
-                            xs: "0.75rem",
-                            sm: "0.9rem",
-                            md: "0.95rem",
-                          },
-                          px: { xs: 1, sm: 2 },
-                          py: { xs: 0.4, sm: 0.7 },
-                          borderRadius: 3,
-                          background:
-                            "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                          color: "#fff",
-                          boxShadow: "0 4px 16px rgba(59,130,246,0.13)",
-                          textTransform: "none",
-                          transition: "all 0.2s",
-                          "&:hover": {
-                            background:
-                              "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                            color: "#fff",
-                            transform: "scale(1.07)",
-                          },
-                        }}
-                        endIcon={
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            style={{ verticalAlign: "middle" }}
-                          >
-                            <path
-                              d="M12 5v14m0 0l-7-7m7 7l7-7"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        }
-                      >
-                        Voir les idées/exemples en bas
-                      </Button>
-                    </Box>
-                    <br />
-                    L'idée est de transmettre ce que tu aurais aimé savoir
-                    avant. Cela peut être un texte court ou plus détaillé, selon
-                    ce que tu souhaites partager.
-                    <br />
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      Chaque conseil compte
-                    </span>{" "}
-                    et peut vraiment aider d'autres étudiants à avancer plus
-                    sereinement.
-                    <br />
-                    <br />
-                    Vous y trouverez une multitude de{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      ressources utiles
-                    </span>{" "}
-                    :<b>modèles de lettres de motivation</b>,{" "}
-                    <b>informations détaillées sur les UE</b>,
-                    <b>guides pour constituer vos dossiers</b>, et{" "}
-                    <b>conseils pratiques</b> pour chaque étape de votre cursus.
-                    <br />
-                    <br />
-                    Découvrez également des{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      retours d'expérience et témoignages d'élèves sur les
-                      licences de SU (simple, bi-disciplinaire, intensives) et
-                      masters dans differentes universités
-                    </span>{" "}
-                    que vous souhaitez suivre, ainsi que des témoignages
-                    d'élèves ayant réussi des concours comme{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      GEI-UNIV
-                    </span>{" "}
-                    (admissions parallèles), des oraux, et des intégrations dans
-                    des écoles (en{" "}
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      France comme à l'international
-                    </span>
-                    ) telles que
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      Polytechnique
-                    </span>
-                    ,
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      ENS
-                    </span>
-                    ,
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      Princeton
-                    </span>
-                    ,
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      CentraleSupélec
-                    </span>
-                    ,
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      Télécom
-                    </span>
-                    ,
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      Dauphine
-                    </span>
-                    ,
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      Sorbonne
-                    </span>
-                    ,
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      Paris-Saclay
-                    </span>
-                    ,
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      ESPCI
-                    </span>
-                    ,
-                    <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                      {" "}
-                      Paris Cité
-                    </span>{" "}
-                    et bien d'autres.
-                    <br />
-                    <br />
-                    Le site propose aussi des fiches sur les écoles, des astuces
-                    pour les candidatures à l'étranger, exemples de CV, ainsi
-                    que des conseils pour les entretiens.
-                    <br />
-                    <br />
-                    Ton parcours aidera et motivera les nouveaux L1 , mais aussi
-                    les L2 et les L3 qui souhaitent faire le même parcours que
-                    toi. Le site a besoin des parcours comme le tien, et on
-                    aimerait bien recevoir des conseils, témoignages venant de
-                    toi mais aussi des ressources utiles qui t'ont aidé durant
-                    ton parcours.
-                    <br />
-                    <br />
-                    <span style={{ fontStyle: "italic" }}>
-                      Le site est encore en développement, mais vous pouvez dès
-                      maintenant créer votre compte, personnaliser votre profil
-                      et contribuer à enrichir la base de connaissances pour
-                      aider les générations futures.
-                    </span>
-                    <br />
-                    <span
-                      style={{
-                        color: "#3b82f6",
-                        fontWeight: 700,
-                        display: "block",
-                        textAlign: "center",
-                        marginTop: 8,
-                        fontSize: "1.25rem",
-                      }}
-                    >
-                      Explorez, partagez, et faites grandir la communauté !
-                    </span>
                   </Typography>
 
                   {/* Action Buttons */}
@@ -1048,10 +848,9 @@ export default function Home() {
                       whileTap={{ scale: 0.95 }}
                     >
                       <Button
-                        component={MuiLink}
-                        href="#features"
                         variant="outlined"
                         size="large"
+                        onClick={handleScrollToSorboNexus}
                         sx={{
                           fontWeight: 600,
                           px: { xs: 3, md: 4 },
@@ -1287,6 +1086,47 @@ export default function Home() {
             </Grid>
           </Grid>
         </Container>
+        {showArrow && (
+          <Box
+            sx={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: { xs: 80, md: 100 },
+              display: "flex",
+              justifyContent: "center",
+              zIndex: 10,
+              pointerEvents: "auto",
+              cursor: "pointer",
+            }}
+            onClick={handleScrollToSorboNexus}
+            tabIndex={0}
+            role="button"
+            aria-label="Scroll to SorboNexus section"
+          >
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <KeyboardArrowDownIcon
+                sx={{
+                  fontSize: { xs: 38, md: 48 },
+                  color: "rgba(255,255,255,0.85)",
+                  filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.18))",
+                  transition: "color 0.2s",
+                  "&:hover": {
+                    color: "#3b82f6",
+                  },
+                }}
+              />
+            </motion.div>
+          </Box>
+        )}
       </Box>
 
       {/* Hidden Profile Message */}
@@ -1344,6 +1184,305 @@ export default function Home() {
             </Container>
           </motion.section>
         )}
+
+      {/* SorboNexus Intro Section - moved here */}
+      <Box
+        component="section"
+        ref={sorboNexusRef}
+        sx={{ py: { xs: 4, md: 8 }, px: 2 }}
+      >
+        <Container maxWidth="md">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            style={{ textAlign: "center" }}
+          >
+            <Card
+              elevation={0}
+              sx={{
+                background:
+                  "linear-gradient(135deg, rgba(17,24,39,0.82) 60%, rgba(30,41,59,0.88) 100%)",
+                backdropFilter: "blur(32px) saturate(200%)",
+                borderRadius: 4,
+                p: { xs: 3, md: 5 },
+                maxWidth: { xs: 600, md: 900 },
+                mx: "auto",
+                mb: { xs: 3, md: 4 },
+                border: "1.5px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 8px 32px 0 rgba(31,38,135,0.18)",
+                textAlign: "center",
+                overflow: "hidden",
+                position: "relative",
+                "::before": {
+                  content: '""',
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: 0,
+                  background:
+                    "linear-gradient(120deg, rgba(255,255,255,0.08) 0%, rgba(59,130,246,0.07) 100%)",
+                  pointerEvents: "none",
+                  borderRadius: 4,
+                },
+              }}
+            >
+              <Typography
+                variant="h3"
+                sx={{
+                  textAlign: "center",
+                  mb: { xs: 2, md: 3 },
+                  fontWeight: 700,
+                  background:
+                    "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                SorboNexus, la plateforme des étudiants de Jussieu
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "rgba(255,255,255,0.88)",
+                  mb: 2,
+                  fontSize: { xs: "0.8rem", md: "0.95rem" },
+                  lineHeight: 1.6,
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                SorboNexus est la plateforme créée pour les étudiants de
+                Jussieu, dédiée à accompagner votre réussite tout au long de
+                votre parcours universitaire et dans la préparation de vos
+                candidatures en master ou en école, en{" "}
+                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                  France comme à l'international
+                </span>
+                .
+                <br />
+                <br />
+                L'objectif, c'est vraiment d'
+                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                  inspirer les élèves
+                </span>{" "}
+                de Sorbonne Université, afin qu'ils intègrent à leur tour{" "}
+                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                  les meilleurs parcours
+                </span>
+                , comme toi. Cela contribue à renforcer le{" "}
+                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                  rayonnement de l'université
+                </span>
+                , à consolider le{" "}
+                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                  réseau des alumni
+                </span>
+                , et à le faire perdurer pour les générations futures.
+                <br />
+                <br />
+                <Card
+                  elevation={0}
+                  sx={{
+                    background: "rgba(30,41,59,0.55)",
+                    backdropFilter: "blur(18px) saturate(180%)",
+                    borderRadius: 4,
+                    p: { xs: 2, md: 3 },
+                    my: 2,
+                    boxShadow: "0 4px 16px 0 rgba(31,38,135,0.10)",
+                    border: "1.5px solid rgba(255,255,255,0.10)",
+                    textAlign: "center",
+                    maxWidth: 600,
+                    mx: "auto",
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontStyle: "italic",
+                      fontWeight: 700,
+                      color: "rgba(255,255,255,0.92)",
+                      mb: 2,
+                      fontSize: { xs: "0.85rem", md: "0.95rem" },
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    Dans la section Conseil, tu peux partager tout ce qui
+                    pourrait être utile à d'autres utilisateurs. Même si t'es
+                    encore en L2 ou L3, tu pourrais déjà donner des conseils
+                    pour les L1 qui arrive la rentrée prochaine! Ils pourront
+                    plus facilement s'intégrer avec vos conseils et retours!
+                  </Typography>
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      onClick={handleScrollToAnnonces}
+                      endIcon={
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          style={{ verticalAlign: "middle" }}
+                        >
+                          <path
+                            d="M12 5v14m0 0l-7-7m7 7l7-7"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      }
+                      sx={{
+                        fontWeight: 600,
+                        px: { xs: 1.2, md: 2 },
+                        py: { xs: 0.3, md: 0.6 },
+                        minHeight: { xs: 28, md: 32 },
+                        borderRadius: 3,
+                        background:
+                          "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                        boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
+                        fontSize: { xs: "0.70rem", md: "0.80rem" },
+                        color: "#fff",
+                        textTransform: "none",
+                        letterSpacing: 0.5,
+                        transition: "all 0.2s",
+                        "&:hover": {
+                          background:
+                            "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                          color: "#fff",
+                          transform: "scale(1.07)",
+                        },
+                      }}
+                    >
+                      Voir les idées/exemples en bas
+                    </Button>
+                  </Box>
+                </Card>
+                <br />
+                L'idée est de transmettre ce que tu aurais aimé savoir avant.
+                Cela peut être un texte court ou plus détaillé, selon ce que tu
+                souhaites partager.
+                <br />
+                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                  Chaque conseil compte
+                </span>{" "}
+                et peut vraiment aider d'autres étudiants à avancer plus
+                sereinement.
+                <br />
+                <br />
+                Vous y trouverez une multitude de{" "}
+                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                  ressources utiles
+                </span>{" "}
+                : <b>modèles de lettres de motivation</b>,{" "}
+                <b>informations détaillées sur les UE</b>,{" "}
+                <b>guides pour constituer vos dossiers</b>, et{" "}
+                <b>conseils pratiques</b> pour chaque étape de votre cursus.
+                <br />
+                <br />
+                Découvrez également des{" "}
+                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                  retours d'expérience et témoignages d'élèves sur les licences
+                  de SU (simple, bi-disciplinaire, intensives) et masters dans
+                  differentes universités
+                </span>{" "}
+                que vous souhaitez suivre, ainsi que des témoignages d'élèves
+                ayant réussi des concours comme <b>GEI-UNIV</b> (admissions
+                parallèles), des oraux, et des intégrations dans des écoles (en{" "}
+                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                  France comme à l'international
+                </span>
+                ) telles que{" "}
+                <b>
+                  Polytechnique, ENS, Princeton, CentraleSupélec, Télécom,
+                  Dauphine, Sorbonne, Paris-Saclay, ESPCI, Paris Cité
+                </b>{" "}
+                et bien d'autres.
+                <br />
+                <br />
+                Le site propose aussi des fiches sur les écoles, des astuces
+                pour les candidatures à l'étranger, exemples de CV, ainsi que
+                des conseils pour les entretiens.
+                <br />
+                <br />
+                Ton parcours aidera et motivera les nouveaux L1 , mais aussi les
+                L2 et les L3 qui souhaitent faire le même parcours que toi. Le
+                site a besoin des parcours comme le tien, et on aimerait bien
+                recevoir des conseils, témoignages venant de toi mais aussi des
+                ressources utiles qui t'ont aidé durant ton parcours.
+                <br />
+                <br />
+                <span style={{ fontStyle: "italic" }}>
+                  Le site est encore en développement, mais vous pouvez dès
+                  maintenant créer votre compte, personnaliser votre profil et
+                  contribuer à enrichir la base de connaissances pour aider les
+                  générations futures.
+                </span>
+                <br />
+                <span
+                  style={{
+                    color: "#3b82f6",
+                    fontWeight: 700,
+                    display: "block",
+                    textAlign: "center",
+                    marginTop: 8,
+                    fontSize: "1.25rem",
+                  }}
+                >
+                  Explorez, partagez, et faites grandir la communauté !
+                </span>
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 2,
+                  mt: 3,
+                  position: "relative",
+                  zIndex: 2,
+                }}
+              >
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={() => navigate("/conseils")}
+                  sx={{
+                    fontWeight: 600,
+                    px: { xs: 3, md: 4 },
+                    py: { xs: 1.2, md: 1.5 },
+                    borderRadius: 3,
+                    background:
+                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                    boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
+                    fontSize: { xs: "0.9rem", md: "1rem" },
+                    color: "#fff",
+                    textTransform: "none",
+                    letterSpacing: 0.5,
+                    transition: "all 0.2s",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                      color: "#fff",
+                      transform: "scale(1.07)",
+                    },
+                  }}
+                >
+                  Voir les conseils
+                </Button>
+              </Box>
+            </Card>
+          </motion.div>
+        </Container>
+      </Box>
 
       {/* Annonces Section */}
       <Box
