@@ -711,7 +711,10 @@ export default function Ressources() {
                   <Card
                     onClick={() => {
                       if (resource.resourceUrl) {
-                        window.open(resource.resourceUrl, "_blank");
+                        window.open(
+                          getResourceUrl(resource.resourceUrl),
+                          "_blank"
+                        );
                       }
                     }}
                     sx={{
@@ -898,7 +901,10 @@ export default function Ressources() {
                             }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              window.open(resource.resourceUrl, "_blank");
+                              window.open(
+                                getResourceUrl(resource.resourceUrl),
+                                "_blank"
+                              );
                             }}
                           />
                         )}
@@ -1643,9 +1649,10 @@ export default function Ressources() {
                         if (!res.ok)
                           throw new Error("Erreur lors de l'upload du fichier");
                         const data = await res.json();
-                        if (!data.url)
+                        if (!data.filename)
                           throw new Error("Réponse d'upload invalide");
-                        updateAddFormField("resourceUrl", data.url);
+                        const fileUrl = `/api/files/${data.filename}`;
+                        updateAddFormField("resourceUrl", fileUrl);
                         setUploadedOriginalName(data.originalName || "");
                       } catch (err) {
                         setUploadError(err.message);
@@ -2218,9 +2225,10 @@ export default function Ressources() {
                               "Erreur lors de l'upload du fichier"
                             );
                           const data = await res.json();
-                          if (!data.url)
+                          if (!data.filename)
                             throw new Error("Réponse d'upload invalide");
-                          updateEditFormField("resourceUrl", data.url);
+                          const fileUrl = `/api/files/${data.filename}`;
+                          updateEditFormField("resourceUrl", fileUrl);
                         } catch (err) {
                           setUploadError(err.message);
                         } finally {
@@ -2332,4 +2340,18 @@ export default function Ressources() {
       </Dialog>
     </div>
   );
+}
+
+// When displaying or downloading resources, ensure resourceUrl uses /api/files/ if not already an external URL
+function getResourceUrl(resourceUrl) {
+  if (!resourceUrl) return "";
+  if (
+    resourceUrl.startsWith("http://") ||
+    resourceUrl.startsWith("https://") ||
+    resourceUrl.startsWith("/api/files/")
+  ) {
+    return resourceUrl;
+  }
+  // fallback for legacy data
+  return `/api/files/${resourceUrl.replace(/^.*[\\/]/, "")}`;
 }

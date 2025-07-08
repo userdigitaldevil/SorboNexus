@@ -8,7 +8,7 @@ const fs = require("fs");
 const { isAdmin, isAuthenticated } = require("../middleware/auth");
 
 // Set up multer for file uploads
-const uploadDir = path.join(__dirname, "../../public/uploads");
+const uploadDir = path.join(__dirname, "../../uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -38,14 +38,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST /api/upload - handle file upload
-router.post("/upload", upload.single("file"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
-  const fileUrl = `/uploads/${req.file.filename}`;
-  res.json({ url: fileUrl });
-});
+// (Upload endpoint will be handled in upload.js)
 
 // POST /api/ressources - create a new resource (any authenticated user)
 router.post("/", isAuthenticated, async (req, res) => {
@@ -168,6 +161,25 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
     if (!req.user.isAdmin && resource.createdById !== req.user.id) {
       return res.status(403).json({ error: "Accès refusé." });
     }
+
+    // --- File cleanup logic ---
+    if (
+      resource.resourceUrl &&
+      resource.resourceUrl.startsWith("/api/files/")
+    ) {
+      const filename = resource.resourceUrl.replace("/api/files/", "");
+      const uploadsDir = path.join(__dirname, "../../uploads");
+      const filePath = path.join(uploadsDir, filename);
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (err) {
+          console.error("Failed to delete file:", filePath, err);
+        }
+      }
+    }
+    // --- End file cleanup ---
+
     await prisma.ressource.delete({ where: { id: Number(id) } });
     res.json({ success: true });
   } catch (err) {

@@ -6,7 +6,7 @@ const fs = require("fs");
 const { isAuthenticated } = require("../middleware/auth");
 
 // Set up multer for file uploads
-const uploadDir = path.join(__dirname, "../../public/uploads");
+const uploadDir = path.join(__dirname, "../../uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -40,8 +40,11 @@ router.post("/", isAuthenticated, upload.single("file"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
-  const fileUrl = `/uploads/${req.file.filename}`;
-  res.json({ url: fileUrl, originalName: req.file.originalname });
+  // Return only the filename, not a public URL
+  res.json({
+    filename: req.file.filename,
+    originalName: req.file.originalname,
+  });
 });
 
 module.exports = router;

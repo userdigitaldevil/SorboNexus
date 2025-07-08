@@ -7,6 +7,7 @@ require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
@@ -53,6 +54,17 @@ const uploadRouter = require("./routes/upload");
 app.use("/api/ressources", ressourcesRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
+
+// Serve uploaded files from backend/uploads
+app.get("/api/files/:filename", (req, res) => {
+  const uploadsDir = path.join(__dirname, "../uploads");
+  const filePath = path.join(uploadsDir, req.params.filename);
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).json({ error: "File not found" });
+  }
+});
 
 app.get("/api/test", (req, res) => res.send("API root test working!"));
 
