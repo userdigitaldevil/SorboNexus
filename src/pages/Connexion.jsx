@@ -107,7 +107,16 @@ export default function Connexion() {
   };
 
   return (
-    <div className="glassy-bg min-h-screen">
+    <div
+      className="glassy-bg min-h-screen"
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+      }}
+    >
       {/* Background Elements */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
