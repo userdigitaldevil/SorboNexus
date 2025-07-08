@@ -508,7 +508,7 @@ const LiensUtiles = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden">
+    <div className="glassy-bg min-h-screen">
       {/* Animated Gradient Background */}
       <motion.div
         className="absolute inset-0 z-0 pointer-events-none"

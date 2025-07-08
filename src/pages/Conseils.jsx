@@ -441,7 +441,7 @@ export default function Conseils() {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", position: "relative", overflow: "hidden" }}>
+    <div className="glassy-bg min-h-screen">
       {/* Background Elements */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -1051,6 +1051,6 @@ export default function Conseils() {
           Vous êtes déjà connecté.
         </Alert>
       </Snackbar>
-    </Box>
+    </div>
   );
 }

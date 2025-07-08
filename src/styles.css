@@ -12,13 +12,28 @@
 body {
   font-family: "Inter", "Segoe UI", "Roboto", "Helvetica Neue", Arial,
     sans-serif;
-  background: linear-gradient(135deg, #10131a 0%, #1a2233 100%);
+  background: linear-gradient(135deg, #10131a 0%, #23283b 40%, #181c26 100%);
   color: #f3f6fa;
   font-size: 18px;
   line-height: 1.7;
   min-height: 100vh;
   overflow-x: hidden;
   scroll-behavior: smooth;
+}
+
+/* Glassy dark background utility */
+.glassy-bg {
+  background: linear-gradient(
+    135deg,
+    rgba(24, 28, 38, 0.85) 0%,
+    rgba(35, 40, 59, 0.85) 40%,
+    rgba(16, 19, 26, 0.85) 100%
+  );
+  backdrop-filter: blur(24px) saturate(120%);
+  -webkit-backdrop-filter: blur(24px) saturate(120%);
+  border-radius: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
 }
 
 /* Custom scrollbar */

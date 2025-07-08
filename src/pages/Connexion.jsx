@@ -107,17 +107,7 @@ export default function Connexion() {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        px: 2,
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
+    <div className="glassy-bg min-h-screen">
       {/* Background Elements */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -520,6 +510,6 @@ export default function Connexion() {
           </Box>
         </motion.div>
       </Container>
-    </Box>
+    </div>
   );
 }
