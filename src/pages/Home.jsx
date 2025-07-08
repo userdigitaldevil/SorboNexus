@@ -638,7 +638,7 @@ export default function Home() {
   };
 
   return (
-    <Box>
+    <div className="glassy-bg min-h-screen">
       {/* Hero Section */}
       <Box
         component="section"
@@ -1603,7 +1603,6 @@ export default function Home() {
         sx={{
           py: { xs: 4, md: 8 },
           px: 2,
-          background: "rgba(255,255,255,0.02)",
         }}
       >
         <Container maxWidth="lg">
@@ -1664,41 +1663,37 @@ export default function Home() {
         sx={{
           py: { xs: 4, md: 8 },
           px: 2,
-          background:
-            "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
-          position: "relative",
-          overflow: "hidden",
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background:
-              "radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)",
-            pointerEvents: "none",
-          },
         }}
       >
         <Container maxWidth="md">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            style={{ textAlign: "center" }}
+          <Card
+            elevation={0}
+            className="glassy-bg"
+            sx={{
+              background: "rgba(30, 41, 59, 0.7)",
+              backdropFilter: "blur(24px) saturate(180%)",
+              borderBottom: "1.5px solid rgba(255, 255, 255, 0.13)",
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
+              borderRadius: 4,
+              p: { xs: 3, md: 5 },
+              maxWidth: 600,
+              mx: "auto",
+              mb: { xs: 3, md: 4 },
+              border: "1.5px solid rgba(255,255,255,0.08)",
+              textAlign: "center",
+            }}
           >
             <Typography
-              variant="h4"
+              variant="h3"
               sx={{
+                textAlign: "center",
+                mb: { xs: 2, md: 3 },
                 fontWeight: 700,
                 background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                mb: 1,
-                fontSize: { xs: "1.25rem", md: "1.75rem" },
+                fontSize: { xs: "1.5rem", sm: "2rem", md: "3rem" },
               }}
             >
               Notre Impact
@@ -1713,23 +1708,17 @@ export default function Home() {
             >
               Découvrez l'ampleur de notre communauté
             </Typography>
-
-            {/* Simple Stats */}
-            <div
-              style={{
+            <Box
+              sx={{
                 display: "flex",
                 justifyContent: "center",
-                gap: window.innerWidth < 600 ? "2rem" : "4rem",
+                alignItems: "center",
+                gap: { xs: 2, md: 4 },
                 flexWrap: "wrap",
+                mt: 2,
               }}
             >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                viewport={{ once: true }}
-                style={{ textAlign: "center" }}
-              >
+              <Box sx={{ textAlign: "center", flex: 1 }}>
                 <Typography
                   variant="h3"
                   sx={{
@@ -1755,15 +1744,18 @@ export default function Home() {
                 >
                   Étudiants actifs
                 </Typography>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                viewport={{ once: true }}
-                style={{ textAlign: "center" }}
-              >
+              </Box>
+              <Box
+                sx={{
+                  width: { xs: 1, md: 2 },
+                  height: { xs: 32, md: 48 },
+                  bgcolor: "rgba(255,255,255,0.12)",
+                  borderRadius: 2,
+                  mx: { xs: 1, md: 2 },
+                  display: { xs: "none", sm: "block" },
+                }}
+              />
+              <Box sx={{ textAlign: "center", flex: 1 }}>
                 <Typography
                   variant="h3"
                   sx={{
@@ -1789,9 +1781,9 @@ export default function Home() {
                 >
                   Alumni qui ont eu leur licence avant {currentYear}
                 </Typography>
-              </motion.div>
-            </div>
-          </motion.div>
+              </Box>
+            </Box>
+          </Card>
         </Container>
       </Box>
 
@@ -1801,9 +1793,6 @@ export default function Home() {
         sx={{
           py: { xs: 4, md: 8 },
           px: 2,
-          background: "rgba(255,255,255,0.02)",
-          position: "relative",
-          overflow: "hidden",
         }}
       >
         <Container maxWidth="lg">
@@ -1854,15 +1843,16 @@ export default function Home() {
             >
               <Card
                 elevation={0}
+                className="glassy-bg"
                 sx={{
-                  background: "rgba(255, 255, 255, 0.05)",
-                  backdropFilter: "blur(20px)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  background: "unset",
                   borderRadius: 4,
                   p: { xs: 2, md: 4 },
                   maxWidth: 600,
                   mx: "auto",
                   mb: { xs: 3, md: 4 },
+                  boxShadow: "0 8px 32px 0 rgba(31,38,135,0.18)",
+                  border: "1.5px solid rgba(255,255,255,0.08)",
                 }}
               >
                 <Typography
@@ -1976,6 +1966,6 @@ export default function Home() {
           </motion.div>
         </Container>
       </Box>
-    </Box>
+    </div>
   );
 }
