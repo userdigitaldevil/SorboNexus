@@ -712,6 +712,10 @@ export default function Ressources() {
               <Grid
                 gridColumn={{ xs: "span 12", sm: "span 6", md: "span 4" }}
                 key={resource.id}
+                sx={{
+                  display: "flex",
+                  height: "100%",
+                }}
               >
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -730,6 +734,7 @@ export default function Ressources() {
                     }}
                     sx={{
                       height: "100%",
+                      width: "100%",
                       maxWidth: { xs: 280, md: 320 },
                       mx: "auto",
                       background: "rgba(255,255,255,0.05)",
@@ -740,6 +745,8 @@ export default function Ressources() {
                       cursor: resource.resourceUrl ? "pointer" : "default",
                       position: "relative",
                       overflow: "hidden",
+                      display: "flex",
+                      flexDirection: "column",
                       "&:hover": {
                         transform: "translateY(-8px)",
                         boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
@@ -772,7 +779,14 @@ export default function Ressources() {
                       },
                     }}
                   >
-                    <CardContent sx={{ p: { xs: 2, md: 4 } }}>
+                    <CardContent
+                      sx={{
+                        p: { xs: 2, md: 4 },
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%",
+                      }}
+                    >
                       <Box
                         className="resource-icon"
                         sx={{
@@ -884,6 +898,8 @@ export default function Ressources() {
                             : "Lire la suite"}
                         </Button>
                       )}
+                      {/* Spacer to push bottom elements to the bottom */}
+                      <Box sx={{ flexGrow: 1 }} />
                       <Box
                         sx={{
                           display: "flex",
