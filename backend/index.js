@@ -73,29 +73,6 @@ app.get("/api/test", (req, res) => res.send("API root test working!"));
 
 app.get("/api/links-direct", (req, res) => res.json({ direct: true }));
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-// Add global error handlers for debugging
-process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
-});
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection:", reason);
-});
-
-// Keep-alive interval for debugging
-setInterval(() => {}, 1000 * 60 * 60);
-
-app.get("/api/debug/list-uploads", (req, res) => {
-  fs.readdir(uploadsDir, (err, files) => {
-    if (err) {
-      return res.status(500).json({
-        error: "Failed to read uploads directory",
-        details: err.message,
-      });
-    }
-    res.json({ files });
-  });
-});

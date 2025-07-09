@@ -158,7 +158,7 @@ export default function Conseils() {
   const LEFT_COL_WIDTH = 220;
 
   useEffect(() => {
-    fetch(`${process.env.VITE_API_URL}/api/alumni`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/alumni`)
       .then((res) => res.json())
       .then((data) => {
         setAlumni(data);
@@ -388,7 +388,7 @@ export default function Conseils() {
     e.preventDefault();
     try {
       const response = await fetch(
-        `${process.env.VITE_API_URL}/api/alumni/${editAlumni._id}`,
+        `${import.meta.env.VITE_API_URL}/api/alumni/${editAlumni._id}`,
         {
           method: "PUT",
           headers: {
@@ -402,7 +402,7 @@ export default function Conseils() {
       if (response.ok) {
         // Refresh alumni data
         const updatedResponse = await fetch(
-          `${process.env.VITE_API_URL}/api/alumni`
+          `${import.meta.env.VITE_API_URL}/api/alumni`
         );
         const updatedData = await updatedResponse.json();
         setAlumni(updatedData);

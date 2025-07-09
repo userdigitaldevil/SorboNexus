@@ -168,7 +168,7 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
       resource.resourceUrl.startsWith("/api/files/")
     ) {
       const filename = resource.resourceUrl.replace("/api/files/", "");
-      const uploadsDir = path.join(__dirname, "../../uploads");
+      const uploadsDir = path.join(__dirname, "../uploads");
       const filePath = path.join(uploadsDir, filename);
       if (fs.existsSync(filePath)) {
         try {

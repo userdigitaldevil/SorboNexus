@@ -224,7 +224,7 @@ export default function AlumniEditModal({
     }
     // Send to backend
     const response = await fetch(
-      `${process.env.VITE_API_URL}/api/alumni/${alumni.id}`,
+      `${import.meta.env.VITE_API_URL}/api/alumni/${alumni.id}`,
       {
         method: "PUT",
         headers: {

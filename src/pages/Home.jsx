@@ -167,7 +167,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetch(`${process.env.VITE_API_URL}/api/alumni`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/alumni`)
       .then((res) => res.json())
       .then((data) => {
         setAlumniCount(data.length);
@@ -231,7 +231,7 @@ export default function Home() {
     setAnnoncesError("");
     try {
       const res = await fetch(
-        `${process.env.VITE_API_URL}/api/annonces?skip=${
+        `${import.meta.env.VITE_API_URL}/api/annonces?skip=${
           (page - 1) * perPage
         }&take=${perPage}`
       );
@@ -271,7 +271,7 @@ export default function Home() {
     setAddError("");
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${process.env.VITE_API_URL}/api/annonces`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/annonces`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -302,7 +302,7 @@ export default function Home() {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `${process.env.VITE_API_URL}/api/annonces/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/annonces/${id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -1247,6 +1247,7 @@ export default function Home() {
               </Typography>
               <Typography
                 variant="body1"
+                component="div"
                 sx={{
                   color: "rgba(255,255,255,0.88)",
                   mb: 2,
@@ -1839,6 +1840,7 @@ export default function Home() {
             </Typography>
             <Typography
               variant="body2"
+              component="div"
               sx={{
                 color: "rgba(255, 255, 255, 0.7)",
                 mb: { xs: 2, md: 4 },
@@ -1875,6 +1877,7 @@ export default function Home() {
                 </Typography>
                 <Typography
                   variant="body1"
+                  component="div"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     fontWeight: 500,
@@ -1912,6 +1915,7 @@ export default function Home() {
                 </Typography>
                 <Typography
                   variant="body1"
+                  component="div"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     fontWeight: 500,
@@ -1996,6 +2000,7 @@ export default function Home() {
               >
                 <Typography
                   variant="body1"
+                  component="div"
                   sx={{
                     color: "rgba(255, 255, 255, 0.8)",
                     mb: { xs: 2, md: 3 },
@@ -2091,6 +2096,7 @@ export default function Home() {
 
             <Typography
               variant="body2"
+              component="div"
               sx={{
                 color: "rgba(255, 255, 255, 0.6)",
                 fontStyle: "italic",

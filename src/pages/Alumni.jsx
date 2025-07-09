@@ -110,7 +110,9 @@ export default function Alumni() {
 
   const fetchAlumni = async () => {
     try {
-      const response = await fetch(`${process.env.VITE_API_URL}/api/alumni`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/alumni`
+      );
       const data = await response.json();
       setAlumni(data);
       setCurrentPage(1);
@@ -372,7 +374,7 @@ export default function Alumni() {
     if (isAdmin) {
       try {
         const res = await fetch(
-          `${process.env.VITE_API_URL}/api/alumni/${alum.id}`
+          `${import.meta.env.VITE_API_URL}/api/alumni/${alum.id}`
         );
         if (res.ok) {
           alumniData = await res.json();
@@ -415,7 +417,7 @@ export default function Alumni() {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `${process.env.VITE_API_URL}/api/alumni/${alum.id}`,
+        `${import.meta.env.VITE_API_URL}/api/alumni/${alum.id}`,
         {
           method: "DELETE",
           headers: {
