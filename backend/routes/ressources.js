@@ -2,26 +2,21 @@ const express = require("express");
 const router = express.Router();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { isAdmin, isAuthenticated } = require("../middleware/auth");
 
-// Set up multer for file uploads
-const uploadDir = path.join(__dirname, "../uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + "-" + file.originalname.replace(/\s+/g, "_"));
+// Cloudflare R2 config for file deletion
+const s3 = new S3Client({
+  region: "auto",
+  endpoint: process.env.R2_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
   },
 });
-const upload = multer({ storage });
+const BUCKET = process.env.R2_BUCKET_NAME || "sorbonexus";
 
 // GET /api/ressources - get all resources
 router.get("/", async (req, res) => {
@@ -163,7 +158,29 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
     }
 
     // --- File cleanup logic ---
+    // Handle R2 file deletion
     if (
+      resource.resourceUrl &&
+      resource.resourceUrl.includes("r2.cloudflarestorage.com")
+    ) {
+      try {
+        // Extract the file key from the R2 URL
+        const urlParts = resource.resourceUrl.split("/");
+        const fileKey = urlParts[urlParts.length - 1];
+
+        const command = new DeleteObjectCommand({
+          Bucket: BUCKET,
+          Key: fileKey,
+        });
+        await s3.send(command);
+        console.log(`Successfully deleted R2 file: ${fileKey}`);
+      } catch (err) {
+        console.error("Failed to delete R2 file:", err);
+        // Continue with resource deletion even if file deletion fails
+      }
+    }
+    // Handle local file deletion (for backward compatibility)
+    else if (
       resource.resourceUrl &&
       resource.resourceUrl.startsWith("/api/files/")
     ) {
@@ -174,7 +191,7 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
         try {
           fs.unlinkSync(filePath);
         } catch (err) {
-          console.error("Failed to delete file:", filePath, err);
+          console.error("Failed to delete local file:", filePath, err);
         }
       }
     }

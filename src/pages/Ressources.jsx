@@ -1665,7 +1665,8 @@ export default function Ressources() {
                         const data = await res.json();
                         if (!data.filename)
                           throw new Error("Réponse d'upload invalide");
-                        const fileUrl = `/api/files/${data.filename}`;
+                        const fileUrl =
+                          data.url || `/api/files/${data.filename}`;
                         updateAddFormField("resourceUrl", fileUrl);
                         setUploadedOriginalName(data.originalName || "");
                       } catch (err) {
@@ -2244,7 +2245,8 @@ export default function Ressources() {
                           const data = await res.json();
                           if (!data.filename)
                             throw new Error("Réponse d'upload invalide");
-                          const fileUrl = `/api/files/${data.filename}`;
+                          const fileUrl =
+                            data.url || `/api/files/${data.filename}`;
                           updateEditFormField("resourceUrl", fileUrl);
                         } catch (err) {
                           setUploadError(err.message);
@@ -2365,7 +2367,8 @@ function getResourceUrl(resourceUrl) {
   if (
     resourceUrl.startsWith("http://") ||
     resourceUrl.startsWith("https://") ||
-    resourceUrl.startsWith("/api/files/")
+    resourceUrl.startsWith("/api/files/") ||
+    resourceUrl.includes("r2.cloudflarestorage.com")
   ) {
     return resourceUrl;
   }

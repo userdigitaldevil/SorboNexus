@@ -1,26 +1,24 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const path = require("path");
 const fs = require("fs");
 const { isAuthenticated } = require("../middleware/auth");
 
-// Set up multer for file uploads
-const uploadDir = path.join(__dirname, "../uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    // Sanitize filename: only allow alphanumeric, dash, underscore, and dot
-    const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_");
-    cb(null, uniqueSuffix + "-" + safeName);
+// Cloudflare R2 config
+const s3 = new S3Client({
+  region: "auto",
+  endpoint: process.env.R2_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
   },
 });
+const BUCKET = process.env.R2_BUCKET_NAME || "sorbonexus"; // Add fallback
+
+// Set up multer for file uploads (memory storage)
+const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
@@ -36,15 +34,35 @@ const upload = multer({
 });
 
 // POST / - handle file upload
-router.post("/", isAuthenticated, upload.single("file"), (req, res) => {
+router.post("/", isAuthenticated, upload.single("file"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
-  // Return only the filename, not a public URL
-  res.json({
-    filename: req.file.filename,
-    originalName: req.file.originalname,
-  });
+  try {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const safeName = req.file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const key = uniqueSuffix + "-" + safeName;
+    const command = new PutObjectCommand({
+      Bucket: BUCKET,
+      Key: key,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+    });
+    await s3.send(command);
+    // Construct the public URL (if your bucket is public)
+    const fileUrl = `https://${BUCKET}.${process.env.R2_ENDPOINT.replace(
+      /^https?:\/\//,
+      ""
+    )}/${key}`;
+    res.json({
+      filename: key,
+      originalName: req.file.originalname,
+      url: fileUrl,
+    });
+  } catch (err) {
+    console.error("R2 upload error:", err);
+    res.status(500).json({ error: "Upload failed" });
+  }
 });
 
 module.exports = router;
