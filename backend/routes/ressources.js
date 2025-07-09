@@ -8,7 +8,7 @@ const fs = require("fs");
 const { isAdmin, isAuthenticated } = require("../middleware/auth");
 
 // Set up multer for file uploads
-const uploadDir = path.join(__dirname, "../../uploads");
+const uploadDir = path.join(__dirname, "../uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
