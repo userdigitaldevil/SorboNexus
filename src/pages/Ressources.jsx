@@ -442,12 +442,12 @@ export default function Ressources() {
             <Typography
               variant="h5"
               sx={{
-                color: "rgba(255, 255, 255, 0.9)",
+                color: "rgba(255, 255, 255, 0.7)",
                 fontWeight: 500,
                 maxWidth: 800,
                 mx: "auto",
                 mb: { xs: 3, md: 4 },
-                fontSize: { xs: "0.95rem", sm: "1.15rem", md: "1.5rem" },
+                fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1.1rem" },
                 lineHeight: { xs: 1.4, md: 1.5 },
               }}
             >
