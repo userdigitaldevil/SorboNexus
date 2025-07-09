@@ -56,12 +56,15 @@ app.use("/api/upload", uploadRouter);
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // Serve uploaded files from backend/uploads
+const uploadsDir = path.join(__dirname, "uploads");
+console.log("[DEBUG] Uploads directory (absolute path):", uploadsDir);
 app.get("/api/files/:filename", (req, res) => {
-  const uploadsDir = path.join(__dirname, "../uploads");
   const filePath = path.join(uploadsDir, req.params.filename);
+  console.log(`[DEBUG] Attempting to serve file: ${filePath}`);
   if (fs.existsSync(filePath)) {
     res.sendFile(filePath);
   } else {
+    console.log(`[DEBUG] File not found: ${filePath}`);
     res.status(404).json({ error: "File not found" });
   }
 });
@@ -84,3 +87,15 @@ process.on("unhandledRejection", (reason, promise) => {
 
 // Keep-alive interval for debugging
 setInterval(() => {}, 1000 * 60 * 60);
+
+app.get("/api/debug/list-uploads", (req, res) => {
+  fs.readdir(uploadsDir, (err, files) => {
+    if (err) {
+      return res.status(500).json({
+        error: "Failed to read uploads directory",
+        details: err.message,
+      });
+    }
+    res.json({ files });
+  });
+});
