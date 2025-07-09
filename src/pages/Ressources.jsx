@@ -282,14 +282,17 @@ export default function Ressources() {
           ? addForm.filter.join(",")
           : addForm.filter,
       };
-      const res = await fetch(`/api/ressources`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL || ""}/api/ressources`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
       if (!res.ok) throw new Error("Erreur lors de l'ajout de la ressource");
       const data = await res.json();
       setResources((prev) => [data, ...prev]);
@@ -333,14 +336,17 @@ export default function Ressources() {
           ? editForm.filter.join(",")
           : editForm.filter,
       };
-      const res = await fetch(`/api/ressources/${editForm.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL || ""}/api/ressources/${editForm.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
       if (!res.ok)
         throw new Error("Erreur lors de la modification de la ressource");
       const data = await res.json();
@@ -363,12 +369,17 @@ export default function Ressources() {
     if (!resourceToDelete) return;
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`/api/ressources/${resourceToDelete.id}`, {
-        method: "DELETE",
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL || ""}/api/ressources/${
+          resourceToDelete.id
+        }`,
+        {
+          method: "DELETE",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        }
+      );
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(
@@ -1639,13 +1650,16 @@ export default function Ressources() {
                       formData.append("file", file);
                       try {
                         const token = localStorage.getItem("token");
-                        const res = await fetch("/api/upload", {
-                          method: "POST",
-                          headers: token
-                            ? { Authorization: `Bearer ${token}` }
-                            : {},
-                          body: formData,
-                        });
+                        const res = await fetch(
+                          `${import.meta.env.VITE_API_URL || ""}/api/upload`,
+                          {
+                            method: "POST",
+                            headers: token
+                              ? { Authorization: `Bearer ${token}` }
+                              : {},
+                            body: formData,
+                          }
+                        );
                         if (!res.ok)
                           throw new Error("Erreur lors de l'upload du fichier");
                         const data = await res.json();
@@ -2213,13 +2227,16 @@ export default function Ressources() {
                         formData.append("file", file);
                         try {
                           const token = localStorage.getItem("token");
-                          const res = await fetch("/api/upload", {
-                            method: "POST",
-                            headers: token
-                              ? { Authorization: `Bearer ${token}` }
-                              : {},
-                            body: formData,
-                          });
+                          const res = await fetch(
+                            `${import.meta.env.VITE_API_URL || ""}/api/upload`,
+                            {
+                              method: "POST",
+                              headers: token
+                                ? { Authorization: `Bearer ${token}` }
+                                : {},
+                              body: formData,
+                            }
+                          );
                           if (!res.ok)
                             throw new Error(
                               "Erreur lors de l'upload du fichier"

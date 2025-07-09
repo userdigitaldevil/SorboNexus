@@ -23,8 +23,8 @@ export default defineConfig({
     host: "0.0.0.0",
     port: process.env.PORT || 5173,
     proxy: {
-      "/api": "http://localhost:8080",
-      "/uploads": "http://localhost:8080",
+      "/api": "http://127.0.0.1:8080",
+      "/uploads": "http://127.0.0.1:8080",
     },
   },
 });

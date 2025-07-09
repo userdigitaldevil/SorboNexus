@@ -391,9 +391,12 @@ const LiensUtiles = () => {
    */
   const deleteCurrentLink = async () => {
     try {
-      const response = await fetch(`/api/links/${editingLink.id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL || ""}/api/links/${editingLink.id}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
