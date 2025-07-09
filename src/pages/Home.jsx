@@ -7,9 +7,6 @@ import {
   Link,
   Calendar,
   MessageCircle,
-  Sparkles,
-  Star,
-  Zap,
 } from "lucide-react";
 import {
   Card,
@@ -719,47 +716,6 @@ export default function Home() {
           }}
         />
 
-        {/* Floating Icons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 0.6, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          style={{
-            position: "absolute",
-            top: "25%",
-            right: "20%",
-            color: "#3b82f6",
-          }}
-        >
-          <Sparkles size={24} />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 0.6, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          style={{
-            position: "absolute",
-            bottom: "30%",
-            left: "15%",
-            color: "#06b6d4",
-          }}
-        >
-          <Star size={20} />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 0.6, x: 0 }}
-          transition={{ duration: 0.5, delay: 1.0 }}
-          style={{
-            position: "absolute",
-            top: "60%",
-            left: "25%",
-            color: "#8b5cf6",
-          }}
-        >
-          <Zap size={18} />
-        </motion.div>
-
         {/* Main Hero Content */}
         <Container maxWidth="lg">
           <Grid
@@ -785,25 +741,28 @@ export default function Home() {
                   <Typography
                     variant="h1"
                     sx={{
-                      fontWeight: 900,
-                      mb: { xs: 2, md: 3 },
+                      fontWeight: 300,
+                      mb: { xs: 1.5, md: 2 },
                       fontSize: {
-                        xs: "2.5rem", // was 1.8rem, now larger for mobile
-                        sm: "2.7rem",
-                        md: "3.5rem",
-                        lg: "4rem",
+                        xs: "3rem",
+                        sm: "3.5rem",
+                        md: "4.5rem",
+                        lg: "5.5rem",
                       },
-                      lineHeight: 1.1,
+                      lineHeight: 1.05,
                       background:
                         "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
+                      letterSpacing: "-0.02em",
                       position: "relative",
                     }}
                   >
                     Bienvenue sur{" "}
-                    <span style={{ display: "block" }}>SorboNexus</span>
+                    <span style={{ display: "block", fontWeight: 600 }}>
+                      SorboNexus
+                    </span>
                   </Typography>
 
                   {/* Hero Subtitle */}
@@ -811,23 +770,90 @@ export default function Home() {
                     variant="h2"
                     sx={{
                       fontWeight: 400,
-                      mb: { xs: 3, md: 4 },
+                      mb: { xs: 4, md: 5 },
                       fontSize: {
-                        xs: "1.1rem",
-                        sm: "1.2rem",
-                        md: "1.4rem",
-                        lg: "1.5rem",
+                        xs: "1.3rem",
+                        sm: "1.5rem",
+                        md: "1.8rem",
+                        lg: "2rem",
                       },
-                      lineHeight: 1.4,
-                      color: "text.secondary",
+                      lineHeight: 1.3,
+                      color: "rgba(255, 255, 255, 0.8)",
                       textAlign: { xs: "center", md: "left" },
-                      maxWidth: "600px",
+                      maxWidth: "700px",
+                      letterSpacing: "0.01em",
                     }}
                   >
                     Votre passerelle vers l'excellence académique.
                     Connectez-vous avec des alumni qui ont écrit leur succès, et
                     découvrez leurs secrets de réussite.
                   </Typography>
+
+                  {/* Mini Feature Cards - Inline with text */}
+                  <Box
+                    sx={{
+                      display: { xs: "none", lg: "flex" },
+                      flexDirection: "column",
+                      gap: 2,
+                      position: "absolute",
+                      right: "-120px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      zIndex: 10,
+                    }}
+                  >
+                    {features.slice(0, 4).map((feature, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          width: 80,
+                          height: 80,
+                          flex: "0 0 auto",
+                        }}
+                      >
+                        <FeatureCard
+                          feature={feature}
+                          index={index}
+                          variant="mini"
+                          onCardClick={() => handleCardNavigation(feature.path)}
+                          fixedSize
+                        />
+                      </Box>
+                    ))}
+                  </Box>
+
+                  {/* Medium Screen Mini Feature Cards - Right side */}
+                  <Box
+                    sx={{
+                      display: { xs: "none", md: "flex", lg: "none" },
+                      flexDirection: "column",
+                      gap: 1.5,
+                      position: "absolute",
+                      right: "-80px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      zIndex: 10,
+                    }}
+                  >
+                    {features.slice(0, 4).map((feature, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          width: 65,
+                          height: 65,
+                          flex: "0 0 auto",
+                        }}
+                      >
+                        <FeatureCard
+                          feature={feature}
+                          index={index}
+                          variant="mini"
+                          onCardClick={() => handleCardNavigation(feature.path)}
+                          fixedSize
+                        />
+                      </Box>
+                    ))}
+                  </Box>
 
                   {/* Action Buttons */}
                   <Stack
@@ -846,21 +872,25 @@ export default function Home() {
                         onClick={() => handleCardNavigation("/alumni")}
                         variant="contained"
                         size="large"
-                        endIcon={<ArrowRight size={20} />}
+                        endIcon={<ArrowRight size={18} />}
                         sx={{
-                          fontWeight: 600,
-                          px: { xs: 3, md: 4 },
-                          py: { xs: 1.2, md: 1.5 },
-                          borderRadius: 3,
+                          fontWeight: 500,
+                          px: { xs: 4, md: 5 },
+                          py: { xs: 1.5, md: 2 },
+                          borderRadius: "28px",
                           background:
                             "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                           boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                          fontSize: { xs: "0.9rem", md: "1rem" },
+                          fontSize: { xs: "1rem", md: "1.1rem" },
+                          textTransform: "none",
+                          letterSpacing: "0.01em",
                           "&:hover": {
                             background:
                               "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
                             boxShadow: "0 15px 40px rgba(59, 130, 246, 0.4)",
+                            transform: "scale(1.02)",
                           },
+                          transition: "all 0.2s ease",
                         }}
                       >
                         Découvrez nos alumni
@@ -875,20 +905,24 @@ export default function Home() {
                         size="large"
                         onClick={handleScrollToSorboNexus}
                         sx={{
-                          fontWeight: 600,
-                          px: { xs: 3, md: 4 },
-                          py: { xs: 1.2, md: 1.5 },
-                          borderRadius: 3,
+                          fontWeight: 500,
+                          px: { xs: 4, md: 5 },
+                          py: { xs: 1.5, md: 2 },
+                          borderRadius: "28px",
                           color: "#3b82f6",
                           borderColor: "#3b82f6",
                           borderWidth: 2,
                           background: "rgba(59, 130, 246, 0.05)",
-                          fontSize: { xs: "0.9rem", md: "1rem" },
+                          fontSize: { xs: "1rem", md: "1.1rem" },
+                          textTransform: "none",
+                          letterSpacing: "0.01em",
                           "&:hover": {
                             background: "rgba(59, 130, 246, 0.1)",
                             borderColor: "#1e40af",
                             borderWidth: 2,
+                            transform: "scale(1.02)",
                           },
+                          transition: "all 0.2s ease",
                         }}
                       >
                         En savoir plus
@@ -900,9 +934,10 @@ export default function Home() {
                   <Box
                     sx={{
                       display: "flex",
-                      gap: { xs: 2, md: 3 },
-                      flexWrap: "wrap",
+                      gap: { xs: 2, md: 6 },
+                      flexWrap: "nowrap",
                       justifyContent: { xs: "center", md: "flex-start" },
+                      mt: { xs: 6, md: 8 },
                     }}
                   >
                     <motion.div
@@ -914,10 +949,11 @@ export default function Home() {
                         <Typography
                           variant="h4"
                           sx={{
-                            fontWeight: 800,
+                            fontWeight: 300,
                             color: "#3b82f6",
-                            mb: 0.5,
-                            fontSize: { xs: "1.5rem", md: "2.125rem" },
+                            mb: 1,
+                            fontSize: { xs: "1.2rem", md: "2.5rem" },
+                            letterSpacing: "-0.01em",
                           }}
                         >
                           {formatCount(alumniCount)}
@@ -926,7 +962,9 @@ export default function Home() {
                           variant="body2"
                           sx={{
                             color: "rgba(255, 255, 255, 0.6)",
-                            fontSize: { xs: "0.7rem", md: "0.875rem" },
+                            fontSize: { xs: "0.7rem", md: "1rem" },
+                            fontWeight: 400,
+                            letterSpacing: "0.01em",
                           }}
                         >
                           Étudiants actifs
@@ -934,10 +972,11 @@ export default function Home() {
                         <Typography
                           variant="caption"
                           sx={{
-                            color: "rgba(255, 255, 255, 0.4)",
-                            fontSize: { xs: "0.6rem", md: "0.7rem" },
-                            fontStyle: "italic",
-                            mt: 0.5,
+                            color: "rgba(255, 255, 255, 0.5)",
+                            fontSize: { xs: "0.6rem", md: "0.85rem" },
+                            fontWeight: 400,
+                            mt: 1,
+                            letterSpacing: "0.01em",
                           }}
                         >
                           Certains profils sont masqués
@@ -953,10 +992,11 @@ export default function Home() {
                         <Typography
                           variant="h4"
                           sx={{
-                            fontWeight: 800,
+                            fontWeight: 300,
                             color: "#3b82f6",
-                            mb: 0.5,
-                            fontSize: { xs: "1.5rem", md: "2.125rem" },
+                            mb: 1,
+                            fontSize: { xs: "1.2rem", md: "2.5rem" },
+                            letterSpacing: "-0.01em",
                           }}
                         >
                           {formatCount(alumniWithLicenseBeforeCurrentYear)}
@@ -965,7 +1005,9 @@ export default function Home() {
                           variant="body2"
                           sx={{
                             color: "rgba(255, 255, 255, 0.6)",
-                            fontSize: { xs: "0.7rem", md: "0.875rem" },
+                            fontSize: { xs: "0.7rem", md: "1rem" },
+                            fontWeight: 400,
+                            letterSpacing: "0.01em",
                           }}
                         >
                           Alumni qui ont eu leur licence avant {currentYear}
@@ -973,46 +1015,24 @@ export default function Home() {
                       </Box>
                     </motion.div>
                   </Box>
-                </Box>
-              </motion.div>
-            </Grid>
 
-            {/* Right Side - Mini Feature Cards */}
-            <Grid gridColumn={{ xs: "span 12", md: "span 6" }}>
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                  }}
-                >
+                  {/* Mobile Mini Feature Cards */}
                   <Box
                     sx={{
-                      display: "flex",
-                      gap: { xs: 3, sm: 2 },
-                      px: { xs: 0, sm: 4 },
-                      "& > *": {
-                        flexShrink: 0,
-                      },
+                      display: { xs: "flex", md: "none" },
+                      justifyContent: "center",
+                      gap: 2,
+                      mt: 4,
+                      mb: 3,
                     }}
                   >
                     {features.slice(0, 4).map((feature, index) => (
                       <Box
                         key={index}
                         sx={{
-                          minWidth: { xs: 60, sm: 100 },
-                          maxWidth: { xs: 60, sm: 100 },
-                          height: { xs: 72, sm: 120 },
+                          width: 60,
+                          height: 60,
                           flex: "0 0 auto",
-                          scrollSnapAlign: "start",
-                          display: "flex",
-                          alignItems: "stretch",
                         }}
                       >
                         <FeatureCard

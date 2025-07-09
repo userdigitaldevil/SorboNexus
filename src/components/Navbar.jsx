@@ -195,8 +195,16 @@ const Navbar = () => {
       >
         <Typography
           variant="h6"
-          className="sorbonne-gradient"
-          sx={{ fontWeight: 700, fontSize: 22 }}
+          sx={{
+            fontWeight: 600,
+            fontSize: 22,
+            background:
+              "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            letterSpacing: "-0.02em",
+          }}
         >
           SorboNexus
         </Typography>
@@ -670,18 +678,22 @@ const Navbar = () => {
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Typography
               variant="h6"
-              className="gradient-text"
               component={Link}
               to="/"
               onClick={() => handleNavigation("/")}
               sx={{
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: { xs: "0.8rem", sm: "1rem", md: "1.2rem" },
-                letterSpacing: 1,
+                letterSpacing: "-0.02em",
                 cursor: "pointer",
                 textDecoration: "none",
                 padding: { xs: "8px", sm: "4px" },
                 borderRadius: "4px",
+                background:
+                  "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
                 "&:hover": {
                   opacity: 0.8,
                 },

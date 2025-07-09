@@ -31,10 +31,10 @@ const FeatureCard = ({
       <Card
         onClick={onCardClick}
         sx={{
-          background: "rgba(255,255,255,0.05)",
+          background: "rgba(255,255,255,0.08)",
           backdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: 3,
+          border: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: "16px",
           transition: "all 0.3s ease",
           cursor: "pointer",
           position: "relative",
