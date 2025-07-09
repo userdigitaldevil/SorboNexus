@@ -93,12 +93,10 @@ function testXSSProtection() {
 function testRateLimiting() {
   console.log("🚦 Testing Rate Limiting Configuration...\n");
 
-  console.log("✅ Rate limiting enabled for all routes");
-  console.log(
-    "✅ Stricter rate limiting for auth routes (5 requests per 15 minutes)"
-  );
-  console.log("✅ General rate limiting (100 requests per 15 minutes)");
+  console.log("✅ Rate limiting enabled for authentication routes only");
+  console.log("✅ Authentication rate limiting (5 requests per minute)");
   console.log("✅ Rate limit headers included");
+  console.log("✅ No general rate limiting (unlimited for normal usage)");
 
   console.log("\n✅ Rate Limiting Tests Complete!\n");
 }
@@ -174,7 +172,7 @@ function runSecurityTests() {
   console.log("✅ SQL Injection (via input sanitization)");
   console.log("✅ Directory Traversal attacks");
   console.log("✅ File Upload vulnerabilities");
-  console.log("✅ Rate Limiting attacks");
+  console.log("✅ Authentication brute force attacks (5 req/min)");
   console.log("✅ Clickjacking attacks");
   console.log("✅ MIME type sniffing attacks");
   console.log("✅ Unauthorized cross-origin requests");
