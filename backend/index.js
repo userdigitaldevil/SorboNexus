@@ -96,6 +96,71 @@ app.use("/api/ressources", ressourcesRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
+// Temporary debug endpoint for R2 testing
+app.get("/api/debug-r2", async (req, res) => {
+  try {
+    const { S3Client, ListBucketsCommand } = require("@aws-sdk/client-s3");
+
+    console.log("=== R2 Debug Request ===");
+    console.log("R2_ENDPOINT:", process.env.R2_ENDPOINT ? "Set" : "Missing");
+    console.log(
+      "R2_ACCESS_KEY_ID:",
+      process.env.R2_ACCESS_KEY_ID ? "Set" : "Missing"
+    );
+    console.log(
+      "R2_SECRET_ACCESS_KEY:",
+      process.env.R2_SECRET_ACCESS_KEY ? "Set" : "Missing"
+    );
+    console.log(
+      "R2_BUCKET_NAME:",
+      process.env.R2_BUCKET_NAME || "sorbonexus (default)"
+    );
+
+    if (
+      !process.env.R2_ENDPOINT ||
+      !process.env.R2_ACCESS_KEY_ID ||
+      !process.env.R2_SECRET_ACCESS_KEY
+    ) {
+      return res.json({
+        success: false,
+        error: "Missing R2 environment variables",
+        details: {
+          endpoint: !!process.env.R2_ENDPOINT,
+          accessKey: !!process.env.R2_ACCESS_KEY_ID,
+          secretKey: !!process.env.R2_SECRET_ACCESS_KEY,
+        },
+      });
+    }
+
+    const s3 = new S3Client({
+      region: "auto",
+      endpoint: process.env.R2_ENDPOINT,
+      credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID,
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+      },
+    });
+
+    const data = await s3.send(new ListBucketsCommand({}));
+    res.json({
+      success: true,
+      message: "R2 connection successful",
+      buckets: data.Buckets?.map((b) => b.Name) || [],
+      bucketExists: data.Buckets?.some(
+        (b) => b.Name === (process.env.R2_BUCKET_NAME || "sorbonexus")
+      ),
+    });
+  } catch (err) {
+    console.error("R2 Debug Error:", err);
+    res.json({
+      success: false,
+      error: err.message,
+      code: err.code,
+      statusCode: err.$metadata?.httpStatusCode,
+    });
+  }
+});
+
 // Serve uploaded files from backend/uploads with security
 const uploadsDir = path.join(__dirname, "uploads");
 console.log("[DEBUG] Uploads directory (absolute path):", uploadsDir);

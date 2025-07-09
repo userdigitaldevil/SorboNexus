@@ -37,70 +37,61 @@ router.get("/", async (req, res) => {
 // (Upload endpoint will be handled in upload.js)
 
 // POST /api/ressources - create a new resource (any authenticated user)
-router.post(
-  "/",
-  isAuthenticated,
-  sanitizeInput,
-  sanitizeContent,
-  async (req, res) => {
-    try {
-      const {
+router.post("/", isAuthenticated, sanitizeContent, async (req, res) => {
+  try {
+    const {
+      title,
+      subject,
+      description,
+      icon,
+      type,
+      category,
+      filter,
+      resourceUrl,
+      format,
+    } = req.body;
+
+    if (!title || !type || !category || !filter || !format) {
+      return res.status(400).json({ error: "Champs obligatoires manquants." });
+    }
+    if (type !== "Text" && !resourceUrl) {
+      return res.status(400).json({
+        error: "Le fichier ou l'URL est requis pour ce type de ressource.",
+      });
+    }
+    if (type === "Text" && !description) {
+      return res.status(400).json({
+        error: "La description est requise pour une ressource de type texte.",
+      });
+    }
+    const createdById = req.user.id;
+    // Ensure category is always an array
+    const categoryArray = Array.isArray(category)
+      ? category
+      : typeof category === "string" && category.length > 0
+      ? category.split(",").map((c) => c.trim())
+      : [];
+    const newResource = await prisma.ressource.create({
+      data: {
         title,
         subject,
         description,
         icon,
         type,
-        category,
+        category: categoryArray,
         filter,
         resourceUrl,
         format,
-      } = req.body;
-      if (!title || !type || !category || !filter || !format) {
-        return res
-          .status(400)
-          .json({ error: "Champs obligatoires manquants." });
-      }
-      if (type !== "Text" && !resourceUrl) {
-        return res.status(400).json({
-          error: "Le fichier ou l'URL est requis pour ce type de ressource.",
-        });
-      }
-      if (type === "Text" && !description) {
-        return res.status(400).json({
-          error: "La description est requise pour une ressource de type texte.",
-        });
-      }
-      const createdById = req.user.id;
-      // Ensure category is always an array
-      const categoryArray = Array.isArray(category)
-        ? category
-        : typeof category === "string" && category.length > 0
-        ? category.split(",").map((c) => c.trim())
-        : [];
-      const newResource = await prisma.ressource.create({
-        data: {
-          title,
-          subject,
-          description,
-          icon,
-          type,
-          category: categoryArray,
-          filter,
-          resourceUrl,
-          format,
-          createdById,
-          gradient: "",
-        },
-      });
-      res.status(201).json(newResource);
-    } catch (err) {
-      console.error("Error creating resource:", err);
-      res
-        .status(500)
-        .json({ error: "Erreur lors de l'ajout de la ressource." });
-    }
+        createdById,
+        gradient: "",
+      },
+    });
+    res.status(201).json(newResource);
+  } catch (err) {
+    console.error("Error creating resource:", err);
+    res.status(500).json({ error: "Erreur lors de l'ajout de la ressource." });
   }
-);
+});
 
 // PUT /api/ressources/:id - update a resource (admin or creator only)
 router.put(

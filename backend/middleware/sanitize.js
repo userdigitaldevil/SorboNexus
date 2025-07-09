@@ -112,6 +112,13 @@ const sanitizeContent = (req, res, next) => {
         });
       }
     }
+
+    // Sanitize all other string fields with basic sanitization
+    for (const [key, value] of Object.entries(req.body)) {
+      if (typeof value === "string" && !htmlFields.includes(key)) {
+        req.body[key] = enhancedXssSanitize(value);
+      }
+    }
   }
 
   next();
