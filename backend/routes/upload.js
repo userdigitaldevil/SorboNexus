@@ -49,11 +49,10 @@ router.post("/", isAuthenticated, upload.single("file"), async (req, res) => {
       ContentType: req.file.mimetype,
     });
     await s3.send(command);
-    // Construct the public URL (if your bucket is public)
-    const fileUrl = `https://${BUCKET}.${process.env.R2_ENDPOINT.replace(
-      /^https?:\/\//,
-      ""
-    )}/${key}`;
+    // Construct the public URL using custom domain
+    const fileUrl = `${
+      process.env.R2_CUSTOM_DOMAIN || "https://files.sorbonexus.com"
+    }/${key}`;
     res.json({
       filename: key,
       originalName: req.file.originalname,
