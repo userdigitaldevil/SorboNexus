@@ -1,11 +1,24 @@
 console.log("=== USING AUTH.JS FROM:", __filename);
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { isAdmin } = require("../middleware/auth");
 const router = express.Router();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+
+// Rate limiter for login endpoint
+const loginLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 5, // limit each IP to 5 login requests per windowMs
+  message: {
+    error:
+      "Trop de tentatives de connexion. Veuillez réessayer dans une minute.",
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
 // Register (disabled by admin)
 router.post("/register", (req, res) => {
@@ -15,7 +28,7 @@ router.post("/register", (req, res) => {
 });
 
 // Login
-router.post("/login", async (req, res) => {
+router.post("/login", loginLimiter, async (req, res) => {
   console.log("DEBUG: Login route hit. req.body =", req.body);
   try {
     console.log("Login attempt:", req.body);
