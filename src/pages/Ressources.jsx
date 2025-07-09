@@ -733,7 +733,7 @@ export default function Ressources() {
                       }
                     }}
                     sx={{
-                      height: "100%",
+                      height: { xs: 480, md: 520 },
                       width: "100%",
                       maxWidth: { xs: 280, md: 320 },
                       mx: "auto",
@@ -785,6 +785,7 @@ export default function Ressources() {
                         display: "flex",
                         flexDirection: "column",
                         height: "100%",
+                        overflow: "hidden",
                       }}
                     >
                       <Box
@@ -851,53 +852,71 @@ export default function Ressources() {
                       >
                         {resource.subject}
                       </Typography>
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                          p: ({ node, ...props }) => (
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                color: "#a1a1aa",
-                                mb: { xs: 2, md: 3 },
-                                lineHeight: 1.6,
-                                fontSize: { xs: "0.75rem", md: "0.875rem" },
-                                whiteSpace: "pre-line",
-                                wordBreak: "break-word",
-                              }}
-                              {...props}
-                            />
-                          ),
+                      <Box
+                        sx={{
+                          flexGrow: 1,
+                          overflow: "hidden",
+                          display: "flex",
+                          flexDirection: "column",
                         }}
                       >
-                        {expandedDescriptions.has(resource.id)
-                          ? resource.description
-                          : getPreviewDescription(resource.description)}
-                      </ReactMarkdown>
-                      {isLongDescription(resource.description) && (
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleDescriptionExpansion(resource.id);
-                          }}
-                          sx={{
-                            color: "#3b82f6",
-                            textTransform: "none",
-                            fontWeight: 600,
-                            p: 0,
-                            minWidth: "auto",
-                            fontSize: { xs: "0.75rem", md: "0.875rem" },
-                            mb: 1,
-                            "&:hover": {
-                              background: "rgba(59, 130, 246, 0.1)",
-                            },
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            p: ({ node, ...props }) => (
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: "#a1a1aa",
+                                  mb: { xs: 2, md: 3 },
+                                  lineHeight: 1.6,
+                                  fontSize: { xs: "0.75rem", md: "0.875rem" },
+                                  whiteSpace: "pre-line",
+                                  wordBreak: "break-word",
+                                  overflow: "hidden",
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: expandedDescriptions.has(
+                                    resource.id
+                                  )
+                                    ? "none"
+                                    : 3,
+                                  WebkitBoxOrient: "vertical",
+                                }}
+                                {...props}
+                              />
+                            ),
                           }}
                         >
                           {expandedDescriptions.has(resource.id)
-                            ? "Voir moins"
-                            : "Lire la suite"}
-                        </Button>
-                      )}
+                            ? resource.description
+                            : getPreviewDescription(resource.description)}
+                        </ReactMarkdown>
+                        {isLongDescription(resource.description) && (
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleDescriptionExpansion(resource.id);
+                            }}
+                            sx={{
+                              color: "#3b82f6",
+                              textTransform: "none",
+                              fontWeight: 600,
+                              p: 0,
+                              minWidth: "auto",
+                              fontSize: { xs: "0.75rem", md: "0.875rem" },
+                              mb: 1,
+                              mt: "auto",
+                              "&:hover": {
+                                background: "rgba(59, 130, 246, 0.1)",
+                              },
+                            }}
+                          >
+                            {expandedDescriptions.has(resource.id)
+                              ? "Voir moins"
+                              : "Lire la suite"}
+                          </Button>
+                        )}
+                      </Box>
                       {/* Spacer to push bottom elements to the bottom */}
                       <Box sx={{ flexGrow: 1 }} />
                       <Box
