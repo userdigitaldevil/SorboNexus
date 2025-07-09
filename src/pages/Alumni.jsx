@@ -1141,7 +1141,9 @@ export default function Alumni() {
                   letterSpacing: "-0.01em",
                 }}
               >
-                Faites partie de notre réseau
+                {alumniId
+                  ? "Faites grandir notre réseau"
+                  : "Faites partie de notre réseau"}
               </Typography>
             </motion.div>
 
@@ -1163,56 +1165,58 @@ export default function Alumni() {
                   zIndex: 10,
                 }}
               >
-                Vous êtes un ancien étudiant de la Sorbonne ? Rejoignez notre
-                réseau d'alumni pour partager votre expérience et aider les
-                étudiants actuels.
+                {alumniId
+                  ? "Invitez d'autres étudiants ou anciens et partagez le site ! Votre réseau est précieux pour enrichir notre communauté et aider les futurs étudiants de Sorbonne Université."
+                  : "Vous êtes un étudiant ou ancien étudiant de Sorbonne Université ? Rejoignez notre réseau d'alumni pour partager votre expérience et aider les étudiants actuels."}
               </Typography>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1 }}
-            >
-              <Button
-                variant="contained"
-                size="large"
-                sx={{
-                  background:
-                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                  color: "white",
-                  fontWeight: 500,
-                  fontSize: { xs: "1rem", md: "1.1rem" },
-                  px: 5,
-                  py: 2,
-                  borderRadius: 4,
-                  boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
-                  letterSpacing: "0.02em",
-                  lineHeight: 1.4,
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  position: "relative",
-                  zIndex: 10,
-                  "&:hover": {
-                    background:
-                      "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                    boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
-                    transform: "translateY(-3px)",
-                  },
-                  "&:active": {
-                    transform: "translateY(-1px)",
-                  },
-                }}
-                onClick={() => {
-                  if (!alumniId) {
-                    navigate("/connexion");
-                  } else {
-                    setAlreadyConnectedOpen(true);
-                  }
-                }}
+            {!alumniId && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1 }}
               >
-                Rejoindre le réseau
-              </Button>
-            </motion.div>
+                <Button
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                    color: "white",
+                    fontWeight: 500,
+                    fontSize: { xs: "1rem", md: "1.1rem" },
+                    px: 5,
+                    py: 2,
+                    borderRadius: 4,
+                    boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.4,
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    position: "relative",
+                    zIndex: 10,
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                      boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+                      transform: "translateY(-3px)",
+                    },
+                    "&:active": {
+                      transform: "translateY(-1px)",
+                    },
+                  }}
+                  onClick={() => {
+                    if (!alumniId) {
+                      navigate("/connexion");
+                    } else {
+                      setAlreadyConnectedOpen(true);
+                    }
+                  }}
+                >
+                  Rejoindre le réseau
+                </Button>
+              </motion.div>
+            )}
             <Snackbar
               open={alreadyConnectedOpen}
               autoHideDuration={3500}

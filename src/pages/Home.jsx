@@ -2423,7 +2423,7 @@ export default function Home() {
                           transition: "all 0.3s ease",
                         }}
                       >
-                        Voir le Repository GitHub
+                        Voir le GitHub Repository
                       </Button>
                     </motion.div>
 

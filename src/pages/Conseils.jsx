@@ -934,29 +934,11 @@ export default function Conseils() {
             transformOrigin: "top center",
           }}
         >
-          <Card
-            elevation={0}
+          <Box
             sx={{
-              background: "rgba(255, 255, 255, 0.08)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              borderRadius: "24px",
-              p: { xs: 2, sm: 4, md: 6 },
               textAlign: "center",
               mt: 8,
               position: "relative",
-              overflow: "hidden",
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: "3px",
-                background:
-                  "linear-gradient(90deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
-                opacity: 0.8,
-              },
             }}
           >
             <Typography
@@ -973,7 +955,7 @@ export default function Conseils() {
                 letterSpacing: "-0.01em",
               }}
             >
-              Faites partie de notre réseau
+              Partagez vos conseils
             </Typography>
             <Typography
               variant="h6"
@@ -988,56 +970,59 @@ export default function Conseils() {
                 fontWeight: 400,
               }}
             >
-              Vous êtes un ancien étudiant de la Sorbonne ? Rejoignez notre
-              réseau d'alumni pour partager votre expérience et aider les
-              étudiants actuels.
+              Remplissez votre profil et donnez de précieux conseils aux autres
+              étudiants. C'est le cœur du site et votre expérience peut vraiment
+              faire la différence pour les futurs étudiants de Sorbonne
+              Université.
             </Typography>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              style={{ width: "100%" }}
-            >
-              <Box sx={{ pt: { xs: 2, sm: 3, md: 4 } }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  sx={{
-                    background:
-                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                    color: "white",
-                    fontWeight: 500,
-                    px: 5,
-                    py: 2,
-                    borderRadius: 4,
-                    textTransform: "none",
-                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
-                    letterSpacing: "0.02em",
-                    lineHeight: 1.4,
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
-                    "&:hover": {
+            {!alumniId && (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                style={{ width: "100%" }}
+              >
+                <Box sx={{ pt: { xs: 2, sm: 3, md: 4 } }}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    sx={{
                       background:
-                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                      transform: "translateY(-3px)",
-                      boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
-                    },
-                    "&:active": {
-                      transform: "translateY(-1px)",
-                    },
-                  }}
-                  onClick={() => {
-                    if (!alumniId) {
-                      navigate("/connexion");
-                    } else {
-                      setAlreadyConnectedOpen(true);
-                    }
-                  }}
-                >
-                  Rejoindre le réseau
-                </Button>
-              </Box>
-            </motion.div>
-          </Card>
+                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                      color: "white",
+                      fontWeight: 500,
+                      px: 5,
+                      py: 2,
+                      borderRadius: 4,
+                      textTransform: "none",
+                      fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+                      letterSpacing: "0.02em",
+                      lineHeight: 1.4,
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
+                      "&:hover": {
+                        background:
+                          "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                        transform: "translateY(-3px)",
+                        boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+                      },
+                      "&:active": {
+                        transform: "translateY(-1px)",
+                      },
+                    }}
+                    onClick={() => {
+                      if (!alumniId) {
+                        navigate("/connexion");
+                      } else {
+                        setAlreadyConnectedOpen(true);
+                      }
+                    }}
+                  >
+                    Rejoindre le réseau
+                  </Button>
+                </Box>
+              </motion.div>
+            )}
+          </Box>
         </Box>
       </Container>
 

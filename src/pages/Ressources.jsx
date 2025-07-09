@@ -1167,16 +1167,20 @@ export default function Ressources() {
                   letterSpacing: "0.01em",
                 }}
               >
-                Vous avez des notes de cours, des résumés ou des exercices
-                utiles ?{" "}
+                Partagez vos ressources et aidez la communauté SorboNexus à
+                grandir !{" "}
                 <span style={{ color: "#3b82f6", fontWeight: 600 }}>
-                  Contribuez à enrichir la communauté SorboNexus
+                  Notes de cours, résumés, exercices, modèles de CV
                 </span>{" "}
-                en partageant vos ressources.
+                et{" "}
+                <span style={{ color: "#3b82f6", fontWeight: 600 }}>
+                  lettres de motivation
+                </span>{" "}
+                - tout est précieux pour les futurs étudiants.
                 <br />
                 <span style={{ color: "#10b981", fontWeight: 500 }}>
-                  Vous pouvez aussi ajouter vos modèles de CV, modèles de
-                  lettres de motivation, ou des sujets de concours/oraux !
+                  Vos ressources peuvent faire la différence dans le parcours
+                  d'un autre étudiant !
                 </span>
               </Typography>
             </motion.div>
