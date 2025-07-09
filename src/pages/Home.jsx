@@ -9,6 +9,11 @@ import {
   MessageCircle,
 } from "lucide-react";
 import {
+  ScrollAnimation,
+  StaggerAnimation,
+} from "../components/ScrollAnimation";
+import Typewriter from "../components/Typewriter";
+import {
   Card,
   CardContent,
   Typography,
@@ -180,8 +185,8 @@ export default function Home() {
   // Format number as 1.5K if >= 1000
   function formatCount(n) {
     if (n == null) return "...";
-    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K+";
-    return n + "+";
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    return n.toString();
   }
 
   // Count alumni who completed their license before current year
@@ -738,32 +743,51 @@ export default function Home() {
                   }}
                 >
                   {/* Main Title */}
-                  <Typography
-                    variant="h1"
-                    sx={{
-                      fontWeight: 300,
-                      mb: { xs: 1.5, md: 2 },
-                      fontSize: {
-                        xs: "3rem",
-                        sm: "3.5rem",
-                        md: "4.5rem",
-                        lg: "5.5rem",
-                      },
-                      lineHeight: 1.05,
-                      background:
-                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                      letterSpacing: "-0.02em",
-                      position: "relative",
-                    }}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
                   >
-                    Bienvenue sur{" "}
-                    <span style={{ display: "block", fontWeight: 600 }}>
-                      SorboNexus
-                    </span>
-                  </Typography>
+                    <Typography
+                      variant="h1"
+                      sx={{
+                        fontWeight: 300,
+                        mb: { xs: 1.5, md: 2 },
+                        fontSize: {
+                          xs: "3rem",
+                          sm: "3.5rem",
+                          md: "4.5rem",
+                          lg: "5.5rem",
+                        },
+                        lineHeight: 1.05,
+                        background:
+                          "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        letterSpacing: "-0.02em",
+                        position: "relative",
+                      }}
+                    >
+                      Bienvenue sur{" "}
+                      <span style={{ display: "block", fontWeight: 600 }}>
+                        <Typewriter
+                          text="SorboNexus"
+                          speed={150}
+                          deleteSpeed={80}
+                          delay={2000}
+                          repeat={true}
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            backgroundClip: "text",
+                          }}
+                        />
+                      </span>
+                    </Typography>
+                  </motion.div>
 
                   {/* Hero Subtitle */}
                   <Typography
@@ -993,7 +1017,11 @@ export default function Home() {
                           variant="h4"
                           sx={{
                             fontWeight: 300,
-                            color: "#3b82f6",
+                            background:
+                              "linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            backgroundClip: "text",
                             mb: 1,
                             fontSize: { xs: "1.2rem", md: "2.5rem" },
                             letterSpacing: "-0.01em",
@@ -1110,41 +1138,99 @@ export default function Home() {
               maxWidth="lg"
               sx={{ display: "flex", justifyContent: "center" }}
             >
-              <Alert
-                severity="warning"
-                icon={false}
-                sx={{
-                  background: "rgba(239, 68, 68, 0.13)",
-                  border: "1.5px solid #ef4444",
-                  color: "#b91c1c",
-                  fontWeight: 600,
-                  borderRadius: 2,
-                  mb: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  p: 2,
-                  fontSize: { xs: "0.95rem", md: "1.1rem" },
-                  maxWidth: 600,
-                  mx: "auto",
-                }}
-                iconMapping={{
-                  warning: (
-                    <WarningAmberIcon
-                      sx={{ mr: 1, fontSize: 28, color: "#ef4444" }}
-                    />
-                  ),
-                }}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <WarningAmberIcon
-                    sx={{ fontSize: 24, color: "#ef4444", mr: 1 }}
-                  />
-                  Votre profil est caché parce que vous avez choisi de le
-                  masquer, ou parce qu'un administrateur l'a masqué
-                  (informations incomplètes).
-                </Box>
-              </Alert>
+                <Card
+                  elevation={0}
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.12) 100%)",
+                    backdropFilter: "blur(20px)",
+                    border: "1px solid rgba(239, 68, 68, 0.2)",
+                    borderRadius: 3,
+                    p: { xs: 2.5, md: 3 },
+                    maxWidth: 600,
+                    mx: "auto",
+                    position: "relative",
+                    overflow: "hidden",
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "1px",
+                      background:
+                        "linear-gradient(90deg, transparent 0%, rgba(239, 68, 68, 0.4) 50%, transparent 100%)",
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}
+                  >
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 0.3, delay: 0.2 }}
+                    >
+                      <Box
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: "50%",
+                          background: "rgba(239, 68, 68, 0.15)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                          mt: 0.5,
+                        }}
+                      >
+                        <WarningAmberIcon
+                          sx={{
+                            fontSize: 14,
+                            color: "#ef4444",
+                          }}
+                        />
+                      </Box>
+                    </motion.div>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "rgba(255, 255, 255, 0.9)",
+                          fontWeight: 400,
+                          fontSize: { xs: "0.9rem", md: "1rem" },
+                          lineHeight: 1.5,
+                          letterSpacing: "0.01em",
+                          mb: 1,
+                        }}
+                      >
+                        <strong style={{ fontWeight: 500, color: "#ef4444" }}>
+                          Profil masqué
+                        </strong>
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "rgba(255, 255, 255, 0.7)",
+                          fontWeight: 300,
+                          fontSize: { xs: "0.85rem", md: "0.9rem" },
+                          lineHeight: 1.5,
+                          letterSpacing: "0.01em",
+                        }}
+                      >
+                        Votre profil est caché parce que vous avez choisi de le
+                        masquer, ou parce qu'un administrateur l'a masqué
+                        (informations incomplètes).
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Card>
+              </motion.div>
             </Container>
           </motion.section>
         )}
@@ -1211,206 +1297,484 @@ export default function Home() {
               >
                 SorboNexus, la plateforme des étudiants de Jussieu
               </Typography>
+              {/* Introduction Section */}
               <Typography
                 variant="body1"
-                component="div"
                 sx={{
-                  color: "rgba(255,255,255,0.9)",
-                  mb: 3,
-                  fontSize: { xs: "0.9rem", md: "1.1rem" },
-                  lineHeight: 1.7,
-                  fontWeight: 400,
-                  letterSpacing: "0.01em",
+                  color: "rgba(255,255,255,0.85)",
+                  mb: 5,
+                  fontSize: { xs: "1rem", md: "1.15rem" },
+                  lineHeight: 1.6,
+                  fontWeight: 300,
+                  letterSpacing: "0.02em",
                   position: "relative",
                   zIndex: 1,
+                  textAlign: "center",
+                  maxWidth: 800,
+                  mx: "auto",
                 }}
               >
                 SorboNexus est la plateforme créée pour les étudiants de
                 Jussieu, dédiée à accompagner votre réussite tout au long de
                 votre parcours universitaire et dans la préparation de vos
                 candidatures en master ou en école, en{" "}
-                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                <span style={{ color: "#3b82f6", fontWeight: 500 }}>
                   France comme à l'international
                 </span>
                 .
-                <br />
-                <br />
+              </Typography>
+
+              {/* Mission Statement */}
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "rgba(255,255,255,0.85)",
+                  mb: 5,
+                  fontSize: { xs: "1rem", md: "1.15rem" },
+                  lineHeight: 1.6,
+                  fontWeight: 300,
+                  letterSpacing: "0.02em",
+                  position: "relative",
+                  zIndex: 1,
+                  textAlign: "center",
+                  maxWidth: 800,
+                  mx: "auto",
+                }}
+              >
                 L'objectif, c'est vraiment d'
-                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                <span style={{ color: "#3b82f6", fontWeight: 500 }}>
                   inspirer les élèves
                 </span>{" "}
                 de Sorbonne Université, afin qu'ils intègrent à leur tour{" "}
-                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                <span style={{ color: "#3b82f6", fontWeight: 500 }}>
                   les meilleurs parcours
                 </span>
                 , comme toi. Cela contribue à renforcer le{" "}
-                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                <span style={{ color: "#3b82f6", fontWeight: 500 }}>
                   rayonnement de l'université
                 </span>
                 , à consolider le{" "}
-                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                <span style={{ color: "#3b82f6", fontWeight: 500 }}>
                   réseau des alumni
                 </span>
                 , et à le faire perdurer pour les générations futures.
-                <br />
-                <br />
-                <Card
-                  elevation={0}
+              </Typography>
+
+              {/* Conseil Section Card */}
+              <Card
+                elevation={0}
+                sx={{
+                  background: "rgba(255,255,255,0.03)",
+                  backdropFilter: "blur(20px)",
+                  borderRadius: 3,
+                  p: { xs: 4, md: 5 },
+                  mb: 5,
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  textAlign: "center",
+                  maxWidth: 700,
+                  mx: "auto",
+                  position: "relative",
+                  overflow: "hidden",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "1px",
+                    background:
+                      "linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.3) 50%, transparent 100%)",
+                  },
+                }}
+              >
+                <Typography
+                  variant="h5"
                   sx={{
-                    background: "rgba(30,41,59,0.55)",
-                    backdropFilter: "blur(18px) saturate(180%)",
-                    borderRadius: 4,
-                    p: { xs: 2, md: 3 },
-                    my: 2,
-                    boxShadow: "0 4px 16px 0 rgba(31,38,135,0.10)",
-                    border: "1.5px solid rgba(255,255,255,0.10)",
-                    textAlign: "center",
-                    maxWidth: 600,
-                    mx: "auto",
+                    background:
+                      "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    fontWeight: 400,
+                    mb: 3,
+                    fontSize: { xs: "1.2rem", md: "1.4rem" },
+                    letterSpacing: "-0.01em",
                   }}
                 >
-                  <Typography
-                    variant="body2"
+                  Section Conseil
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: 300,
+                    color: "rgba(255,255,255,0.8)",
+                    mb: 4,
+                    fontSize: { xs: "0.95rem", md: "1.05rem" },
+                    lineHeight: 1.6,
+                    letterSpacing: "0.01em",
+                    fontStyle: "normal",
+                  }}
+                >
+                  Dans la section Conseil, tu peux partager tout ce qui pourrait
+                  être utile à d'autres utilisateurs. Même si t'es encore en L2
+                  ou L3, tu pourrais déjà donner des conseils pour les L1 qui
+                  arrive la rentrée prochaine! Ils pourront plus facilement
+                  s'intégrer avec vos conseils et retours!
+                </Typography>
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleScrollToAnnonces}
+                    endIcon={
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        style={{ verticalAlign: "middle" }}
+                      >
+                        <path
+                          d="M12 5v14m0 0l-7-7m7 7l7-7"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    }
                     sx={{
-                      fontStyle: "italic",
-                      fontWeight: 500,
-                      color: "rgba(255,255,255,0.95)",
-                      mb: 3,
-                      fontSize: { xs: "0.9rem", md: "1rem" },
-                      lineHeight: 1.6,
-                      letterSpacing: "0.01em",
+                      fontWeight: 600,
+                      px: { xs: 1.2, md: 2 },
+                      py: { xs: 0.3, md: 0.6 },
+                      minHeight: { xs: 28, md: 32 },
+                      borderRadius: 3,
+                      background:
+                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                      boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
+                      fontSize: { xs: "0.70rem", md: "0.80rem" },
+                      color: "#fff",
+                      textTransform: "none",
+                      letterSpacing: 0.5,
+                      transition: "all 0.2s",
+                      "&:hover": {
+                        background:
+                          "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                        color: "#fff",
+                        transform: "scale(1.07)",
+                      },
                     }}
                   >
-                    Dans la section Conseil, tu peux partager tout ce qui
-                    pourrait être utile à d'autres utilisateurs. Même si t'es
-                    encore en L2 ou L3, tu pourrais déjà donner des conseils
-                    pour les L1 qui arrive la rentrée prochaine! Ils pourront
-                    plus facilement s'intégrer avec vos conseils et retours!
-                  </Typography>
-                  <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <Button
-                      variant="contained"
-                      size="large"
-                      onClick={handleScrollToAnnonces}
-                      endIcon={
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          style={{ verticalAlign: "middle" }}
-                        >
-                          <path
-                            d="M12 5v14m0 0l-7-7m7 7l7-7"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      }
-                      sx={{
-                        fontWeight: 600,
-                        px: { xs: 1.2, md: 2 },
-                        py: { xs: 0.3, md: 0.6 },
-                        minHeight: { xs: 28, md: 32 },
-                        borderRadius: 3,
-                        background:
-                          "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                        boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                        fontSize: { xs: "0.70rem", md: "0.80rem" },
-                        color: "#fff",
-                        textTransform: "none",
-                        letterSpacing: 0.5,
-                        transition: "all 0.2s",
-                        "&:hover": {
-                          background:
-                            "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                          color: "#fff",
-                          transform: "scale(1.07)",
-                        },
-                      }}
-                    >
-                      Voir les idées/exemples en bas
-                    </Button>
-                  </Box>
-                </Card>
-                <br />
+                    Voir les idées/exemples en bas
+                  </Button>
+                </Box>
+              </Card>
+
+              {/* Conseils Philosophy */}
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "rgba(255,255,255,0.85)",
+                  mb: 5,
+                  fontSize: { xs: "1rem", md: "1.15rem" },
+                  lineHeight: 1.6,
+                  fontWeight: 300,
+                  letterSpacing: "0.02em",
+                  position: "relative",
+                  zIndex: 1,
+                  textAlign: "center",
+                  maxWidth: 800,
+                  mx: "auto",
+                }}
+              >
                 L'idée est de transmettre ce que tu aurais aimé savoir avant.
                 Cela peut être un texte court ou plus détaillé, selon ce que tu
-                souhaites partager.
-                <br />
-                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
+                souhaites partager.{" "}
+                <span style={{ color: "#3b82f6", fontWeight: 500 }}>
                   Chaque conseil compte
                 </span>{" "}
                 et peut vraiment aider d'autres étudiants à avancer plus
                 sereinement.
-                <br />
-                <br />
-                Vous y trouverez une multitude de{" "}
-                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                  ressources utiles
-                </span>{" "}
-                : <b>modèles de lettres de motivation</b>,{" "}
-                <b>informations détaillées sur les UE</b>,{" "}
-                <b>guides pour constituer vos dossiers</b>, et{" "}
-                <b>conseils pratiques</b> pour chaque étape de votre cursus.
-                <br />
-                <br />
-                Découvrez également des{" "}
-                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                  retours d'expérience et témoignages d'élèves sur les licences
-                  de SU (simple, bi-disciplinaire, intensives) et masters dans
-                  differentes universités
-                </span>{" "}
-                que vous souhaitez suivre, ainsi que des témoignages d'élèves
-                ayant réussi des concours comme <b>GEI-UNIV</b> (admissions
-                parallèles), des oraux, et des intégrations dans des écoles (en{" "}
-                <span style={{ color: "#3b82f6", fontWeight: 700 }}>
-                  France comme à l'international
-                </span>
-                ) telles que{" "}
-                <b>
-                  Polytechnique, ENS, Princeton, CentraleSupélec, Télécom,
-                  Dauphine, Sorbonne, Paris-Saclay, ESPCI, Paris Cité
-                </b>{" "}
-                et bien d'autres.
-                <br />
-                <br />
-                Le site propose aussi des fiches sur les écoles, des astuces
-                pour les candidatures à l'étranger, exemples de CV, ainsi que
-                des conseils pour les entretiens.
-                <br />
-                <br />
-                Ton parcours aidera et motivera les nouveaux L1 , mais aussi les
-                L2 et les L3 qui souhaitent faire le même parcours que toi. Le
-                site a besoin des parcours comme le tien, et on aimerait bien
-                recevoir des conseils, témoignages venant de toi mais aussi des
-                ressources utiles qui t'ont aidé durant ton parcours.
-                <br />
-                <br />
-                <span style={{ fontStyle: "italic" }}>
-                  Le site est encore en développement, mais vous pouvez dès
-                  maintenant créer votre compte, personnaliser votre profil et
-                  contribuer à enrichir la base de connaissances pour aider les
-                  générations futures.
-                </span>
-                <br />
+              </Typography>
+
+              {/* Resources Section */}
+              <Card
+                elevation={0}
+                sx={{
+                  background: "rgba(255,255,255,0.03)",
+                  backdropFilter: "blur(20px)",
+                  borderRadius: 3,
+                  p: { xs: 4, md: 5 },
+                  mb: 5,
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  textAlign: "left",
+                  maxWidth: 700,
+                  mx: "auto",
+                  position: "relative",
+                  overflow: "hidden",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "1px",
+                    background:
+                      "linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.3) 50%, transparent 100%)",
+                  },
+                }}
+              >
                 <Typography
-                  variant="h4"
+                  variant="h5"
                   sx={{
-                    color: "#3b82f6",
+                    background:
+                      "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
                     fontWeight: 400,
+                    mb: 4,
+                    fontSize: { xs: "1.2rem", md: "1.4rem" },
+                    letterSpacing: "-0.01em",
                     textAlign: "center",
-                    mt: 4,
-                    mb: 2,
-                    fontSize: { xs: "1.1rem", md: "1.4rem" },
-                    letterSpacing: "0.02em",
-                    lineHeight: 1.3,
                   }}
                 >
-                  Explorez, partagez, et faites grandir la communauté !
+                  Ressources Utiles
                 </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "rgba(255,255,255,0.8)",
+                    mb: 4,
+                    fontSize: { xs: "0.95rem", md: "1.05rem" },
+                    lineHeight: 1.6,
+                    fontWeight: 300,
+                    letterSpacing: "0.01em",
+                  }}
+                >
+                  Vous y trouverez une multitude de{" "}
+                  <span style={{ color: "#3b82f6", fontWeight: 500 }}>
+                    ressources utiles
+                  </span>{" "}
+                  :{" "}
+                  <span style={{ fontWeight: 500 }}>
+                    modèles de lettres de motivation
+                  </span>
+                  ,{" "}
+                  <span style={{ fontWeight: 500 }}>
+                    informations détaillées sur les UE
+                  </span>
+                  ,{" "}
+                  <span style={{ fontWeight: 500 }}>
+                    guides pour constituer vos dossiers
+                  </span>
+                  , et{" "}
+                  <span style={{ fontWeight: 500 }}>conseils pratiques</span>{" "}
+                  pour chaque étape de votre cursus.
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "rgba(255,255,255,0.8)",
+                    fontSize: { xs: "0.95rem", md: "1.05rem" },
+                    lineHeight: 1.6,
+                    fontWeight: 300,
+                    letterSpacing: "0.01em",
+                  }}
+                >
+                  Le site propose aussi des fiches sur les écoles, des astuces
+                  pour les candidatures à l'étranger, exemples de CV, ainsi que
+                  des conseils pour les entretiens.
+                </Typography>
+              </Card>
+
+              {/* Testimonials Section */}
+              <Card
+                elevation={0}
+                sx={{
+                  background: "rgba(255,255,255,0.03)",
+                  backdropFilter: "blur(20px)",
+                  borderRadius: 3,
+                  p: { xs: 4, md: 5 },
+                  mb: 5,
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  textAlign: "left",
+                  maxWidth: 700,
+                  mx: "auto",
+                  position: "relative",
+                  overflow: "hidden",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "1px",
+                    background:
+                      "linear-gradient(90deg, transparent 0%, rgba(139,92,246,0.3) 50%, transparent 100%)",
+                  },
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    background:
+                      "linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    fontWeight: 400,
+                    mb: 4,
+                    fontSize: { xs: "1.2rem", md: "1.4rem" },
+                    letterSpacing: "-0.01em",
+                    textAlign: "center",
+                  }}
+                >
+                  Retours d'Expérience
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "rgba(255,255,255,0.8)",
+                    fontSize: { xs: "0.95rem", md: "1.05rem" },
+                    lineHeight: 1.6,
+                    fontWeight: 300,
+                    letterSpacing: "0.01em",
+                  }}
+                >
+                  Découvrez également des{" "}
+                  <span style={{ color: "#8b5cf6", fontWeight: 500 }}>
+                    retours d'expérience et témoignages d'élèves sur les
+                    licences de SU (simple, bi-disciplinaire, intensives) et
+                    masters dans differentes universités
+                  </span>{" "}
+                  que vous souhaitez suivre, ainsi que des témoignages d'élèves
+                  ayant réussi des concours comme{" "}
+                  <span style={{ fontWeight: 500 }}>GEI-UNIV</span> (admissions
+                  parallèles), des oraux, et des intégrations dans des écoles
+                  (en{" "}
+                  <span style={{ color: "#8b5cf6", fontWeight: 500 }}>
+                    France comme à l'international
+                  </span>
+                  ) telles que{" "}
+                  <span style={{ fontWeight: 500 }}>
+                    Polytechnique, ENS, Princeton, CentraleSupélec, Télécom,
+                    Dauphine, Sorbonne, Paris-Saclay, ESPCI, Paris Cité
+                  </span>{" "}
+                  et bien d'autres.
+                </Typography>
+              </Card>
+
+              {/* Contribution Call */}
+              <Card
+                elevation={0}
+                sx={{
+                  background: "rgba(255,255,255,0.03)",
+                  backdropFilter: "blur(20px)",
+                  borderRadius: 3,
+                  p: { xs: 4, md: 5 },
+                  mb: 5,
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  textAlign: "center",
+                  maxWidth: 600,
+                  mx: "auto",
+                  position: "relative",
+                  overflow: "hidden",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "1px",
+                    background:
+                      "linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.3) 50%, transparent 100%)",
+                  },
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    background:
+                      "linear-gradient(90deg, #22c55e 0%, #16a34a 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    fontWeight: 400,
+                    mb: 4,
+                    fontSize: { xs: "1.2rem", md: "1.4rem" },
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  Contribuez à la Communauté
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "rgba(255,255,255,0.8)",
+                    fontSize: { xs: "0.95rem", md: "1.05rem" },
+                    lineHeight: 1.6,
+                    fontWeight: 300,
+                    letterSpacing: "0.01em",
+                  }}
+                >
+                  Ton parcours aidera et motivera les nouveaux L1, mais aussi
+                  les L2 et les L3 qui souhaitent faire le même parcours que
+                  toi. Le site a besoin des parcours comme le tien, et on
+                  aimerait bien recevoir des conseils, témoignages venant de toi
+                  mais aussi des ressources utiles qui t'ont aidé durant ton
+                  parcours.
+                </Typography>
+              </Card>
+
+              {/* Development Note */}
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255,255,255,0.6)",
+                  fontStyle: "italic",
+                  textAlign: "center",
+                  mb: 5,
+                  fontSize: { xs: "0.9rem", md: "1rem" },
+                  lineHeight: 1.6,
+                  fontWeight: 300,
+                  letterSpacing: "0.02em",
+                  position: "relative",
+                  zIndex: 1,
+                  maxWidth: 600,
+                  mx: "auto",
+                }}
+              >
+                Le site est encore en développement, mais vous pouvez dès
+                maintenant créer votre compte, personnaliser votre profil et
+                contribuer à enrichir la base de connaissances pour aider les
+                générations futures.
+              </Typography>
+
+              {/* Call to Action */}
+              <Typography
+                variant="h4"
+                sx={{
+                  background:
+                    "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  fontWeight: 300,
+                  textAlign: "center",
+                  mb: 5,
+                  fontSize: { xs: "1.3rem", md: "1.6rem" },
+                  letterSpacing: "-0.01em",
+                  lineHeight: 1.2,
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                Explorez, partagez, et faites grandir la communauté !
               </Typography>
               <Box
                 sx={{
@@ -1746,378 +2110,386 @@ export default function Home() {
           </motion.div>
 
           {/* FULL FEATURES SECTION: All 6 feature cards in responsive grid */}
-          <Grid
-            container
-            spacing={{ xs: 2, sm: 3, md: 4 }}
-            justifyContent="center"
-            sx={{
-              maxWidth: "1200px",
-              margin: "0 auto",
-              px: { xs: 1, sm: 2 },
-            }}
-          >
-            {features.map((feature, index) => (
-              <Grid
-                gridColumn={{ xs: "span 12", md: "span 4", lg: "span 3" }}
-                key={index}
-              >
-                <FeatureCard
-                  feature={feature}
-                  index={index}
-                  variant="full"
-                  onCardClick={() => handleCardNavigation(feature.path)}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          <StaggerAnimation>
+            <Grid
+              container
+              spacing={{ xs: 2, sm: 3, md: 4 }}
+              justifyContent="center"
+              sx={{
+                maxWidth: "1200px",
+                margin: "0 auto",
+                px: { xs: 1, sm: 2 },
+              }}
+            >
+              {features.map((feature, index) => (
+                <Grid
+                  gridColumn={{ xs: "span 12", md: "span 4", lg: "span 3" }}
+                  key={index}
+                >
+                  <FeatureCard
+                    feature={feature}
+                    index={index}
+                    variant="full"
+                    onCardClick={() => handleCardNavigation(feature.path)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </StaggerAnimation>
         </Container>
       </Box>
 
       {/* Stats Section */}
-      <Box
-        component="section"
-        sx={{
-          py: { xs: 6, md: 10 },
-          px: 2,
-        }}
-      >
-        <Container maxWidth="md">
-          <Card
-            elevation={0}
-            className="glassy-bg"
-            sx={{
-              background: "rgba(30, 41, 59, 0.7)",
-              backdropFilter: "blur(24px) saturate(180%)",
-              borderBottom: "1.5px solid rgba(255, 255, 255, 0.13)",
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
-              borderRadius: 4,
-              p: { xs: 3, md: 5 },
-              maxWidth: 600,
-              mx: "auto",
-              mb: { xs: 3, md: 4 },
-              border: "1.5px solid rgba(255,255,255,0.08)",
-              textAlign: "center",
-            }}
-          >
-            <Typography
-              variant="h3"
+      <ScrollAnimation animation="scale" delay={0.2}>
+        <Box
+          component="section"
+          sx={{
+            py: { xs: 6, md: 10 },
+            px: 2,
+          }}
+        >
+          <Container maxWidth="md">
+            <Card
+              elevation={0}
+              className="glassy-bg"
               sx={{
-                textAlign: "center",
+                background: "rgba(30, 41, 59, 0.7)",
+                backdropFilter: "blur(24px) saturate(180%)",
+                borderBottom: "1.5px solid rgba(255, 255, 255, 0.13)",
+                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
+                borderRadius: 4,
+                p: { xs: 3, md: 5 },
+                maxWidth: 600,
+                mx: "auto",
                 mb: { xs: 3, md: 4 },
-                fontWeight: 300,
-                background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                fontSize: { xs: "1.8rem", sm: "2.2rem", md: "3.2rem" },
-                lineHeight: 1.2,
-                letterSpacing: "-0.02em",
+                border: "1.5px solid rgba(255,255,255,0.08)",
+                textAlign: "center",
               }}
             >
-              Notre Impact
-            </Typography>
-            <Typography
-              variant="body2"
-              component="div"
-              sx={{
-                color: "rgba(255, 255, 255, 0.8)",
-                mb: { xs: 3, md: 5 },
-                fontSize: { xs: "0.9rem", md: "1.1rem" },
-                fontWeight: 400,
-                letterSpacing: "0.01em",
-                lineHeight: 1.5,
-              }}
-            >
-              Découvrez l'ampleur de notre communauté
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: { xs: 2, md: 4 },
-                flexWrap: "wrap",
-                mt: 2,
-              }}
-            >
-              <Box sx={{ textAlign: "center", flex: 1 }}>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 300,
-                    background:
-                      "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    fontSize: { xs: "2rem", md: "3rem" },
-                    mb: 1,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  {formatCount(alumniCount)}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  component="div"
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.9)",
-                    fontWeight: 400,
-                    fontSize: { xs: "0.8rem", md: "1rem" },
-                    letterSpacing: "0.01em",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  Étudiants actifs
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.4)",
-                    fontSize: { xs: "0.6rem", md: "0.7rem" },
-                    fontStyle: "italic",
-                    mt: 0.5,
-                  }}
-                >
-                  Certains profils sont masqués
-                </Typography>
-              </Box>
+              <Typography
+                variant="h3"
+                sx={{
+                  textAlign: "center",
+                  mb: { xs: 3, md: 4 },
+                  fontWeight: 300,
+                  background:
+                    "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  fontSize: { xs: "1.8rem", sm: "2.2rem", md: "3.2rem" },
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                Notre Impact
+              </Typography>
+              <Typography
+                variant="body2"
+                component="div"
+                sx={{
+                  color: "rgba(255, 255, 255, 0.8)",
+                  mb: { xs: 3, md: 5 },
+                  fontSize: { xs: "0.9rem", md: "1.1rem" },
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.5,
+                }}
+              >
+                Découvrez l'ampleur de notre communauté
+              </Typography>
               <Box
                 sx={{
-                  width: { xs: 1, md: 2 },
-                  height: { xs: 32, md: 48 },
-                  bgcolor: "rgba(255,255,255,0.12)",
-                  borderRadius: 2,
-                  mx: { xs: 1, md: 2 },
-                  display: { xs: "none", sm: "block" },
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: { xs: 2, md: 4 },
+                  flexWrap: "wrap",
+                  mt: 2,
                 }}
-              />
-              <Box sx={{ textAlign: "center", flex: 1 }}>
-                <Typography
-                  variant="h3"
+              >
+                <Box sx={{ textAlign: "center", flex: 1 }}>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontWeight: 300,
+                      background:
+                        "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      fontSize: { xs: "2rem", md: "3rem" },
+                      mb: 1,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {formatCount(alumniCount)}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.9)",
+                      fontWeight: 400,
+                      fontSize: { xs: "0.8rem", md: "1rem" },
+                      letterSpacing: "0.01em",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    Étudiants actifs
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.4)",
+                      fontSize: { xs: "0.6rem", md: "0.7rem" },
+                      fontStyle: "italic",
+                      mt: 0.5,
+                    }}
+                  >
+                    Certains profils sont masqués
+                  </Typography>
+                </Box>
+                <Box
                   sx={{
-                    fontWeight: 300,
-                    background:
-                      "linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    fontSize: { xs: "2rem", md: "3rem" },
-                    mb: 1,
-                    letterSpacing: "-0.02em",
+                    width: { xs: 1, md: 2 },
+                    height: { xs: 32, md: 48 },
+                    bgcolor: "rgba(255,255,255,0.12)",
+                    borderRadius: 2,
+                    mx: { xs: 1, md: 2 },
+                    display: { xs: "none", sm: "block" },
                   }}
-                >
-                  {formatCount(alumniWithLicenseBeforeCurrentYear)}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  component="div"
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.9)",
-                    fontWeight: 400,
-                    fontSize: { xs: "0.8rem", md: "1rem" },
-                    letterSpacing: "0.01em",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  Alumni qui ont eu leur licence avant {currentYear}
-                </Typography>
+                />
+                <Box sx={{ textAlign: "center", flex: 1 }}>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontWeight: 300,
+                      background:
+                        "linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      fontSize: { xs: "2rem", md: "3rem" },
+                      mb: 1,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {formatCount(alumniWithLicenseBeforeCurrentYear)}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.9)",
+                      fontWeight: 400,
+                      fontSize: { xs: "0.8rem", md: "1rem" },
+                      letterSpacing: "0.01em",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    Alumni qui ont eu leur licence avant {currentYear}
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          </Card>
-        </Container>
-      </Box>
+            </Card>
+          </Container>
+        </Box>
+      </ScrollAnimation>
 
       {/* Feedback & Contributions Section */}
-      <Box
-        component="section"
-        sx={{
-          py: { xs: 6, md: 10 },
-          px: 2,
-        }}
-      >
-        <Container maxWidth="lg">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            style={{ textAlign: "center" }}
-          >
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 300,
-                background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                mb: { xs: 3, md: 4 },
-                fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.8rem" },
-                lineHeight: 1.2,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Contribuez au Projet
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "rgba(255, 255, 255, 0.9)",
-                mb: { xs: 4, md: 5 },
-                fontWeight: 400,
-                maxWidth: 800,
-                mx: "auto",
-                fontSize: { xs: "1rem", sm: "1.1rem", md: "1.3rem" },
-                lineHeight: 1.5,
-                letterSpacing: "0.01em",
-              }}
-            >
-              Ce projet est ouvert à tous vos feedbacks, pull requests et
-              contributions !<br />
-              Vous êtes invités à compléter votre profil alumni et à partager
-              les conseils et ressources qui vous ont aidé dans votre parcours
-              pour inspirer et aider la communauté.
-            </Typography>
-
+      <ScrollAnimation animation="slideLeft" delay={0.3}>
+        <Box
+          component="section"
+          sx={{
+            py: { xs: 6, md: 10 },
+            px: 2,
+          }}
+        >
+          <Container maxWidth="lg">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
+              style={{ textAlign: "center" }}
             >
-              <Card
-                elevation={0}
-                className="glassy-bg"
+              <Typography
+                variant="h3"
                 sx={{
-                  background: "unset",
-                  borderRadius: 4,
-                  p: { xs: 2, md: 4 },
-                  maxWidth: 600,
-                  mx: "auto",
+                  fontWeight: 300,
+                  background:
+                    "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
                   mb: { xs: 3, md: 4 },
-                  boxShadow: "0 8px 32px 0 rgba(31,38,135,0.18)",
-                  border: "1.5px solid rgba(255,255,255,0.08)",
+                  fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.8rem" },
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.02em",
                 }}
               >
-                <Typography
-                  variant="body1"
-                  component="div"
+                Contribuez au Projet
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "rgba(255, 255, 255, 0.9)",
+                  mb: { xs: 4, md: 5 },
+                  fontWeight: 400,
+                  maxWidth: 800,
+                  mx: "auto",
+                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.3rem" },
+                  lineHeight: 1.5,
+                  letterSpacing: "0.01em",
+                }}
+              >
+                Ce projet est ouvert à tous vos feedbacks, pull requests et
+                contributions !<br />
+                Vous êtes invités à compléter votre profil alumni et à partager
+                les conseils et ressources qui vous ont aidé dans votre parcours
+                pour inspirer et aider la communauté.
+              </Typography>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                <Card
+                  elevation={0}
+                  className="glassy-bg"
                   sx={{
-                    color: "rgba(255, 255, 255, 0.9)",
+                    background: "unset",
+                    borderRadius: 4,
+                    p: { xs: 2, md: 4 },
+                    maxWidth: 600,
+                    mx: "auto",
                     mb: { xs: 3, md: 4 },
-                    lineHeight: 1.7,
-                    fontSize: { xs: "0.9rem", md: "1.1rem" },
-                    fontWeight: 400,
-                    letterSpacing: "0.01em",
+                    boxShadow: "0 8px 32px 0 rgba(31,38,135,0.18)",
+                    border: "1.5px solid rgba(255,255,255,0.08)",
                   }}
                 >
-                  SorboNexus est un projet open source développé pour la
-                  communauté étudiante. Vos suggestions, améliorations et
-                  contributions sont les bienvenues !
-                </Typography>
-
-                <Stack
-                  direction={{ xs: "column", sm: "row" }}
-                  spacing={{ xs: 1.5, md: 2 }}
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.9)",
+                      mb: { xs: 3, md: 4 },
+                      lineHeight: 1.7,
+                      fontSize: { xs: "0.9rem", md: "1.1rem" },
+                      fontWeight: 400,
+                      letterSpacing: "0.01em",
+                    }}
                   >
-                    <Button
-                      variant="contained"
-                      size="large"
-                      href="https://github.com/userdigitaldevil/SorboNexus/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{
-                        background:
-                          "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                        color: "white",
-                        fontWeight: 600,
-                        px: { xs: 3, md: 4 },
-                        py: { xs: 1, md: 1.5 },
-                        borderRadius: 3,
-                        boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
-                        fontSize: { xs: "0.8rem", md: "1rem" },
-                        "&:hover": {
+                    SorboNexus est un projet open source développé pour la
+                    communauté étudiante. Vos suggestions, améliorations et
+                    contributions sont les bienvenues !
+                  </Typography>
+
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={{ xs: 1.5, md: 2 }}
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Button
+                        variant="contained"
+                        size="large"
+                        href="https://github.com/userdigitaldevil/SorboNexus/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
                           background:
-                            "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                          boxShadow: "0 12px 35px rgba(59, 130, 246, 0.4)",
-                          transform: "translateY(-2px)",
-                        },
-                        transition: "all 0.3s ease",
-                      }}
-                    >
-                      Voir le Repository GitHub
-                    </Button>
-                  </motion.div>
+                            "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                          color: "white",
+                          fontWeight: 600,
+                          px: { xs: 3, md: 4 },
+                          py: { xs: 1, md: 1.5 },
+                          borderRadius: 3,
+                          boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
+                          fontSize: { xs: "0.8rem", md: "1rem" },
+                          "&:hover": {
+                            background:
+                              "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                            boxShadow: "0 12px 35px rgba(59, 130, 246, 0.4)",
+                            transform: "translateY(-2px)",
+                          },
+                          transition: "all 0.3s ease",
+                        }}
+                      >
+                        Voir le Repository GitHub
+                      </Button>
+                    </motion.div>
 
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button
-                      variant="outlined"
-                      size="large"
-                      href="mailto:sethaguila@icloud.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      startIcon={
-                        <Box
-                          component="span"
-                          sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}
-                        >
-                          ✉️
-                        </Box>
-                      }
-                      sx={{
-                        color: "#3b82f6",
-                        borderColor: "#3b82f6",
-                        borderWidth: 2,
-                        fontWeight: 600,
-                        px: { xs: 3, md: 4 },
-                        py: { xs: 1, md: 1.5 },
-                        borderRadius: 3,
-                        fontSize: { xs: "0.8rem", md: "1rem" },
-                        "&:hover": {
-                          background: "rgba(59, 130, 246, 0.1)",
-                          borderColor: "#1e40af",
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Button
+                        variant="outlined"
+                        size="large"
+                        href="mailto:sethaguila@icloud.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        startIcon={
+                          <Box
+                            component="span"
+                            sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}
+                          >
+                            ✉️
+                          </Box>
+                        }
+                        sx={{
+                          color: "#3b82f6",
+                          borderColor: "#3b82f6",
                           borderWidth: 2,
-                        },
-                        transition: "all 0.3s ease",
-                      }}
-                    >
-                      Envoyer un Feedback
-                    </Button>
-                  </motion.div>
-                </Stack>
-              </Card>
-            </motion.div>
+                          fontWeight: 600,
+                          px: { xs: 3, md: 4 },
+                          py: { xs: 1, md: 1.5 },
+                          borderRadius: 3,
+                          fontSize: { xs: "0.8rem", md: "1rem" },
+                          "&:hover": {
+                            background: "rgba(59, 130, 246, 0.1)",
+                            borderColor: "#1e40af",
+                            borderWidth: 2,
+                          },
+                          transition: "all 0.3s ease",
+                        }}
+                      >
+                        Envoyer un Feedback
+                      </Button>
+                    </motion.div>
+                  </Stack>
+                </Card>
+              </motion.div>
 
-            <Typography
-              variant="body2"
-              component="div"
-              sx={{
-                color: "rgba(255, 255, 255, 0.7)",
-                fontStyle: "italic",
-                maxWidth: 500,
-                mx: "auto",
-                fontSize: { xs: "0.8rem", md: "0.9rem" },
-                fontWeight: 400,
-                letterSpacing: "0.01em",
-                lineHeight: 1.5,
-              }}
-            >
-              © 2025 Seth Aguila - Développé avec &lt;3 pour la communauté
-              Sorbonne Sciences Jussieu
-            </Typography>
-          </motion.div>
-        </Container>
-      </Box>
+              <Typography
+                variant="body2"
+                component="div"
+                sx={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontStyle: "italic",
+                  maxWidth: 500,
+                  mx: "auto",
+                  fontSize: { xs: "0.8rem", md: "0.9rem" },
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.5,
+                }}
+              >
+                © 2025 Seth Aguila - Développé avec &lt;3 pour la communauté
+                Sorbonne Sciences Jussieu
+              </Typography>
+            </motion.div>
+          </Container>
+        </Box>
+      </ScrollAnimation>
     </div>
   );
 }

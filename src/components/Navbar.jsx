@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   AppBar,
   Toolbar,
@@ -229,8 +230,10 @@ const Navbar = () => {
               mx: 2,
               my: 0.5,
               minHeight: 48,
+              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.08)",
+                transform: "translateX(4px)",
               },
             }}
           >
@@ -266,7 +269,7 @@ const Navbar = () => {
                 textTransform: "none",
                 fontSize: { xs: "0.9rem", sm: "0.95rem" },
                 letterSpacing: "0.02em",
-                transition: "all 0.2s ease",
+                transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                 "&:hover": {
                   background: "rgba(59,130,246,0.12)",
                   borderColor: "#3b82f6",

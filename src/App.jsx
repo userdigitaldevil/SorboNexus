@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -124,25 +125,145 @@ function TitleUpdater() {
   return null;
 }
 
+// Page transition variants
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    y: 20,
+    scale: 0.98,
+  },
+  in: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+  },
+  out: {
+    opacity: 0,
+    y: -20,
+    scale: 0.98,
+  },
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: [0.4, 0, 0.2, 1],
+  duration: 0.4,
+};
+
+// Animated page wrapper component
+const AnimatedPage = ({ children }) => (
+  <motion.div
+    initial="initial"
+    animate="in"
+    exit="out"
+    variants={pageVariants}
+    transition={pageTransition}
+    style={{
+      minHeight: "100vh",
+      width: "100%",
+    }}
+  >
+    {children}
+  </motion.div>
+);
+
 function App() {
+  // Add smooth scrolling to the entire app
+  useEffect(() => {
+    // Enable smooth scrolling for the entire document
+    document.documentElement.style.scrollBehavior = "smooth";
+
+    // Add custom scroll behavior for better performance
+    const handleScroll = () => {
+      // This will be used for scroll-triggered animations
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <AlumniEditModalProvider>
-          <div>
+          <div
+            style={{
+              scrollBehavior: "smooth",
+              overflowX: "hidden", // Prevent horizontal scroll during animations
+            }}
+          >
             <TitleUpdater />
             <Navbar />
             <main>
               <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/ressources" element={<Ressources />} />
-                <Route path="/conseils" element={<Conseils />} />
-                <Route path="/alumni" element={<Alumni />} />
-                <Route path="/liens-utiles" element={<LiensUtiles />} />
-                <Route path="/connexion" element={<Connexion />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy" element={<Privacy />} />
+                <Route
+                  path="/"
+                  element={
+                    <AnimatedPage>
+                      <Home />
+                    </AnimatedPage>
+                  }
+                />
+                <Route
+                  path="/ressources"
+                  element={
+                    <AnimatedPage>
+                      <Ressources />
+                    </AnimatedPage>
+                  }
+                />
+                <Route
+                  path="/conseils"
+                  element={
+                    <AnimatedPage>
+                      <Conseils />
+                    </AnimatedPage>
+                  }
+                />
+                <Route
+                  path="/alumni"
+                  element={
+                    <AnimatedPage>
+                      <Alumni />
+                    </AnimatedPage>
+                  }
+                />
+                <Route
+                  path="/liens-utiles"
+                  element={
+                    <AnimatedPage>
+                      <LiensUtiles />
+                    </AnimatedPage>
+                  }
+                />
+                <Route
+                  path="/connexion"
+                  element={
+                    <AnimatedPage>
+                      <Connexion />
+                    </AnimatedPage>
+                  }
+                />
+                <Route
+                  path="/terms"
+                  element={
+                    <AnimatedPage>
+                      <Terms />
+                    </AnimatedPage>
+                  }
+                />
+                <Route
+                  path="/privacy"
+                  element={
+                    <AnimatedPage>
+                      <Privacy />
+                    </AnimatedPage>
+                  }
+                />
               </Routes>
             </main>
             <Footer />
