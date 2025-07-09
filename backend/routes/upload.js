@@ -49,9 +49,10 @@ router.post("/", isAuthenticated, upload.single("file"), async (req, res) => {
       ContentType: req.file.mimetype,
     });
     await s3.send(command);
-    // Construct the public URL using custom domain
+    // Construct the public URL using custom domain if set, otherwise fallback to R2 public domain
     const fileUrl = `${
-      process.env.R2_CUSTOM_DOMAIN || "https://files.sorbonexus.com"
+      process.env.R2_CUSTOM_DOMAIN ||
+      "https://pub-27cbf0014974897ee67bafdcddf782da.r2.dev"
     }/${key}`;
     res.json({
       filename: key,

@@ -158,10 +158,11 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
     }
 
     // --- File cleanup logic ---
-    // Handle R2 file deletion
+    // Handle R2 file deletion (both custom domain and direct R2 URLs)
     if (
       resource.resourceUrl &&
-      resource.resourceUrl.includes("r2.cloudflarestorage.com")
+      (resource.resourceUrl.includes("r2.cloudflarestorage.com") ||
+        resource.resourceUrl.includes("ressources.sorbonexus.com"))
     ) {
       try {
         // Extract the file key from the R2 URL
