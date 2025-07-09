@@ -427,14 +427,16 @@ export default function Ressources() {
             <Typography
               variant="h1"
               sx={{
-                fontWeight: 900,
-                background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                fontWeight: 600,
+                background:
+                  "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                mb: { xs: 2, md: 3 },
-                fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
-                lineHeight: { xs: 1.2, md: 1.1 },
+                mb: { xs: 3, md: 4 },
+                fontSize: { xs: "2.2rem", sm: "3.2rem", md: "4.2rem" },
+                lineHeight: 1.05,
+                letterSpacing: "-0.02em",
               }}
             >
               Ressources
@@ -442,13 +444,14 @@ export default function Ressources() {
             <Typography
               variant="h5"
               sx={{
-                color: "rgba(255, 255, 255, 0.7)",
-                fontWeight: 500,
+                color: "rgba(255, 255, 255, 0.9)",
+                fontWeight: 400,
                 maxWidth: 800,
                 mx: "auto",
-                mb: { xs: 3, md: 4 },
-                fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1.1rem" },
-                lineHeight: { xs: 1.4, md: 1.5 },
+                mb: { xs: 4, md: 5 },
+                fontSize: { xs: "0.9rem", sm: "1rem", md: "1.2rem" },
+                lineHeight: 1.6,
+                letterSpacing: "0.01em",
               }}
             >
               Découvrez notre collection de ressources éducatives pour enrichir
@@ -462,7 +465,7 @@ export default function Ressources() {
       <Box
         component="section"
         sx={{
-          py: { xs: 3, md: 6 },
+          py: { xs: 5, md: 8 },
           px: 2,
           background: "transparent",
           textAlign: "center",
@@ -479,13 +482,15 @@ export default function Ressources() {
               variant="h4"
               sx={{
                 textAlign: "center",
-                mb: { xs: 2, md: 4 },
-                fontWeight: 700,
+                mb: { xs: 3, md: 5 },
+                fontWeight: 300,
                 background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                fontSize: { xs: "1.5rem", sm: "2rem", md: "2.125rem" },
+                fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem" },
+                lineHeight: 1.2,
+                letterSpacing: "-0.02em",
               }}
             >
               Trouvez ce que vous cherchez
@@ -494,7 +499,7 @@ export default function Ressources() {
             {/* Search Bar */}
             <Box
               sx={{
-                mb: { xs: 2, md: 3 },
+                mb: { xs: 3, md: 4 },
                 display: "flex",
                 justifyContent: "center",
               }}
@@ -538,15 +543,17 @@ export default function Ressources() {
             </Box>
 
             {/* Categories */}
-            <Box sx={{ mb: { xs: 2, md: 3 } }} ref={categoriesRef}>
+            <Box sx={{ mb: { xs: 3, md: 4 } }} ref={categoriesRef}>
               <Typography
                 variant="h6"
                 sx={{
-                  mb: { xs: 1, md: 2 },
+                  mb: { xs: 2, md: 3 },
                   color: "rgba(255, 255, 255, 0.9)",
-                  fontWeight: 600,
-                  fontSize: { xs: "0.9rem", md: "1.25rem" },
+                  fontWeight: 400,
+                  fontSize: { xs: "1rem", md: "1.3rem" },
                   textAlign: "center",
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.4,
                 }}
               >
                 Catégories
@@ -587,11 +594,14 @@ export default function Ressources() {
                       border: "1px solid rgba(255,255,255,0.1)",
                       cursor: "pointer",
                       transition: "all 0.3s ease",
-                      fontSize: { xs: "0.7rem", md: "0.875rem" },
-                      height: { xs: "28px", md: "32px" },
+                      fontSize: { xs: "0.75rem", md: "0.9rem" },
+                      height: { xs: "32px", md: "36px" },
+                      fontWeight: 400,
+                      letterSpacing: "0.01em",
                       "&:hover": {
                         background: "rgba(139, 92, 246, 0.2)",
                         border: "1px solid rgba(139, 92, 246, 0.3)",
+                        transform: "translateY(-1px)",
                       },
                     }}
                   />
@@ -604,11 +614,13 @@ export default function Ressources() {
               <Typography
                 variant="h6"
                 sx={{
-                  mb: { xs: 1, md: 2 },
+                  mb: { xs: 2, md: 3 },
                   color: "rgba(255, 255, 255, 0.9)",
-                  fontWeight: 600,
-                  fontSize: { xs: "0.9rem", md: "1.25rem" },
+                  fontWeight: 400,
+                  fontSize: { xs: "1rem", md: "1.3rem" },
                   textAlign: "center",
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.4,
                 }}
               >
                 Types de ressources
@@ -646,11 +658,14 @@ export default function Ressources() {
                       border: "1px solid rgba(255,255,255,0.1)",
                       cursor: "pointer",
                       transition: "all 0.3s ease",
-                      fontSize: { xs: "0.7rem", md: "0.875rem" },
-                      height: { xs: "28px", md: "32px" },
+                      fontSize: { xs: "0.75rem", md: "0.9rem" },
+                      height: { xs: "32px", md: "36px" },
+                      fontWeight: 400,
+                      letterSpacing: "0.01em",
                       "&:hover": {
                         background: "rgba(139, 92, 246, 0.2)",
                         border: "1px solid rgba(139, 92, 246, 0.3)",
+                        transform: "translateY(-1px)",
                       },
                     }}
                   />
@@ -659,24 +674,33 @@ export default function Ressources() {
             </Box>
             {/* Add small 'ajouter une ressource' button below filters */}
             <Box
-              sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 2 }}
+              sx={{ display: "flex", justifyContent: "center", mt: 2, mb: 3 }}
             >
               <Button
                 variant="outlined"
                 size="small"
                 startIcon={<i className="fas fa-plus"></i>}
                 sx={{
-                  fontSize: { xs: "0.65rem", md: "0.75rem" },
-                  px: 1.5,
-                  py: 0.5,
-                  borderRadius: 2,
+                  fontSize: { xs: "0.75rem", md: "0.85rem" },
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 3,
                   color: "#3b82f6",
                   borderColor: "#3b82f6",
                   minWidth: "auto",
                   textTransform: "none",
+                  fontWeight: 400,
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.4,
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   "&:hover": {
-                    background: "rgba(59, 130, 246, 0.08)",
+                    background: "rgba(59, 130, 246, 0.06)",
                     borderColor: "#2563eb",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 4px 12px rgba(59, 130, 246, 0.15)",
+                  },
+                  "&:active": {
+                    transform: "translateY(-1px)",
                   },
                 }}
                 onClick={() => {
@@ -702,8 +726,8 @@ export default function Ressources() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
         style={{
-          paddingTop: window.innerWidth < 600 ? "60px" : "80px",
-          paddingBottom: window.innerWidth < 600 ? "60px" : "80px",
+          paddingTop: window.innerWidth < 600 ? "80px" : "100px",
+          paddingBottom: window.innerWidth < 600 ? "80px" : "100px",
         }}
       >
         <Container maxWidth="lg">
@@ -814,10 +838,12 @@ export default function Ressources() {
                         variant="h6"
                         className="resource-title"
                         sx={{
-                          fontWeight: 600,
-                          mb: { xs: 1, md: 2 },
+                          fontWeight: 500,
+                          mb: { xs: 1.5, md: 2.5 },
                           transition: "all 0.3s ease",
-                          fontSize: { xs: "0.9rem", md: "1.25rem" },
+                          fontSize: { xs: "1rem", md: "1.3rem" },
+                          lineHeight: 1.3,
+                          letterSpacing: "-0.01em",
                         }}
                       >
                         {resource.title}
@@ -839,7 +865,11 @@ export default function Ressources() {
                               sx={{
                                 background: "#3b82f6",
                                 color: "white",
-                                fontWeight: 500,
+                                fontWeight: 400,
+                                fontSize: { xs: "0.65rem", md: "0.75rem" },
+                                height: { xs: "20px", md: "24px" },
+                                borderRadius: 1.5,
+                                letterSpacing: "0.01em",
                               }}
                             />
                           ))}
@@ -848,9 +878,11 @@ export default function Ressources() {
                         variant="body2"
                         sx={{
                           color: "#3b82f6",
-                          fontWeight: 500,
-                          mb: { xs: 1, md: 2 },
-                          fontSize: { xs: "0.7rem", md: "0.875rem" },
+                          fontWeight: 400,
+                          mb: { xs: 1.5, md: 2.5 },
+                          fontSize: { xs: "0.75rem", md: "0.9rem" },
+                          letterSpacing: "0.02em",
+                          lineHeight: 1.4,
                         }}
                       >
                         {resource.subject}
@@ -872,10 +904,10 @@ export default function Ressources() {
                               <Typography
                                 variant="body2"
                                 sx={{
-                                  color: "#a1a1aa",
-                                  mb: { xs: 2, md: 3 },
-                                  lineHeight: 1.6,
-                                  fontSize: { xs: "0.75rem", md: "0.875rem" },
+                                  color: "rgba(255, 255, 255, 0.7)",
+                                  mb: { xs: 2.5, md: 3.5 },
+                                  lineHeight: 1.7,
+                                  fontSize: { xs: "0.8rem", md: "0.9rem" },
                                   whiteSpace: "pre-line",
                                   wordBreak: "break-word",
                                   overflow: expandedDescriptions.has(
@@ -884,6 +916,8 @@ export default function Ressources() {
                                     ? "visible"
                                     : "hidden",
                                   display: "block",
+                                  fontWeight: 400,
+                                  letterSpacing: "0.01em",
                                 }}
                                 {...props}
                               />
@@ -903,16 +937,19 @@ export default function Ressources() {
                             sx={{
                               color: "#3b82f6",
                               textTransform: "none",
-                              fontWeight: 600,
+                              fontWeight: 500,
                               p: 0,
                               minWidth: "auto",
-                              fontSize: { xs: "0.75rem", md: "0.875rem" },
+                              fontSize: { xs: "0.8rem", md: "0.9rem" },
                               mb: 1,
                               mt: expandedDescriptions.has(resource.id)
                                 ? 2
                                 : "auto",
+                              letterSpacing: "0.02em",
+                              transition: "all 0.2s ease",
                               "&:hover": {
-                                background: "rgba(59, 130, 246, 0.1)",
+                                background: "rgba(59, 130, 246, 0.08)",
+                                color: "#2563eb",
                               },
                             }}
                           >
@@ -935,11 +972,14 @@ export default function Ressources() {
                           label={resource.type}
                           size="small"
                           sx={{
-                            background: "rgba(59, 130, 246, 0.1)",
+                            background: "rgba(59, 130, 246, 0.08)",
                             color: "#3b82f6",
-                            border: "1px solid rgba(59, 130, 246, 0.2)",
-                            fontSize: { xs: "0.6rem", md: "0.75rem" },
-                            height: { xs: "20px", md: "24px" },
+                            border: "1px solid rgba(59, 130, 246, 0.15)",
+                            fontSize: { xs: "0.65rem", md: "0.75rem" },
+                            height: { xs: "22px", md: "26px" },
+                            fontWeight: 400,
+                            borderRadius: 1.5,
+                            letterSpacing: "0.01em",
                           }}
                         />
                         {resource.resourceUrl && (
@@ -1089,9 +1129,9 @@ export default function Ressources() {
               <Typography
                 variant="h2"
                 sx={{
-                  fontWeight: 800,
-                  mb: 4,
-                  fontSize: { xs: "2rem", md: "2.5rem", lg: "3rem" },
+                  fontWeight: 300,
+                  mb: 5,
+                  fontSize: { xs: "2.2rem", md: "2.8rem", lg: "3.5rem" },
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                   WebkitBackgroundClip: "text",
@@ -1099,6 +1139,8 @@ export default function Ressources() {
                   backgroundClip: "text",
                   position: "relative",
                   zIndex: 10,
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.02em",
                 }}
               >
                 Partagez vos ressources
@@ -1113,15 +1155,16 @@ export default function Ressources() {
               <Typography
                 variant="h6"
                 sx={{
-                  color: "rgba(255, 255, 255, 0.8)",
-                  mb: 10,
+                  color: "rgba(255, 255, 255, 0.9)",
+                  mb: 8,
                   fontWeight: 400,
-                  lineHeight: 1.6,
-                  maxWidth: 600,
+                  lineHeight: 1.7,
+                  maxWidth: 700,
                   mx: "auto",
                   position: "relative",
                   zIndex: 10,
-                  fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.25rem" },
+                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.3rem" },
+                  letterSpacing: "0.01em",
                 }}
               >
                 Vous avez des notes de cours, des résumés ou des exercices
@@ -1154,20 +1197,26 @@ export default function Ressources() {
                   endIcon={<ArrowRight size={20} />}
                   onClick={openAddModal}
                   sx={{
-                    fontWeight: 700,
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 3,
+                    fontWeight: 500,
+                    px: 5,
+                    py: 2,
+                    borderRadius: 4,
                     background:
                       "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                    boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                    fontSize: "1rem",
+                    boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
+                    fontSize: { xs: "0.9rem", md: "1.1rem" },
                     textTransform: "none",
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.4,
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     "&:hover": {
                       background:
                         "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                      boxShadow: "0 15px 40px rgba(59, 130, 246, 0.4)",
-                      transform: "translateY(-2px)",
+                      boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+                      transform: "translateY(-3px)",
+                    },
+                    "&:active": {
+                      transform: "translateY(-1px)",
                     },
                   }}
                 >
@@ -1191,20 +1240,26 @@ export default function Ressources() {
                   endIcon={<ArrowRight size={20} />}
                   onClick={() => navigate("/connexion")}
                   sx={{
-                    fontWeight: 700,
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 3,
+                    fontWeight: 500,
+                    px: 5,
+                    py: 2,
+                    borderRadius: 4,
                     background:
                       "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                    boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                    fontSize: "1rem",
+                    boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
+                    fontSize: { xs: "0.9rem", md: "1.1rem" },
                     textTransform: "none",
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.4,
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     "&:hover": {
                       background:
                         "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                      boxShadow: "0 15px 40px rgba(59, 130, 246, 0.4)",
-                      transform: "translateY(-2px)",
+                      boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+                      transform: "translateY(-3px)",
+                    },
+                    "&:active": {
+                      transform: "translateY(-1px)",
                     },
                   }}
                 >
@@ -1234,30 +1289,38 @@ export default function Ressources() {
         <DialogTitle
           sx={{
             color: "white",
-            fontWeight: 600,
+            fontWeight: 500,
+            fontSize: { xs: "1.4rem", md: "1.6rem" },
             borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            pb: 4,
+            pt: 4,
+            px: 4,
+            letterSpacing: "0.02em",
+            lineHeight: 1.3,
           }}
         >
           Ajouter une ressource
           <IconButton
             onClick={closeAddModal}
             sx={{
-              color: "rgba(255, 255, 255, 0.7)",
+              color: "rgba(255, 255, 255, 0.6)",
               ml: 1,
+              transition: "all 0.2s ease",
               "&:hover": {
                 color: "white",
-                background: "rgba(255, 255, 255, 0.1)",
+                background: "rgba(255, 255, 255, 0.08)",
+                transform: "scale(1.05)",
               },
             }}
           >
             <i className="fas fa-times"></i>
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ pt: 3 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <DialogContent sx={{ pt: 4, px: 4 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             <TextField
               label="Titre"
               value={addForm.title}
@@ -1266,15 +1329,33 @@ export default function Ressources() {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   color: "white",
-                  "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
-                  "&:hover fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                    borderWidth: "1px",
                   },
-                  "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                    borderWidth: "1.5px",
+                  },
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  "&.Mui-focused": { color: "#3b82f6" },
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
+                  fontWeight: 500,
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                    fontWeight: 500,
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  padding: "16px 14px",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                  letterSpacing: "0.02em",
                 },
               }}
             />
@@ -1286,15 +1367,28 @@ export default function Ressources() {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   color: "white",
-                  "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
-                  "&:hover fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
                   },
-                  "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  "&.Mui-focused": { color: "#3b82f6" },
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
                 },
               }}
             />
@@ -1310,26 +1404,53 @@ export default function Ressources() {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   color: "white",
-                  "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
-                  "&:hover fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
                   },
-                  "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  "&.Mui-focused": { color: "#3b82f6" },
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.5,
                 },
               }}
             />
-            <Typography variant="caption" sx={{ color: "#3b82f6", mt: 0.5 }}>
+            <Typography
+              variant="caption"
+              sx={{
+                color: "#3b82f6",
+                mt: 0.5,
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                letterSpacing: "0.02em",
+              }}
+            >
               Markdown supporté (titres, listes, gras, italique, liens, etc.)
             </Typography>
             <FormControl fullWidth>
               <InputLabel
                 sx={{
                   color: "rgba(255, 255, 255, 0.7)",
-                  "&.Mui-focused": { color: "#3b82f6" },
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                  },
                 }}
               >
                 Catégorie
@@ -1348,16 +1469,23 @@ export default function Ressources() {
                 sx={{
                   color: "white",
                   background: "rgba(30, 41, 59, 0.95)",
+                  borderRadius: 2.5,
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                     borderColor: "#3b82f6",
                   },
-                  "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
+                  "& .MuiSvgIcon-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                  },
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
                 }}
                 MenuProps={{
                   PaperProps: {
@@ -1366,6 +1494,8 @@ export default function Ressources() {
                       color: "white",
                       maxHeight: 200,
                       minWidth: 180,
+                      borderRadius: 2.5,
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
                     },
                   },
                 }}
@@ -1377,11 +1507,27 @@ export default function Ressources() {
                   <MenuItem
                     key={category}
                     value={category}
-                    sx={{ background: "none !important", color: "white" }}
+                    sx={{
+                      background: "none !important",
+                      color: "white",
+                      fontSize: "0.9rem",
+                      "&:hover": {
+                        background: "rgba(59, 130, 246, 0.1) !important",
+                        borderRadius: 1.5,
+                        mx: 0.5,
+                      },
+                    }}
                   >
                     <Checkbox
                       checked={addForm.category.indexOf(category) > -1}
-                      sx={{ color: "#3b82f6", p: 0.5, mr: 1 }}
+                      sx={{
+                        color: "#3b82f6",
+                        p: 0.5,
+                        mr: 1,
+                        "&.Mui-checked": {
+                          color: "#3b82f6",
+                        },
+                      }}
                     />
                     {category}
                   </MenuItem>
@@ -1391,18 +1537,38 @@ export default function Ressources() {
             {/* Icon Selection */}
             <Typography
               variant="body2"
-              sx={{ color: "rgba(255, 255, 255, 0.7)", fontWeight: 500, mb: 1 }}
+              sx={{
+                color: "rgba(255, 255, 255, 0.8)",
+                fontWeight: 500,
+                mb: 2,
+                fontSize: "0.95rem",
+                letterSpacing: "0.02em",
+              }}
             >
               Icône
             </Typography>
-            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+            <Box sx={{ display: "flex", gap: 1.5, mb: 3 }}>
               <Button
                 variant={
                   addIconMode === "predefined" ? "contained" : "outlined"
                 }
                 size="small"
                 onClick={() => setAddIconMode("predefined")}
-                sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+                sx={{
+                  fontSize: "0.85rem",
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    background:
+                      addIconMode === "predefined"
+                        ? "rgba(59, 130, 246, 0.8)"
+                        : "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
               >
                 Icônes prédéfinies
               </Button>
@@ -1410,7 +1576,21 @@ export default function Ressources() {
                 variant={addIconMode === "custom" ? "contained" : "outlined"}
                 size="small"
                 onClick={() => setAddIconMode("custom")}
-                sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+                sx={{
+                  fontSize: "0.85rem",
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    background:
+                      addIconMode === "custom"
+                        ? "rgba(59, 130, 246, 0.8)"
+                        : "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
               >
                 URL personnalisée
               </Button>
@@ -1418,7 +1598,21 @@ export default function Ressources() {
                 variant={addIconMode === "manual" ? "contained" : "outlined"}
                 size="small"
                 onClick={() => setAddIconMode("manual")}
-                sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+                sx={{
+                  fontSize: "0.85rem",
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    background:
+                      addIconMode === "manual"
+                        ? "rgba(59, 130, 246, 0.8)"
+                        : "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
               >
                 Classe FontAwesome
               </Button>
@@ -1432,22 +1626,42 @@ export default function Ressources() {
                   size="small"
                   fullWidth
                   sx={{
-                    mb: 1,
-                    input: { color: "white" },
-                    label: { color: "rgba(255,255,255,0.7)" },
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2.5,
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.85rem",
+                      fontWeight: 500,
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                      fontSize: "0.9rem",
+                      letterSpacing: "0.02em",
+                    },
                   }}
                 />
                 <Box
                   sx={{
                     display: "grid",
                     gridTemplateColumns: "repeat(6, 1fr)",
-                    gap: 1,
+                    gap: 1.5,
                     maxHeight: "200px",
                     overflowY: "auto",
-                    p: 1,
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    borderRadius: 1,
-                    background: "rgba(255,255,255,0.05)",
+                    p: 2,
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 2.5,
+                    background: "rgba(255,255,255,0.02)",
                   }}
                 >
                   {getFilteredIconsForAdd().map((iconOption) => (
@@ -1457,21 +1671,24 @@ export default function Ressources() {
                         updateAddFormField("icon", iconOption.value)
                       }
                       sx={{
-                        width: 40,
-                        height: 40,
+                        width: 44,
+                        height: 44,
                         border:
                           addForm.icon === iconOption.value
                             ? "2px solid #3b82f6"
-                            : "1px solid rgba(255,255,255,0.2)",
+                            : "1px solid rgba(255,255,255,0.1)",
                         background:
                           addForm.icon === iconOption.value
-                            ? "rgba(59,130,246,0.2)"
-                            : "rgba(255,255,255,0.05)",
+                            ? "rgba(59,130,246,0.15)"
+                            : "rgba(255,255,255,0.02)",
                         color: "white",
-                        fontSize: "1.2rem",
+                        fontSize: "1.3rem",
+                        borderRadius: 2.5,
+                        transition: "all 0.2s ease",
                         "&:hover": {
                           background: "rgba(59,130,246,0.1)",
                           border: "1px solid #3b82f6",
+                          transform: "scale(1.05)",
                         },
                       }}
                     >
@@ -1491,15 +1708,28 @@ export default function Ressources() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     color: "white",
-                    "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
-                    "&:hover fieldset": {
-                      borderColor: "rgba(255,255,255,0.3)",
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.1)",
                     },
-                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255,255,255,0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255,255,255,0.7)",
-                    "&.Mui-focused": { color: "#3b82f6" },
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                    "&.Mui-focused": {
+                      color: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
                   },
                 }}
               />
@@ -1514,15 +1744,28 @@ export default function Ressources() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     color: "white",
-                    "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
-                    "&:hover fieldset": {
-                      borderColor: "rgba(255,255,255,0.3)",
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255,255,255,0.1)",
                     },
-                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255,255,255,0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255,255,255,0.7)",
-                    "&.Mui-focused": { color: "#3b82f6" },
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                    "&.Mui-focused": {
+                      color: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
                   },
                 }}
               />
@@ -1531,7 +1774,11 @@ export default function Ressources() {
               <InputLabel
                 sx={{
                   color: "rgba(255, 255, 255, 0.7)",
-                  "&.Mui-focused": { color: "#3b82f6" },
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                  },
                 }}
               >
                 Type
@@ -1542,47 +1789,92 @@ export default function Ressources() {
                 sx={{
                   color: "white",
                   background: "rgba(30, 41, 59, 0.95)",
+                  borderRadius: 2.5,
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                     borderColor: "#3b82f6",
                   },
-                  "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
+                  "& .MuiSvgIcon-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                  },
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
                 }}
                 MenuProps={{
                   PaperProps: {
                     sx: {
                       background: "rgba(30, 41, 59, 0.98)",
                       color: "white",
+                      borderRadius: 2.5,
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
                     },
                   },
                 }}
               >
                 <MenuItem
                   value="PDF"
-                  sx={{ background: "none !important", color: "white" }}
+                  sx={{
+                    background: "none !important",
+                    color: "white",
+                    fontSize: "0.9rem",
+                    "&:hover": {
+                      background: "rgba(59, 130, 246, 0.1) !important",
+                      borderRadius: 1.5,
+                      mx: 0.5,
+                    },
+                  }}
                 >
                   PDF
                 </MenuItem>
                 <MenuItem
                   value="Image"
-                  sx={{ background: "none !important", color: "white" }}
+                  sx={{
+                    background: "none !important",
+                    color: "white",
+                    fontSize: "0.9rem",
+                    "&:hover": {
+                      background: "rgba(59, 130, 246, 0.1) !important",
+                      borderRadius: 1.5,
+                      mx: 0.5,
+                    },
+                  }}
                 >
                   Image
                 </MenuItem>
                 <MenuItem
                   value="Lien"
-                  sx={{ background: "none !important", color: "white" }}
+                  sx={{
+                    background: "none !important",
+                    color: "white",
+                    fontSize: "0.9rem",
+                    "&:hover": {
+                      background: "rgba(59, 130, 246, 0.1) !important",
+                      borderRadius: 1.5,
+                      mx: 0.5,
+                    },
+                  }}
                 >
                   Lien
                 </MenuItem>
                 <MenuItem
                   value="Text"
-                  sx={{ background: "none !important", color: "white" }}
+                  sx={{
+                    background: "none !important",
+                    color: "white",
+                    fontSize: "0.9rem",
+                    "&:hover": {
+                      background: "rgba(59, 130, 246, 0.1) !important",
+                      borderRadius: 1.5,
+                      mx: 0.5,
+                    },
+                  }}
                 >
                   Text
                 </MenuItem>
@@ -1592,7 +1884,11 @@ export default function Ressources() {
               <InputLabel
                 sx={{
                   color: "rgba(255, 255, 255, 0.7)",
-                  "&.Mui-focused": { color: "#3b82f6" },
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  "&.Mui-focused": {
+                    color: "#3b82f6",
+                  },
                 }}
               >
                 Filtre
@@ -1611,16 +1907,23 @@ export default function Ressources() {
                 sx={{
                   color: "white",
                   background: "rgba(30, 41, 59, 0.95)",
+                  borderRadius: 2.5,
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                     borderColor: "#3b82f6",
                   },
-                  "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
+                  "& .MuiSvgIcon-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                  },
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
                 }}
                 MenuProps={{
                   PaperProps: {
@@ -1629,6 +1932,8 @@ export default function Ressources() {
                       color: "white",
                       maxHeight: 200,
                       minWidth: 180,
+                      borderRadius: 2.5,
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
                     },
                   },
                 }}
@@ -1652,11 +1957,27 @@ export default function Ressources() {
                   <MenuItem
                     key={filter}
                     value={filter}
-                    sx={{ background: "none !important", color: "white" }}
+                    sx={{
+                      background: "none !important",
+                      color: "white",
+                      fontSize: "0.9rem",
+                      "&:hover": {
+                        background: "rgba(59, 130, 246, 0.1) !important",
+                        borderRadius: 1.5,
+                        mx: 0.5,
+                      },
+                    }}
                   >
                     <Checkbox
                       checked={addForm.filter.indexOf(filter) > -1}
-                      sx={{ color: "#3b82f6", p: 0.5, mr: 1 }}
+                      sx={{
+                        color: "#3b82f6",
+                        p: 0.5,
+                        mr: 1,
+                        "&.Mui-checked": {
+                          color: "#3b82f6",
+                        },
+                      }}
                     />
                     {filter}
                   </MenuItem>
@@ -1670,9 +1991,26 @@ export default function Ressources() {
                   component="label"
                   disabled={uploading}
                   sx={{
-                    color: uploading ? "#aaa" : "#3b82f6",
-                    borderColor: uploading ? "#aaa" : "#3b82f6",
-                    mb: 1,
+                    color: uploading ? "rgba(255, 255, 255, 0.4)" : "#3b82f6",
+                    borderColor: uploading
+                      ? "rgba(255, 255, 255, 0.2)"
+                      : "#3b82f6",
+                    mb: 2,
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                    px: 3,
+                    py: 1.5,
+                    borderRadius: 2.5,
+                    letterSpacing: "0.02em",
+                    textTransform: "none",
+                    "&:hover": {
+                      background: uploading
+                        ? "transparent"
+                        : "rgba(59, 130, 246, 0.1)",
+                      borderColor: uploading
+                        ? "rgba(255, 255, 255, 0.2)"
+                        : "#2563eb",
+                    },
                   }}
                 >
                   {uploading ? "Uploading..." : "Upload your file"}
@@ -1718,14 +2056,30 @@ export default function Ressources() {
                   />
                 </Button>
                 {addForm.resourceUrl && (
-                  <Typography variant="caption" sx={{ color: "#10b981" }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "#10b981",
+                      fontSize: "0.8rem",
+                      fontWeight: 500,
+                      letterSpacing: "0.02em",
+                    }}
+                  >
                     Fichier prêt à être ajouté :{" "}
                     {uploadedOriginalName ||
                       addForm.resourceUrl.split("/").pop()}
                   </Typography>
                 )}
                 {uploadError && (
-                  <Typography variant="caption" sx={{ color: "red" }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "#ef4444",
+                      fontSize: "0.8rem",
+                      fontWeight: 500,
+                      letterSpacing: "0.02em",
+                    }}
+                  >
                     {uploadError}
                   </Typography>
                 )}
@@ -1741,31 +2095,63 @@ export default function Ressources() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     color: "white",
-                    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
-                    "&:hover fieldset": {
-                      borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
                     },
-                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    "&.Mui-focused": { color: "#3b82f6" },
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                    "&.Mui-focused": {
+                      color: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
                   },
                 }}
               />
             )}
-            {addError && <Typography color="error">{addError}</Typography>}
+            {addError && (
+              <Typography
+                sx={{
+                  color: "#ef4444",
+                  fontSize: "0.85rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  mt: 1,
+                }}
+              >
+                {addError}
+              </Typography>
+            )}
           </Box>
         </DialogContent>
-        <DialogActions sx={{ p: 3, gap: 1 }}>
+        <DialogActions sx={{ p: 4, gap: 2 }}>
           <Button
             onClick={closeAddModal}
             variant="outlined"
             sx={{
-              borderColor: "rgba(255, 255, 255, 0.3)",
-              color: "rgba(255, 255, 255, 0.7)",
+              borderColor: "rgba(255, 255, 255, 0.2)",
+              color: "rgba(255, 255, 255, 0.8)",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2.5,
+              letterSpacing: "0.02em",
+              textTransform: "none",
               "&:hover": {
-                borderColor: "rgba(255, 255, 255, 0.5)",
+                borderColor: "rgba(255, 255, 255, 0.3)",
                 backgroundColor: "rgba(255, 255, 255, 0.05)",
               },
             }}
@@ -1778,8 +2164,16 @@ export default function Ressources() {
             sx={{
               background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
               color: "white",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2.5,
+              letterSpacing: "0.02em",
+              textTransform: "none",
               "&:hover": {
                 background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                transform: "translateY(-1px)",
               },
             }}
             disabled={addLoading}
@@ -1940,6 +2334,8 @@ export default function Ressources() {
                         color: "white",
                         maxHeight: 200,
                         minWidth: 180,
+                        borderRadius: 2.5,
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
                       },
                     },
                   }}
@@ -1951,11 +2347,27 @@ export default function Ressources() {
                     <MenuItem
                       key={category}
                       value={category}
-                      sx={{ background: "none !important", color: "white" }}
+                      sx={{
+                        background: "none !important",
+                        color: "white",
+                        fontSize: "0.9rem",
+                        "&:hover": {
+                          background: "rgba(59, 130, 246, 0.1) !important",
+                          borderRadius: 1.5,
+                          mx: 0.5,
+                        },
+                      }}
                     >
                       <Checkbox
                         checked={editForm.category.indexOf(category) > -1}
-                        sx={{ color: "#3b82f6", p: 0.5, mr: 1 }}
+                        sx={{
+                          color: "#3b82f6",
+                          p: 0.5,
+                          mr: 1,
+                          "&.Mui-checked": {
+                            color: "#3b82f6",
+                          },
+                        }}
                       />
                       {category}
                     </MenuItem>
@@ -2136,31 +2548,69 @@ export default function Ressources() {
                       sx: {
                         background: "rgba(30, 41, 59, 0.98)",
                         color: "white",
+                        borderRadius: 2.5,
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
                       },
                     },
                   }}
                 >
                   <MenuItem
                     value="PDF"
-                    sx={{ background: "none !important", color: "white" }}
+                    sx={{
+                      background: "none !important",
+                      color: "white",
+                      fontSize: "0.9rem",
+                      "&:hover": {
+                        background: "rgba(59, 130, 246, 0.1) !important",
+                        borderRadius: 1.5,
+                        mx: 0.5,
+                      },
+                    }}
                   >
                     PDF
                   </MenuItem>
                   <MenuItem
                     value="Image"
-                    sx={{ background: "none !important", color: "white" }}
+                    sx={{
+                      background: "none !important",
+                      color: "white",
+                      fontSize: "0.9rem",
+                      "&:hover": {
+                        background: "rgba(59, 130, 246, 0.1) !important",
+                        borderRadius: 1.5,
+                        mx: 0.5,
+                      },
+                    }}
                   >
                     Image
                   </MenuItem>
                   <MenuItem
                     value="Lien"
-                    sx={{ background: "none !important", color: "white" }}
+                    sx={{
+                      background: "none !important",
+                      color: "white",
+                      fontSize: "0.9rem",
+                      "&:hover": {
+                        background: "rgba(59, 130, 246, 0.1) !important",
+                        borderRadius: 1.5,
+                        mx: 0.5,
+                      },
+                    }}
                   >
                     Lien
                   </MenuItem>
                   <MenuItem
                     value="Text"
-                    sx={{ background: "none !important", color: "white" }}
+                    sx={{
+                      background: "none !important",
+                      color: "white",
+                      fontSize: "0.9rem",
+                      "&:hover": {
+                        background: "rgba(59, 130, 246, 0.1) !important",
+                        borderRadius: 1.5,
+                        mx: 0.5,
+                      },
+                    }}
                   >
                     Text
                   </MenuItem>
@@ -2207,6 +2657,8 @@ export default function Ressources() {
                         color: "white",
                         maxHeight: 200,
                         minWidth: 180,
+                        borderRadius: 2.5,
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
                       },
                     },
                   }}
@@ -2230,11 +2682,27 @@ export default function Ressources() {
                     <MenuItem
                       key={filter}
                       value={filter}
-                      sx={{ background: "none !important", color: "white" }}
+                      sx={{
+                        background: "none !important",
+                        color: "white",
+                        fontSize: "0.9rem",
+                        "&:hover": {
+                          background: "rgba(59, 130, 246, 0.1) !important",
+                          borderRadius: 1.5,
+                          mx: 0.5,
+                        },
+                      }}
                     >
                       <Checkbox
                         checked={editForm.filter.indexOf(filter) > -1}
-                        sx={{ color: "#3b82f6", p: 0.5, mr: 1 }}
+                        sx={{
+                          color: "#3b82f6",
+                          p: 0.5,
+                          mr: 1,
+                          "&.Mui-checked": {
+                            color: "#3b82f6",
+                          },
+                        }}
                       />
                       {filter}
                     </MenuItem>

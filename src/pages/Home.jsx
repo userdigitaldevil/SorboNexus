@@ -1153,7 +1153,7 @@ export default function Home() {
       <Box
         component="section"
         ref={sorboNexusRef}
-        sx={{ py: { xs: 4, md: 8 }, px: 2 }}
+        sx={{ py: { xs: 6, md: 10 }, px: 2 }}
       >
         <Container maxWidth="md">
           <motion.div
@@ -1195,14 +1195,16 @@ export default function Home() {
                 variant="h3"
                 sx={{
                   textAlign: "center",
-                  mb: { xs: 2, md: 3 },
-                  fontWeight: 700,
+                  mb: { xs: 3, md: 4 },
+                  fontWeight: 300,
                   background:
                     "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
-                  fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+                  fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.8rem" },
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.02em",
                   position: "relative",
                   zIndex: 1,
                 }}
@@ -1213,10 +1215,12 @@ export default function Home() {
                 variant="body1"
                 component="div"
                 sx={{
-                  color: "rgba(255,255,255,0.88)",
-                  mb: 2,
-                  fontSize: { xs: "0.8rem", md: "0.95rem" },
-                  lineHeight: 1.6,
+                  color: "rgba(255,255,255,0.9)",
+                  mb: 3,
+                  fontSize: { xs: "0.9rem", md: "1.1rem" },
+                  lineHeight: 1.7,
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
                   position: "relative",
                   zIndex: 1,
                 }}
@@ -1269,11 +1273,12 @@ export default function Home() {
                     variant="body2"
                     sx={{
                       fontStyle: "italic",
-                      fontWeight: 700,
-                      color: "rgba(255,255,255,0.92)",
-                      mb: 2,
-                      fontSize: { xs: "0.85rem", md: "0.95rem" },
+                      fontWeight: 500,
+                      color: "rgba(255,255,255,0.95)",
+                      mb: 3,
+                      fontSize: { xs: "0.9rem", md: "1rem" },
                       lineHeight: 1.6,
+                      letterSpacing: "0.01em",
                     }}
                   >
                     Dans la section Conseil, tu peux partager tout ce qui
@@ -1391,18 +1396,21 @@ export default function Home() {
                   générations futures.
                 </span>
                 <br />
-                <span
-                  style={{
+                <Typography
+                  variant="h4"
+                  sx={{
                     color: "#3b82f6",
-                    fontWeight: 700,
-                    display: "block",
+                    fontWeight: 400,
                     textAlign: "center",
-                    marginTop: 8,
-                    fontSize: "1.25rem",
+                    mt: 4,
+                    mb: 2,
+                    fontSize: { xs: "1.1rem", md: "1.4rem" },
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.3,
                   }}
                 >
                   Explorez, partagez, et faites grandir la communauté !
-                </span>
+                </Typography>
               </Typography>
               <Box
                 sx={{
@@ -1453,7 +1461,7 @@ export default function Home() {
       <Box
         component="section"
         ref={annoncesRef}
-        sx={{ py: { xs: 4, md: 8 }, px: 2 }}
+        sx={{ py: { xs: 6, md: 10 }, px: 2 }}
       >
         <Container maxWidth="md">
           <motion.div
@@ -1466,13 +1474,15 @@ export default function Home() {
             <Typography
               variant="h3"
               sx={{
-                fontWeight: 700,
+                fontWeight: 300,
                 background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                mb: { xs: 3, md: 5 },
-                fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+                mb: { xs: 4, md: 6 },
+                fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.8rem" },
+                lineHeight: 1.2,
+                letterSpacing: "-0.02em",
               }}
             >
               Annonces
@@ -1705,7 +1715,7 @@ export default function Home() {
         id="features"
         component="section"
         sx={{
-          py: { xs: 4, md: 8 },
+          py: { xs: 6, md: 10 },
           px: 2,
         }}
       >
@@ -1720,13 +1730,15 @@ export default function Home() {
               variant="h3"
               sx={{
                 textAlign: "center",
-                mb: { xs: 3, md: 6 },
-                fontWeight: 700,
+                mb: { xs: 4, md: 8 },
+                fontWeight: 300,
                 background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                fontSize: { xs: "1.5rem", sm: "2rem", md: "3rem" },
+                fontSize: { xs: "1.8rem", sm: "2.2rem", md: "3.2rem" },
+                lineHeight: 1.2,
+                letterSpacing: "-0.02em",
               }}
             >
               Notre plateforme vous offre
@@ -1765,7 +1777,7 @@ export default function Home() {
       <Box
         component="section"
         sx={{
-          py: { xs: 4, md: 8 },
+          py: { xs: 6, md: 10 },
           px: 2,
         }}
       >
@@ -1791,13 +1803,15 @@ export default function Home() {
               variant="h3"
               sx={{
                 textAlign: "center",
-                mb: { xs: 2, md: 3 },
-                fontWeight: 700,
+                mb: { xs: 3, md: 4 },
+                fontWeight: 300,
                 background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                fontSize: { xs: "1.5rem", sm: "2rem", md: "3rem" },
+                fontSize: { xs: "1.8rem", sm: "2.2rem", md: "3.2rem" },
+                lineHeight: 1.2,
+                letterSpacing: "-0.02em",
               }}
             >
               Notre Impact
@@ -1806,9 +1820,12 @@ export default function Home() {
               variant="body2"
               component="div"
               sx={{
-                color: "rgba(255, 255, 255, 0.7)",
-                mb: { xs: 2, md: 4 },
-                fontSize: { xs: "0.8rem", md: "0.95rem" },
+                color: "rgba(255, 255, 255, 0.8)",
+                mb: { xs: 3, md: 5 },
+                fontSize: { xs: "0.9rem", md: "1.1rem" },
+                fontWeight: 400,
+                letterSpacing: "0.01em",
+                lineHeight: 1.5,
               }}
             >
               Découvrez l'ampleur de notre communauté
@@ -1827,14 +1844,15 @@ export default function Home() {
                 <Typography
                   variant="h3"
                   sx={{
-                    fontWeight: 900,
+                    fontWeight: 300,
                     background:
                       "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
-                    fontSize: { xs: "1.8rem", md: "2.5rem" },
-                    mb: 0.5,
+                    fontSize: { xs: "2rem", md: "3rem" },
+                    mb: 1,
+                    letterSpacing: "-0.02em",
                   }}
                 >
                   {formatCount(alumniCount)}
@@ -1843,9 +1861,11 @@ export default function Home() {
                   variant="body1"
                   component="div"
                   sx={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    fontWeight: 500,
-                    fontSize: { xs: "0.75rem", md: "0.9rem" },
+                    color: "rgba(255, 255, 255, 0.9)",
+                    fontWeight: 400,
+                    fontSize: { xs: "0.8rem", md: "1rem" },
+                    letterSpacing: "0.01em",
+                    lineHeight: 1.4,
                   }}
                 >
                   Étudiants actifs
@@ -1876,14 +1896,15 @@ export default function Home() {
                 <Typography
                   variant="h3"
                   sx={{
-                    fontWeight: 900,
+                    fontWeight: 300,
                     background:
                       "linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
-                    fontSize: { xs: "1.8rem", md: "2.5rem" },
-                    mb: 0.5,
+                    fontSize: { xs: "2rem", md: "3rem" },
+                    mb: 1,
+                    letterSpacing: "-0.02em",
                   }}
                 >
                   {formatCount(alumniWithLicenseBeforeCurrentYear)}
@@ -1892,9 +1913,11 @@ export default function Home() {
                   variant="body1"
                   component="div"
                   sx={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    fontWeight: 500,
-                    fontSize: { xs: "0.75rem", md: "0.9rem" },
+                    color: "rgba(255, 255, 255, 0.9)",
+                    fontWeight: 400,
+                    fontSize: { xs: "0.8rem", md: "1rem" },
+                    letterSpacing: "0.01em",
+                    lineHeight: 1.4,
                   }}
                 >
                   Alumni qui ont eu leur licence avant {currentYear}
@@ -1909,7 +1932,7 @@ export default function Home() {
       <Box
         component="section"
         sx={{
-          py: { xs: 4, md: 8 },
+          py: { xs: 6, md: 10 },
           px: 2,
         }}
       >
@@ -1924,13 +1947,15 @@ export default function Home() {
             <Typography
               variant="h3"
               sx={{
-                fontWeight: 700,
+                fontWeight: 300,
                 background: "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                mb: { xs: 2, md: 3 },
-                fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+                mb: { xs: 3, md: 4 },
+                fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.8rem" },
+                lineHeight: 1.2,
+                letterSpacing: "-0.02em",
               }}
             >
               Contribuez au Projet
@@ -1939,11 +1964,13 @@ export default function Home() {
               variant="h6"
               sx={{
                 color: "rgba(255, 255, 255, 0.9)",
-                mb: { xs: 3, md: 4 },
-                fontWeight: 500,
+                mb: { xs: 4, md: 5 },
+                fontWeight: 400,
                 maxWidth: 800,
                 mx: "auto",
-                fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
+                fontSize: { xs: "1rem", sm: "1.1rem", md: "1.3rem" },
+                lineHeight: 1.5,
+                letterSpacing: "0.01em",
               }}
             >
               Ce projet est ouvert à tous vos feedbacks, pull requests et
@@ -1977,10 +2004,12 @@ export default function Home() {
                   variant="body1"
                   component="div"
                   sx={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    mb: { xs: 2, md: 3 },
+                    color: "rgba(255, 255, 255, 0.9)",
+                    mb: { xs: 3, md: 4 },
                     lineHeight: 1.7,
-                    fontSize: { xs: "0.8rem", md: "1rem" },
+                    fontSize: { xs: "0.9rem", md: "1.1rem" },
+                    fontWeight: 400,
+                    letterSpacing: "0.01em",
                   }}
                 >
                   SorboNexus est un projet open source développé pour la
@@ -2073,11 +2102,14 @@ export default function Home() {
               variant="body2"
               component="div"
               sx={{
-                color: "rgba(255, 255, 255, 0.6)",
+                color: "rgba(255, 255, 255, 0.7)",
                 fontStyle: "italic",
                 maxWidth: 500,
                 mx: "auto",
-                fontSize: { xs: "0.7rem", md: "0.875rem" },
+                fontSize: { xs: "0.8rem", md: "0.9rem" },
+                fontWeight: 400,
+                letterSpacing: "0.01em",
+                lineHeight: 1.5,
               }}
             >
               © 2025 Seth Aguila - Développé avec &lt;3 pour la communauté

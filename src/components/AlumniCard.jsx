@@ -116,15 +116,15 @@ const AlumniCard = ({
         sx={{
           transform: "scale(1)",
           transformOrigin: "top center",
-          background: "rgba(255, 255, 255, 0.05)",
-          backdropFilter: "blur(10px)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-          borderRadius: 3,
+          background: "rgba(255, 255, 255, 0.03)",
+          backdropFilter: "blur(20px)",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          borderRadius: 4,
           overflow: "hidden",
           position: "relative",
           cursor: "pointer",
-          transition: "all 0.3s ease",
-          minHeight: { xs: 260, sm: 260, md: 320 },
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          minHeight: { xs: 280, sm: 280, md: 340 },
           height: "100%",
           minWidth: { xs: 260, sm: 260, md: 320 },
           maxWidth: { xs: 260, sm: 260, md: 320 },
@@ -133,13 +133,15 @@ const AlumniCard = ({
           display: "flex",
           flexDirection: "column",
           opacity: alum.hidden ? 0.5 : 1,
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
           ...(alum.isAdmin
             ? adminGlow
             : {
-                boxShadow: undefined,
                 "&:hover": {
-                  transform: "translateY(-6px)",
-                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
+                  transform: "translateY(-8px)",
+                  boxShadow: "0 16px 40px rgba(0, 0, 0, 0.15)",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid rgba(255, 255, 255, 0.12)",
                 },
               }),
           "&::before": {
@@ -173,18 +175,19 @@ const AlumniCard = ({
               top: 12,
               right: 12,
               zIndex: 20,
-              background: "rgba(59, 130, 246, 0.9)",
+              background: "rgba(59, 130, 246, 0.85)",
               color: "white",
-              width: 40,
-              height: 40,
-              border: "2px solid rgba(255, 255, 255, 0.3)",
-              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
+              width: 36,
+              height: 36,
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              borderRadius: 2,
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {
-                background: "rgba(59, 130, 246, 1)",
-                transform: "scale(1.15)",
-                boxShadow: "0 6px 16px rgba(59, 130, 246, 0.6)",
+                background: "rgba(59, 130, 246, 0.95)",
+                transform: "scale(1.1)",
+                boxShadow: "0 6px 20px rgba(59, 130, 246, 0.4)",
               },
-              transition: "all 0.3s ease",
             }}
           >
             <EditIcon sx={{ fontSize: "1.2rem" }} />
@@ -199,8 +202,8 @@ const AlumniCard = ({
         />
         <CardContent
           sx={{
-            p: { xs: 1.5, sm: 2, md: 2.5 },
-            pt: { xs: 4, sm: 5, md: 6 },
+            p: { xs: 1.8, sm: 2.2, md: 2.8 },
+            pt: { xs: 4.5, sm: 5.5, md: 6.5 },
             flexGrow: 1,
             display: "flex",
             flexDirection: "column",
@@ -216,12 +219,13 @@ const AlumniCard = ({
           >
             <Avatar
               sx={{
-                width: { xs: 40, sm: 48, md: 56 },
-                height: { xs: 40, sm: 48, md: 56 },
+                width: { xs: 44, sm: 52, md: 60 },
+                height: { xs: 44, sm: 52, md: 60 },
                 background: domainBg,
-                border: "4px solid rgba(255, 255, 255, 0.1)",
-                fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },
-                fontWeight: 700,
+                border: "3px solid rgba(255, 255, 255, 0.15)",
+                fontSize: { xs: "1.1rem", sm: "1.3rem", md: "1.6rem" },
+                fontWeight: 500,
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
               }}
             >
               {alum.avatar}
@@ -230,10 +234,12 @@ const AlumniCard = ({
           <Typography
             variant="h6"
             sx={{
-              fontWeight: 700,
-              mb: 1,
+              fontWeight: 500,
+              mb: 1.8,
               color: "white",
-              fontSize: { xs: "0.8rem", sm: "1.25rem" },
+              fontSize: { xs: "0.85rem", sm: "1.3rem" },
+              lineHeight: 1.3,
+              letterSpacing: "-0.01em",
             }}
           >
             {alum.name}
@@ -242,9 +248,11 @@ const AlumniCard = ({
             variant="body2"
             sx={{
               color: "#3b82f6",
-              fontWeight: 500,
-              mb: { xs: 0.5, sm: 1 },
-              fontSize: { xs: "0.65rem", sm: "0.875rem" },
+              fontWeight: 400,
+              mb: { xs: 1, sm: 1.4 },
+              fontSize: { xs: "0.7rem", sm: "0.9rem" },
+              letterSpacing: "0.02em",
+              lineHeight: 1.4,
             }}
           >
             {alum.degree}
@@ -252,9 +260,12 @@ const AlumniCard = ({
           <Typography
             variant="body2"
             sx={{
-              color: "#a1a1aa",
-              mb: { xs: 1, sm: 2 },
-              fontSize: { xs: "0.65rem", sm: "0.875rem" },
+              color: "rgba(255, 255, 255, 0.7)",
+              mb: { xs: 1.4, sm: 2.4 },
+              fontSize: { xs: "0.7rem", sm: "0.9rem" },
+              fontWeight: 400,
+              letterSpacing: "0.01em",
+              lineHeight: 1.4,
             }}
           >
             {alum.position}
@@ -264,13 +275,15 @@ const AlumniCard = ({
             <Typography
               variant="body2"
               sx={{
-                color: "rgba(255,255,255,0.85)",
+                color: "rgba(255,255,255,0.8)",
                 fontWeight: 400,
-                mb: { xs: 0.5, sm: 1 },
-                fontSize: { xs: "0.65rem", sm: "0.875rem" },
+                mb: { xs: 1, sm: 1.4 },
+                fontSize: { xs: "0.7rem", sm: "0.9rem" },
+                letterSpacing: "0.01em",
+                lineHeight: 1.4,
               }}
             >
-              <span style={{ fontWeight: 700 }}>Annee de fin de L3:</span>{" "}
+              <span style={{ fontWeight: 500 }}>Annee de fin de L3:</span>{" "}
               {alum.anneeFinL3}
             </Typography>
           )}
@@ -278,7 +291,7 @@ const AlumniCard = ({
           {alum.futureGoals && (
             <Box
               sx={{
-                mt: 1,
+                mt: 1.2,
                 color: "rgba(255,255,255,0.85)",
                 fontSize: "0.85rem",
                 lineHeight: 1.4,
@@ -293,10 +306,11 @@ const AlumniCard = ({
               <Typography
                 variant="body2"
                 sx={{
-                  color: "rgba(255,255,255,0.85)",
-                  fontSize: { xs: "0.65rem", sm: "0.8rem" },
+                  color: "rgba(255,255,255,0.8)",
+                  fontSize: { xs: "0.7rem", sm: "0.85rem" },
                   fontWeight: 500,
-                  mb: 0.5,
+                  mb: 1,
+                  letterSpacing: "0.01em",
                 }}
               >
                 Objectifs:
@@ -305,8 +319,9 @@ const AlumniCard = ({
                 variant="body2"
                 sx={{
                   color: "rgba(255,255,255,0.7)",
-                  fontSize: { xs: "0.6rem", sm: "0.75rem" },
-                  lineHeight: 1.3,
+                  fontSize: { xs: "0.65rem", sm: "0.8rem" },
+                  lineHeight: 1.4,
+                  letterSpacing: "0.01em",
                 }}
               >
                 {alum.futureGoals}
@@ -318,6 +333,7 @@ const AlumniCard = ({
               display: "flex",
               gap: { xs: 1, sm: 1.5 },
               mt: "auto",
+              pt: { xs: 1.2, sm: 1.5 },
             }}
           >
             {alum.linkedin && (
@@ -329,16 +345,19 @@ const AlumniCard = ({
                 }}
                 sx={{
                   color: "#0077b5",
-                  background: "rgba(0, 119, 181, 0.1)",
+                  background: "rgba(0, 119, 181, 0.08)",
+                  borderRadius: 2,
+                  transition: "all 0.2s ease",
                   "&:hover": {
-                    background: "rgba(0, 119, 181, 0.2)",
+                    background: "rgba(0, 119, 181, 0.15)",
+                    transform: "scale(1.05)",
                   },
-                  width: { xs: 28, sm: 32 },
-                  height: { xs: 28, sm: 32 },
+                  width: { xs: 30, sm: 34 },
+                  height: { xs: 30, sm: 34 },
                 }}
               >
                 <LinkedInIcon
-                  sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }}
+                  sx={{ fontSize: { xs: "1.1rem", sm: "1.3rem" } }}
                 />
               </IconButton>
             )}
@@ -351,15 +370,18 @@ const AlumniCard = ({
                 }}
                 sx={{
                   color: "#ea4335",
-                  background: "rgba(234, 67, 53, 0.1)",
+                  background: "rgba(234, 67, 53, 0.08)",
+                  borderRadius: 2,
+                  transition: "all 0.2s ease",
                   "&:hover": {
-                    background: "rgba(234, 67, 53, 0.2)",
+                    background: "rgba(234, 67, 53, 0.15)",
+                    transform: "scale(1.05)",
                   },
-                  width: { xs: 28, sm: 32 },
-                  height: { xs: 28, sm: 32 },
+                  width: { xs: 30, sm: 34 },
+                  height: { xs: 30, sm: 34 },
                 }}
               >
-                <EmailIcon sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }} />
+                <EmailIcon sx={{ fontSize: { xs: "1.1rem", sm: "1.3rem" } }} />
               </IconButton>
             )}
           </Box>

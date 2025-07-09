@@ -534,26 +534,31 @@ export default function Alumni() {
               <Typography
                 variant="h1"
                 sx={{
-                  fontWeight: 900,
-                  mb: { xs: 2, md: 4 },
+                  fontWeight: 300,
+                  mb: { xs: 3, md: 5 },
                   fontSize: {
-                    xs: "1.8rem",
-                    sm: "2.2rem",
-                    md: "3.5rem",
-                    lg: "4rem",
+                    xs: "2rem",
+                    sm: "2.5rem",
+                    md: "3.8rem",
+                    lg: "4.2rem",
                   },
-                  lineHeight: { xs: 1.2, md: 1.1 },
+                  lineHeight: 1.05,
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                   position: "relative",
-                  mt: { xs: 1, md: 6 },
+                  mt: { xs: 2, md: 8 },
+                  letterSpacing: "-0.02em",
                 }}
               >
-                <span style={{ display: "block" }}>Réseau des</span>
-                <span style={{ display: "block" }}>Alumni</span>
+                <span style={{ display: "block", fontWeight: 300 }}>
+                  Réseau des
+                </span>
+                <span style={{ display: "block", fontWeight: 600 }}>
+                  Alumni
+                </span>
               </Typography>
             </motion.div>
 
@@ -566,12 +571,13 @@ export default function Alumni() {
                 variant="h5"
                 sx={{
                   color: "rgba(255, 255, 255, 0.8)",
-                  mb: { xs: 3, md: 8 },
+                  mb: { xs: 4, md: 8 },
                   fontWeight: 400,
-                  lineHeight: { xs: 1.4, md: 1.6 },
-                  maxWidth: 600,
+                  lineHeight: 1.3,
+                  maxWidth: 700,
                   mx: "auto",
-                  fontSize: { xs: "0.9rem", sm: "1.1rem", md: "1.25rem" },
+                  fontSize: { xs: "1rem", sm: "1.15rem", md: "1.3rem" },
+                  letterSpacing: "0.01em",
                 }}
               >
                 Découvrez les parcours inspirants de nos anciens étudiants.
@@ -602,28 +608,39 @@ export default function Alumni() {
                     </InputAdornment>
                   ),
                   sx: {
-                    background: "rgba(255, 255, 255, 0.08)",
+                    background: "rgba(255, 255, 255, 0.05)",
                     backdropFilter: "blur(20px)",
                     border: "1px solid rgba(255, 255, 255, 0.1)",
                     borderRadius: 3,
                     color: "white",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     "& .MuiOutlinedInput-notchedOutline": {
                       border: "none",
+                    },
+                    "&:hover": {
+                      background: "rgba(255, 255, 255, 0.08)",
+                      border: "1px solid rgba(255, 255, 255, 0.15)",
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
                       border: "none",
                     },
+                    "&.Mui-focused": {
+                      background: "rgba(255, 255, 255, 0.08)",
+                      border: "1px solid #3b82f6",
+                    },
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      border: "2px solid #3b82f6",
+                      border: "none",
                     },
                     "& input::placeholder": {
                       color: "rgba(255, 255, 255, 0.5)",
                       opacity: 1,
+                      fontSize: { xs: "0.85rem", md: "0.95rem" },
                     },
                     "& input": {
                       color: "white",
                       fontSize: { xs: "0.9rem", md: "1rem" },
-                      padding: { xs: "12px", md: "16px" },
+                      padding: { xs: "14px", md: "18px" },
+                      letterSpacing: "0.01em",
                     },
                   },
                 }}
@@ -635,17 +652,25 @@ export default function Alumni() {
                   ref={listButtonRef}
                   sx={{
                     color: "#3b82f6",
-                    border: "1.5px solid #3b82f6",
-                    fontWeight: 700,
-                    borderRadius: 2,
-                    px: { xs: 2, md: 3 },
-                    py: { xs: 1, md: 1.2 },
-                    background: "rgba(59, 130, 246, 0.08)",
-                    boxShadow: "0 2px 8px rgba(59, 130, 246, 0.08)",
-                    fontSize: { xs: "0.8rem", md: "1rem" },
+                    border: "1px solid #3b82f6",
+                    fontWeight: 500,
+                    borderRadius: 3,
+                    px: { xs: 2.5, md: 3.5 },
+                    py: { xs: 1.2, md: 1.5 },
+                    background: "rgba(59, 130, 246, 0.05)",
+                    boxShadow: "0 4px 12px rgba(59, 130, 246, 0.1)",
+                    fontSize: { xs: "0.85rem", md: "1rem" },
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.4,
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     "&:hover": {
-                      background: "rgba(59, 130, 246, 0.15)",
+                      background: "rgba(59, 130, 246, 0.08)",
                       borderColor: "#2563eb",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 6px 20px rgba(59, 130, 246, 0.15)",
+                    },
+                    "&:active": {
+                      transform: "translateY(-1px)",
                     },
                   }}
                 >
@@ -683,19 +708,22 @@ export default function Alumni() {
                 severity="warning"
                 icon={false}
                 sx={{
-                  background: "rgba(239, 68, 68, 0.13)",
-                  border: "1.5px solid #ef4444",
-                  color: "#b91c1c",
-                  fontWeight: 600,
-                  borderRadius: 2,
-                  mb: 2,
+                  background: "rgba(239, 68, 68, 0.08)",
+                  border: "1px solid rgba(239, 68, 68, 0.2)",
+                  color: "#dc2626",
+                  fontWeight: 400,
+                  borderRadius: 3,
+                  mb: 3,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  p: 2,
-                  fontSize: { xs: "0.95rem", md: "1.1rem" },
-                  maxWidth: 600,
+                  p: 3,
+                  fontSize: { xs: "0.9rem", md: "1rem" },
+                  maxWidth: 700,
                   mx: "auto",
+                  backdropFilter: "blur(10px)",
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.5,
                 }}
                 iconMapping={{
                   warning: (
@@ -793,14 +821,18 @@ export default function Alumni() {
                     sx={{
                       color: "#ef4444",
                       borderColor: "#ef4444",
-                      fontWeight: 600,
-                      fontSize: { xs: "0.6rem", md: "0.7rem" },
-                      px: { xs: 1, md: 1.5 },
-                      py: { xs: 0.5, md: 0.75 },
+                      fontWeight: 400,
+                      fontSize: { xs: "0.7rem", md: "0.8rem" },
+                      px: { xs: 1.5, md: 2 },
+                      py: { xs: 0.8, md: 1 },
                       minWidth: "auto",
+                      borderRadius: 2,
+                      letterSpacing: "0.01em",
+                      transition: "all 0.2s ease",
                       "&:hover": {
-                        background: "rgba(239, 68, 68, 0.1)",
+                        background: "rgba(239, 68, 68, 0.08)",
                         borderColor: "#dc2626",
+                        transform: "translateY(-1px)",
                       },
                     }}
                   >
@@ -835,24 +867,27 @@ export default function Alumni() {
                       sx={{
                         background: selectedDomains.includes(domain)
                           ? DOMAIN_COLORS[domain]
-                          : "rgba(255, 255, 255, 0.08)",
+                          : "rgba(255, 255, 255, 0.05)",
                         color: selectedDomains.includes(domain)
                           ? "white"
-                          : "rgba(255, 255, 255, 0.8)",
+                          : "rgba(255, 255, 255, 0.7)",
                         border: selectedDomains.includes(domain)
                           ? "none"
-                          : `1px solid ${DOMAIN_COLORS[domain]}40`,
+                          : `1px solid ${DOMAIN_COLORS[domain]}30`,
                         backdropFilter: "blur(20px)",
-                        fontWeight: 600,
-                        fontSize: { xs: "0.7rem", md: "0.875rem" },
-                        padding: { xs: "6px 12px", md: "8px 16px" },
-                        height: { xs: "28px", md: "auto" },
+                        fontWeight: 400,
+                        fontSize: { xs: "0.75rem", md: "0.9rem" },
+                        padding: { xs: "8px 14px", md: "10px 18px" },
+                        height: { xs: "32px", md: "36px" },
+                        borderRadius: 2,
+                        letterSpacing: "0.01em",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                         "&:hover": {
                           background: selectedDomains.includes(domain)
                             ? DOMAIN_COLORS[domain]
-                            : `${DOMAIN_COLORS[domain]}20`,
-                          transform: "translateY(-2px)",
-                          boxShadow: `0 8px 25px ${DOMAIN_COLORS[domain]}40`,
+                            : `${DOMAIN_COLORS[domain]}15`,
+                          transform: "translateY(-3px)",
+                          boxShadow: `0 8px 25px ${DOMAIN_COLORS[domain]}30`,
                         },
                       }}
                     />
@@ -880,21 +915,23 @@ export default function Alumni() {
             <Typography
               variant="h2"
               sx={{
-                fontWeight: 800,
-                mb: { xs: 1, md: 4 },
+                fontWeight: 300,
+                mb: { xs: 2, md: 5 },
                 fontSize: {
-                  xs: "1.5rem",
-                  sm: "2rem",
-                  md: "2.5rem",
-                  lg: "3rem",
+                  xs: "1.6rem",
+                  sm: "2.1rem",
+                  md: "2.6rem",
+                  lg: "3.1rem",
                 },
                 background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
+                lineHeight: 1.2,
+                letterSpacing: "-0.01em",
               }}
             >
-              Nos Anciens Étudiants
+              Nos <span style={{ fontWeight: 600 }}>Anciens</span> Étudiants
             </Typography>
             <Typography
               variant="caption"
@@ -913,19 +950,27 @@ export default function Alumni() {
               variant="outlined"
               color="primary"
               sx={{
-                mb: 2,
-                fontWeight: 700,
-                borderRadius: { xs: 1, md: 2 },
-                px: { xs: 1.5, md: 3 },
-                py: { xs: 0.7, md: 1.2 },
-                background: "rgba(59, 130, 246, 0.08)",
-                boxShadow: "0 2px 8px rgba(59, 130, 246, 0.08)",
-                fontSize: { xs: "0.7rem", md: "1rem" },
-                border: "1.5px solid #3b82f6",
+                mb: 3,
+                fontWeight: 500,
+                borderRadius: 3,
+                px: { xs: 2, md: 3.5 },
+                py: { xs: 1, md: 1.5 },
+                background: "rgba(59, 130, 246, 0.05)",
+                boxShadow: "0 4px 12px rgba(59, 130, 246, 0.1)",
+                fontSize: { xs: "0.8rem", md: "1rem" },
+                border: "1px solid #3b82f6",
                 color: "#3b82f6",
+                letterSpacing: "0.02em",
+                lineHeight: 1.4,
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 "&:hover": {
-                  background: "rgba(59, 130, 246, 0.15)",
+                  background: "rgba(59, 130, 246, 0.08)",
                   borderColor: "#2563eb",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 6px 20px rgba(59, 130, 246, 0.15)",
+                },
+                "&:active": {
+                  transform: "translateY(-1px)",
                 },
               }}
               onClick={() => {
@@ -1011,7 +1056,7 @@ export default function Alumni() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.2 }}
           >
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
               <Pagination
                 count={totalPages}
                 page={currentPage}
@@ -1019,12 +1064,17 @@ export default function Alumni() {
                 size="large"
                 sx={{
                   "& .MuiPaginationItem-root": {
-                    color: "rgba(255, 255, 255, 0.7)",
-                    border: "1px solid rgba(255, 255, 255, 0.2)",
-                    background: "rgba(255, 255, 255, 0.05)",
+                    color: "rgba(255, 255, 255, 0.6)",
+                    border: "1px solid rgba(255, 255, 255, 0.15)",
+                    background: "rgba(255, 255, 255, 0.03)",
+                    borderRadius: 2,
+                    fontWeight: 400,
+                    fontSize: { xs: "0.85rem", md: "0.95rem" },
+                    transition: "all 0.2s ease",
                     "&:hover": {
-                      background: "rgba(255, 255, 255, 0.1)",
-                      border: "1px solid rgba(255, 255, 255, 0.3)",
+                      background: "rgba(255, 255, 255, 0.08)",
+                      border: "1px solid rgba(255, 255, 255, 0.25)",
+                      transform: "translateY(-1px)",
                     },
                   },
                   "& .Mui-selected": {
@@ -1032,9 +1082,11 @@ export default function Alumni() {
                       "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important",
                     color: "white !important",
                     border: "1px solid #3b82f6 !important",
+                    fontWeight: 500,
                     "&:hover": {
                       background:
                         "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%) !important",
+                      transform: "translateY(-1px)",
                     },
                   },
                 }}
@@ -1075,9 +1127,9 @@ export default function Alumni() {
               <Typography
                 variant="h2"
                 sx={{
-                  fontWeight: 800,
-                  mb: 4,
-                  fontSize: { xs: "2rem", md: "2.5rem", lg: "3rem" },
+                  fontWeight: 500,
+                  mb: 5,
+                  fontSize: { xs: "2.1rem", md: "2.6rem", lg: "3.1rem" },
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                   WebkitBackgroundClip: "text",
@@ -1085,6 +1137,8 @@ export default function Alumni() {
                   backgroundClip: "text",
                   position: "relative",
                   zIndex: 10,
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.01em",
                 }}
               >
                 Faites partie de notre réseau
@@ -1127,21 +1181,26 @@ export default function Alumni() {
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                   color: "white",
-                  fontWeight: 700,
-                  fontSize: "1.1rem",
-                  px: 4,
+                  fontWeight: 500,
+                  fontSize: { xs: "1rem", md: "1.1rem" },
+                  px: 5,
                   py: 2,
-                  borderRadius: 3,
-                  boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
+                  borderRadius: 4,
+                  boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.4,
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  position: "relative",
+                  zIndex: 10,
                   "&:hover": {
                     background:
                       "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                    boxShadow: "0 12px 35px rgba(59, 130, 246, 0.4)",
-                    transform: "translateY(-2px)",
+                    boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+                    transform: "translateY(-3px)",
                   },
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  zIndex: 10,
+                  "&:active": {
+                    transform: "translateY(-1px)",
+                  },
                 }}
                 onClick={() => {
                   if (!alumniId) {

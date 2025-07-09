@@ -196,14 +196,15 @@ const Navbar = () => {
         <Typography
           variant="h6"
           sx={{
-            fontWeight: 600,
-            fontSize: 22,
+            fontWeight: 500,
+            fontSize: { xs: "1.1rem", sm: "1.3rem" },
             background:
               "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
-            letterSpacing: "-0.02em",
+            letterSpacing: "-0.01em",
+            lineHeight: 1.2,
           }}
         >
           SorboNexus
@@ -237,9 +238,10 @@ const Navbar = () => {
               primary={item.name}
               primaryTypographyProps={{
                 sx: {
-                  fontWeight: isActive(item.path) ? 700 : 500,
-                  fontSize: 18,
-                  letterSpacing: 0.5,
+                  fontWeight: isActive(item.path) ? 600 : 500,
+                  fontSize: { xs: "0.95rem", sm: "1rem" },
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.3,
                 },
               }}
             />
@@ -253,19 +255,22 @@ const Navbar = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: 1.5,
-                background: "rgba(255,255,255,0.10)",
-                border: "1.5px solid #3b82f6",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(59,130,246,0.3)",
                 color: "#fff",
-                fontWeight: 700,
-                px: 2.5,
-                py: 1.2,
-                borderRadius: 3,
-                boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
+                fontWeight: 500,
+                px: 3,
+                py: 1.5,
+                borderRadius: 2.5,
+                boxShadow: "0 2px 8px rgba(59,130,246,0.06)",
                 textTransform: "none",
-                fontSize: "1rem",
+                fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                letterSpacing: "0.02em",
+                transition: "all 0.2s ease",
                 "&:hover": {
-                  background: "rgba(59,130,246,0.15)",
-                  borderColor: "#2563eb",
+                  background: "rgba(59,130,246,0.12)",
+                  borderColor: "#3b82f6",
+                  transform: "translateY(-1px)",
                 },
               }}
             >
@@ -290,13 +295,16 @@ const Navbar = () => {
               TransitionComponent={Grow}
               PaperProps={{
                 sx: {
-                  borderRadius: 3,
-                  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)",
-                  minWidth: 180,
-                  mt: 1,
-                  background: "rgba(30, 41, 59, 0.98)",
+                  borderRadius: 2.5,
+                  boxShadow: "0 12px 40px 0 rgba(0, 0, 0, 0.25)",
+                  minWidth: 200,
+                  mt: 1.5,
+                  background: "rgba(30, 41, 59, 0.95)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
                   color: "#fff",
                   p: 0.5,
+                  overflow: "hidden",
                 },
               }}
               MenuListProps={{
@@ -312,6 +320,21 @@ const Navbar = () => {
                   setIsAlumniProfileModalOpen(true);
                   handleProfileClose();
                 }}
+                sx={{
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  py: 2,
+                  px: 3,
+                  borderRadius: 1.5,
+                  mx: 0.5,
+                  my: 0.25,
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    background: "rgba(59, 130, 246, 0.1)",
+                    transform: "translateX(2px)",
+                  },
+                }}
               >
                 Voir ma carte
               </MenuItem>
@@ -319,6 +342,21 @@ const Navbar = () => {
                 onClick={() => {
                   openEditSelfModal([alumniUser]);
                   handleProfileClose();
+                }}
+                sx={{
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  py: 2,
+                  px: 3,
+                  borderRadius: 1.5,
+                  mx: 0.5,
+                  my: 0.25,
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    background: "rgba(59, 130, 246, 0.1)",
+                    transform: "translateX(2px)",
+                  },
                 }}
               >
                 Modifier ma carte
@@ -329,6 +367,21 @@ const Navbar = () => {
                     setIsAddAlumniModalOpen(true);
                     handleProfileClose();
                   }}
+                  sx={{
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                    letterSpacing: "0.02em",
+                    py: 2,
+                    px: 3,
+                    borderRadius: 1.5,
+                    mx: 0.5,
+                    my: 0.25,
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      background: "rgba(59, 130, 246, 0.1)",
+                      transform: "translateX(2px)",
+                    },
+                  }}
                 >
                   Ajouter un alumni
                 </MenuItem>
@@ -338,6 +391,22 @@ const Navbar = () => {
                   localStorage.removeItem("token");
                   localStorage.removeItem("isAdmin");
                   window.location.reload();
+                }}
+                sx={{
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  py: 2,
+                  px: 3,
+                  borderRadius: 1.5,
+                  mx: 0.5,
+                  my: 0.25,
+                  color: "#ef4444",
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    background: "rgba(239, 68, 68, 0.1)",
+                    transform: "translateX(2px)",
+                  },
                 }}
               >
                 Déconnexion
@@ -353,16 +422,18 @@ const Navbar = () => {
               to="/connexion"
               sx={{
                 background: "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
-                fontWeight: 700,
-                fontSize: 18,
-                py: 1.5,
-                borderRadius: 2,
-                boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
+                fontWeight: 500,
+                fontSize: { xs: "0.95rem", sm: "1rem" },
+                py: 1.8,
+                borderRadius: 2.5,
+                boxShadow: "0 2px 8px rgba(59,130,246,0.06)",
                 textTransform: "none",
-                letterSpacing: 0.5,
+                letterSpacing: "0.02em",
+                transition: "all 0.2s ease",
                 "&:hover": {
                   background:
                     "linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)",
+                  transform: "translateY(-1px)",
                 },
               }}
             >
@@ -665,10 +736,10 @@ const Navbar = () => {
         <Toolbar
           sx={{
             justifyContent: "space-between",
-            px: { xs: 4, md: 6, lg: 8 },
-            py: 1.5,
-            minHeight: "72px",
-            height: "72px",
+            px: { xs: 5, md: 7, lg: 9 },
+            py: 2,
+            minHeight: "76px",
+            height: "76px",
             width: "100%",
             margin: 0,
             padding: 0,
@@ -682,18 +753,19 @@ const Navbar = () => {
               to="/"
               onClick={() => handleNavigation("/")}
               sx={{
-                fontWeight: 600,
-                fontSize: { xs: "0.8rem", sm: "1rem", md: "1.2rem" },
-                letterSpacing: "-0.02em",
+                fontWeight: 500,
+                fontSize: { xs: "0.9rem", sm: "1.1rem", md: "1.3rem" },
+                letterSpacing: "-0.01em",
                 cursor: "pointer",
                 textDecoration: "none",
-                padding: { xs: "8px", sm: "4px" },
-                borderRadius: "4px",
+                padding: { xs: "10px", sm: "6px" },
+                borderRadius: "6px",
                 background:
                   "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
+                lineHeight: 1.2,
                 "&:hover": {
                   opacity: 0.8,
                 },
@@ -711,7 +783,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           {!isMobile && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               {navItems.map((item) => (
                 <Button
                   key={item.name}
@@ -721,16 +793,18 @@ const Navbar = () => {
                   sx={{
                     color: isActive(item.path)
                       ? "#3b82f6"
-                      : "rgba(255, 255, 255, 0.8)",
-                    fontSize: "0.95rem",
-                    fontWeight: 600,
-                    px: 3,
-                    py: 1.5,
-                    borderRadius: 2,
+                      : "rgba(255, 255, 255, 0.75)",
+                    fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                    fontWeight: 500,
+                    px: 3.5,
+                    py: 1.8,
+                    borderRadius: 2.5,
+                    letterSpacing: "0.02em",
                     transition: "all 0.2s ease",
                     "&:hover": {
-                      backgroundColor: "rgba(59, 130, 246, 0.10)",
+                      backgroundColor: "rgba(59, 130, 246, 0.08)",
                       color: "#fff",
+                      transform: "translateY(-1px)",
                     },
                   }}
                 >
@@ -745,19 +819,22 @@ const Navbar = () => {
                       display: "flex",
                       alignItems: "center",
                       gap: 1.5,
-                      background: "rgba(255,255,255,0.10)",
-                      border: "1.5px solid #3b82f6",
+                      background: "rgba(255,255,255,0.08)",
+                      border: "1px solid rgba(59,130,246,0.3)",
                       color: "#fff",
-                      fontWeight: 700,
-                      px: 2.5,
-                      py: 1.2,
-                      borderRadius: 3,
-                      boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
+                      fontWeight: 500,
+                      px: 3,
+                      py: 1.5,
+                      borderRadius: 2.5,
+                      boxShadow: "0 2px 8px rgba(59,130,246,0.06)",
                       textTransform: "none",
-                      fontSize: "1rem",
+                      fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                      letterSpacing: "0.02em",
+                      transition: "all 0.2s ease",
                       "&:hover": {
-                        background: "rgba(59,130,246,0.15)",
-                        borderColor: "#2563eb",
+                        background: "rgba(59,130,246,0.12)",
+                        borderColor: "#3b82f6",
+                        transform: "translateY(-1px)",
                       },
                     }}
                   >
@@ -786,18 +863,20 @@ const Navbar = () => {
                     background:
                       "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
                     color: "#fff",
-                    fontWeight: 700,
-                    fontSize: "1.05rem",
-                    px: 3.5,
-                    py: 1.3,
-                    borderRadius: 3,
-                    boxShadow: "0 4px 16px rgba(59,130,246,0.18)",
+                    fontWeight: 500,
+                    fontSize: { xs: "0.95rem", sm: "1rem" },
+                    px: 4,
+                    py: 1.6,
+                    borderRadius: 2.5,
+                    boxShadow: "0 4px 16px rgba(59,130,246,0.12)",
                     textTransform: "none",
-                    letterSpacing: 0.5,
+                    letterSpacing: "0.02em",
+                    transition: "all 0.2s ease",
                     "&:hover": {
                       background:
                         "linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)",
                       color: "#fff",
+                      transform: "translateY(-1px)",
                     },
                   }}
                 >
@@ -901,21 +980,22 @@ const Navbar = () => {
               top: "5vh",
               right: "5vw",
               zIndex: 1500,
-              color: "rgba(255, 255, 255, 0.7)",
-              background: "rgba(0, 0, 0, 0.3)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              width: 36,
-              height: 36,
+              color: "rgba(255, 255, 255, 0.6)",
+              background: "rgba(0, 0, 0, 0.2)",
+              backdropFilter: "blur(12px)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              width: 40,
+              height: 40,
+              borderRadius: 2.5,
               "&:hover": {
                 color: "#fff",
-                background: "rgba(0, 0, 0, 0.5)",
-                transform: "scale(1.1)",
+                background: "rgba(0, 0, 0, 0.4)",
+                transform: "scale(1.05)",
               },
               transition: "all 0.2s ease",
             }}
           >
-            <CloseIcon sx={{ fontSize: "1.2rem" }} />
+            <CloseIcon sx={{ fontSize: "1.1rem" }} />
           </IconButton>
 
           <Box
@@ -924,18 +1004,30 @@ const Navbar = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              bgcolor: "#18181b",
-              p: 4,
-              borderRadius: 2,
-              minWidth: 320,
-              maxWidth: 600,
-              maxHeight: "80vh",
+              bgcolor: "rgba(30, 41, 59, 0.95)",
+              backdropFilter: "blur(20px)",
+              p: 5,
+              borderRadius: 3,
+              minWidth: 360,
+              maxWidth: 640,
+              maxHeight: "85vh",
               overflowY: "auto",
-              boxShadow: 24,
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
               scrollBehavior: "smooth",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
             }}
           >
-            <Typography variant="h6" sx={{ mb: 2 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 3,
+                fontSize: "1.4rem",
+                fontWeight: 500,
+                letterSpacing: "-0.01em",
+                color: "#fff",
+                lineHeight: 1.2,
+              }}
+            >
               Ajouter un alumni
             </Typography>
             <form onSubmit={handleAddAlumniSubmit}>
@@ -945,7 +1037,31 @@ const Navbar = () => {
                 value={addAlumniForm.name}
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
                 required
               />
               <TextField
@@ -954,7 +1070,31 @@ const Navbar = () => {
                 value={addAlumniForm.degree}
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
                 required
               />
               <TextField
@@ -963,13 +1103,69 @@ const Navbar = () => {
                 value={addAlumniForm.position}
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    color: "rgba(255, 255, 255, 0.5)",
+                    fontSize: "0.8rem",
+                    fontWeight: 400,
+                  },
+                }}
                 required
                 helperText={
                   'Indiquez "Etudiant" si vous n\'avez pas de poste actuel.'
                 }
               />
-              <FormControl fullWidth sx={{ mb: 2 }}>
+              <FormControl
+                fullWidth
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
+              >
                 <InputLabel id="domaines-label">Domaines</InputLabel>
                 <Select
                   labelId="domaines-label"
@@ -985,13 +1181,15 @@ const Navbar = () => {
                   MenuProps={{
                     PaperProps: {
                       sx: {
-                        backgroundColor: "rgba(30, 41, 59, 0.97)",
+                        backgroundColor: "rgba(30, 41, 59, 0.98)",
                         color: "#fff",
+                        borderRadius: 2.5,
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
                       },
                     },
                   }}
                   renderValue={(selected) => (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8 }}>
                       {selected.map((value) => (
                         <Chip
                           key={value}
@@ -999,7 +1197,12 @@ const Navbar = () => {
                           sx={{
                             background: "#3b82f6",
                             color: "#fff",
-                            fontWeight: 600,
+                            fontWeight: 500,
+                            fontSize: "0.85rem",
+                            borderRadius: 2,
+                            "& .MuiChip-label": {
+                              px: 1.5,
+                            },
                           }}
                         />
                       ))}
@@ -1017,15 +1220,23 @@ const Navbar = () => {
                           ? {
                               background: "#3b82f6",
                               color: "#fff",
-                              fontWeight: 700,
+                              fontWeight: 500,
+                              borderRadius: 1.5,
+                              mx: 0.5,
                               "&:hover": { background: "#2563eb" },
                             }
-                          : {}
+                          : {
+                              "&:hover": {
+                                background: "rgba(59, 130, 246, 0.1)",
+                                borderRadius: 1.5,
+                                mx: 0.5,
+                              },
+                            }
                       }
                     >
                       {addAlumniForm.field &&
                       addAlumniForm.field.includes(domaine) ? (
-                        <span style={{ marginRight: 8, fontWeight: 900 }}>
+                        <span style={{ marginRight: 8, fontWeight: 600 }}>
                           ✓
                         </span>
                       ) : null}
@@ -1040,7 +1251,31 @@ const Navbar = () => {
                 value={addAlumniForm.email}
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
                 required
               />
               <TextField
@@ -1049,7 +1284,31 @@ const Navbar = () => {
                 value={addAlumniForm.linkedin}
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
                 required
               />
               <TextField
@@ -1058,10 +1317,34 @@ const Navbar = () => {
                 value={addAlumniForm.avatar}
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
                 required
               />
-              <FormControl fullWidth sx={{ mb: 2 }}>
+              <FormControl fullWidth sx={{ mb: 3 }}>
                 <TextField
                   label="Poste actuel"
                   name="currentPosition"
@@ -1069,17 +1352,56 @@ const Navbar = () => {
                   onChange={handleAddAlumniChange}
                   fullWidth
                   required
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2.5,
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "#fff",
+                      fontSize: "0.95rem",
+                      letterSpacing: "0.02em",
+                    },
+                    "& .MuiFormHelperText-root": {
+                      color: "rgba(255, 255, 255, 0.5)",
+                      fontSize: "0.8rem",
+                      fontWeight: 400,
+                    },
+                  }}
                   helperText={
                     'Indiquez "Etudiant" si vous n\'avez pas de poste actuel.'
                   }
                 />
               </FormControl>
               {/* Grades */}
-              <Typography variant="subtitle1" sx={{ mt: 2 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  mt: 3,
+                  mb: 2,
+                  fontSize: "1.1rem",
+                  fontWeight: 500,
+                  color: "#fff",
+                  letterSpacing: "0.02em",
+                }}
+              >
                 Notes/Diplômes
               </Typography>
               {addAlumniGrades.map((g, idx) => (
-                <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                <Box key={idx} sx={{ display: "flex", gap: 1.5, mb: 2 }}>
                   <TextField
                     label="Diplôme"
                     value={g.key}
@@ -1087,7 +1409,31 @@ const Navbar = () => {
                       handleAddAlumniGradeChange(idx, "key", e.target.value)
                     }
                     size="small"
-                    sx={{ flex: 1 }}
+                    sx={{
+                      flex: 1,
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2.5,
+                        "& fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#3b82f6",
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                      },
+                      "& .MuiInputBase-input": {
+                        color: "#fff",
+                        fontSize: "0.9rem",
+                        letterSpacing: "0.02em",
+                      },
+                    }}
                     required
                   />
                   <TextField
@@ -1097,13 +1443,50 @@ const Navbar = () => {
                       handleAddAlumniGradeChange(idx, "value", e.target.value)
                     }
                     size="small"
-                    sx={{ flex: 1 }}
+                    sx={{
+                      flex: 1,
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2.5,
+                        "& fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#3b82f6",
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                      },
+                      "& .MuiInputBase-input": {
+                        color: "#fff",
+                        fontSize: "0.9rem",
+                        letterSpacing: "0.02em",
+                      },
+                    }}
                     required
                   />
                   <Button
                     onClick={() => handleAddAlumniRemoveGrade(idx)}
                     color="error"
                     size="small"
+                    sx={{
+                      color: "#ef4444",
+                      fontSize: "0.85rem",
+                      fontWeight: 500,
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                      letterSpacing: "0.02em",
+                      textTransform: "none",
+                      "&:hover": {
+                        background: "rgba(239, 68, 68, 0.1)",
+                      },
+                    }}
                   >
                     Supprimer
                   </Button>
@@ -1112,17 +1495,48 @@ const Navbar = () => {
               <Button
                 onClick={handleAddAlumniAddGrade}
                 size="small"
-                sx={{ mt: 1, mb: 2 }}
+                sx={{
+                  mt: 1,
+                  mb: 3,
+                  color: "#3b82f6",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    background: "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
               >
                 Ajouter une note
               </Button>
               {/* Schools */}
-              <Typography variant="subtitle1" sx={{ mt: 2 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  mt: 3,
+                  mb: 2,
+                  fontSize: "1.1rem",
+                  fontWeight: 500,
+                  color: "#fff",
+                  letterSpacing: "0.02em",
+                }}
+              >
                 Écoles demandées
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ mb: 1, color: "#3b82f6", fontWeight: 500 }}
+                sx={{
+                  mb: 2,
+                  color: "#3b82f6",
+                  fontWeight: 500,
+                  fontSize: "0.85rem",
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.4,
+                }}
               >
                 L'ordre des écoles est important : la première école (rang 1)
                 correspond à la Licence/BSc, la deuxième (rang 2) au
@@ -1131,8 +1545,8 @@ const Navbar = () => {
                 les écoles.
               </Typography>
               {addAlumniSchools.map((s, idx) => (
-                <Box key={idx} sx={{ mb: 1 }}>
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                <Box key={idx} sx={{ mb: 2 }}>
+                  <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
                     <TextField
                       label={`École (rang ${idx + 1})`}
                       value={s.name}
@@ -1140,7 +1554,32 @@ const Navbar = () => {
                         handleAddAlumniSchoolChange(idx, "name", e.target.value)
                       }
                       size="small"
-                      sx={{ flex: 2, minWidth: 250 }}
+                      sx={{
+                        flex: 2,
+                        minWidth: 250,
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 2.5,
+                          "& fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.1)",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.2)",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#3b82f6",
+                          },
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "rgba(255, 255, 255, 0.7)",
+                          fontSize: "0.85rem",
+                          fontWeight: 500,
+                        },
+                        "& .MuiInputBase-input": {
+                          color: "#fff",
+                          fontSize: "0.9rem",
+                          letterSpacing: "0.02em",
+                        },
+                      }}
                       required
                     />
                     <TextField
@@ -1155,7 +1594,32 @@ const Navbar = () => {
                         )
                       }
                       size="small"
-                      sx={{ flex: 1, minWidth: 120 }}
+                      sx={{
+                        flex: 1,
+                        minWidth: 120,
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 2.5,
+                          "& fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.1)",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.2)",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#3b82f6",
+                          },
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "rgba(255, 255, 255, 0.7)",
+                          fontSize: "0.85rem",
+                          fontWeight: 500,
+                        },
+                        "& .MuiInputBase-input": {
+                          color: "#fff",
+                          fontSize: "0.9rem",
+                          letterSpacing: "0.02em",
+                        },
+                      }}
                       SelectProps={{ native: true }}
                       required
                     >
@@ -1163,11 +1627,24 @@ const Navbar = () => {
                       <option value="rejected">Refusé</option>
                     </TextField>
                   </Box>
-                  <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                  <Box sx={{ display: "flex", gap: 1, mt: 1.5 }}>
                     <Button
                       onClick={() => handleAddAlumniRemoveSchool(idx)}
                       color="error"
                       size="small"
+                      sx={{
+                        color: "#ef4444",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                        px: 2,
+                        py: 1,
+                        borderRadius: 2,
+                        letterSpacing: "0.02em",
+                        textTransform: "none",
+                        "&:hover": {
+                          background: "rgba(239, 68, 68, 0.1)",
+                        },
+                      }}
                     >
                       Supprimer
                     </Button>
@@ -1186,6 +1663,22 @@ const Navbar = () => {
                       }}
                       size="small"
                       disabled={idx === 0}
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.6)",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                        px: 1.5,
+                        py: 1,
+                        borderRadius: 2,
+                        letterSpacing: "0.02em",
+                        textTransform: "none",
+                        "&:hover": {
+                          background: "rgba(255, 255, 255, 0.08)",
+                        },
+                        "&:disabled": {
+                          color: "rgba(255, 255, 255, 0.3)",
+                        },
+                      }}
                     >
                       ↑
                     </Button>
@@ -1204,6 +1697,22 @@ const Navbar = () => {
                       }}
                       size="small"
                       disabled={idx === addAlumniSchools.length - 1}
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.6)",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                        px: 1.5,
+                        py: 1,
+                        borderRadius: 2,
+                        letterSpacing: "0.02em",
+                        textTransform: "none",
+                        "&:hover": {
+                          background: "rgba(255, 255, 255, 0.08)",
+                        },
+                        "&:disabled": {
+                          color: "rgba(255, 255, 255, 0.3)",
+                        },
+                      }}
                     >
                       ↓
                     </Button>
@@ -1213,11 +1722,25 @@ const Navbar = () => {
               <Button
                 onClick={handleAddAlumniAddSchool}
                 size="small"
-                sx={{ mt: 1, mb: 2 }}
+                sx={{
+                  mt: 1,
+                  mb: 3,
+                  color: "#3b82f6",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    background: "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
               >
                 Ajouter une école
               </Button>
-              {/* Conseil (optional) */}
+              {/* Conseil (optionnel) */}
               <TextField
                 label="Conseil (optionnel)"
                 name="conseil"
@@ -1228,7 +1751,32 @@ const Navbar = () => {
                 }
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.5,
+                  },
+                }}
                 multiline
                 minRows={2}
                 InputProps={{
@@ -1238,6 +1786,12 @@ const Navbar = () => {
                       size="small"
                       tabIndex={-1}
                       aria-label={showFullConseil ? "Réduire" : "Voir plus"}
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.6)",
+                        "&:hover": {
+                          color: "#fff",
+                        },
+                      }}
                     >
                       {showFullConseil ? (
                         <ExpandLessIcon />
@@ -1255,7 +1809,31 @@ const Navbar = () => {
                 value={addAlumniForm.nationalities || ""}
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
               />
               <TextField
                 label="Stages, entreprises, concours, extrascolaire (texte libre)"
@@ -1265,7 +1843,32 @@ const Navbar = () => {
                 fullWidth
                 multiline
                 minRows={2}
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.5,
+                  },
+                }}
               />
               <TextField
                 label="Projets futurs (métiers, masters, écoles visés...)"
@@ -1273,7 +1876,31 @@ const Navbar = () => {
                 value={addAlumniForm.futureGoals || ""}
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
               />
               <TextField
                 label="Année de fin de L3 (4 chiffres)"
@@ -1281,10 +1908,34 @@ const Navbar = () => {
                 value={addAlumniForm.anneeFinL3 || ""}
                 onChange={handleAddAlumniChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
                 inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
               />
-              <FormControl fullWidth sx={{ mb: 2 }}>
+              <FormControl fullWidth sx={{ mb: 3 }}>
                 <TextField
                   label="Nom d'utilisateur"
                   value={addAlumniForm.username}
@@ -1294,10 +1945,34 @@ const Navbar = () => {
                       username: e.target.value,
                     }))
                   }
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2.5,
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "#fff",
+                      fontSize: "0.95rem",
+                      letterSpacing: "0.02em",
+                    },
+                  }}
                   required
                 />
               </FormControl>
-              <FormControl fullWidth sx={{ mb: 2 }}>
+              <FormControl fullWidth sx={{ mb: 3 }}>
                 <TextField
                   label="Mot de passe"
                   type="password"
@@ -1308,10 +1983,34 @@ const Navbar = () => {
                       password: e.target.value,
                     }))
                   }
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2.5,
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "#fff",
+                      fontSize: "0.95rem",
+                      letterSpacing: "0.02em",
+                    },
+                  }}
                   required
                 />
               </FormControl>
-              <Box sx={{ mb: 2 }}>
+              <Box sx={{ mb: 3 }}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -1326,9 +2025,23 @@ const Navbar = () => {
                           }));
                         }
                       }}
+                      sx={{
+                        color: "#3b82f6",
+                        "&.Mui-checked": {
+                          color: "#3b82f6",
+                        },
+                      }}
                     />
                   }
                   label="Utiliser la couleur par défaut (domaines)"
+                  sx={{
+                    mb: 2,
+                    "& .MuiFormControlLabel-label": {
+                      color: "rgba(255, 255, 255, 0.8)",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                    },
+                  }}
                 />
                 <TextField
                   label="Couleur personnalisée (hex)"
@@ -1336,7 +2049,31 @@ const Navbar = () => {
                   value={addAlumniForm.color || ""}
                   onChange={handleAddAlumniChange}
                   fullWidth
-                  sx={{ mt: 1 }}
+                  sx={{
+                    mt: 1,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2.5,
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "#fff",
+                      fontSize: "0.95rem",
+                      letterSpacing: "0.02em",
+                    },
+                  }}
                   disabled={!addAlumniForm.color}
                   placeholder="#ff80ab"
                   InputProps={{
@@ -1347,7 +2084,7 @@ const Navbar = () => {
                           height: 24,
                           bgcolor: addAlumniForm.color || "#eee",
                           borderRadius: "50%",
-                          border: "1px solid #ccc",
+                          border: "1px solid rgba(255, 255, 255, 0.2)",
                           ml: 1,
                         }}
                       />
@@ -1355,7 +2092,7 @@ const Navbar = () => {
                   }}
                 />
                 {addAlumniForm.color && (
-                  <Box sx={{ mt: 1 }}>
+                  <Box sx={{ mt: 2 }}>
                     <SketchPicker
                       color={addAlumniForm.color}
                       onChange={(color) =>
@@ -1369,7 +2106,34 @@ const Navbar = () => {
                   </Box>
                 )}
               </Box>
-              <FormControl fullWidth sx={{ mb: 2 }}>
+              <FormControl
+                fullWidth
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
+              >
                 <InputLabel id="gradient-select-label">Dégradé</InputLabel>
                 <Select
                   labelId="gradient-select-label"
@@ -1383,16 +2147,36 @@ const Navbar = () => {
                         e.target.value === "custom" ? "" : e.target.value,
                     }));
                   }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        backgroundColor: "rgba(30, 41, 59, 0.98)",
+                        color: "#fff",
+                        borderRadius: 2.5,
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                      },
+                    },
+                  }}
                 >
                   {gradientOptions.map((opt) => (
-                    <MenuItem key={opt.value} value={opt.value}>
+                    <MenuItem
+                      key={opt.value}
+                      value={opt.value}
+                      sx={{
+                        "&:hover": {
+                          background: "rgba(59, 130, 246, 0.1)",
+                          borderRadius: 1.5,
+                          mx: 0.5,
+                        },
+                      }}
+                    >
                       {opt.label}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
               {gradientSelect === "custom" && (
-                <FormControl fullWidth sx={{ mb: 2 }}>
+                <FormControl fullWidth sx={{ mb: 3 }}>
                   <TextField
                     label="Dégradé personnalisé (CSS linear-gradient)"
                     name="gradient"
@@ -1400,6 +2184,30 @@ const Navbar = () => {
                     onChange={handleAddAlumniChange}
                     placeholder="linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)"
                     fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2.5,
+                        "& fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#3b82f6",
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontSize: "0.9rem",
+                        fontWeight: 500,
+                      },
+                      "& .MuiInputBase-input": {
+                        color: "#fff",
+                        fontSize: "0.95rem",
+                        letterSpacing: "0.02em",
+                      },
+                    }}
                   />
                 </FormControl>
               )}
@@ -1415,10 +2223,23 @@ const Navbar = () => {
                     }
                     name="hidden"
                     color="primary"
+                    sx={{
+                      color: "#3b82f6",
+                      "&.Mui-checked": {
+                        color: "#3b82f6",
+                      },
+                    }}
                   />
                 }
                 label="Masquer la carte (carte non visible publiquement)"
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiFormControlLabel-label": {
+                    color: "rgba(255, 255, 255, 0.8)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                }}
               />
               <FormControlLabel
                 control={
@@ -1432,16 +2253,74 @@ const Navbar = () => {
                     }
                     name="isAdmin"
                     color="primary"
+                    sx={{
+                      color: "#3b82f6",
+                      "&.Mui-checked": {
+                        color: "#3b82f6",
+                      },
+                    }}
                   />
                 }
                 label="Statut admin (donne accès à l'administration)"
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiFormControlLabel-label": {
+                    color: "rgba(255, 255, 255, 0.8)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                }}
               />
-              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-                <Button onClick={() => setIsAddAlumniModalOpen(false)}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: 2,
+                  mt: 4,
+                }}
+              >
+                <Button
+                  onClick={() => setIsAddAlumniModalOpen(false)}
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.95rem",
+                    fontWeight: 500,
+                    px: 3,
+                    py: 1.5,
+                    borderRadius: 2.5,
+                    letterSpacing: "0.02em",
+                    textTransform: "none",
+                    "&:hover": {
+                      color: "#fff",
+                      background: "rgba(255, 255, 255, 0.08)",
+                    },
+                  }}
+                >
                   Annuler
                 </Button>
-                <Button type="submit" variant="contained">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    fontWeight: 500,
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 2.5,
+                    letterSpacing: "0.02em",
+                    textTransform: "none",
+                    boxShadow: "0 4px 16px rgba(59,130,246,0.12)",
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)",
+                      transform: "translateY(-1px)",
+                    },
+                  }}
+                >
                   Créer
                 </Button>
               </Box>

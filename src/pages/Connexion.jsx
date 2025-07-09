@@ -191,13 +191,18 @@ export default function Connexion() {
           <Card
             elevation={0}
             sx={{
-              background: "rgba(255, 255, 255, 0.08)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              borderRadius: "24px",
-              p: 4,
+              background: "rgba(255, 255, 255, 0.06)",
+              backdropFilter: "blur(24px)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              borderRadius: 4,
+              p: { xs: 3, sm: 5 },
               position: "relative",
               overflow: "hidden",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.10)",
+              transition: "box-shadow 0.3s cubic-bezier(0.4,0,0.2,1)",
+              "&:hover": {
+                boxShadow: "0 16px 48px rgba(0,0,0,0.13)",
+              },
               "&::before": {
                 content: '""',
                 position: "absolute",
@@ -212,7 +217,7 @@ export default function Connexion() {
             }}
           >
             {/* Header */}
-            <Box sx={{ textAlign: "center", mb: 4 }}>
+            <Box sx={{ textAlign: "center", mb: 5 }}>
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -228,9 +233,10 @@ export default function Connexion() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    margin: "0 auto 16px",
+                    margin: "0 auto 20px",
                     color: "white",
                     fontSize: "2rem",
+                    boxShadow: "0 4px 24px rgba(59,130,246,0.18)",
                   }}
                 >
                   <Person />
@@ -244,22 +250,33 @@ export default function Connexion() {
                 <Typography
                   variant="h3"
                   sx={{
-                    fontWeight: 700,
-                    mb: 1,
+                    fontWeight: 600,
+                    mb: 2,
+                    letterSpacing: "-0.02em",
+                    fontSize: { xs: "2rem", sm: "2.3rem" },
+                    lineHeight: 1.15,
                     background:
-                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
                   }}
                 >
-                  Connexion à SorboNexus
+                  <span style={{ display: "block", fontWeight: 300 }}>
+                    Connexion à
+                  </span>
+                  <span style={{ display: "block", fontWeight: 600 }}>
+                    SorboNexus
+                  </span>
                 </Typography>
                 <Typography
                   variant="body1"
                   sx={{
-                    color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "1.1rem",
+                    color: "rgba(255, 255, 255, 0.75)",
+                    fontSize: { xs: "1rem", sm: "1.1rem" },
+                    fontWeight: 400,
+                    letterSpacing: "0.01em",
+                    lineHeight: 1.5,
                   }}
                 >
                   Accédez à votre espace étudiant
@@ -274,7 +291,7 @@ export default function Connexion() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
             >
-              <Box sx={{ mb: 3 }}>
+              <Box sx={{ mb: 4 }}>
                 <TextField
                   fullWidth
                   label="Identifiant"
@@ -293,28 +310,38 @@ export default function Connexion() {
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      background: "rgba(255, 255, 255, 0.05)",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
-                      borderRadius: 2,
+                      background: "rgba(255, 255, 255, 0.04)",
+                      border: "1px solid rgba(255, 255, 255, 0.08)",
+                      borderRadius: 2.5,
                       color: "white",
+                      fontWeight: 400,
+                      fontSize: { xs: "1rem", sm: "1.05rem" },
+                      letterSpacing: "0.01em",
+                      transition: "border 0.2s, box-shadow 0.2s",
                       "&:hover": {
-                        border: "1px solid rgba(59, 130, 246, 0.3)",
+                        border: "1px solid rgba(59, 130, 246, 0.18)",
                       },
                       "&.Mui-focused": {
-                        border: "1px solid #3b82f6",
-                        boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.2)",
+                        border: "1.5px solid #3b82f6",
+                        boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.13)",
                       },
                     },
                     "& .MuiInputLabel-root": {
                       color: "rgba(255, 255, 255, 0.7)",
+                      fontWeight: 400,
+                      letterSpacing: "0.01em",
+                      fontSize: { xs: "0.95rem", sm: "1rem" },
                       "&.Mui-focused": {
                         color: "#3b82f6",
                       },
                     },
                     "& .MuiInputBase-input": {
                       color: "white",
+                      fontWeight: 400,
+                      fontSize: { xs: "1rem", sm: "1.05rem" },
+                      letterSpacing: "0.01em",
                       "&::placeholder": {
-                        color: "rgba(255, 255, 255, 0.5)",
+                        color: "rgba(255, 255, 255, 0.4)",
                         opacity: 1,
                       },
                     },
@@ -322,7 +349,7 @@ export default function Connexion() {
                 />
               </Box>
 
-              <Box sx={{ mb: 3 }}>
+              <Box sx={{ mb: 4 }}>
                 <TextField
                   fullWidth
                   label="Mot de passe"
@@ -352,28 +379,38 @@ export default function Connexion() {
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      background: "rgba(255, 255, 255, 0.05)",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
-                      borderRadius: 2,
+                      background: "rgba(255, 255, 255, 0.04)",
+                      border: "1px solid rgba(255, 255, 255, 0.08)",
+                      borderRadius: 2.5,
                       color: "white",
+                      fontWeight: 400,
+                      fontSize: { xs: "1rem", sm: "1.05rem" },
+                      letterSpacing: "0.01em",
+                      transition: "border 0.2s, box-shadow 0.2s",
                       "&:hover": {
-                        border: "1px solid rgba(59, 130, 246, 0.3)",
+                        border: "1px solid rgba(59, 130, 246, 0.18)",
                       },
                       "&.Mui-focused": {
-                        border: "1px solid #3b82f6",
-                        boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.2)",
+                        border: "1.5px solid #3b82f6",
+                        boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.13)",
                       },
                     },
                     "& .MuiInputLabel-root": {
                       color: "rgba(255, 255, 255, 0.7)",
+                      fontWeight: 400,
+                      letterSpacing: "0.01em",
+                      fontSize: { xs: "0.95rem", sm: "1rem" },
                       "&.Mui-focused": {
                         color: "#3b82f6",
                       },
                     },
                     "& .MuiInputBase-input": {
                       color: "white",
+                      fontWeight: 400,
+                      fontSize: { xs: "1rem", sm: "1.05rem" },
+                      letterSpacing: "0.01em",
                       "&::placeholder": {
-                        color: "rgba(255, 255, 255, 0.5)",
+                        color: "rgba(255, 255, 255, 0.4)",
                         opacity: 1,
                       },
                     },
@@ -381,12 +418,12 @@ export default function Connexion() {
                 />
               </Box>
 
-              <Box sx={{ mb: 3 }}>
+              <Box sx={{ mb: 4 }}>
                 <Box
                   sx={{
                     display: "flex",
                     justifyContent: "flex-end",
-                    mb: 1,
+                    mb: 1.5,
                   }}
                 >
                   <Link
@@ -395,6 +432,8 @@ export default function Connexion() {
                     sx={{
                       color: "#3b82f6",
                       textDecoration: "none",
+                      fontWeight: 500,
+                      letterSpacing: "0.01em",
                       "&:hover": {
                         color: "#1e40af",
                       },
@@ -403,33 +442,12 @@ export default function Connexion() {
                     Mot de passe oublié?
                   </Link>
                 </Box>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={formData.rememberMe}
-                      onChange={handleInputChange("rememberMe")}
-                      sx={{
-                        color: "rgba(255, 255, 255, 0.5)",
-                        "&.Mui-checked": {
-                          color: "#3b82f6",
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "rgba(255, 255, 255, 0.7)" }}
-                    >
-                      Se souvenir de moi
-                    </Typography>
-                  }
-                />
               </Box>
 
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                style={{ marginTop: "8px" }}
               >
                 <Button
                   type="submit"
@@ -438,18 +456,21 @@ export default function Connexion() {
                   startIcon={<Login />}
                   sx={{
                     py: 1.5,
-                    borderRadius: 2,
+                    borderRadius: 2.5,
                     background:
                       "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                     color: "white",
-                    fontWeight: 600,
-                    fontSize: "1rem",
+                    fontWeight: 500,
+                    fontSize: "1.05rem",
                     textTransform: "none",
+                    letterSpacing: "0.01em",
+                    boxShadow: "0 4px 16px rgba(59,130,246,0.13)",
+                    transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
                     "&:hover": {
                       background:
                         "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
                       transform: "translateY(-2px)",
-                      boxShadow: "0 10px 25px rgba(59, 130, 246, 0.4)",
+                      boxShadow: "0 10px 25px rgba(59, 130, 246, 0.18)",
                     },
                   }}
                 >
@@ -464,10 +485,14 @@ export default function Connexion() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1 }}
             >
-              <Box sx={{ textAlign: "center" }}>
+              <Box sx={{ textAlign: "center", mt: 4 }}>
                 <Typography
                   variant="body2"
-                  sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontWeight: 400,
+                    letterSpacing: "0.01em",
+                  }}
                 >
                   Si vous voulez créer un compte, envoyez un message à{" "}
                   <b>sethaguila@icloud.com</b> ou contactez <b>Seth Aguila</b>{" "}
@@ -484,7 +509,7 @@ export default function Connexion() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.2 }}
         >
-          <Box sx={{ mt: 4, textAlign: "center" }}>
+          <Box sx={{ mt: 5, textAlign: "center" }}>
             <Typography
               variant="caption"
               sx={{ color: "rgba(255, 255, 255, 0.5)" }}

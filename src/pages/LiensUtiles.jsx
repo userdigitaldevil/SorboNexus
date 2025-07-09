@@ -544,15 +544,15 @@ const LiensUtiles = () => {
               <Typography
                 variant="h1"
                 sx={{
-                  fontWeight: 900,
-                  mb: { xs: 2, md: 4 },
+                  fontWeight: 700,
+                  mb: { xs: 2.5, md: 4.5 },
                   fontSize: {
-                    xs: "1.8rem",
-                    sm: "2.2rem",
-                    md: "3.5rem",
-                    lg: "4rem",
+                    xs: "2rem",
+                    sm: "2.5rem",
+                    md: "3.8rem",
+                    lg: "4.2rem",
                   },
-                  lineHeight: { xs: 1.2, md: 1.1 },
+                  lineHeight: { xs: 1.1, md: 1.05 },
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                   WebkitBackgroundClip: "text",
@@ -560,6 +560,7 @@ const LiensUtiles = () => {
                   backgroundClip: "text",
                   position: "relative",
                   mt: { xs: 1, md: 6 },
+                  letterSpacing: "-0.03em",
                 }}
               >
                 <span style={{ display: "block" }}>Liens</span>
@@ -575,13 +576,14 @@ const LiensUtiles = () => {
               <Typography
                 variant="h6"
                 sx={{
-                  color: "rgba(255, 255, 255, 0.9)",
-                  mb: { xs: 2, md: 3 },
+                  color: "rgba(255, 255, 255, 0.85)",
+                  mb: { xs: 3, md: 4 },
                   fontWeight: 400,
-                  lineHeight: { xs: 1.4, md: 1.6 },
-                  maxWidth: 600,
+                  lineHeight: { xs: 1.5, md: 1.6 },
+                  maxWidth: 700,
                   mx: "auto",
-                  fontSize: { xs: "0.9rem", sm: "1.1rem", md: "1.25rem" },
+                  fontSize: { xs: "1rem", sm: "1.15rem", md: "1.3rem" },
+                  letterSpacing: "0.01em",
                 }}
               >
                 Accédez facilement à tous vos services universitaires,
@@ -614,10 +616,10 @@ const LiensUtiles = () => {
                     </InputAdornment>
                   ),
                   sx: {
-                    background: "rgba(255, 255, 255, 0.08)",
+                    background: "rgba(255, 255, 255, 0.06)",
                     backdropFilter: "blur(20px)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    borderRadius: 3,
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    borderRadius: 2.5,
                     color: "white",
                     "& .MuiOutlinedInput-notchedOutline": {
                       border: "none",
@@ -629,13 +631,16 @@ const LiensUtiles = () => {
                       border: "2px solid #3b82f6",
                     },
                     "& input::placeholder": {
-                      color: "rgba(255, 255, 255, 0.5)",
+                      color: "rgba(255, 255, 255, 0.4)",
                       opacity: 1,
+                      fontSize: { xs: "0.9rem", md: "1rem" },
                     },
                     "& input": {
                       color: "white",
-                      fontSize: { xs: "0.9rem", md: "1rem" },
-                      padding: { xs: "12px", md: "16px" },
+                      fontSize: { xs: "0.95rem", md: "1.05rem" },
+                      padding: { xs: "14px", md: "18px" },
+                      fontWeight: 400,
+                      letterSpacing: "0.01em",
                     },
                   },
                 }}
@@ -658,15 +663,17 @@ const LiensUtiles = () => {
                     background:
                       "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                     color: "white",
-                    fontWeight: 600,
-                    px: 2.5,
-                    py: 1,
-                    borderRadius: 2,
+                    fontWeight: 500,
+                    px: 3,
+                    py: 1.2,
+                    borderRadius: 2.5,
                     textTransform: "none",
-                    fontSize: "0.875rem",
+                    fontSize: { xs: "0.9rem", sm: "0.95rem" },
                     minHeight: 0,
                     minWidth: 0,
-                    lineHeight: 1.2,
+                    lineHeight: 1.3,
+                    letterSpacing: "0.02em",
+                    transition: "all 0.2s ease",
                     "&:hover": {
                       background:
                         "linear-gradient(135deg, #059669 0%, #047857 100%)",
@@ -722,25 +729,28 @@ const LiensUtiles = () => {
                       background:
                         activeCategory === category
                           ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                          : "rgba(255, 255, 255, 0.08)",
+                          : "rgba(255, 255, 255, 0.06)",
                       color:
                         activeCategory === category
                           ? "white"
-                          : "rgba(255, 255, 255, 0.8)",
+                          : "rgba(255, 255, 255, 0.75)",
                       border:
                         activeCategory === category
                           ? "none"
-                          : "1px solid rgba(255, 255, 255, 0.2)",
+                          : "1px solid rgba(255, 255, 255, 0.15)",
                       backdropFilter: "blur(20px)",
-                      fontWeight: 600,
-                      fontSize: { xs: "0.7rem", md: "0.875rem" },
-                      padding: { xs: "6px 12px", md: "8px 16px" },
-                      height: { xs: "28px", md: "auto" },
+                      fontWeight: 500,
+                      fontSize: { xs: "0.75rem", md: "0.9rem" },
+                      padding: { xs: "8px 14px", md: "10px 18px" },
+                      height: { xs: "32px", md: "auto" },
+                      borderRadius: 2,
+                      letterSpacing: "0.02em",
+                      transition: "all 0.2s ease",
                       "&:hover": {
                         background:
                           activeCategory === category
                             ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
-                            : "rgba(255, 255, 255, 0.12)",
+                            : "rgba(255, 255, 255, 0.1)",
                         transform: "translateY(-2px)",
                         boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
                       },
@@ -821,22 +831,22 @@ const LiensUtiles = () => {
                             width: "100%",
                             maxWidth: "none",
                             mx: 0,
-                            background: "rgba(255,255,255,0.06)",
+                            background: "rgba(255,255,255,0.04)",
                             backdropFilter: "blur(20px)",
-                            border: "1px solid rgba(255,255,255,0.1)",
-                            borderRadius: 1.5,
-                            transition: "all 0.2s ease",
+                            border: "1px solid rgba(255,255,255,0.08)",
+                            borderRadius: 2,
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                             cursor: "pointer",
                             position: "relative",
                             overflow: "hidden",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
                             display: "flex",
                             flexDirection: "column",
                             "&:hover": {
-                              transform: "translateY(-2px)",
-                              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
-                              background: "rgba(255,255,255,0.1)",
-                              border: "1px solid rgba(59, 130, 246, 0.3)",
+                              transform: "translateY(-3px)",
+                              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                              background: "rgba(255,255,255,0.08)",
+                              border: "1px solid rgba(59, 130, 246, 0.25)",
                               "& .link-title": {
                                 color: "#3b82f6",
                               },
@@ -845,14 +855,14 @@ const LiensUtiles = () => {
                         >
                           <CardContent
                             sx={{
-                              p: { xs: 1, md: 1.2 },
+                              p: { xs: 1.2, md: 1.5 },
                               flex: "1 1 auto",
                               minHeight: 0,
                               display: "flex",
                               flexDirection: "column",
                               justifyContent: "flex-start",
                               overflow: "hidden",
-                              pb: 3.5, // Reduced bottom padding for a more compact button area
+                              pb: 4, // Increased bottom padding for better spacing
                             }}
                           >
                             {/* Content wrapper */}
@@ -907,16 +917,17 @@ const LiensUtiles = () => {
                                   variant="body2"
                                   className="link-title"
                                   sx={{
-                                    fontWeight: 600,
+                                    fontWeight: 500,
                                     transition: "all 0.2s ease",
-                                    fontSize: { xs: "0.55rem", sm: "0.6rem" },
-                                    lineHeight: 1.2,
-                                    color: "rgba(255, 255, 255, 0.9)",
+                                    fontSize: { xs: "0.6rem", sm: "0.65rem" },
+                                    lineHeight: 1.3,
+                                    color: "rgba(255, 255, 255, 0.85)",
                                     textAlign: "left",
                                     overflow: "hidden",
                                     textOverflow: "ellipsis",
                                     whiteSpace: "nowrap",
                                     flex: 1,
+                                    letterSpacing: "0.01em",
                                   }}
                                 >
                                   {link.title}
@@ -996,19 +1007,22 @@ const LiensUtiles = () => {
                               </Box>
 
                               {/* Category Badge */}
-                              <Box sx={{ mb: { xs: 0.3, sm: 0.4 } }}>
+                              <Box sx={{ mb: { xs: 0.4, sm: 0.5 } }}>
                                 <Chip
                                   label={link.category}
                                   size="small"
                                   sx={{
-                                    background: "rgba(59, 130, 246, 0.1)",
+                                    background: "rgba(59, 130, 246, 0.08)",
                                     color: "#3b82f6",
-                                    fontSize: { xs: "0.4rem", sm: "0.45rem" },
-                                    height: { xs: "14px", sm: "16px" },
+                                    fontSize: { xs: "0.45rem", sm: "0.5rem" },
+                                    height: { xs: "16px", sm: "18px" },
                                     fontWeight: 500,
-                                    border: "1px solid rgba(59, 130, 246, 0.2)",
+                                    border:
+                                      "1px solid rgba(59, 130, 246, 0.15)",
+                                    borderRadius: 1.5,
                                     "& .MuiChip-label": {
-                                      px: { xs: 0.4, sm: 0.5 },
+                                      px: { xs: 0.5, sm: 0.6 },
+                                      letterSpacing: "0.02em",
                                     },
                                   }}
                                 />
@@ -1019,10 +1033,12 @@ const LiensUtiles = () => {
                                 variant="caption"
                                 data-link-desc-id={link.id}
                                 sx={{
-                                  color: "rgba(255, 255, 255, 0.6)",
-                                  mb: { xs: 0.7, md: 0.8 },
-                                  lineHeight: 1.2,
-                                  fontSize: { xs: "0.5rem", md: "0.55rem" },
+                                  color: "rgba(255, 255, 255, 0.65)",
+                                  mb: { xs: 0.8, md: 1 },
+                                  lineHeight: 1.4,
+                                  fontSize: { xs: "0.52rem", md: "0.58rem" },
+                                  fontWeight: 400,
+                                  letterSpacing: "0.01em",
                                   ...(isMobile
                                     ? {
                                         display: "block",
@@ -1345,10 +1361,12 @@ const LiensUtiles = () => {
                           variant="caption"
                           data-link-desc-id={link.id}
                           sx={{
-                            color: "rgba(255, 255, 255, 0.6)",
-                            mb: { xs: 0.7, md: 0.8 },
-                            lineHeight: 1.2,
-                            fontSize: { xs: "0.5rem", md: "0.55rem" },
+                            color: "rgba(255, 255, 255, 0.65)",
+                            mb: { xs: 0.8, md: 1 },
+                            lineHeight: 1.4,
+                            fontSize: { xs: "0.52rem", md: "0.58rem" },
+                            fontWeight: 400,
+                            letterSpacing: "0.01em",
                             ...(isMobile
                               ? {
                                   display: "block",
@@ -1677,7 +1695,18 @@ const LiensUtiles = () => {
                 }}
               >
                 {categories.slice(1).map((category) => (
-                  <MenuItem key={category} value={category}>
+                  <MenuItem
+                    key={category}
+                    value={category}
+                    sx={{
+                      fontSize: "0.9rem",
+                      "&:hover": {
+                        background: "rgba(59, 130, 246, 0.1)",
+                        borderRadius: 1.5,
+                        mx: 0.5,
+                      },
+                    }}
+                  >
                     {category}
                   </MenuItem>
                 ))}
@@ -2163,7 +2192,18 @@ const LiensUtiles = () => {
                 }}
               >
                 {categories.slice(1).map((category) => (
-                  <MenuItem key={category} value={category}>
+                  <MenuItem
+                    key={category}
+                    value={category}
+                    sx={{
+                      fontSize: "0.9rem",
+                      "&:hover": {
+                        background: "rgba(59, 130, 246, 0.1)",
+                        borderRadius: 1.5,
+                        mx: 0.5,
+                      },
+                    }}
+                  >
                     {category}
                   </MenuItem>
                 ))}

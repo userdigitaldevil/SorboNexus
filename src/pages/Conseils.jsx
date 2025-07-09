@@ -504,14 +504,14 @@ export default function Conseils() {
         <SchoolIcon />
       </motion.div>
 
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 8 } }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <Box sx={{ textAlign: "center", mb: { xs: 3, md: 8 } }}>
+          <Box sx={{ textAlign: "center", mb: { xs: 6, md: 10 } }}>
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -519,17 +519,18 @@ export default function Conseils() {
             >
               <Box
                 sx={{
-                  width: { xs: 50, md: 80 },
-                  height: { xs: 50, md: 80 },
+                  width: { xs: 60, md: 90 },
+                  height: { xs: 60, md: 90 },
                   borderRadius: "50%",
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  margin: "0 auto 24px",
+                  margin: "0 auto 32px",
                   color: "white",
-                  fontSize: { xs: "1.25rem", md: "2rem" },
+                  fontSize: { xs: "1.5rem", md: "2.2rem" },
+                  boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
                 }}
               >
                 <GroupIcon />
@@ -543,26 +544,31 @@ export default function Conseils() {
               <Typography
                 variant="h2"
                 sx={{
-                  fontWeight: 700,
+                  fontWeight: 300,
                   mb: { xs: 1, md: 2 },
                   background:
-                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                   fontSize: { xs: "1.5rem", sm: "2rem", md: "3.5rem" },
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.02em",
                 }}
               >
-                Conseils des Alumni
+                <span style={{ fontWeight: 600 }}>Conseils</span> des Alumni
               </Typography>
               <Typography
                 variant="h5"
                 sx={{
-                  color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1.1rem" },
-                  maxWidth: "600px",
+                  fontWeight: 400,
+                  color: "rgba(255, 255, 255, 0.8)",
+                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.3rem" },
+                  maxWidth: "700px",
                   margin: "0 auto",
-                  lineHeight: { xs: 1.4, md: 1.5 },
+                  lineHeight: 1.3,
+                  letterSpacing: "0.01em",
+                  mb: { xs: 4, md: 5 },
                 }}
               >
                 Découvrez les conseils, retours, témoignages et messages
@@ -593,19 +599,22 @@ export default function Conseils() {
                   severity="warning"
                   icon={false}
                   sx={{
-                    background: "rgba(239, 68, 68, 0.13)",
-                    border: "1.5px solid #ef4444",
-                    color: "#b91c1c",
-                    fontWeight: 600,
-                    borderRadius: 2,
-                    mb: 2,
+                    background: "rgba(239, 68, 68, 0.08)",
+                    border: "1px solid rgba(239, 68, 68, 0.2)",
+                    color: "#dc2626",
+                    fontWeight: 400,
+                    borderRadius: 3,
+                    mb: 3,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    p: 2,
-                    fontSize: { xs: "0.95rem", md: "1.1rem" },
-                    maxWidth: 600,
+                    p: 3,
+                    fontSize: { xs: "0.9rem", md: "1rem" },
+                    maxWidth: 700,
                     mx: "auto",
+                    backdropFilter: "blur(10px)",
+                    letterSpacing: "0.01em",
+                    lineHeight: 1.5,
                   }}
                   iconMapping={{
                     warning: (
@@ -644,17 +653,19 @@ export default function Conseils() {
                 viewport={{ once: true }}
               >
                 <Card
-                  elevation={1}
+                  elevation={0}
                   sx={{
-                    background: "rgba(255, 255, 255, 0.06)",
-                    borderRadius: 2,
-                    boxShadow: "0 1px 6px rgba(59, 130, 246, 0.06)",
-                    mb: { xs: 1.5, md: 2 },
+                    background: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(20px)",
+                    borderRadius: 3,
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+                    mb: { xs: 2, md: 3 },
                     p: 0,
                     overflow: "visible",
                     position: "relative",
-                    transition: "box-shadow 0.2s",
-                    minHeight: { xs: 60, md: 100 },
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    minHeight: { xs: 80, md: 120 },
                     display: "flex",
                     alignItems: "center",
                     opacity:
@@ -663,7 +674,10 @@ export default function Conseils() {
                         ? 0.5
                         : 1,
                     "&:hover": {
-                      boxShadow: "0 4px 16px rgba(59, 130, 246, 0.10)",
+                      transform: "translateY(-4px)",
+                      boxShadow: "0 12px 40px rgba(59, 130, 246, 0.15)",
+                      background: "rgba(255, 255, 255, 0.08)",
+                      border: "1px solid rgba(59, 130, 246, 0.2)",
                     },
                   }}
                 >
@@ -687,14 +701,16 @@ export default function Conseils() {
                       <Avatar
                         onClick={() => openProfileModal(tip)}
                         sx={{
-                          width: { xs: 36, md: 44 },
-                          height: { xs: 36, md: 44 },
+                          width: { xs: 42, md: 52 },
+                          height: { xs: 42, md: 52 },
                           background: getAlumniCardColor(tip),
-                          fontSize: { xs: "0.8rem", md: "1rem" },
-                          fontWeight: 600,
+                          fontSize: { xs: "0.9rem", md: "1.1rem" },
+                          fontWeight: 500,
                           cursor: "pointer",
+                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                           "&:hover": {
-                            boxShadow: "0 4px 8px rgba(59, 130, 246, 0.3)",
+                            transform: "scale(1.05)",
+                            boxShadow: "0 6px 20px rgba(59, 130, 246, 0.25)",
                           },
                         }}
                       >
@@ -719,15 +735,19 @@ export default function Conseils() {
                           variant="body1"
                           sx={{
                             color: "#3b82f6",
-                            fontWeight: 600,
+                            fontWeight: 500,
                             cursor: "pointer",
                             textAlign: "left",
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            maxWidth: { xs: 80, md: 120 },
-                            fontSize: { xs: "0.8rem", md: "1rem" },
+                            maxWidth: { xs: 90, md: 130 },
+                            fontSize: { xs: "0.85rem", md: "1.05rem" },
+                            letterSpacing: "0.01em",
+                            lineHeight: 1.3,
+                            transition: "all 0.2s ease",
                             "&:hover": {
+                              color: "#2563eb",
                               textDecoration: "underline",
                             },
                           }}
@@ -738,13 +758,16 @@ export default function Conseils() {
                       <Typography
                         variant="caption"
                         sx={{
-                          color: "rgba(255,255,255,0.7)",
+                          color: "rgba(255,255,255,0.75)",
                           textAlign: "left",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
-                          maxWidth: { xs: 80, md: 120 },
-                          fontSize: { xs: "0.65rem", md: "0.75rem" },
+                          maxWidth: { xs: 90, md: 130 },
+                          fontSize: { xs: "0.7rem", md: "0.8rem" },
+                          fontWeight: 400,
+                          letterSpacing: "0.01em",
+                          lineHeight: 1.3,
                         }}
                       >
                         {tip.position}
@@ -752,13 +775,16 @@ export default function Conseils() {
                       <Typography
                         variant="caption"
                         sx={{
-                          color: "rgba(255,255,255,0.5)",
+                          color: "rgba(255,255,255,0.6)",
                           textAlign: "left",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
-                          maxWidth: { xs: 80, md: 120 },
-                          fontSize: { xs: "0.65rem", md: "0.75rem" },
+                          maxWidth: { xs: 90, md: 130 },
+                          fontSize: { xs: "0.7rem", md: "0.8rem" },
+                          fontWeight: 400,
+                          letterSpacing: "0.01em",
+                          lineHeight: 1.3,
                         }}
                       >
                         {tip.title}
@@ -767,12 +793,15 @@ export default function Conseils() {
                         label={tip.category}
                         size="small"
                         sx={{
-                          background: "rgba(59, 130, 246, 0.2)",
+                          background: "rgba(59, 130, 246, 0.08)",
                           color: "#3b82f6",
-                          fontWeight: 600,
-                          mt: 0.5,
-                          fontSize: { xs: "0.6rem", md: "0.75rem" },
-                          height: { xs: "20px", md: "24px" },
+                          fontWeight: 400,
+                          mt: 1,
+                          fontSize: { xs: "0.65rem", md: "0.75rem" },
+                          height: { xs: "22px", md: "26px" },
+                          borderRadius: 1.5,
+                          letterSpacing: "0.01em",
+                          border: "1px solid rgba(59, 130, 246, 0.15)",
                         }}
                       />
                     </Box>
@@ -792,14 +821,16 @@ export default function Conseils() {
                       component="div"
                       variant="body1"
                       sx={{
-                        color: "rgba(255,255,255,0.85)",
-                        fontSize: "0.95rem",
-                        lineHeight: 1.6,
+                        color: "rgba(255,255,255,0.8)",
+                        fontSize: { xs: "0.85rem", md: "0.95rem" },
+                        lineHeight: 1.7,
                         whiteSpace: "pre-line",
                         wordBreak: "break-word",
                         fontFamily: "inherit",
                         minHeight: 48,
-                        mb: 1,
+                        mb: 1.5,
+                        fontWeight: 400,
+                        letterSpacing: "0.01em",
                       }}
                     >
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -816,12 +847,15 @@ export default function Conseils() {
                           sx={{
                             color: "#3b82f6",
                             textTransform: "none",
-                            fontWeight: 600,
+                            fontWeight: 500,
                             p: 0,
                             minWidth: "auto",
-                            fontSize: { xs: "0.75rem", md: "0.875rem" },
+                            fontSize: { xs: "0.8rem", md: "0.9rem" },
+                            letterSpacing: "0.02em",
+                            transition: "all 0.2s ease",
                             "&:hover": {
-                              background: "rgba(59, 130, 246, 0.1)",
+                              background: "rgba(59, 130, 246, 0.08)",
+                              color: "#2563eb",
                             },
                           }}
                           endIcon={
@@ -855,7 +889,7 @@ export default function Conseils() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.2 }}
         >
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
             <Pagination
               count={totalPages}
               page={currentPage}
@@ -863,12 +897,17 @@ export default function Conseils() {
               size="large"
               sx={{
                 "& .MuiPaginationItem-root": {
-                  color: "rgba(255, 255, 255, 0.7)",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  background: "rgba(255, 255, 255, 0.05)",
+                  color: "rgba(255, 255, 255, 0.6)",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "rgba(255, 255, 255, 0.03)",
+                  borderRadius: 2,
+                  fontWeight: 400,
+                  fontSize: { xs: "0.85rem", md: "0.95rem" },
+                  transition: "all 0.2s ease",
                   "&:hover": {
-                    background: "rgba(255, 255, 255, 0.1)",
-                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    background: "rgba(255, 255, 255, 0.08)",
+                    border: "1px solid rgba(255, 255, 255, 0.25)",
+                    transform: "translateY(-1px)",
                   },
                 },
                 "& .Mui-selected": {
@@ -876,9 +915,11 @@ export default function Conseils() {
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important",
                   color: "white !important",
                   border: "1px solid #3b82f6 !important",
+                  fontWeight: 500,
                   "&:hover": {
                     background:
                       "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%) !important",
+                    transform: "translateY(-1px)",
                   },
                 },
               }}
@@ -921,13 +962,15 @@ export default function Conseils() {
             <Typography
               variant="h4"
               sx={{
-                fontWeight: 700,
-                mb: 2,
+                fontWeight: 500,
+                mb: 3,
                 background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                fontSize: { xs: "1.2rem", sm: "1.5rem", md: "2.1rem" },
+                fontSize: { xs: "1.3rem", sm: "1.6rem", md: "2.2rem" },
+                lineHeight: 1.2,
+                letterSpacing: "-0.01em",
               }}
             >
               Faites partie de notre réseau
@@ -935,11 +978,14 @@ export default function Conseils() {
             <Typography
               variant="h6"
               sx={{
-                color: "rgba(255, 255, 255, 0.7)",
-                mb: 4,
-                maxWidth: "600px",
+                color: "rgba(255, 255, 255, 0.8)",
+                mb: 5,
+                maxWidth: "700px",
                 margin: "0 auto",
-                fontSize: { xs: "0.95rem", sm: "1.1rem", md: "1.25rem" },
+                fontSize: { xs: "1rem", sm: "1.15rem", md: "1.3rem" },
+                lineHeight: 1.5,
+                letterSpacing: "0.01em",
+                fontWeight: 400,
               }}
             >
               Vous êtes un ancien étudiant de la Sorbonne ? Rejoignez notre
@@ -959,17 +1005,24 @@ export default function Conseils() {
                     background:
                       "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                     color: "white",
-                    fontWeight: 600,
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 2,
+                    fontWeight: 500,
+                    px: 5,
+                    py: 2,
+                    borderRadius: 4,
                     textTransform: "none",
-                    fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.1rem" },
+                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.4,
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
                     "&:hover": {
                       background:
                         "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 10px 25px rgba(59, 130, 246, 0.4)",
+                      transform: "translateY(-3px)",
+                      boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+                    },
+                    "&:active": {
+                      transform: "translateY(-1px)",
                     },
                   }}
                   onClick={() => {

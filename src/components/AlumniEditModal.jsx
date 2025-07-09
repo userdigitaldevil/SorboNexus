@@ -298,15 +298,17 @@ export default function AlumniEditModal({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            bgcolor: "#18181b",
-            p: 4,
-            borderRadius: 2,
-            minWidth: 320,
-            maxWidth: 420,
-            maxHeight: "80vh",
+            bgcolor: "rgba(30, 41, 59, 0.95)",
+            backdropFilter: "blur(20px)",
+            p: 5,
+            borderRadius: 3,
+            minWidth: 360,
+            maxWidth: 480,
+            maxHeight: "85vh",
             overflowY: "auto",
-            boxShadow: 24,
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
             scrollBehavior: "smooth",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
           }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -314,24 +316,25 @@ export default function AlumniEditModal({
             onClick={onClose}
             sx={{
               position: "absolute",
-              top: 16,
-              right: 16,
+              top: 20,
+              right: 20,
               zIndex: 10,
-              color: "rgba(255, 255, 255, 0.7)",
-              background: "rgba(0, 0, 0, 0.3)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              width: 36,
-              height: 36,
+              color: "rgba(255, 255, 255, 0.6)",
+              background: "rgba(0, 0, 0, 0.2)",
+              backdropFilter: "blur(12px)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              width: 40,
+              height: 40,
+              borderRadius: 2.5,
               "&:hover": {
                 color: "#fff",
-                background: "rgba(0, 0, 0, 0.5)",
-                transform: "scale(1.1)",
+                background: "rgba(0, 0, 0, 0.4)",
+                transform: "scale(1.05)",
               },
               transition: "all 0.2s ease",
             }}
           >
-            <CloseIcon sx={{ fontSize: "1.2rem" }} />
+            <CloseIcon sx={{ fontSize: "1.1rem" }} />
           </IconButton>
           <form onSubmit={handleEditSubmit}>
             {/* Admins can edit username */}
@@ -342,7 +345,31 @@ export default function AlumniEditModal({
                 value={editForm.username || ""}
                 onChange={handleEditFormChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
               />
             )}
             <TextField
@@ -351,7 +378,31 @@ export default function AlumniEditModal({
               value={editForm.name}
               onChange={handleEditFormChange}
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                },
+              }}
             />
             <TextField
               label="Diplôme"
@@ -359,7 +410,31 @@ export default function AlumniEditModal({
               value={editForm.degree}
               onChange={handleEditFormChange}
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                },
+              }}
             />
             <TextField
               label="Poste"
@@ -367,12 +442,68 @@ export default function AlumniEditModal({
               value={editForm.position}
               onChange={handleEditFormChange}
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                },
+                "& .MuiFormHelperText-root": {
+                  color: "rgba(255, 255, 255, 0.5)",
+                  fontSize: "0.8rem",
+                  fontWeight: 400,
+                },
+              }}
               helperText={
                 'Indiquez "Etudiant" si vous n\'avez pas de poste actuel.'
               }
             />
-            <FormControl fullWidth sx={{ mb: 2 }}>
+            <FormControl
+              fullWidth
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                },
+              }}
+            >
               <InputLabel id="domaines-label">Domaines</InputLabel>
               <Select
                 labelId="domaines-label"
@@ -385,13 +516,15 @@ export default function AlumniEditModal({
                 MenuProps={{
                   PaperProps: {
                     sx: {
-                      backgroundColor: "rgba(30, 41, 59, 0.97)",
+                      backgroundColor: "rgba(30, 41, 59, 0.98)",
                       color: "#fff",
+                      borderRadius: 2.5,
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
                     },
                   },
                 }}
                 renderValue={(selected) => (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.8 }}>
                     {selected.map((value) => (
                       <Chip
                         key={value}
@@ -399,7 +532,12 @@ export default function AlumniEditModal({
                         sx={{
                           background: "#3b82f6",
                           color: "#fff",
-                          fontWeight: 600,
+                          fontWeight: 500,
+                          fontSize: "0.85rem",
+                          borderRadius: 2,
+                          "& .MuiChip-label": {
+                            px: 1.5,
+                          },
                         }}
                       />
                     ))}
@@ -415,14 +553,22 @@ export default function AlumniEditModal({
                         ? {
                             background: "#3b82f6",
                             color: "#fff",
-                            fontWeight: 700,
+                            fontWeight: 500,
+                            borderRadius: 1.5,
+                            mx: 0.5,
                             "&:hover": { background: "#2563eb" },
                           }
-                        : {}
+                        : {
+                            "&:hover": {
+                              background: "rgba(59, 130, 246, 0.1)",
+                              borderRadius: 1.5,
+                              mx: 0.5,
+                            },
+                          }
                     }
                   >
                     {editForm.field && editForm.field.includes(domaine) ? (
-                      <span style={{ marginRight: 8, fontWeight: 900 }}>✓</span>
+                      <span style={{ marginRight: 8, fontWeight: 600 }}>✓</span>
                     ) : null}
                     {domaine}
                   </MenuItem>
@@ -435,7 +581,31 @@ export default function AlumniEditModal({
               value={editForm.linkedin || ""}
               onChange={handleEditFormChange}
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                },
+              }}
             />
             <TextField
               label="Email"
@@ -443,7 +613,31 @@ export default function AlumniEditModal({
               value={editForm.email || ""}
               onChange={handleEditFormChange}
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                },
+              }}
             />
             {/* Hide profile option for admin or self */}
             <FormControlLabel
@@ -453,16 +647,29 @@ export default function AlumniEditModal({
                   onChange={handleEditFormChange}
                   name="hidden"
                   color="primary"
+                  sx={{
+                    color: "#3b82f6",
+                    "&.Mui-checked": {
+                      color: "#3b82f6",
+                    },
+                  }}
                 />
               }
               label="Masquer ma carte (seuls les admins peuvent la voir)"
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiFormControlLabel-label": {
+                  color: "rgba(255, 255, 255, 0.8)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+              }}
             />
             <TextField
               label={
                 <span>
                   Conseils/Retours/Témoignages/Messages{" "}
-                  <span style={{ color: "red", fontWeight: 600 }}>
+                  <span style={{ color: "#ef4444", fontWeight: 500 }}>
                     (important)
                   </span>
                 </span>
@@ -477,7 +684,32 @@ export default function AlumniEditModal({
               fullWidth
               multiline
               minRows={3}
-              sx={{ mb: 0.5 }}
+              sx={{
+                mb: 1,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.5,
+                },
+              }}
               InputProps={{
                 endAdornment: conseilIsLong ? (
                   <IconButton
@@ -485,6 +717,12 @@ export default function AlumniEditModal({
                     size="small"
                     tabIndex={-1}
                     aria-label={showFullConseil ? "Réduire" : "Voir plus"}
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.6)",
+                      "&:hover": {
+                        color: "#fff",
+                      },
+                    }}
                   >
                     {showFullConseil ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                   </IconButton>
@@ -494,7 +732,14 @@ export default function AlumniEditModal({
             />
             <Typography
               variant="caption"
-              sx={{ color: "#3b82f6", mb: 1, display: "block" }}
+              sx={{
+                color: "#3b82f6",
+                mb: 2,
+                display: "block",
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                letterSpacing: "0.02em",
+              }}
             >
               Astuce : la syntaxe <b>Markdown</b> est supportée (listes, gras,
               italique, etc.)
@@ -505,7 +750,31 @@ export default function AlumniEditModal({
               value={editForm.nationalities || ""}
               onChange={handleEditFormChange}
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                },
+              }}
             />
             <TextField
               label="Stages, entreprises, concours, extrascolaire (texte libre)"
@@ -515,7 +784,32 @@ export default function AlumniEditModal({
               fullWidth
               multiline
               minRows={2}
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.5,
+                },
+              }}
             />
             <TextField
               label="Projets futurs (métiers, masters, écoles visés...)"
@@ -523,7 +817,31 @@ export default function AlumniEditModal({
               value={editForm.futureGoals || ""}
               onChange={handleEditFormChange}
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                },
+              }}
             />
             <TextField
               label="Année de fin de L3 (4 chiffres)"
@@ -531,14 +849,49 @@ export default function AlumniEditModal({
               value={editForm.anneeFinL3 || ""}
               onChange={handleEditFormChange}
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2.5,
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#3b82f6",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input": {
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.02em",
+                },
+              }}
               inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
             />
             {/* Grades Section */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1">Notes / Diplômes</Typography>
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  mb: 2,
+                  fontSize: "1.1rem",
+                  fontWeight: 500,
+                  color: "#fff",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                Notes / Diplômes
+              </Typography>
               {(editForm.grades || []).map((grade, idx) => (
-                <Box key={idx} sx={{ display: "flex", gap: 1, mb: 1 }}>
+                <Box key={idx} sx={{ display: "flex", gap: 1.5, mb: 2 }}>
                   <TextField
                     label="Diplôme"
                     value={grade.subject || ""}
@@ -546,7 +899,31 @@ export default function AlumniEditModal({
                       handleGradeChange(idx, "subject", e.target.value)
                     }
                     size="small"
-                    sx={{ flex: 1 }}
+                    sx={{
+                      flex: 1,
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2.5,
+                        "& fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#3b82f6",
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                      },
+                      "& .MuiInputBase-input": {
+                        color: "#fff",
+                        fontSize: "0.9rem",
+                        letterSpacing: "0.02em",
+                      },
+                    }}
                   />
                   <TextField
                     label="Note"
@@ -555,27 +932,99 @@ export default function AlumniEditModal({
                       handleGradeChange(idx, "value", e.target.value)
                     }
                     size="small"
-                    sx={{ flex: 1 }}
+                    sx={{
+                      flex: 1,
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2.5,
+                        "& fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#3b82f6",
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                      },
+                      "& .MuiInputBase-input": {
+                        color: "#fff",
+                        fontSize: "0.9rem",
+                        letterSpacing: "0.02em",
+                      },
+                    }}
                   />
                   <Button
                     onClick={() => handleRemoveGrade(idx)}
                     color="error"
                     size="small"
+                    sx={{
+                      color: "#ef4444",
+                      fontSize: "0.85rem",
+                      fontWeight: 500,
+                      px: 2,
+                      py: 1,
+                      borderRadius: 2,
+                      letterSpacing: "0.02em",
+                      textTransform: "none",
+                      "&:hover": {
+                        background: "rgba(239, 68, 68, 0.1)",
+                      },
+                    }}
                   >
                     Supprimer
                   </Button>
                 </Box>
               ))}
-              <Button onClick={handleAddGrade} size="small" sx={{ mt: 1 }}>
+              <Button
+                onClick={handleAddGrade}
+                size="small"
+                sx={{
+                  mt: 1,
+                  color: "#3b82f6",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    background: "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
+              >
                 Ajouter un diplôme/note
               </Button>
             </Box>
             {/* Schools Section */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1">Écoles demandées</Typography>
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  mb: 2,
+                  fontSize: "1.1rem",
+                  fontWeight: 500,
+                  color: "#fff",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                Écoles demandées
+              </Typography>
               <Typography
                 variant="body2"
-                sx={{ mb: 1, color: "#3b82f6", fontWeight: 500 }}
+                sx={{
+                  mb: 2,
+                  color: "#3b82f6",
+                  fontWeight: 500,
+                  fontSize: "0.85rem",
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.4,
+                }}
               >
                 L'ordre des écoles est important : la première école (rang 1)
                 correspond à la Licence/BSc, la deuxième (rang 2) au
@@ -584,8 +1033,8 @@ export default function AlumniEditModal({
                 les écoles.
               </Typography>
               {(editForm.schoolsApplied || []).map((school, idx) => (
-                <Box key={idx} sx={{ mb: 1 }}>
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                <Box key={idx} sx={{ mb: 2 }}>
+                  <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
                     <TextField
                       label={`École (rang ${idx + 1})`}
                       value={school.name || ""}
@@ -593,7 +1042,32 @@ export default function AlumniEditModal({
                         handleSchoolChange(idx, "name", e.target.value)
                       }
                       size="small"
-                      sx={{ flex: 2, minWidth: 250 }}
+                      sx={{
+                        flex: 2,
+                        minWidth: 250,
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 2.5,
+                          "& fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.1)",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.2)",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#3b82f6",
+                          },
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "rgba(255, 255, 255, 0.7)",
+                          fontSize: "0.85rem",
+                          fontWeight: 500,
+                        },
+                        "& .MuiInputBase-input": {
+                          color: "#fff",
+                          fontSize: "0.9rem",
+                          letterSpacing: "0.02em",
+                        },
+                      }}
                     />
                     <TextField
                       select
@@ -603,18 +1077,56 @@ export default function AlumniEditModal({
                         handleSchoolChange(idx, "status", e.target.value)
                       }
                       size="small"
-                      sx={{ flex: 1, minWidth: 120 }}
+                      sx={{
+                        flex: 1,
+                        minWidth: 120,
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: 2.5,
+                          "& fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.1)",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.2)",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#3b82f6",
+                          },
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "rgba(255, 255, 255, 0.7)",
+                          fontSize: "0.85rem",
+                          fontWeight: 500,
+                        },
+                        "& .MuiInputBase-input": {
+                          color: "#fff",
+                          fontSize: "0.9rem",
+                          letterSpacing: "0.02em",
+                        },
+                      }}
                       SelectProps={{ native: true }}
                     >
                       <option value="accepted">Accepté</option>
                       <option value="rejected">Refusé</option>
                     </TextField>
                   </Box>
-                  <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                  <Box sx={{ display: "flex", gap: 1, mt: 1.5 }}>
                     <Button
                       onClick={() => handleRemoveSchool(idx)}
                       color="error"
                       size="small"
+                      sx={{
+                        color: "#ef4444",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                        px: 2,
+                        py: 1,
+                        borderRadius: 2,
+                        letterSpacing: "0.02em",
+                        textTransform: "none",
+                        "&:hover": {
+                          background: "rgba(239, 68, 68, 0.1)",
+                        },
+                      }}
                     >
                       Supprimer
                     </Button>
@@ -633,6 +1145,22 @@ export default function AlumniEditModal({
                       }}
                       size="small"
                       disabled={idx === 0}
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.6)",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                        px: 1.5,
+                        py: 1,
+                        borderRadius: 2,
+                        letterSpacing: "0.02em",
+                        textTransform: "none",
+                        "&:hover": {
+                          background: "rgba(255, 255, 255, 0.08)",
+                        },
+                        "&:disabled": {
+                          color: "rgba(255, 255, 255, 0.3)",
+                        },
+                      }}
                     >
                       ↑
                     </Button>
@@ -651,13 +1179,46 @@ export default function AlumniEditModal({
                       }}
                       size="small"
                       disabled={idx === editForm.schoolsApplied.length - 1}
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.6)",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                        px: 1.5,
+                        py: 1,
+                        borderRadius: 2,
+                        letterSpacing: "0.02em",
+                        textTransform: "none",
+                        "&:hover": {
+                          background: "rgba(255, 255, 255, 0.08)",
+                        },
+                        "&:disabled": {
+                          color: "rgba(255, 255, 255, 0.3)",
+                        },
+                      }}
                     >
                       ↓
                     </Button>
                   </Box>
                 </Box>
               ))}
-              <Button onClick={handleAddSchool} size="small" sx={{ mt: 1 }}>
+              <Button
+                onClick={handleAddSchool}
+                size="small"
+                sx={{
+                  mt: 1,
+                  color: "#3b82f6",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    background: "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
+              >
                 Ajouter une école
               </Button>
             </Box>
@@ -665,21 +1226,32 @@ export default function AlumniEditModal({
             <Box
               sx={{
                 mb: 3,
-                p: 2,
+                p: 3,
                 border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: 2,
+                borderRadius: 2.5,
                 backgroundColor: "rgba(255, 255, 255, 0.02)",
               }}
             >
               <Typography
                 variant="subtitle1"
-                sx={{ mb: 2, color: "#3b82f6", fontWeight: 600 }}
+                sx={{
+                  mb: 2,
+                  color: "#3b82f6",
+                  fontWeight: 600,
+                  fontSize: "1.1rem",
+                  letterSpacing: "0.02em",
+                }}
               >
                 Changer le mot de passe
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ mb: 2, color: "rgba(255, 255, 255, 0.7)" }}
+                sx={{
+                  mb: 3,
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.85rem",
+                  letterSpacing: "0.02em",
+                }}
               >
                 Laissez vide pour ne pas changer le mot de passe
               </Typography>
@@ -690,7 +1262,36 @@ export default function AlumniEditModal({
                 value={editForm.newPassword}
                 onChange={handleEditFormChange}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    color: "rgba(255, 255, 255, 0.5)",
+                    fontSize: "0.8rem",
+                    fontWeight: 400,
+                  },
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -702,7 +1303,12 @@ export default function AlumniEditModal({
                           }))
                         }
                         edge="end"
-                        sx={{ color: "rgba(255, 255, 255, 0.5)" }}
+                        sx={{
+                          color: "rgba(255, 255, 255, 0.6)",
+                          "&:hover": {
+                            color: "#fff",
+                          },
+                        }}
                       >
                         {editForm.showPassword ? (
                           <VisibilityOff />
@@ -722,7 +1328,36 @@ export default function AlumniEditModal({
                 value={editForm.confirmPassword}
                 onChange={handleEditFormChange}
                 fullWidth
-                sx={{ mb: 1 }}
+                sx={{
+                  mb: 1,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                  "& .MuiFormHelperText-root": {
+                    color: "#ef4444",
+                    fontSize: "0.8rem",
+                    fontWeight: 400,
+                  },
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -734,7 +1369,12 @@ export default function AlumniEditModal({
                           }))
                         }
                         edge="end"
-                        sx={{ color: "rgba(255, 255, 255, 0.5)" }}
+                        sx={{
+                          color: "rgba(255, 255, 255, 0.6)",
+                          "&:hover": {
+                            color: "#fff",
+                          },
+                        }}
                       >
                         {editForm.showConfirmPassword ? (
                           <VisibilityOff />
@@ -768,9 +1408,33 @@ export default function AlumniEditModal({
                   value={editForm.avatar}
                   onChange={handleEditFormChange}
                   fullWidth
-                  sx={{ mb: 2 }}
+                  sx={{
+                    mb: 3,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2.5,
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "#fff",
+                      fontSize: "0.95rem",
+                      letterSpacing: "0.02em",
+                    },
+                  }}
                 />
-                <Box sx={{ mb: 2 }}>
+                <Box sx={{ mb: 3 }}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -785,9 +1449,23 @@ export default function AlumniEditModal({
                             })); // Default to a visible color when enabling
                           }
                         }}
+                        sx={{
+                          color: "#3b82f6",
+                          "&.Mui-checked": {
+                            color: "#3b82f6",
+                          },
+                        }}
                       />
                     }
                     label="Utiliser la couleur par défaut (domaines)"
+                    sx={{
+                      mb: 2,
+                      "& .MuiFormControlLabel-label": {
+                        color: "rgba(255, 255, 255, 0.8)",
+                        fontSize: "0.9rem",
+                        fontWeight: 500,
+                      },
+                    }}
                   />
                   <TextField
                     label="Couleur personnalisée (hex)"
@@ -795,7 +1473,31 @@ export default function AlumniEditModal({
                     value={editForm.color || ""}
                     onChange={handleEditFormChange}
                     fullWidth
-                    sx={{ mt: 1 }}
+                    sx={{
+                      mt: 1,
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2.5,
+                        "& fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#3b82f6",
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontSize: "0.9rem",
+                        fontWeight: 500,
+                      },
+                      "& .MuiInputBase-input": {
+                        color: "#fff",
+                        fontSize: "0.95rem",
+                        letterSpacing: "0.02em",
+                      },
+                    }}
                     disabled={!editForm.color}
                     placeholder="#ff80ab"
                     InputProps={{
@@ -806,7 +1508,7 @@ export default function AlumniEditModal({
                             height: 24,
                             bgcolor: editForm.color || "#eee",
                             borderRadius: "50%",
-                            border: "1px solid #ccc",
+                            border: "1px solid rgba(255, 255, 255, 0.2)",
                             ml: 1,
                           }}
                         />
@@ -814,7 +1516,7 @@ export default function AlumniEditModal({
                     }}
                   />
                   {editForm.color && (
-                    <Box sx={{ mt: 1 }}>
+                    <Box sx={{ mt: 2 }}>
                       <SketchPicker
                         color={editForm.color}
                         onChange={(color) =>
@@ -831,7 +1533,31 @@ export default function AlumniEditModal({
                   value={editForm.gradient}
                   onChange={handleEditFormChange}
                   fullWidth
-                  sx={{ mb: 2 }}
+                  sx={{
+                    mb: 3,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2.5,
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "#fff",
+                      fontSize: "0.95rem",
+                      letterSpacing: "0.02em",
+                    },
+                  }}
                 />
                 <FormControlLabel
                   control={
@@ -845,10 +1571,23 @@ export default function AlumniEditModal({
                       }
                       name="isAdmin"
                       color="primary"
+                      sx={{
+                        color: "#3b82f6",
+                        "&.Mui-checked": {
+                          color: "#3b82f6",
+                        },
+                      }}
                     />
                   }
                   label="Donner le statut administrateur à cet utilisateur"
-                  sx={{ mb: 2 }}
+                  sx={{
+                    mb: 3,
+                    "& .MuiFormControlLabel-label": {
+                      color: "rgba(255, 255, 255, 0.8)",
+                      fontSize: "0.9rem",
+                      fontWeight: 500,
+                    },
+                  }}
                 />
               </>
             ) : (
@@ -857,7 +1596,25 @@ export default function AlumniEditModal({
                 name="avatar"
                 value={editForm.avatar}
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.5)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "rgba(255, 255, 255, 0.5)",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
                 InputProps={{ readOnly: true }}
               />
             )}
@@ -867,17 +1624,90 @@ export default function AlumniEditModal({
                 value={new Date(alumni.createdAt).toLocaleString("fr-FR")}
                 fullWidth
                 InputProps={{ readOnly: true }}
-                sx={{ mb: 2 }}
+                sx={{
+                  mb: 3,
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2.5,
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.5)",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "rgba(255, 255, 255, 0.5)",
+                    fontSize: "0.95rem",
+                    letterSpacing: "0.02em",
+                  },
+                }}
               />
             )}
             {editError && (
-              <Typography color="error" sx={{ mb: 2 }}>
+              <Typography
+                color="error"
+                sx={{
+                  mb: 3,
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                }}
+              >
                 {editError}
               </Typography>
             )}
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button onClick={onClose}>Annuler</Button>
-              <Button type="submit" variant="contained">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 2,
+                mt: 4,
+              }}
+            >
+              <Button
+                onClick={onClose}
+                sx={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.95rem",
+                  fontWeight: 500,
+                  px: 3,
+                  py: 1.5,
+                  borderRadius: 2.5,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    color: "#fff",
+                    background: "rgba(255, 255, 255, 0.08)",
+                  },
+                }}
+              >
+                Annuler
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
+                  color: "#fff",
+                  fontSize: "0.95rem",
+                  fontWeight: 500,
+                  px: 4,
+                  py: 1.5,
+                  borderRadius: 2.5,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  boxShadow: "0 4px 16px rgba(59,130,246,0.12)",
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    background:
+                      "linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)",
+                    transform: "translateY(-1px)",
+                  },
+                }}
+              >
                 Enregistrer
               </Button>
             </Box>

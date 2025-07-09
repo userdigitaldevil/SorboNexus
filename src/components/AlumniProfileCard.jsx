@@ -111,7 +111,7 @@ export default function AlumniProfileCard({
     <>
       <Card
         sx={{
-          borderRadius: 4,
+          borderRadius: 3,
           background: alum.hidden
             ? "linear-gradient(145deg, #444 0%, #222 100%)"
             : "linear-gradient(145deg, #232323 0%, #111 100%)",
@@ -229,12 +229,12 @@ export default function AlumniProfileCard({
             {alum.avatar}
           </Avatar>
         </Box>
-        <CardContent sx={{ p: 4, pt: 8 }}>
+        <CardContent sx={{ p: { xs: 3, sm: 4 }, pt: { xs: 7, sm: 8 } }}>
           <Typography
             variant="h6"
             sx={{
-              fontWeight: 700,
-              mb: 1,
+              fontWeight: 600,
+              mb: 1.5,
               color: alum.isAdmin && isAdmin ? "#fff" : "white",
               background:
                 alum.isAdmin && isAdmin ? "rgba(255,255,255,0.18)" : undefined,
@@ -246,19 +246,36 @@ export default function AlumniProfileCard({
               backdropFilter: alum.isAdmin && isAdmin ? "blur(8px)" : undefined,
               fontFamily: alum.isAdmin && isAdmin ? "monospace" : undefined,
               letterSpacing: alum.isAdmin && isAdmin ? 1.5 : undefined,
+              fontSize: { xs: "1.4rem", sm: "1.6rem" },
+              letterSpacing: "-0.02em",
+              lineHeight: 1.3,
             }}
           >
             {alum.name}
           </Typography>
           <Typography
             variant="body2"
-            sx={{ color: "#3b82f6", fontWeight: 600, mb: 2 }}
+            sx={{
+              color: "#3b82f6",
+              fontWeight: 500,
+              mb: 2.5,
+              fontSize: { xs: "0.95rem", sm: "1.05rem" },
+              letterSpacing: "0.02em",
+              lineHeight: 1.4,
+            }}
           >
             {alum.degree}
           </Typography>
           <Typography
             variant="body2"
-            sx={{ color: "rgba(255, 255, 255, 0.7)", mb: 3, lineHeight: 1.5 }}
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+              mb: 3.5,
+              lineHeight: 1.5,
+              fontSize: { xs: "0.9rem", sm: "1rem" },
+              fontWeight: 400,
+              letterSpacing: "0.01em",
+            }}
           >
             {alum.position}
           </Typography>
@@ -335,12 +352,19 @@ export default function AlumniProfileCard({
               Supprimer
             </Button>
           )}
-          <Divider sx={{ my: 3, borderColor: "rgba(255,255,255,0.1)" }} />
+          <Divider sx={{ my: 4, borderColor: "rgba(255,255,255,0.1)" }} />
           {/* Contact Section */}
-          <Box sx={{ mb: 4 }}>
+          <Box sx={{ mb: 5 }}>
             <Typography
               variant="h6"
-              sx={{ color: "white", fontWeight: 600, mb: 2 }}
+              sx={{
+                color: "white",
+                fontWeight: 600,
+                mb: 2.5,
+                fontSize: { xs: "1.1rem", sm: "1.2rem" },
+                letterSpacing: "-0.01em",
+                lineHeight: 1.3,
+              }}
             >
               Contact
             </Typography>
@@ -354,9 +378,17 @@ export default function AlumniProfileCard({
                   sx={{
                     color: "#3b82f6",
                     border: "1px solid rgba(59, 130, 246, 0.3)",
+                    borderRadius: 2,
+                    px: 2.5,
+                    py: 1,
+                    fontSize: { xs: "0.85rem", sm: "0.9rem" },
+                    fontWeight: 500,
+                    letterSpacing: "0.02em",
+                    transition: "all 0.2s ease",
                     "&:hover": {
                       background: "rgba(59, 130, 246, 0.1)",
                       border: "1px solid #3b82f6",
+                      transform: "translateY(-1px)",
                     },
                   }}
                 >
@@ -371,9 +403,17 @@ export default function AlumniProfileCard({
                   sx={{
                     color: "#0077b5",
                     border: "1px solid rgba(0, 119, 181, 0.3)",
+                    borderRadius: 2,
+                    px: 2.5,
+                    py: 1,
+                    fontSize: { xs: "0.85rem", sm: "0.9rem" },
+                    fontWeight: 500,
+                    letterSpacing: "0.02em",
+                    transition: "all 0.2s ease",
                     "&:hover": {
                       background: "rgba(0, 119, 181, 0.1)",
                       border: "1px solid #0077b5",
+                      transform: "translateY(-1px)",
                     },
                   }}
                 >
@@ -384,10 +424,17 @@ export default function AlumniProfileCard({
           </Box>
           {/* Poste actuel Section */}
           {profile.currentPosition && (
-            <Box sx={{ mb: 4 }}>
+            <Box sx={{ mb: 5 }}>
               <Typography
                 variant="h6"
-                sx={{ color: "white", fontWeight: 600, mb: 2 }}
+                sx={{
+                  color: "white",
+                  fontWeight: 600,
+                  mb: 2.5,
+                  fontSize: { xs: "1.1rem", sm: "1.2rem" },
+                  letterSpacing: "-0.01em",
+                  lineHeight: 1.3,
+                }}
               >
                 Poste actuel
               </Typography>
@@ -395,7 +442,13 @@ export default function AlumniProfileCard({
                 <BusinessIcon sx={{ color: "#3b82f6" }} />
                 <Typography
                   variant="body1"
-                  sx={{ color: "rgba(255, 255, 255, 0.8)" }}
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.8)",
+                    fontSize: { xs: "0.95rem", sm: "1rem" },
+                    fontWeight: 400,
+                    letterSpacing: "0.01em",
+                    lineHeight: 1.4,
+                  }}
                 >
                   {profile.currentPosition}
                 </Typography>
@@ -406,10 +459,17 @@ export default function AlumniProfileCard({
           {profile.grades &&
             (Array.isArray(profile.grades)
               ? profile.grades.length > 0 && (
-                  <Box sx={{ mb: 4 }}>
+                  <Box sx={{ mb: 5 }}>
                     <Typography
                       variant="h6"
-                      sx={{ color: "white", fontWeight: 600, mb: 2 }}
+                      sx={{
+                        color: "white",
+                        fontWeight: 600,
+                        mb: 2.5,
+                        fontSize: { xs: "1.1rem", sm: "1.2rem" },
+                        letterSpacing: "-0.01em",
+                        lineHeight: 1.3,
+                      }}
                     >
                       Notes obtenues
                     </Typography>
@@ -435,10 +495,17 @@ export default function AlumniProfileCard({
                   </Box>
                 )
               : Object.keys(profile.grades).length > 0 && (
-                  <Box sx={{ mb: 4 }}>
+                  <Box sx={{ mb: 5 }}>
                     <Typography
                       variant="h6"
-                      sx={{ color: "white", fontWeight: 600, mb: 2 }}
+                      sx={{
+                        color: "white",
+                        fontWeight: 600,
+                        mb: 2.5,
+                        fontSize: { xs: "1.1rem", sm: "1.2rem" },
+                        letterSpacing: "-0.01em",
+                        lineHeight: 1.3,
+                      }}
                     >
                       Notes obtenues
                     </Typography>
@@ -469,10 +536,17 @@ export default function AlumniProfileCard({
           {profile.schoolsApplied &&
             (Array.isArray(profile.schoolsApplied)
               ? profile.schoolsApplied.length > 0 && (
-                  <Box sx={{ mb: 4 }}>
+                  <Box sx={{ mb: 5 }}>
                     <Typography
                       variant="h6"
-                      sx={{ color: "white", fontWeight: 600, mb: 2 }}
+                      sx={{
+                        color: "white",
+                        fontWeight: 600,
+                        mb: 2.5,
+                        fontSize: { xs: "1.1rem", sm: "1.2rem" },
+                        letterSpacing: "-0.01em",
+                        lineHeight: 1.3,
+                      }}
                     >
                       Écoles demandées
                     </Typography>
@@ -517,10 +591,17 @@ export default function AlumniProfileCard({
                   </Box>
                 )
               : profile.schoolsApplied.length > 0 && (
-                  <Box sx={{ mb: 4 }}>
+                  <Box sx={{ mb: 5 }}>
                     <Typography
                       variant="h6"
-                      sx={{ color: "white", fontWeight: 600, mb: 2 }}
+                      sx={{
+                        color: "white",
+                        fontWeight: 600,
+                        mb: 2.5,
+                        fontSize: { xs: "1.1rem", sm: "1.2rem" },
+                        letterSpacing: "-0.01em",
+                        lineHeight: 1.3,
+                      }}
                     >
                       Écoles demandées
                     </Typography>
@@ -563,16 +644,28 @@ export default function AlumniProfileCard({
                 ))}
           {/* Nationalities */}
           {alum.nationalities && alum.nationalities.length > 0 && (
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 3 }}>
               <Typography
                 variant="subtitle2"
-                sx={{ color: "#3b82f6", fontWeight: 600 }}
+                sx={{
+                  color: "#3b82f6",
+                  fontWeight: 600,
+                  fontSize: { xs: "0.95rem", sm: "1rem" },
+                  letterSpacing: "0.02em",
+                  mb: 1,
+                }}
               >
                 Nationalités
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "rgba(255,255,255,0.85)" }}
+                sx={{
+                  color: "rgba(255,255,255,0.85)",
+                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.4,
+                }}
               >
                 {Array.isArray(alum.nationalities)
                   ? alum.nationalities.join(", ")
@@ -582,18 +675,27 @@ export default function AlumniProfileCard({
           )}
           {/* Stages/Extrascolaire/Associations/Expérience Pro */}
           {alum.stagesWorkedContestsExtracurriculars && (
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 3 }}>
               <Typography
                 variant="subtitle2"
-                sx={{ color: "#3b82f6", fontWeight: 600 }}
+                sx={{
+                  color: "#3b82f6",
+                  fontWeight: 600,
+                  fontSize: { xs: "0.95rem", sm: "1rem" },
+                  letterSpacing: "0.02em",
+                  mb: 1,
+                }}
               >
                 Stages / Extrascolaire / Associations / Expérience Pro
               </Typography>
               <Box
                 sx={{
                   color: "rgba(255,255,255,0.85)",
-                  fontSize: "1rem",
-                  mt: 0.5,
+                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                  mt: 1,
+                  lineHeight: 1.5,
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
                 }}
               >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -604,16 +706,28 @@ export default function AlumniProfileCard({
           )}
           {/* Future Goals */}
           {alum.futureGoals && (
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 3 }}>
               <Typography
                 variant="subtitle2"
-                sx={{ color: "#3b82f6", fontWeight: 600 }}
+                sx={{
+                  color: "#3b82f6",
+                  fontWeight: 600,
+                  fontSize: { xs: "0.95rem", sm: "1rem" },
+                  letterSpacing: "0.02em",
+                  mb: 1,
+                }}
               >
                 Projets futurs (métiers, masters, écoles visés...)
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "rgba(255,255,255,0.85)" }}
+                sx={{
+                  color: "rgba(255,255,255,0.85)",
+                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.4,
+                }}
               >
                 {alum.futureGoals}
               </Typography>
@@ -621,16 +735,28 @@ export default function AlumniProfileCard({
           )}
           {/* Année de fin de L3 */}
           {alum.anneeFinL3 && (
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 3 }}>
               <Typography
                 variant="subtitle2"
-                sx={{ color: "#3b82f6", fontWeight: 600 }}
+                sx={{
+                  color: "#3b82f6",
+                  fontWeight: 600,
+                  fontSize: { xs: "0.95rem", sm: "1rem" },
+                  letterSpacing: "0.02em",
+                  mb: 1,
+                }}
               >
                 Année de fin de L3
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "rgba(255,255,255,0.85)" }}
+                sx={{
+                  color: "rgba(255,255,255,0.85)",
+                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.4,
+                }}
               >
                 {alum.anneeFinL3}
               </Typography>
@@ -639,7 +765,7 @@ export default function AlumniProfileCard({
           {/* Account creation and last updated dates (side by side, left and right) */}
           <Box
             sx={{
-              mt: 3,
+              mt: 4,
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
@@ -651,9 +777,11 @@ export default function AlumniProfileCard({
                 variant="caption"
                 sx={{
                   color: "gray",
-                  fontSize: "0.75rem",
+                  fontSize: { xs: "0.7rem", sm: "0.75rem" },
                   display: "inline-block",
                   textAlign: "left",
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
                 }}
               >
                 {`Compte créé le ${new Date(
@@ -671,8 +799,10 @@ export default function AlumniProfileCard({
                 sx={{
                   color: "gray",
                   display: "inline-block",
-                  fontSize: "0.75rem",
+                  fontSize: { xs: "0.7rem", sm: "0.75rem" },
                   textAlign: "right",
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
                 }}
               >
                 {`Dernière modification le ${new Date(
@@ -687,10 +817,16 @@ export default function AlumniProfileCard({
           </Box>
           {/* Conseil Section */}
           {alum.conseil && (
-            <Box sx={{ mt: 3 }}>
+            <Box sx={{ mt: 4 }}>
               <Typography
                 variant="subtitle2"
-                sx={{ color: "#3b82f6", fontWeight: 700, mb: 1 }}
+                sx={{
+                  color: "#3b82f6",
+                  fontWeight: 700,
+                  mb: 1.5,
+                  fontSize: { xs: "1rem", sm: "1.1rem" },
+                  letterSpacing: "0.02em",
+                }}
               >
                 Conseil
               </Typography>
@@ -698,14 +834,17 @@ export default function AlumniProfileCard({
                 className="markdown-content"
                 sx={{
                   background: "rgba(59, 130, 246, 0.05)",
-                  borderRadius: 2,
-                  p: 2,
-                  fontSize: "1rem",
+                  borderRadius: 2.5,
+                  p: { xs: 2.5, sm: 3 },
+                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
                   color: "#fff",
                   whiteSpace: "pre-line",
                   wordBreak: "break-word",
                   fontFamily: "inherit",
                   minHeight: 48,
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.5,
                 }}
               >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
