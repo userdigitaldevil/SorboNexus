@@ -90,6 +90,19 @@ const FeatureCard = ({
           "&:hover::before": {
             opacity: 1,
           },
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            top: "-2px",
+            left: "-2px",
+            right: "-2px",
+            bottom: "-2px",
+            background: `conic-gradient(from 0deg, transparent, rgba(59, 130, 246, 0.3), transparent, rgba(6, 182, 212, 0.3), transparent)`,
+            borderRadius: "inherit",
+            zIndex: -1,
+            animation: "glowFlicker 4s ease-in-out infinite",
+            opacity: 0.2,
+          },
         }}
       >
         <CardContent
@@ -101,11 +114,29 @@ const FeatureCard = ({
             textAlign: "center",
             height: "100%",
             justifyContent: fixedSize || isMini ? "center" : undefined,
+            position: "relative",
+            overflow: "hidden",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: "-100%",
+              width: "100%",
+              height: "100%",
+              background:
+                "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)",
+              transition: "left 0.5s ease",
+              zIndex: 1,
+            },
+            "&:hover::before": {
+              left: "100%",
+            },
           }}
         >
           <motion.div
             whileHover={{ rotate: 360 }}
             transition={{ duration: 0.6 }}
+            style={{ position: "relative", zIndex: 2 }}
           >
             <Box
               className="feature-icon"
@@ -145,6 +176,8 @@ const FeatureCard = ({
               fontSize: isMini
                 ? { xs: "0.75rem", sm: "0.9rem" }
                 : { xs: "1rem", sm: "1.25rem" },
+              position: "relative",
+              zIndex: 2,
               ...(fixedSize || isMini
                 ? {
                     height: { xs: 32, sm: 40 }, // Fixed height for 2 lines
@@ -174,6 +207,8 @@ const FeatureCard = ({
                 display: "flex",
                 alignItems: "center",
                 fontSize: { xs: "0.7rem", sm: "0.875rem" },
+                position: "relative",
+                zIndex: 2,
               }}
             >
               {feature.description}

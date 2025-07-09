@@ -806,6 +806,29 @@ export default function Home() {
                     <span style={{ display: "block" }}>SorboNexus</span>
                   </Typography>
 
+                  {/* Hero Subtitle */}
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      fontWeight: 400,
+                      mb: { xs: 3, md: 4 },
+                      fontSize: {
+                        xs: "1.1rem",
+                        sm: "1.2rem",
+                        md: "1.4rem",
+                        lg: "1.5rem",
+                      },
+                      lineHeight: 1.4,
+                      color: "text.secondary",
+                      textAlign: { xs: "center", md: "left" },
+                      maxWidth: "600px",
+                    }}
+                  >
+                    Votre passerelle vers l'excellence académique.
+                    Connectez-vous avec des alumni qui ont écrit leur succès, et
+                    découvrez leurs secrets de réussite.
+                  </Typography>
+
                   {/* Action Buttons */}
                   <Stack
                     direction={{ xs: "column", sm: "row" }}
@@ -954,144 +977,54 @@ export default function Home() {
               </motion.div>
             </Grid>
 
-            {/* Right Side - Visual Card */}
+            {/* Right Side - Mini Feature Cards */}
             <Grid gridColumn={{ xs: "span 12", md: "span 6" }}>
               <motion.div
-                initial={{ opacity: 0, x: 50, rotateY: 15 }}
-                animate={{ opacity: 1, x: 0, rotateY: 0 }}
-                transition={{ duration: 1, delay: 0.5 }}
-                style={{ perspective: "1000px" }}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <Box sx={{ display: "flex", justifyContent: "center" }}>
-                  <motion.div
-                    whileHover={{
-                      scale: 1.05,
-                      rotateY: 5,
-                      rotateX: 2,
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 20,
-                    }}
-                    onMouseMove={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const x = e.clientX - rect.left;
-                      const y = e.clientY - rect.top;
-                      const centerX = rect.width / 2;
-                      const centerY = rect.height / 2;
-
-                      // Calculate mouse position relative to center
-                      const relativeX = (x - centerX) / centerX;
-                      const relativeY = (y - centerY) / centerY;
-
-                      // Update CSS custom properties for color interpolation
-                      e.currentTarget.style.setProperty("--mouse-x", relativeX);
-                      e.currentTarget.style.setProperty("--mouse-y", relativeY);
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: { xs: 3, sm: 2 },
+                      px: { xs: 0, sm: 4 },
+                      "& > *": {
+                        flexShrink: 0,
+                      },
                     }}
                   >
-                    <Card
-                      elevation={0}
-                      sx={{
-                        background: "rgba(255, 255, 255, 0.08)",
-                        backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        borderRadius: "24px",
-                        p: 4,
-                        position: "relative",
-                        overflow: "hidden",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        "&::before": {
-                          content: '""',
-                          position: "absolute",
-                          top: "16px",
-                          left: "50%",
-                          transform:
-                            "translateX(calc(-50% + var(--mouse-x, 0) * 20px))",
-                          width: "60%",
-                          height: "2px",
-                          background:
-                            "linear-gradient(90deg, transparent, #3b82f6, #06b6d4, #3b82f6, transparent)",
-                          borderRadius: "1px",
-                          filter: "blur(0.5px)",
-                          opacity: 0.8,
-                          zIndex: 1,
-                        },
-                        "&:hover": {
-                          background: "rgba(255, 255, 255, 0.12)",
-                          border: "1px solid rgba(59, 130, 246, 0.3)",
-                          boxShadow: "0 8px 32px rgba(59, 130, 246, 0.2)",
-                          "&::before": {
-                            opacity: 1,
-                            filter: "blur(1px)",
-                          },
-                        },
-                      }}
-                    >
-                      {/* HERO SECTION: Mini Feature Cards (horizontal scroll) */}
+                    {features.slice(0, 4).map((feature, index) => (
                       <Box
+                        key={index}
                         sx={{
+                          minWidth: { xs: 60, sm: 100 },
+                          maxWidth: { xs: 60, sm: 100 },
+                          height: { xs: 72, sm: 120 },
+                          flex: "0 0 auto",
+                          scrollSnapAlign: "start",
                           display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          width: "100%",
+                          alignItems: "stretch",
                         }}
                       >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            gap: { xs: 3, sm: 2 },
-                            px: { xs: 0, sm: 4 },
-                            "& > *": {
-                              flexShrink: 0,
-                            },
-                          }}
-                        >
-                          {features.slice(0, 4).map((feature, index) => (
-                            <Box
-                              key={index}
-                              sx={{
-                                minWidth: { xs: 60, sm: 100 },
-                                maxWidth: { xs: 60, sm: 100 },
-                                height: { xs: 72, sm: 120 },
-                                flex: "0 0 auto",
-                                scrollSnapAlign: "start",
-                                display: "flex",
-                                alignItems: "stretch",
-                              }}
-                            >
-                              <FeatureCard
-                                feature={feature}
-                                index={index}
-                                variant="mini"
-                                onCardClick={() =>
-                                  handleCardNavigation(feature.path)
-                                }
-                                fixedSize
-                              />
-                            </Box>
-                          ))}
-                        </Box>
+                        <FeatureCard
+                          feature={feature}
+                          index={index}
+                          variant="mini"
+                          onCardClick={() => handleCardNavigation(feature.path)}
+                          fixedSize
+                        />
                       </Box>
-
-                      {/* Bottom Accent */}
-                      <motion.div
-                        className="bottom-accent"
-                        initial={{ opacity: 0, width: 0 }}
-                        animate={{ opacity: 1, width: "100%" }}
-                        transition={{ duration: 1, delay: 2 }}
-                        style={{
-                          height: "2px",
-                          background:
-                            "linear-gradient(90deg, transparent, #3b82f6, transparent)",
-                          marginTop: 40,
-                          transition: "all 0.3s ease",
-                        }}
-                      />
-                    </Card>
-                  </motion.div>
+                    ))}
+                  </Box>
                 </Box>
               </motion.div>
             </Grid>

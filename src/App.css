@@ -27,6 +27,26 @@
   }
 }
 
+@keyframes glowFlicker {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    opacity: 0.4;
+    transform: rotate(90deg) scale(1.02);
+  }
+  50% {
+    opacity: 0.1;
+    transform: rotate(180deg) scale(0.98);
+  }
+  75% {
+    opacity: 0.5;
+    transform: rotate(270deg) scale(1.01);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
