@@ -908,6 +908,17 @@ export default function Home() {
                         >
                           Étudiants actifs
                         </Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "rgba(255, 255, 255, 0.4)",
+                            fontSize: { xs: "0.6rem", md: "0.7rem" },
+                            fontStyle: "italic",
+                            mt: 0.5,
+                          }}
+                        >
+                          Certains profils sont masqués
+                        </Typography>
                       </Box>
                     </motion.div>
                     <motion.div
@@ -1885,6 +1896,17 @@ export default function Home() {
                   }}
                 >
                   Étudiants actifs
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.4)",
+                    fontSize: { xs: "0.6rem", md: "0.7rem" },
+                    fontStyle: "italic",
+                    mt: 0.5,
+                  }}
+                >
+                  Certains profils sont masqués
                 </Typography>
               </Box>
               <Box

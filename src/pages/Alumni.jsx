@@ -896,6 +896,19 @@ export default function Alumni() {
             >
               Nos Anciens Étudiants
             </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                color: "rgba(255, 255, 255, 0.4)",
+                fontSize: { xs: "0.7rem", md: "0.8rem" },
+                fontStyle: "italic",
+                mb: 2,
+                display: "block",
+                textAlign: "center",
+              }}
+            >
+              Certains profils sont masqués
+            </Typography>
             <Button
               variant="outlined"
               color="primary"
