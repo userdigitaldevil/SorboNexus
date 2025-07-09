@@ -113,8 +113,8 @@ export default function Ressources() {
   const [editIconSearch, setEditIconSearch] = useState("");
   // Add state for expanded descriptions
   const [expandedDescriptions, setExpandedDescriptions] = useState(new Set());
-  const PREVIEW_LENGTH = 200;
-  const PREVIEW_LINES = 3;
+  const PREVIEW_LENGTH = 250;
+  const PREVIEW_LINES = 4;
   const isLongDescription = (desc) =>
     desc &&
     (desc.length > PREVIEW_LENGTH || desc.split("\n").length > PREVIEW_LINES);
@@ -733,7 +733,10 @@ export default function Ressources() {
                       }
                     }}
                     sx={{
-                      height: { xs: 480, md: 520 },
+                      height: expandedDescriptions.has(resource.id)
+                        ? "auto"
+                        : { xs: 480, md: 520 },
+                      minHeight: { xs: 480, md: 520 },
                       width: "100%",
                       maxWidth: { xs: 280, md: 320 },
                       mx: "auto",
@@ -744,7 +747,7 @@ export default function Ressources() {
                       transition: "all 0.3s ease",
                       cursor: resource.resourceUrl ? "pointer" : "default",
                       position: "relative",
-                      overflow: "hidden",
+                      overflow: "visible",
                       display: "flex",
                       flexDirection: "column",
                       "&:hover": {
@@ -855,7 +858,9 @@ export default function Ressources() {
                       <Box
                         sx={{
                           flexGrow: 1,
-                          overflow: "hidden",
+                          overflow: expandedDescriptions.has(resource.id)
+                            ? "visible"
+                            : "hidden",
                           display: "flex",
                           flexDirection: "column",
                         }}
@@ -873,14 +878,12 @@ export default function Ressources() {
                                   fontSize: { xs: "0.75rem", md: "0.875rem" },
                                   whiteSpace: "pre-line",
                                   wordBreak: "break-word",
-                                  overflow: "hidden",
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: expandedDescriptions.has(
+                                  overflow: expandedDescriptions.has(
                                     resource.id
                                   )
-                                    ? "none"
-                                    : 3,
-                                  WebkitBoxOrient: "vertical",
+                                    ? "visible"
+                                    : "hidden",
+                                  display: "block",
                                 }}
                                 {...props}
                               />
@@ -905,7 +908,9 @@ export default function Ressources() {
                               minWidth: "auto",
                               fontSize: { xs: "0.75rem", md: "0.875rem" },
                               mb: 1,
-                              mt: "auto",
+                              mt: expandedDescriptions.has(resource.id)
+                                ? 2
+                                : "auto",
                               "&:hover": {
                                 background: "rgba(59, 130, 246, 0.1)",
                               },
