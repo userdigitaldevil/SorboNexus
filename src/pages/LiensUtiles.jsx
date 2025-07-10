@@ -59,6 +59,7 @@ import { jwtDecode } from "jwt-decode";
 import predefinedIcons from "../data/predefinedIcons";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useBookmarks from "../hooks/useBookmarks";
+import { getLinks, addLink, editLink, deleteLink } from "../api/links";
 
 const LiensUtiles = () => {
   // ============================================================================
@@ -120,11 +121,7 @@ const LiensUtiles = () => {
 
   // Fetch links from backend on mount, with error handling
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL || ""}/api/links`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Erreur lors du chargement des liens");
-        return res.json();
-      })
+    getLinks()
       .then((data) => setLinks(data))
       .catch((err) => {
         alert("Erreur lors du chargement des liens: " + err.message);
@@ -359,47 +356,38 @@ const LiensUtiles = () => {
   /**
    * Save changes to existing link and close edit modal
    */
-  const saveLinkChanges = () => {
-    // Determine icon value based on selected mode
+  const saveLinkChanges = async () => {
+    const token = localStorage.getItem("token");
     const iconValue = iconMode === "predefined" ? editForm.icon : customIconUrl;
-
-    // Update the link in the array
-    setLinks((prevLinks) =>
-      prevLinks.map((link) =>
-        link.id === editingLink.id
-          ? {
-              ...link,
-              title: editForm.title,
-              url: editForm.url,
-              description: editForm.description,
-              category: editForm.category,
-              icon: iconValue,
-              gradient: editForm.gradient,
-            }
-          : link
-      )
-    );
-
-    closeEditModal();
+    try {
+      const updated = await editLink(
+        editingLink.id,
+        {
+          title: editForm.title,
+          url: editForm.url,
+          description: editForm.description,
+          category: editForm.category,
+          icon: iconValue,
+          gradient: editForm.gradient,
+        },
+        token
+      );
+      setLinks((prevLinks) =>
+        prevLinks.map((link) => (link.id === editingLink.id ? updated : link))
+      );
+      closeEditModal();
+    } catch (err) {
+      alert("Erreur lors de la modification du lien: " + err.message);
+    }
   };
 
   /**
    * Delete the currently editing link and close modal
    */
   const deleteCurrentLink = async () => {
+    const token = localStorage.getItem("token");
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL || ""}/api/links/${editingLink.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.error || "Erreur lors de la suppression du lien."
-        );
-      }
+      await deleteLink(editingLink.id, token);
       setLinks((prevLinks) =>
         prevLinks.filter((link) => link.id !== editingLink.id)
       );
@@ -454,25 +442,27 @@ const LiensUtiles = () => {
   /**
    * Create new link and add to links array
    */
-  const createAndAddNewLink = () => {
-    // Determine icon value based on selected mode
+  const createAndAddNewLink = async () => {
+    const token = localStorage.getItem("token");
     const iconValue =
       addIconMode === "predefined" ? addForm.icon : addCustomIconUrl;
-
-    // Create new link with unique ID
-    const newLink = {
-      id: generateUniqueLinkId(),
-      title: addForm.title,
-      url: addForm.url,
-      description: addForm.description,
-      category: addForm.category,
-      icon: iconValue,
-      gradient: addForm.gradient,
-    };
-
-    // Add to links array
-    setLinks((prevLinks) => [...prevLinks, newLink]);
-    closeAddModal();
+    try {
+      const newLink = await addLink(
+        {
+          title: addForm.title,
+          url: addForm.url,
+          description: addForm.description,
+          category: addForm.category,
+          icon: iconValue,
+          gradient: addForm.gradient,
+        },
+        token
+      );
+      setLinks((prevLinks) => [...prevLinks, newLink]);
+      closeAddModal();
+    } catch (err) {
+      alert("Erreur lors de l'ajout du lien: " + err.message);
+    }
   };
 
   /**
