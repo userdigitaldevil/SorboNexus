@@ -16,6 +16,7 @@ const Typewriter = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Default sequence if none provided
   const defaultSequence = [
@@ -28,8 +29,28 @@ const Typewriter = ({
 
   const sequenceToUse = sequence || defaultSequence;
 
+  // Pause typewriter when scrolling to improve performance
   useEffect(() => {
-    if (isComplete && !repeat) return;
+    let scrollTimeout;
+
+    const handleScroll = () => {
+      setIsPaused(true);
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        setIsPaused(false);
+      }, 150); // Resume after 150ms of no scrolling
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, []);
+
+  useEffect(() => {
+    if ((isComplete && !repeat) || isPaused) return;
 
     const currentSequence = sequenceToUse[currentStep];
     if (!currentSequence) {
@@ -45,58 +66,64 @@ const Typewriter = ({
       return;
     }
 
+    // Use requestAnimationFrame for better performance and to avoid blocking scrolling
+    const animate = () => {
+      if (currentSequence.action === "type") {
+        // Typing phase
+        if (currentSequence.startFrom) {
+          // Start typing from a specific point (like "Sorbo")
+          const startLength = currentSequence.startFrom.length;
+          const remainingText = currentSequence.text.slice(startLength);
+
+          if (currentIndex < remainingText.length) {
+            setDisplayText(
+              currentSequence.startFrom +
+                remainingText.slice(0, currentIndex + 1)
+            );
+            setCurrentIndex(currentIndex + 1);
+          } else {
+            // Finished typing this sequence - immediately start next step
+            setCurrentStep(currentStep + 1);
+            setCurrentIndex(0);
+            setIsDeleting(false);
+          }
+        } else {
+          // Normal typing from beginning
+          if (currentIndex < currentSequence.text.length) {
+            setDisplayText(currentSequence.text.slice(0, currentIndex + 1));
+            setCurrentIndex(currentIndex + 1);
+          } else {
+            // Finished typing this sequence - immediately start next step
+            setCurrentStep(currentStep + 1);
+            setCurrentIndex(0);
+            setIsDeleting(false);
+          }
+        }
+      } else if (currentSequence.action === "delete") {
+        // Deleting phase
+        const targetText = currentSequence.target || "";
+        if (displayText.length > targetText.length) {
+          setDisplayText(displayText.slice(0, -1));
+        } else {
+          // Finished deleting to target - immediately start next step
+          setCurrentStep(currentStep + 1);
+          setCurrentIndex(0);
+          setIsDeleting(false);
+        }
+      } else if (currentSequence.action === "pause") {
+        // Pause phase - wait for specified duration then move to next step
+        setTimeout(() => {
+          setCurrentStep(currentStep + 1);
+          setCurrentIndex(0);
+          setIsDeleting(false);
+        }, currentSequence.duration || 1000);
+      }
+    };
+
+    // Use a more efficient timeout that doesn't block scrolling
     const timeout = setTimeout(
       () => {
-        if (currentSequence.action === "type") {
-          // Typing phase
-          if (currentSequence.startFrom) {
-            // Start typing from a specific point (like "Sorbo")
-            const startLength = currentSequence.startFrom.length;
-            const remainingText = currentSequence.text.slice(startLength);
-
-            if (currentIndex < remainingText.length) {
-              setDisplayText(
-                currentSequence.startFrom +
-                  remainingText.slice(0, currentIndex + 1)
-              );
-              setCurrentIndex(currentIndex + 1);
-            } else {
-              // Finished typing this sequence - immediately start next step
-              setCurrentStep(currentStep + 1);
-              setCurrentIndex(0);
-              setIsDeleting(false);
-            }
-          } else {
-            // Normal typing from beginning
-            if (currentIndex < currentSequence.text.length) {
-              setDisplayText(currentSequence.text.slice(0, currentIndex + 1));
-              setCurrentIndex(currentIndex + 1);
-            } else {
-              // Finished typing this sequence - immediately start next step
-              setCurrentStep(currentStep + 1);
-              setCurrentIndex(0);
-              setIsDeleting(false);
-            }
-          }
-        } else if (currentSequence.action === "delete") {
-          // Deleting phase
-          const targetText = currentSequence.target || "";
-          if (displayText.length > targetText.length) {
-            setDisplayText(displayText.slice(0, -1));
-          } else {
-            // Finished deleting to target - immediately start next step
-            setCurrentStep(currentStep + 1);
-            setCurrentIndex(0);
-            setIsDeleting(false);
-          }
-        } else if (currentSequence.action === "pause") {
-          // Pause phase - wait for specified duration then move to next step
-          setTimeout(() => {
-            setCurrentStep(currentStep + 1);
-            setCurrentIndex(0);
-            setIsDeleting(false);
-          }, currentSequence.duration || 1000);
-        }
+        requestAnimationFrame(animate);
       },
       currentSequence.action === "delete" ? deleteSpeed : speed
     );
@@ -125,7 +152,12 @@ const Typewriter = ({
       {displayText}
       <motion.span
         animate={{ opacity: [1, 0] }}
-        transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+        transition={{
+          duration: 0.5,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "easeInOut",
+        }}
         style={{
           display: "inline-block",
           width: "2px",
@@ -133,6 +165,7 @@ const Typewriter = ({
           background: "currentColor",
           marginLeft: "2px",
           verticalAlign: "text-top",
+          willChange: "opacity", // Optimize for animation
         }}
       />
     </motion.span>
