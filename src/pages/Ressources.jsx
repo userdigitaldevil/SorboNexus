@@ -40,6 +40,7 @@ import {
   editRessource,
   deleteRessource,
 } from "../api/ressources";
+import { uploadFile } from "../api/upload";
 
 // CATEGORY_STYLES for resource categories
 const CATEGORY_STYLES = {
@@ -2179,25 +2180,9 @@ export default function Ressources() {
                       const file = e.target.files[0];
                       if (!file) return;
                       setUploading(true);
-                      const formData = new FormData();
-                      formData.append("file", file);
                       try {
                         const token = localStorage.getItem("token");
-                        const res = await fetch(
-                          `${import.meta.env.VITE_API_URL || ""}/api/upload`,
-                          {
-                            method: "POST",
-                            headers: token
-                              ? { Authorization: `Bearer ${token}` }
-                              : {},
-                            body: formData,
-                          }
-                        );
-                        if (!res.ok)
-                          throw new Error("Erreur lors de l'upload du fichier");
-                        const data = await res.json();
-                        if (!data.filename)
-                          throw new Error("Réponse d'upload invalide");
+                        const data = await uploadFile(file, token);
                         const fileUrl =
                           data.url || `/api/files/${data.filename}`;
                         updateAddFormField("resourceUrl", fileUrl);
@@ -2887,27 +2872,9 @@ export default function Ressources() {
                         const file = e.target.files[0];
                         if (!file) return;
                         setUploading(true);
-                        const formData = new FormData();
-                        formData.append("file", file);
                         try {
                           const token = localStorage.getItem("token");
-                          const res = await fetch(
-                            `${import.meta.env.VITE_API_URL || ""}/api/upload`,
-                            {
-                              method: "POST",
-                              headers: token
-                                ? { Authorization: `Bearer ${token}` }
-                                : {},
-                              body: formData,
-                            }
-                          );
-                          if (!res.ok)
-                            throw new Error(
-                              "Erreur lors de l'upload du fichier"
-                            );
-                          const data = await res.json();
-                          if (!data.filename)
-                            throw new Error("Réponse d'upload invalide");
+                          const data = await uploadFile(file, token);
                           const fileUrl =
                             data.url || `/api/files/${data.filename}`;
                           updateEditFormField("resourceUrl", fileUrl);
