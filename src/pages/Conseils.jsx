@@ -53,7 +53,6 @@ import {
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { DOMAIN_COLORS } from "../components/AlumniCard.jsx";
@@ -158,7 +157,6 @@ export default function Conseils() {
     bookmarkedItems: bookmarkedAlumni,
     toggleBookmark: toggleBookmarkForAlumni,
     isBookmarked: isAlumniBookmarked,
-    loading: bookmarksLoading,
     error: bookmarksError,
   } = useBookmarks("alumni");
 
@@ -369,104 +367,6 @@ export default function Conseils() {
       setEditForm((prev) => ({ ...prev, isAdmin: value === "true" }));
     } else {
       setEditForm((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  // Add helpers for grades and schools
-  const handleGradeChange = (key, value) => {
-    setEditForm((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        grades: { ...prev.profile.grades, [key]: value },
-      },
-    }));
-  };
-  const handleAddGrade = () => {
-    setEditForm((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        grades: { ...prev.profile.grades, "": "" },
-      },
-    }));
-  };
-  const handleRemoveGrade = (key) => {
-    setEditForm((prev) => {
-      const newGrades = { ...prev.profile.grades };
-      delete newGrades[key];
-      return {
-        ...prev,
-        profile: { ...prev.profile, grades: newGrades },
-      };
-    });
-  };
-  const handleSchoolChange = (idx, field, value) => {
-    setEditForm((prev) => {
-      const schools = [...(prev.profile.schoolsApplied || [])];
-      schools[idx] = { ...schools[idx], [field]: value };
-      return {
-        ...prev,
-        profile: { ...prev.profile, schoolsApplied: schools },
-      };
-    });
-  };
-  const handleAddSchool = () => {
-    setEditForm((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        schoolsApplied: [
-          ...(prev.profile.schoolsApplied || []),
-          { name: "", status: "accepted" },
-        ],
-      },
-    }));
-  };
-  const handleRemoveSchool = (idx) => {
-    setEditForm((prev) => {
-      const schools = [...(prev.profile.schoolsApplied || [])];
-      schools.splice(idx, 1);
-      return {
-        ...prev,
-        profile: { ...prev.profile, schoolsApplied: schools },
-      };
-    });
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/alumni/${editAlumni._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(editForm),
-        }
-      );
-
-      if (response.ok) {
-        // Refresh alumni data
-        const updatedResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/alumni`
-        );
-        const updatedData = await updatedResponse.json();
-        setAlumni(updatedData);
-        setEditModalOpen(false);
-        setEditAlumni(null);
-
-        // Notify navbar to refresh user data
-        localStorage.setItem("profileUpdated", Date.now().toString());
-        window.dispatchEvent(new Event("profileUpdated"));
-      } else {
-        console.error("Failed to update alumni");
-      }
-    } catch (error) {
-      console.error("Error updating alumni:", error);
     }
   };
 

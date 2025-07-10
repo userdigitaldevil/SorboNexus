@@ -53,7 +53,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { jwtDecode } from "jwt-decode";
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import AlumniCard from "../components/AlumniCard";
-import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { useAlumniEditModal } from "../components/AlumniEditModalContext";
@@ -94,7 +93,6 @@ export default function Alumni() {
     bookmarkedItems: bookmarkedAlumni,
     toggleBookmark: toggleBookmarkForAlumni,
     isBookmarked: isAlumniBookmarked,
-    loading: bookmarksLoading,
     error: bookmarksError,
   } = useBookmarks("alumni");
 
@@ -405,29 +403,6 @@ export default function Alumni() {
       } catch (e) {}
     }
     openEditModal(alumniData);
-  };
-
-  const handleGradeChange = (idx, field, value) => {
-    // This function is no longer used in the new implementation
-  };
-  const handleAddGrade = () => {
-    // This function is no longer used in the new implementation
-  };
-  const handleRemoveGrade = (idx) => {
-    // This function is no longer used in the new implementation
-  };
-  const handleSchoolChange = (idx, field, value) => {
-    // This function is no longer used in the new implementation
-  };
-  const handleAddSchool = () => {
-    // This function is no longer used in the new implementation
-  };
-  const handleRemoveSchool = (idx) => {
-    // This function is no longer used in the new implementation
-  };
-
-  const handleEditSubmit = async (e) => {
-    // This function is no longer used in the new implementation
   };
 
   const handleDeleteClick = async (alum) => {

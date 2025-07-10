@@ -43,7 +43,6 @@ import BusinessIcon from "@mui/icons-material/Business";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AlumniProfileCard from "./AlumniProfileCard";
-import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import { useAlumniEditModal } from "./AlumniEditModalContext";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";

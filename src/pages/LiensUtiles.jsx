@@ -75,7 +75,6 @@ const LiensUtiles = () => {
     bookmarkedItems: bookmarkedLinks,
     toggleBookmark: toggleBookmarkForLink,
     isBookmarked: isLinkBookmarked,
-    loading: bookmarksLoading,
     error: bookmarksError,
   } = useBookmarks("link");
   const [currentPage, setCurrentPage] = useState(1);

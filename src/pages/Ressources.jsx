@@ -158,7 +158,6 @@ export default function Ressources() {
     bookmarkedItems: bookmarkedResources,
     toggleBookmark: toggleBookmarkForResource,
     isBookmarked: isResourceBookmarked,
-    loading: bookmarksLoading,
     error: bookmarksError,
   } = useBookmarks("ressource");
 
