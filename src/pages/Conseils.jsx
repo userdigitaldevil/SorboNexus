@@ -179,7 +179,6 @@ export default function Conseils() {
       .then((data) => {
         setAlumni(data);
         setLoading(false);
-        console.log("Fetched alumni (conseils):", data);
       });
   }, []);
 

@@ -130,7 +130,7 @@ export default function Alumni() {
       setAlumni(data);
       setCurrentPage(1);
       setLoading(false);
-      console.log("Fetched alumni:", data);
+      // console.log("Fetched alumni:", data); // Removed for production
     } catch (error) {
       console.error("Error fetching alumni:", error);
       setLoading(false);
@@ -475,20 +475,20 @@ export default function Alumni() {
   };
 
   useEffect(() => {
-    console.log(
-      "alumniId:",
-      alumniId,
-      "alumni:",
-      alumni.map((a) => ({
-        _id: a._id,
-        id: a.id,
-        name: a.name,
-        hidden: a.hidden,
-      }))
-    );
+    // console.log(
+    //   "alumniId:",
+    //   alumniId,
+    //   "alumni:",
+    //   alumni.map((a) => ({
+    //     _id: a._id,
+    //     id: a.id,
+    //     name: a.name,
+    //     hidden: a.hidden,
+    //   }))
+    // ); // Removed for production
   }, [alumni, alumniId]);
 
-  console.log("currentAlumni:", currentAlumni);
+  // console.log("currentAlumni:", currentAlumni); // Removed for production
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
