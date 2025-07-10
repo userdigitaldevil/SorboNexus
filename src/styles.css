@@ -11,6 +11,8 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* Account for fixed navbar */
+  /* Mobile scrolling fixes */
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -22,11 +24,8 @@ body {
   line-height: 1.7;
   min-height: 100vh;
   overflow-x: hidden;
-  scroll-behavior: smooth;
-  /* Apple-style smooth scrolling */
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
   /* Mobile scrolling fixes */
+  -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
   overscroll-behavior: none;
 }
@@ -43,11 +42,39 @@ body {
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
     overscroll-behavior: none;
+    /* Fix for double scroll issue */
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
   }
 
   /* Prevent momentum scrolling issues on iOS */
   * {
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fix for scroll momentum issues */
+  .glassy-bg {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+
+  /* iOS momentum scrolling fix */
+  html,
+  body {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    /* Prevent double scroll */
+    scroll-behavior: auto;
+    -webkit-scroll-behavior: auto;
+  }
+
+  /* Fix for alternating scroll direction issues */
+  .min-h-screen {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    /* Ensure proper touch handling */
+    touch-action: pan-y;
+    overscroll-behavior: none;
   }
 }
 

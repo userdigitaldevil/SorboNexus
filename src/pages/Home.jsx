@@ -653,37 +653,13 @@ export default function Home() {
 
   const [showArrow, setShowArrow] = useState(true);
 
+  // Simplified arrow visibility - always show for now to prevent scroll conflicts
   useEffect(() => {
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          // Hide arrow if scrolled more than 80vh
-          if (window.scrollY > window.innerHeight * 0.8) {
-            setShowArrow(false);
-          } else {
-            setShowArrow(true);
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    setShowArrow(true);
   }, []);
 
   return (
-    <div
-      className="glassy-bg min-h-screen"
-      style={{
-        touchAction: "pan-y",
-        overscrollBehavior: "none",
-        WebkitOverflowScrolling: "touch",
-      }}
-    >
+    <div className="glassy-bg min-h-screen">
       {/* Hero Section */}
       <Box
         component="section"
