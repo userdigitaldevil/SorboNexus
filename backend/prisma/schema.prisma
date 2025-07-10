@@ -23,6 +23,7 @@ model User {
   annonces  Annonce[]
   links     Link[]
   ressources Ressource[]
+  bookmarks Bookmark[]
 }
 
 model Alumni {
@@ -51,6 +52,7 @@ model Alumni {
   grades    Grade[]
   schoolsApplied SchoolApplied[]
   users     User[]
+  bookmarkCount Int @default(0)
   updatedAt DateTime @updatedAt
 }
 
@@ -89,6 +91,7 @@ model Link {
   category    String
   icon        String
   gradient    String
+  bookmarkCount Int @default(0)
 
   createdBy   User     @relation(fields: [createdById], references: [id])
   createdById Int
@@ -106,8 +109,23 @@ model Ressource {
   filter      String
   resourceUrl String?
   format      String?
+  bookmarkCount Int @default(0)
   createdBy   User     @relation(fields: [createdById], references: [id])
   createdById Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Bookmark {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  itemId    Int
+  itemType  String   // "alumni", "resource", "link"
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id])
+  
+  @@unique([userId, itemId, itemType])
+  @@index([itemId, itemType])
+  @@index([userId])
 }

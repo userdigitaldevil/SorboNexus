@@ -24,6 +24,8 @@ import {
   Business as BusinessIcon,
   CheckCircleOutline as CheckCircleOutlineIcon,
   Close as CloseIcon,
+  BookmarkBorder as BookmarkIcon,
+  Bookmark as BookmarkFilledIcon,
 } from "@mui/icons-material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { renderTextWithLinks } from "../utils/textUtils.jsx";
@@ -49,6 +51,8 @@ export default function AlumniProfileCard({
   handleEditClick,
   handleDeleteClick,
   onClose,
+  isBookmarked = false,
+  onToggleBookmark,
 }) {
   // Support both alum.profile and flat alum for backward compatibility
   const profile = alum.profile || alum;
@@ -155,6 +159,93 @@ export default function AlumniProfileCard({
           </IconButton>
         )}
 
+        {/* Action Buttons Container */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: { xs: 12, sm: 16 },
+            right: onClose ? { xs: 56, sm: 64 } : { xs: 12, sm: 16 },
+            zIndex: 30,
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+          }}
+        >
+          {/* Bookmark Button - Hide for user's own profile */}
+          {onToggleBookmark &&
+            String(alum._id) !== String(alumniId) &&
+            String(alum.id) !== String(alumniId) && (
+              <IconButton
+                onClick={() => onToggleBookmark()}
+                sx={{
+                  color: isBookmarked ? "#f59e0b" : "rgba(255, 255, 255, 0.7)",
+                  background: "rgba(0, 0, 0, 0.3)",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  width: { xs: 32, sm: 36 },
+                  height: { xs: 32, sm: 36 },
+                  minWidth: { xs: 32, sm: 36 },
+                  minHeight: { xs: 32, sm: 36 },
+                  "&:hover": {
+                    color: isBookmarked ? "#d97706" : "#f59e0b",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    transform: "scale(1.1)",
+                  },
+                  transition: "all 0.2s ease",
+                }}
+                title={
+                  isBookmarked ? "Retirer des favoris" : "Ajouter aux favoris"
+                }
+              >
+                {isBookmarked ? (
+                  <BookmarkFilledIcon
+                    sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+                  />
+                ) : (
+                  <BookmarkIcon
+                    sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+                  />
+                )}
+              </IconButton>
+            )}
+
+          {/* Edit Button */}
+          {(alum._id === alumniId || isAdmin) && (
+            <IconButton
+              size="medium"
+              sx={{
+                color: "#fff",
+                background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
+                width: { xs: 32, sm: 36 },
+                height: { xs: 32, sm: 36 },
+                minWidth: { xs: 32, sm: 36 },
+                minHeight: { xs: 32, sm: 36 },
+                "&:hover": {
+                  background:
+                    "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                  color: "#fff",
+                  transform: "scale(1.1)",
+                  boxShadow: "0 6px 16px rgba(59, 130, 246, 0.6)",
+                },
+                transition: "all 0.2s ease",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEditClick(alum);
+              }}
+            >
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                <path
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  d="M16.474 5.474a2.5 2.5 0 1 1 3.536 3.536l-9.193 9.193a2 2 0 0 1-.707.464l-3.5 1.167a.5.5 0 0 1-.633-.633l1.167-3.5a2 2 0 0 1 .464-.707l9.192-9.192Z"
+                />
+              </svg>
+            </IconButton>
+          )}
+        </Box>
+
         {/* Hidden profile indicator */}
         {alum.hidden && (
           <Box
@@ -245,9 +336,8 @@ export default function AlumniProfileCard({
                 alum.isAdmin && isAdmin ? "0 2px 24px 2px #fff6" : undefined,
               backdropFilter: alum.isAdmin && isAdmin ? "blur(8px)" : undefined,
               fontFamily: alum.isAdmin && isAdmin ? "monospace" : undefined,
-              letterSpacing: alum.isAdmin && isAdmin ? 1.5 : undefined,
+              letterSpacing: alum.isAdmin && isAdmin ? "0.15em" : "-0.02em",
               fontSize: { xs: "1.4rem", sm: "1.6rem" },
-              letterSpacing: "-0.02em",
               lineHeight: 1.3,
             }}
           >
@@ -279,44 +369,7 @@ export default function AlumniProfileCard({
           >
             {alum.position}
           </Typography>
-          {(alum._id === alumniId || isAdmin) && (
-            <IconButton
-              size="medium"
-              sx={{
-                position: "absolute",
-                top: { xs: 12, sm: 16 },
-                right: { xs: onClose ? 52 : 12, sm: onClose ? 60 : 16 },
-                color: "#fff",
-                background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
-                zIndex: 20,
-                width: { xs: 36, sm: 40 },
-                height: { xs: 36, sm: 40 },
-                minWidth: { xs: 36, sm: 40 },
-                minHeight: { xs: 36, sm: 40 },
-                "&:hover": {
-                  background:
-                    "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                  color: "#fff",
-                  transform: "scale(1.1)",
-                  boxShadow: "0 6px 16px rgba(59, 130, 246, 0.6)",
-                },
-                transition: "all 0.2s ease",
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleEditClick(alum);
-              }}
-            >
-              <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-                <path
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  d="M16.474 5.474a2.5 2.5 0 1 1 3.536 3.536l-9.193 9.193a2 2 0 0 1-.707.464l-3.5 1.167a.5.5 0 0 1-.633-.633l1.167-3.5a2 2 0 0 1 .464-.707l9.192-9.192Z"
-                />
-              </svg>
-            </IconButton>
-          )}
+
           {isAdmin && (
             <Button
               variant="outlined"

@@ -11,6 +11,10 @@ import { motion } from "framer-motion";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EmailIcon from "@mui/icons-material/Email";
 import EditIcon from "@mui/icons-material/Edit";
+import {
+  BookmarkBorder as BookmarkIcon,
+  Bookmark as BookmarkFilledIcon,
+} from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -78,6 +82,8 @@ const AlumniCard = ({
   alumniId,
   activeFilters = [],
   filters = [],
+  isBookmarked = false,
+  onToggleBookmark,
 }) => {
   // Compute alumFields as array
   let alumFields = Array.isArray(alum.field)
@@ -161,38 +167,84 @@ const AlumniCard = ({
           },
         }}
       >
-        {/* Edit Button for Admins or Self */}
-        {(isAdmin ||
-          String(alum._id) === String(alumniId) ||
-          String(alum.id) === String(alumniId)) && (
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              onEditClick(alum);
-            }}
-            sx={{
-              position: "absolute",
-              top: 12,
-              right: 12,
-              zIndex: 20,
-              background: "rgba(59, 130, 246, 0.85)",
-              color: "white",
-              width: 36,
-              height: 36,
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-              borderRadius: 2,
-              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
-              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-              "&:hover": {
-                background: "rgba(59, 130, 246, 0.95)",
-                transform: "scale(1.1)",
-                boxShadow: "0 6px 20px rgba(59, 130, 246, 0.4)",
-              },
-            }}
-          >
-            <EditIcon sx={{ fontSize: "1.2rem" }} />
-          </IconButton>
-        )}
+        {/* Action Buttons Container */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            zIndex: 20,
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+          }}
+        >
+          {/* Edit Button for Admins or Self */}
+          {(isAdmin ||
+            String(alum._id) === String(alumniId) ||
+            String(alum.id) === String(alumniId)) && (
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onEditClick(alum);
+              }}
+              sx={{
+                background: "rgba(59, 130, 246, 0.85)",
+                color: "white",
+                width: 32,
+                height: 32,
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                borderRadius: 2,
+                boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                "&:hover": {
+                  background: "rgba(59, 130, 246, 0.95)",
+                  transform: "scale(1.1)",
+                  boxShadow: "0 6px 20px rgba(59, 130, 246, 0.4)",
+                },
+              }}
+            >
+              <EditIcon sx={{ fontSize: "1rem" }} />
+            </IconButton>
+          )}
+
+          {/* Bookmark Button - Hide for user's own profile */}
+          {onToggleBookmark &&
+            String(alum._id) !== String(alumniId) &&
+            String(alum.id) !== String(alumniId) && (
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleBookmark(alum.id || alum._id);
+                }}
+                sx={{
+                  color: isBookmarked ? "#f59e0b" : "rgba(255, 255, 255, 0.6)",
+                  background: "rgba(0, 0, 0, 0.3)",
+                  backdropFilter: "blur(10px)",
+                  width: 32,
+                  height: 32,
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: 2,
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  "&:hover": {
+                    color: isBookmarked ? "#d97706" : "#f59e0b",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    transform: "scale(1.1)",
+                  },
+                }}
+                title={
+                  isBookmarked ? "Retirer des favoris" : "Ajouter aux favoris"
+                }
+              >
+                {isBookmarked ? (
+                  <BookmarkFilledIcon sx={{ fontSize: "1rem" }} />
+                ) : (
+                  <BookmarkIcon sx={{ fontSize: "1rem" }} />
+                )}
+              </IconButton>
+            )}
+        </Box>
+
         <Box
           sx={{
             height: { xs: 60, sm: 80, md: 100 },

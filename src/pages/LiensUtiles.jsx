@@ -58,6 +58,7 @@ import {
 import { jwtDecode } from "jwt-decode";
 import predefinedIcons from "../data/predefinedIcons";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import useBookmarks from "../hooks/useBookmarks";
 
 const LiensUtiles = () => {
   // ============================================================================
@@ -67,7 +68,16 @@ const LiensUtiles = () => {
   // Core page state
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("Tous les liens");
-  const [bookmarkedLinks, setBookmarkedLinks] = useState(new Set());
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
+
+  // Use bookmark hook
+  const {
+    bookmarkedItems: bookmarkedLinks,
+    toggleBookmark: toggleBookmarkForLink,
+    isBookmarked: isLinkBookmarked,
+    loading: bookmarksLoading,
+    error: bookmarksError,
+  } = useBookmarks("link");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
@@ -285,7 +295,9 @@ const LiensUtiles = () => {
         const matchesCategory =
           activeCategory === "Tous les liens" ||
           link.category === activeCategory;
-        return matchesSearch && matchesCategory;
+        const matchesBookmarked =
+          !showBookmarkedOnly || isLinkBookmarked(link.id);
+        return matchesSearch && matchesCategory && matchesBookmarked;
       })
       .sort((a, b) => {
         // Sort by category first, then by title
@@ -308,20 +320,6 @@ const LiensUtiles = () => {
   // ============================================================================
   // BOOKMARK MANAGEMENT FUNCTIONS
   // ============================================================================
-
-  /**
-   * Toggle bookmark status for a specific link
-   * @param {number} linkId - ID of the link to toggle bookmark
-   */
-  const toggleBookmarkForLink = (linkId) => {
-    const newBookmarkedLinks = new Set(bookmarkedLinks);
-    if (newBookmarkedLinks.has(linkId)) {
-      newBookmarkedLinks.delete(linkId);
-    } else {
-      newBookmarkedLinks.add(linkId);
-    }
-    setBookmarkedLinks(newBookmarkedLinks);
-  };
 
   // ============================================================================
   // EDIT MODAL MANAGEMENT FUNCTIONS
@@ -759,6 +757,49 @@ const LiensUtiles = () => {
                 </motion.div>
               ))}
             </Box>
+
+            {/* Bookmarked Filter */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.6 }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                <Chip
+                  icon={<BookmarkFilledIcon />}
+                  label={
+                    showBookmarkedOnly
+                      ? "Favoris uniquement"
+                      : "Tous les favoris"
+                  }
+                  onClick={() => setShowBookmarkedOnly(!showBookmarkedOnly)}
+                  sx={{
+                    background: showBookmarkedOnly
+                      ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                      : "rgba(255,255,255,0.05)",
+                    color: "white",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    fontSize: { xs: "0.8rem", md: "0.9rem" },
+                    height: { xs: "36px", md: "40px" },
+                    fontWeight: 500,
+                    letterSpacing: "0.01em",
+                    "&:hover": {
+                      background: showBookmarkedOnly
+                        ? "linear-gradient(135deg, #d97706 0%, #b45309 100%)"
+                        : "rgba(245, 158, 11, 0.2)",
+                      border: "1px solid rgba(245, 158, 11, 0.3)",
+                      transform: "translateY(-1px)",
+                    },
+                    "& .MuiChip-icon": {
+                      color: showBookmarkedOnly ? "white" : "#f59e0b",
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                    },
+                  }}
+                />
+              </Box>
+            </motion.div>
           </Box>
         </Container>
       </motion.section>
@@ -971,7 +1012,7 @@ const LiensUtiles = () => {
                                   }}
                                   size="small"
                                   sx={{
-                                    color: bookmarkedLinks.has(link.id)
+                                    color: isLinkBookmarked(link.id)
                                       ? "#3b82f6"
                                       : "rgba(255, 255, 255, 0.4)",
                                     p: 0.2,
@@ -984,13 +1025,14 @@ const LiensUtiles = () => {
                                     },
                                   }}
                                 >
-                                  {bookmarkedLinks.has(link.id) ? (
+                                  {isLinkBookmarked(link.id) ? (
                                     <BookmarkFilledIcon
                                       sx={{
                                         fontSize: {
                                           xs: "0.55rem",
                                           sm: "0.6rem",
                                         },
+                                        color: "#f59e0b",
                                       }}
                                     />
                                   ) : (
@@ -1000,6 +1042,7 @@ const LiensUtiles = () => {
                                           xs: "0.55rem",
                                           sm: "0.6rem",
                                         },
+                                        color: "rgba(255, 255, 255, 0.6)",
                                       }}
                                     />
                                   )}
@@ -1308,7 +1351,7 @@ const LiensUtiles = () => {
                             }}
                             size="small"
                             sx={{
-                              color: bookmarkedLinks.has(link.id)
+                              color: isLinkBookmarked(link.id)
                                 ? "#3b82f6"
                                 : "rgba(255, 255, 255, 0.4)",
                               p: 0.3,
@@ -1321,16 +1364,18 @@ const LiensUtiles = () => {
                               },
                             }}
                           >
-                            {bookmarkedLinks.has(link.id) ? (
+                            {isLinkBookmarked(link.id) ? (
                               <BookmarkFilledIcon
                                 sx={{
                                   fontSize: { xs: "0.65rem", md: "0.75rem" },
+                                  color: "#f59e0b",
                                 }}
                               />
                             ) : (
                               <BookmarkIcon
                                 sx={{
                                   fontSize: { xs: "0.65rem", md: "0.75rem" },
+                                  color: "rgba(255, 255, 255, 0.6)",
                                 }}
                               />
                             )}

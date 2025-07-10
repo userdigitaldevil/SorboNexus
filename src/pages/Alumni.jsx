@@ -45,6 +45,8 @@ import {
   Close as CloseIcon,
   Visibility,
   VisibilityOff,
+  BookmarkBorder as BookmarkIcon,
+  Bookmark as BookmarkFilledIcon,
 } from "@mui/icons-material";
 import Pagination from "@mui/material/Pagination";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -55,6 +57,7 @@ import { renderTextWithLinks } from "../utils/textUtils.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { useAlumniEditModal } from "../components/AlumniEditModalContext";
+import useBookmarks from "../hooks/useBookmarks";
 
 export default function Alumni() {
   // Admin state (must be first)
@@ -84,6 +87,16 @@ export default function Alumni() {
   const [loading, setLoading] = useState(true);
   const [shuffledOrder, setShuffledOrder] = useState(null);
   const [alreadyConnectedOpen, setAlreadyConnectedOpen] = useState(false);
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
+
+  // Use bookmark hook
+  const {
+    bookmarkedItems: bookmarkedAlumni,
+    toggleBookmark: toggleBookmarkForAlumni,
+    isBookmarked: isAlumniBookmarked,
+    loading: bookmarksLoading,
+    error: bookmarksError,
+  } = useBookmarks("alumni");
 
   // Available domains with their color codes
   const DOMAIN_COLORS = {
@@ -253,7 +266,9 @@ export default function Alumni() {
         selectedDomains.every((domain) => alum.domains.includes(domain))) ||
       (alum.field &&
         selectedDomains.every((domain) => alum.field.includes(domain)));
-    return matchesSearch && matchesFilter;
+    const matchesBookmarked =
+      !showBookmarkedOnly || isAlumniBookmarked(alum.id || alum._id);
+    return matchesSearch && matchesFilter && matchesBookmarked;
   });
 
   // Always include the user's own card (even if hidden), unless already present
@@ -289,24 +304,24 @@ export default function Alumni() {
     // User signed in: self first, then sethaguila (if not self), then other admins, then all other non-hidden alumni
     const isSelf = (a) => a.id === selfCard.id;
     const isSeth = (a) => a.id === 26;
-    const isAdmin = (a) => a.isAdmin && !isSelf(a) && !isSeth(a);
+    const isAlumniAdmin = (a) => a.isAdmin && !isSelf(a) && !isSeth(a);
     const isOther = (a) => !isSelf(a) && !isSeth(a) && !a.isAdmin;
     ordered = [
       selfCard,
       ...(filteredAlumni.find(isSeth) && !isSelf(filteredAlumni.find(isSeth))
         ? [filteredAlumni.find(isSeth)]
         : []),
-      ...filteredAlumni.filter(isAdmin),
+      ...filteredAlumni.filter(isAlumniAdmin),
       ...filteredAlumni.filter(isOther),
     ];
   } else {
     // No user: sethaguila and all admins first, then all others
     const isSeth = (a) => a.id === 26;
-    const isAdmin = (a) => a.isAdmin && !isSeth(a);
+    const isAlumniAdmin = (a) => a.isAdmin && !isSeth(a);
     const isOther = (a) => !isSeth(a) && !a.isAdmin;
     ordered = [
       ...(filteredAlumni.find(isSeth) ? [filteredAlumni.find(isSeth)] : []),
-      ...filteredAlumni.filter(isAdmin),
+      ...filteredAlumni.filter(isAlumniAdmin),
       ...filteredAlumni.filter(isOther),
     ];
   }
@@ -331,7 +346,15 @@ export default function Alumni() {
   // Reset shuffle if filters/search change
   useEffect(() => {
     setShuffledOrder(null);
-  }, [searchQuery, selectedDomains, alumni, isAdmin, alumniId]);
+  }, [
+    searchQuery,
+    selectedDomains,
+    showBookmarkedOnly,
+    bookmarkedAlumni,
+    alumni,
+    isAdmin,
+    alumniId,
+  ]);
 
   const openProfileModal = (alum) => {
     setSelectedAlumni(alum);
@@ -894,6 +917,47 @@ export default function Alumni() {
                   </motion.div>
                 ))}
               </Box>
+
+              {/* Bookmarked Filter */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.5 }}
+              >
+                <Chip
+                  icon={<BookmarkFilledIcon />}
+                  label={
+                    showBookmarkedOnly
+                      ? "Favoris uniquement"
+                      : "Tous les favoris"
+                  }
+                  onClick={() => setShowBookmarkedOnly(!showBookmarkedOnly)}
+                  sx={{
+                    background: showBookmarkedOnly
+                      ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                      : "rgba(255,255,255,0.05)",
+                    color: "white",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    fontSize: { xs: "0.8rem", md: "0.9rem" },
+                    height: { xs: "36px", md: "40px" },
+                    fontWeight: 500,
+                    letterSpacing: "0.01em",
+                    "&:hover": {
+                      background: showBookmarkedOnly
+                        ? "linear-gradient(135deg, #d97706 0%, #b45309 100%)"
+                        : "rgba(245, 158, 11, 0.2)",
+                      border: "1px solid rgba(245, 158, 11, 0.3)",
+                      transform: "translateY(-1px)",
+                    },
+                    "& .MuiChip-icon": {
+                      color: showBookmarkedOnly ? "white" : "#f59e0b",
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                    },
+                  }}
+                />
+              </motion.div>
             </Box>
           </Box>
         </Container>
@@ -1044,6 +1108,10 @@ export default function Alumni() {
                     isAdmin={isAdmin}
                     onEditClick={handleEditClick}
                     alumniId={alumniId}
+                    isBookmarked={isAlumniBookmarked(alum.id || alum._id)}
+                    onToggleBookmark={() =>
+                      toggleBookmarkForAlumni(alum.id || alum._id)
+                    }
                   />
                 </Box>
               </Grid>
@@ -1269,6 +1337,8 @@ export default function Alumni() {
               handleEditClick={handleEditClick}
               handleDeleteClick={handleDeleteClick}
               onClose={closeProfileModal}
+              bookmarkedAlumni={bookmarkedAlumni}
+              onToggleBookmark={toggleBookmarkForAlumni}
             />
           ) : null}
         </motion.div>

@@ -24,11 +24,16 @@ import {
   Checkbox,
 } from "@mui/material";
 import { ArrowRight, Search } from "lucide-react";
+import {
+  BookmarkBorder as BookmarkIcon,
+  Bookmark as BookmarkFilledIcon,
+} from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import predefinedIcons from "../data/predefinedIcons";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNavigate } from "react-router-dom";
+import useBookmarks from "../hooks/useBookmarks";
 
 // CATEGORY_STYLES for resource categories
 const CATEGORY_STYLES = {
@@ -76,6 +81,7 @@ export default function Ressources() {
     "Toutes les ressources",
   ]);
   const [activeFilter, setActiveFilter] = useState(["Tous"]);
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const categoriesRef = useRef(null);
@@ -146,6 +152,15 @@ export default function Ressources() {
   const [userId, setUserId] = useState(null);
   // Add a state to store the original uploaded file name
   const [uploadedOriginalName, setUploadedOriginalName] = useState("");
+
+  // Use bookmark hook
+  const {
+    bookmarkedItems: bookmarkedResources,
+    toggleBookmark: toggleBookmarkForResource,
+    isBookmarked: isResourceBookmarked,
+    loading: bookmarksLoading,
+    error: bookmarksError,
+  } = useBookmarks("ressource");
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -232,10 +247,21 @@ export default function Ressources() {
           : Array.isArray(resource.filter)
           ? resource.filter.some((f) => activeFilter.includes(f))
           : false);
+      const matchesBookmarked =
+        !showBookmarkedOnly || isResourceBookmarked(resource.id);
 
-      return matchesSearch && matchesCategory && matchesFilter;
+      return (
+        matchesSearch && matchesCategory && matchesFilter && matchesBookmarked
+      );
     });
-  }, [resources, searchQuery, activeCategory, activeFilter]);
+  }, [
+    resources,
+    searchQuery,
+    activeCategory,
+    activeFilter,
+    showBookmarkedOnly,
+    bookmarkedResources,
+  ]);
 
   // Helper for icon search
   const getFilteredIconsForAdd = () =>
@@ -672,6 +698,44 @@ export default function Ressources() {
                 ))}
               </Box>
             </Box>
+
+            {/* Bookmarked Filter */}
+            <Box
+              sx={{ display: "flex", justifyContent: "center", mt: 3, mb: 2 }}
+            >
+              <Chip
+                icon={<BookmarkFilledIcon />}
+                label={
+                  showBookmarkedOnly ? "Favoris uniquement" : "Tous les favoris"
+                }
+                onClick={() => setShowBookmarkedOnly(!showBookmarkedOnly)}
+                sx={{
+                  background: showBookmarkedOnly
+                    ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                    : "rgba(255,255,255,0.05)",
+                  color: "white",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  fontSize: { xs: "0.8rem", md: "0.9rem" },
+                  height: { xs: "36px", md: "40px" },
+                  fontWeight: 500,
+                  letterSpacing: "0.01em",
+                  "&:hover": {
+                    background: showBookmarkedOnly
+                      ? "linear-gradient(135deg, #d97706 0%, #b45309 100%)"
+                      : "rgba(245, 158, 11, 0.2)",
+                    border: "1px solid rgba(245, 158, 11, 0.3)",
+                    transform: "translateY(-1px)",
+                  },
+                  "& .MuiChip-icon": {
+                    color: showBookmarkedOnly ? "white" : "#f59e0b",
+                    fontSize: { xs: "1rem", md: "1.1rem" },
+                  },
+                }}
+              />
+            </Box>
+
             {/* Add small 'ajouter une ressource' button below filters */}
             <Box
               sx={{ display: "flex", justifyContent: "center", mt: 2, mb: 3 }}
@@ -982,49 +1046,91 @@ export default function Ressources() {
                             letterSpacing: "0.01em",
                           }}
                         />
-                        {resource.resourceUrl && (
-                          <i
-                            className="fas fa-download"
-                            style={{
-                              color: "#10b981",
-                              fontSize: "0.7rem",
-                              cursor: "pointer",
-                            }}
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
+                          <IconButton
+                            size="small"
                             onClick={(e) => {
                               e.stopPropagation();
-                              window.open(
-                                getResourceUrl(resource.resourceUrl),
-                                "_blank"
-                              );
+                              toggleBookmarkForResource(resource.id);
                             }}
-                          />
-                        )}
-                        {(isAdmin || userId === resource.createdById) && (
-                          <Box sx={{ display: "flex", gap: 1, ml: 1 }}>
-                            <IconButton
-                              size="small"
+                            sx={{
+                              color: isResourceBookmarked(resource.id)
+                                ? "#f59e0b"
+                                : "rgba(255, 255, 255, 0.6)",
+                              transition: "all 0.2s ease",
+                              "&:hover": {
+                                color: isResourceBookmarked(resource.id)
+                                  ? "#d97706"
+                                  : "#f59e0b",
+                                transform: "scale(1.1)",
+                              },
+                            }}
+                            title={
+                              isResourceBookmarked(resource.id)
+                                ? "Retirer des favoris"
+                                : "Ajouter aux favoris"
+                            }
+                          >
+                            {isResourceBookmarked(resource.id) ? (
+                              <BookmarkFilledIcon
+                                sx={{
+                                  fontSize: { xs: "1.1rem", md: "1.3rem" },
+                                }}
+                              />
+                            ) : (
+                              <BookmarkIcon
+                                sx={{
+                                  fontSize: { xs: "1.1rem", md: "1.3rem" },
+                                }}
+                              />
+                            )}
+                          </IconButton>
+                          {resource.resourceUrl && (
+                            <i
+                              className="fas fa-download"
+                              style={{
+                                color: "#10b981",
+                                fontSize: "0.7rem",
+                                cursor: "pointer",
+                              }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                openEditModal(resource);
+                                window.open(
+                                  getResourceUrl(resource.resourceUrl),
+                                  "_blank"
+                                );
                               }}
-                              sx={{ color: "#f59e42" }}
-                              title="Modifier"
-                            >
-                              <i className="fas fa-edit"></i>
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openDeleteDialog(resource);
-                              }}
-                              sx={{ color: "#ef4444" }}
-                              title="Supprimer"
-                            >
-                              <i className="fas fa-trash"></i>
-                            </IconButton>
-                          </Box>
-                        )}
+                            />
+                          )}
+                          {(isAdmin || userId === resource.createdById) && (
+                            <Box sx={{ display: "flex", gap: 1, ml: 1 }}>
+                              <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditModal(resource);
+                                }}
+                                sx={{ color: "#f59e42" }}
+                                title="Modifier"
+                              >
+                                <i className="fas fa-edit"></i>
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openDeleteDialog(resource);
+                                }}
+                                sx={{ color: "#ef4444" }}
+                                title="Supprimer"
+                              >
+                                <i className="fas fa-trash"></i>
+                              </IconButton>
+                            </Box>
+                          )}
+                        </Box>
                       </Box>
                       {resource.createdAt && (
                         <Typography

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import useBookmarks from "../hooks/useBookmarks";
 import {
   Box,
   Container,
@@ -46,6 +47,8 @@ import {
   CheckCircleOutline as CheckCircleOutlineIcon,
   Cancel as CancelIcon,
   WarningAmber as WarningAmberIcon,
+  BookmarkBorder as BookmarkIcon,
+  Bookmark as BookmarkFilledIcon,
 } from "@mui/icons-material";
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import { jwtDecode } from "jwt-decode";
@@ -145,6 +148,16 @@ export default function Conseils() {
     isAdmin: false,
   });
   const [alreadyConnectedOpen, setAlreadyConnectedOpen] = useState(false);
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
+
+  // Use bookmark hook for alumni
+  const {
+    bookmarkedItems: bookmarkedAlumni,
+    toggleBookmark: toggleBookmarkForAlumni,
+    isBookmarked: isAlumniBookmarked,
+    loading: bookmarksLoading,
+    error: bookmarksError,
+  } = useBookmarks("alumni");
 
   const navigate = useNavigate();
 
@@ -198,7 +211,8 @@ export default function Conseils() {
     (tip) =>
       tip.conseil &&
       tip.conseil.trim().length > 0 &&
-      (!tip.hidden || tip._id === alumniId || tip.id === alumniId || isAdmin)
+      (!tip.hidden || tip._id === alumniId || tip.id === alumniId || isAdmin) &&
+      (!showBookmarkedOnly || isAlumniBookmarked(tip._id || tip.id))
   );
 
   // Remove hidden conseils of other users if not admin
@@ -267,6 +281,11 @@ export default function Conseils() {
     }
     setExpandedTips(newExpanded);
   };
+
+  /**
+   * Toggle bookmark status for a specific alumni
+   * @param {number} alumniId - ID of the alumni to toggle bookmark
+   */
 
   const openProfileModal = (tip) => {
     setSelectedProfile(tip);
@@ -637,6 +656,49 @@ export default function Conseils() {
             </motion.div>
           )}
 
+        {/* Bookmarked Filter */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+            <Chip
+              icon={
+                showBookmarkedOnly ? <BookmarkFilledIcon /> : <BookmarkIcon />
+              }
+              label={
+                showBookmarkedOnly ? "Favoris uniquement" : "Tous les favoris"
+              }
+              onClick={() => setShowBookmarkedOnly(!showBookmarkedOnly)}
+              sx={{
+                background: showBookmarkedOnly
+                  ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                  : "rgba(255,255,255,0.05)",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.1)",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                fontSize: { xs: "0.8rem", md: "0.9rem" },
+                height: { xs: "36px", md: "40px" },
+                fontWeight: 500,
+                letterSpacing: "0.01em",
+                "&:hover": {
+                  background: showBookmarkedOnly
+                    ? "linear-gradient(135deg, #d97706 0%, #b45309 100%)"
+                    : "rgba(245, 158, 11, 0.2)",
+                  border: "1px solid rgba(245, 158, 11, 0.3)",
+                  transform: "translateY(-1px)",
+                },
+                "& .MuiChip-icon": {
+                  color: showBookmarkedOnly ? "white" : "#f59e0b",
+                  fontSize: { xs: "1rem", md: "1.1rem" },
+                },
+              }}
+            />
+          </Box>
+        </motion.div>
+
         {/* Tips Grid */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -692,6 +754,7 @@ export default function Conseils() {
                       px: { xs: 1.5, md: 2 },
                       py: { xs: 1, md: 1.5 },
                       gap: { xs: 1.5, md: 2 },
+                      position: "relative",
                     }}
                   >
                     <motion.div
@@ -1058,9 +1121,14 @@ export default function Conseils() {
                 alumni.find((a) => a.id === selectedProfile.id) ||
                 selectedProfile
               }
-              isAdmin={false}
+              isAdmin={isAdmin}
+              alumniId={alumniId}
               handleEditClick={handleEditClick}
               onClose={closeProfileModal}
+              isBookmarked={isAlumniBookmarked(selectedProfile.id)}
+              onToggleBookmark={() =>
+                toggleBookmarkForAlumni(selectedProfile.id)
+              }
             />
           ) : null}
         </motion.div>

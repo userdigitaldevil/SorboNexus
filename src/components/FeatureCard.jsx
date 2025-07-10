@@ -181,13 +181,12 @@ const FeatureCard = ({
               ...(fixedSize || isMini
                 ? {
                     height: { xs: 32, sm: 40 }, // Fixed height for 2 lines
-                    display: "flex",
+                    display: "-webkit-box",
                     alignItems: "center",
                     justifyContent: "center",
                     lineHeight: 1.2,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
                   }
