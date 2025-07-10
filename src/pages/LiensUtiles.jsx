@@ -60,6 +60,7 @@ import predefinedIcons from "../data/predefinedIcons";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useBookmarks from "../hooks/useBookmarks";
 import { getLinks, addLink, editLink, deleteLink } from "../api/links";
+import { useNavigate } from "react-router-dom";
 
 const LiensUtiles = () => {
   // ============================================================================
@@ -93,7 +94,6 @@ const LiensUtiles = () => {
     description: "",
     category: "",
     icon: "",
-    gradient: "",
   });
   const [iconMode, setIconMode] = useState("predefined"); // "predefined", "custom", or "manual"
   const [customIconUrl, setCustomIconUrl] = useState("");
@@ -107,7 +107,6 @@ const LiensUtiles = () => {
     description: "",
     category: "",
     icon: "",
-    gradient: "",
   });
   const [addIconMode, setAddIconMode] = useState("predefined");
   const [addCustomIconUrl, setAddCustomIconUrl] = useState("");
@@ -176,12 +175,19 @@ const LiensUtiles = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
+      setIsLoggedIn(true);
       try {
         const decoded = jwtDecode(token);
         setIsAdmin(decoded.isAdmin || false);
+        setUserId(decoded.id || decoded.userId || null);
       } catch (error) {
         setIsAdmin(false);
+        setUserId(null);
       }
+    } else {
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+      setUserId(null);
     }
   }, []);
 
@@ -333,7 +339,6 @@ const LiensUtiles = () => {
       description: link.description,
       category: link.category,
       icon: link.icon,
-      gradient: link.gradient,
     });
     setIconMode("predefined");
     setCustomIconUrl("");
@@ -368,7 +373,6 @@ const LiensUtiles = () => {
           description: editForm.description,
           category: editForm.category,
           icon: iconValue,
-          gradient: editForm.gradient,
         },
         token
       );
@@ -419,7 +423,6 @@ const LiensUtiles = () => {
       description: "",
       category: "",
       icon: "",
-      gradient: "",
     });
     setAddIconMode("predefined");
     setAddCustomIconUrl("");
@@ -454,7 +457,6 @@ const LiensUtiles = () => {
           description: addForm.description,
           category: addForm.category,
           icon: iconValue,
-          gradient: addForm.gradient,
         },
         token
       );
@@ -496,6 +498,13 @@ const LiensUtiles = () => {
       return newSet;
     });
   };
+
+  // Add a new state to track if the user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Add userId state to track logged-in user's ID
+  const [userId, setUserId] = useState(null);
+
+  const navigate = useNavigate();
 
   return (
     <div className="glassy-bg min-h-screen smooth-scroll-all">
@@ -633,46 +642,6 @@ const LiensUtiles = () => {
                 }}
               />
             </motion.div>
-
-            {/* Admin Add Button */}
-            {isAdmin && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                sx={{ mt: 4, pt: 4 }}
-              >
-                <Button
-                  variant="contained"
-                  onClick={openAddModalWithEmptyForm}
-                  startIcon={<i className="fas fa-plus"></i>}
-                  sx={{
-                    background:
-                      "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                    color: "white",
-                    fontWeight: 500,
-                    px: 3,
-                    py: 1.2,
-                    borderRadius: 2.5,
-                    textTransform: "none",
-                    fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                    minHeight: 0,
-                    minWidth: 0,
-                    lineHeight: 1.3,
-                    letterSpacing: "0.02em",
-                    transition: "all 0.2s ease",
-                    "&:hover": {
-                      background:
-                        "linear-gradient(135deg, #059669 0%, #047857 100%)",
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 8px 25px rgba(16, 185, 129, 0.4)",
-                    },
-                  }}
-                >
-                  Ajouter un nouveau lien
-                </Button>
-              </motion.div>
-            )}
           </Box>
         </Container>
       </motion.section>
@@ -787,6 +756,47 @@ const LiensUtiles = () => {
                     },
                   }}
                 />
+              </Box>
+              <Box
+                sx={{ display: "flex", justifyContent: "center", mt: 2, mb: 3 }}
+              >
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<i className="fas fa-plus"></i>}
+                  sx={{
+                    fontSize: { xs: "0.75rem", md: "0.85rem" },
+                    px: 2.5,
+                    py: 1,
+                    borderRadius: 3,
+                    color: "#3b82f6",
+                    borderColor: "#3b82f6",
+                    minWidth: "auto",
+                    textTransform: "none",
+                    fontWeight: 400,
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.4,
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    "&:hover": {
+                      background: "rgba(59, 130, 246, 0.06)",
+                      borderColor: "#2563eb",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(59, 130, 246, 0.15)",
+                    },
+                    "&:active": {
+                      transform: "translateY(-1px)",
+                    },
+                  }}
+                  onClick={() => {
+                    if (isLoggedIn) {
+                      openAddModalWithEmptyForm();
+                    } else {
+                      navigate("/connexion");
+                    }
+                  }}
+                >
+                  Ajouter un lien
+                </Button>
               </Box>
             </motion.div>
           </Box>
@@ -964,7 +974,8 @@ const LiensUtiles = () => {
                                 </Typography>
 
                                 {/* Admin Edit Button */}
-                                {isAdmin && (
+                                {(isAdmin ||
+                                  (userId && link.createdById === userId)) && (
                                   <IconButton
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -1306,7 +1317,8 @@ const LiensUtiles = () => {
                           </Typography>
 
                           {/* Admin Edit Button */}
-                          {isAdmin && (
+                          {(isAdmin ||
+                            (userId && link.createdById === userId)) && (
                             <IconButton
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1587,30 +1599,38 @@ const LiensUtiles = () => {
         <DialogTitle
           sx={{
             color: "white",
-            fontWeight: 600,
+            fontWeight: 500,
+            fontSize: { xs: "1.4rem", md: "1.6rem" },
             borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            pb: 4,
+            pt: 4,
+            px: 4,
+            letterSpacing: "0.02em",
+            lineHeight: 1.3,
           }}
         >
           Modifier le lien
           <IconButton
             onClick={closeEditModal}
             sx={{
-              color: "rgba(255, 255, 255, 0.7)",
+              color: "rgba(255, 255, 255, 0.6)",
               ml: 1,
+              transition: "all 0.2s ease",
               "&:hover": {
                 color: "white",
-                background: "rgba(255, 255, 255, 0.1)",
+                background: "rgba(255, 255, 255, 0.08)",
+                transform: "scale(1.05)",
               },
             }}
           >
             <i className="fas fa-times"></i>
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ pt: 3 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <DialogContent sx={{ pt: 4, px: 4 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             <TextField
               label="Titre"
               value={editForm.title}
@@ -1619,25 +1639,36 @@ const LiensUtiles = () => {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   color: "white",
+                  borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                    borderWidth: "1px",
                   },
                   "&:hover fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused fieldset": {
                     borderColor: "#3b82f6",
+                    borderWidth: "1.5px",
                   },
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
+                  fontWeight: 500,
                   "&.Mui-focused": {
                     color: "#3b82f6",
+                    fontWeight: 500,
                   },
+                },
+                "& .MuiInputBase-input": {
+                  padding: "16px 14px",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                  letterSpacing: "0.02em",
                 },
               }}
             />
-
             <TextField
               label="URL"
               value={editForm.url}
@@ -1646,25 +1677,36 @@ const LiensUtiles = () => {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   color: "white",
+                  borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                    borderWidth: "1px",
                   },
                   "&:hover fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused fieldset": {
                     borderColor: "#3b82f6",
+                    borderWidth: "1.5px",
                   },
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
+                  fontWeight: 500,
                   "&.Mui-focused": {
                     color: "#3b82f6",
+                    fontWeight: 500,
                   },
+                },
+                "& .MuiInputBase-input": {
+                  padding: "16px 14px",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                  letterSpacing: "0.02em",
                 },
               }}
             />
-
             <TextField
               label="Description"
               value={editForm.description}
@@ -1677,31 +1719,45 @@ const LiensUtiles = () => {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   color: "white",
+                  borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                    borderWidth: "1px",
                   },
                   "&:hover fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused fieldset": {
                     borderColor: "#3b82f6",
+                    borderWidth: "1.5px",
                   },
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
+                  fontWeight: 500,
                   "&.Mui-focused": {
                     color: "#3b82f6",
+                    fontWeight: 500,
                   },
+                },
+                "& .MuiInputBase-input": {
+                  padding: "16px 14px",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                  letterSpacing: "0.02em",
                 },
               }}
             />
-
             <FormControl fullWidth>
               <InputLabel
                 sx={{
                   color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
+                  fontWeight: 500,
                   "&.Mui-focused": {
                     color: "#3b82f6",
+                    fontWeight: 500,
                   },
                 }}
               >
@@ -1714,20 +1770,39 @@ const LiensUtiles = () => {
                 }
                 sx={{
                   color: "white",
+                  borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                    borderWidth: "1px",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                     borderColor: "#3b82f6",
+                    borderWidth: "1.5px",
                   },
                   "& .MuiSvgIcon-root": {
                     color: "rgba(255, 255, 255, 0.7)",
                   },
                 }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      background: "rgba(30,41,59,0.98)",
+                      color: "white",
+                      maxHeight: 200,
+                      minWidth: 180,
+                      borderRadius: 2.5,
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                    },
+                  },
+                }}
               >
+                <MenuItem value="" disabled>
+                  Sélectionner une catégorie
+                </MenuItem>
                 {categories.slice(1).map((category) => (
                   <MenuItem
                     key={category}
@@ -1746,282 +1821,252 @@ const LiensUtiles = () => {
                 ))}
               </Select>
             </FormControl>
-
-            {/* Icon Selection */}
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <Typography
-                variant="body2"
+            <Typography
+              variant="body2"
+              sx={{
+                color: "rgba(255, 255, 255, 0.8)",
+                fontWeight: 500,
+                mb: 2,
+                fontSize: "0.95rem",
+                letterSpacing: "0.02em",
+              }}
+            >
+              Icône
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1.5, mb: 3 }}>
+              <Button
+                variant={iconMode === "predefined" ? "contained" : "outlined"}
+                size="small"
+                onClick={() => setIconMode("predefined")}
                 sx={{
-                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.85rem",
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
                   fontWeight: 500,
-                  mb: 1,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    background:
+                      iconMode === "predefined"
+                        ? "rgba(59, 130, 246, 0.8)"
+                        : "rgba(59, 130, 246, 0.1)",
+                  },
                 }}
               >
-                Icône
-              </Typography>
-
-              {/* Icon Mode Toggle */}
-              <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-                <Button
-                  variant={iconMode === "predefined" ? "contained" : "outlined"}
-                  size="small"
-                  onClick={() => setIconMode("predefined")}
-                  sx={{
-                    fontSize: "0.75rem",
-                    px: 2,
-                    py: 0.5,
-                    background:
-                      iconMode === "predefined"
-                        ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                        : "transparent",
-                    borderColor:
-                      iconMode === "predefined"
-                        ? "transparent"
-                        : "rgba(255, 255, 255, 0.3)",
-                    color:
-                      iconMode === "predefined"
-                        ? "white"
-                        : "rgba(255, 255, 255, 0.7)",
-                    "&:hover": {
-                      background:
-                        iconMode === "predefined"
-                          ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
-                          : "rgba(255, 255, 255, 0.05)",
-                    },
-                  }}
-                >
-                  Icônes prédéfinies
-                </Button>
-                <Button
-                  variant={iconMode === "custom" ? "contained" : "outlined"}
-                  size="small"
-                  onClick={() => setIconMode("custom")}
-                  sx={{
-                    fontSize: "0.75rem",
-                    px: 2,
-                    py: 0.5,
+                Icônes prédéfinies
+              </Button>
+              <Button
+                variant={iconMode === "custom" ? "contained" : "outlined"}
+                size="small"
+                onClick={() => setIconMode("custom")}
+                sx={{
+                  fontSize: "0.85rem",
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
                     background:
                       iconMode === "custom"
-                        ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                        : "transparent",
-                    borderColor:
-                      iconMode === "custom"
-                        ? "transparent"
-                        : "rgba(255, 255, 255, 0.3)",
-                    color:
-                      iconMode === "custom"
-                        ? "white"
-                        : "rgba(255, 255, 255, 0.7)",
-                    "&:hover": {
-                      background:
-                        iconMode === "custom"
-                          ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
-                          : "rgba(255, 255, 255, 0.05)",
-                    },
-                  }}
-                >
-                  URL personnalisée
-                </Button>
-                <Button
-                  variant={iconMode === "manual" ? "contained" : "outlined"}
-                  size="small"
-                  onClick={() => setIconMode("manual")}
-                  sx={{
-                    fontSize: "0.75rem",
-                    px: 2,
-                    py: 0.5,
+                        ? "rgba(59, 130, 246, 0.8)"
+                        : "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
+              >
+                URL personnalisée
+              </Button>
+              <Button
+                variant={iconMode === "manual" ? "contained" : "outlined"}
+                size="small"
+                onClick={() => setIconMode("manual")}
+                sx={{
+                  fontSize: "0.85rem",
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
                     background:
                       iconMode === "manual"
-                        ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                        : "transparent",
-                    borderColor:
-                      iconMode === "manual"
-                        ? "transparent"
-                        : "rgba(255, 255, 255, 0.3)",
-                    color:
-                      iconMode === "manual"
-                        ? "white"
-                        : "rgba(255, 255, 255, 0.7)",
-                    "&:hover": {
-                      background:
-                        iconMode === "manual"
-                          ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
-                          : "rgba(255, 255, 255, 0.05)",
-                    },
-                  }}
-                >
-                  Classe FontAwesome
-                </Button>
-              </Box>
-
-              {/* Predefined Icons Grid */}
-              {iconMode === "predefined" && (
-                <>
-                  <TextField
-                    label="Rechercher une icône"
-                    value={iconSearch}
-                    onChange={(e) => setIconSearch(e.target.value)}
-                    size="small"
-                    fullWidth
-                    sx={{
-                      mb: 1,
-                      input: { color: "white" },
-                      label: { color: "rgba(255,255,255,0.7)" },
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(6, 1fr)",
-                      gap: 1,
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                      p: 1,
-                      border: "1px solid rgba(255, 255, 255, 0.2)",
-                      borderRadius: 1,
-                      background: "rgba(255, 255, 255, 0.05)",
-                    }}
-                  >
-                    {getFilteredIconsForEdit().map((iconOption) => (
-                      <IconButton
-                        key={iconOption.value}
-                        onClick={() =>
-                          updateEditFormField("icon", iconOption.value)
-                        }
-                        sx={{
-                          width: 40,
-                          height: 40,
-                          border:
-                            editForm.icon === iconOption.value
-                              ? "2px solid #3b82f6"
-                              : "1px solid rgba(255, 255, 255, 0.2)",
-                          background:
-                            editForm.icon === iconOption.value
-                              ? "rgba(59, 130, 246, 0.2)"
-                              : "rgba(255, 255, 255, 0.05)",
-                          color: "white",
-                          fontSize: "1.2rem",
-                          "&:hover": {
-                            background: "rgba(59, 130, 246, 0.1)",
-                            border: "1px solid #3b82f6",
-                          },
-                        }}
-                      >
-                        <i className={iconOption.value}></i>
-                      </IconButton>
-                    ))}
-                  </Box>
-                </>
-              )}
-
-              {/* Custom Icon URL Input */}
-              {iconMode === "custom" && (
-                <TextField
-                  label="URL de l'icône"
-                  value={customIconUrl}
-                  onChange={(e) => setCustomIconUrl(e.target.value)}
-                  fullWidth
-                  placeholder="https://example.com/icon.png"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      color: "white",
-                      "& fieldset": {
-                        borderColor: "rgba(255, 255, 255, 0.2)",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "rgba(255, 255, 255, 0.3)",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#3b82f6",
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "rgba(255, 255, 255, 0.7)",
-                      "&.Mui-focused": {
-                        color: "#3b82f6",
-                      },
-                    },
-                  }}
-                />
-              )}
-
-              {iconMode === "manual" && (
-                <TextField
-                  label="Classe FontAwesome (ex: fas fa-atom)"
-                  value={editForm.icon}
-                  onChange={(e) => updateEditFormField("icon", e.target.value)}
-                  fullWidth
-                  placeholder="fas fa-atom"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      color: "white",
-                      "& fieldset": {
-                        borderColor: "rgba(255, 255, 255, 0.2)",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "rgba(255, 255, 255, 0.3)",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#3b82f6",
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "rgba(255, 255, 255, 0.7)",
-                      "&.Mui-focused": {
-                        color: "#3b82f6",
-                      },
-                    },
-                  }}
-                />
-              )}
+                        ? "rgba(59, 130, 246, 0.8)"
+                        : "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
+              >
+                Classe FontAwesome
+              </Button>
             </Box>
-
-            {/* Gradient Selection */}
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "rgba(255, 255, 255, 0.7)",
-                  fontWeight: 500,
-                  mb: 1,
-                }}
-              >
-                Gradient
-              </Typography>
-
+            {iconMode === "predefined" && (
+              <>
+                <TextField
+                  label="Rechercher une icône"
+                  value={iconSearch}
+                  onChange={(e) => setIconSearch(e.target.value)}
+                  size="small"
+                  fullWidth
+                  sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2.5,
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.85rem",
+                      fontWeight: 500,
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                      fontSize: "0.9rem",
+                      letterSpacing: "0.02em",
+                    },
+                  }}
+                />
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(6, 1fr)",
+                    gap: 1.5,
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                    p: 2,
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 2.5,
+                    background: "rgba(255,255,255,0.02)",
+                  }}
+                >
+                  {getFilteredIconsForEdit().map((iconOption) => (
+                    <IconButton
+                      key={iconOption.value}
+                      onClick={() =>
+                        updateEditFormField("icon", iconOption.value)
+                      }
+                      sx={{
+                        width: 44,
+                        height: 44,
+                        border:
+                          editForm.icon === iconOption.value
+                            ? "2px solid #3b82f6"
+                            : "1px solid rgba(255,255,255,0.1)",
+                        background:
+                          editForm.icon === iconOption.value
+                            ? "rgba(59,130,246,0.15)"
+                            : "rgba(255,255,255,0.02)",
+                        color: "white",
+                        fontSize: "1.3rem",
+                        borderRadius: 2.5,
+                        transition: "all 0.2s ease",
+                        "&:hover": {
+                          background: "rgba(59,130,246,0.1)",
+                          border: "1px solid #3b82f6",
+                          transform: "scale(1.05)",
+                        },
+                      }}
+                    >
+                      <i className={iconOption.value}></i>
+                    </IconButton>
+                  ))}
+                </Box>
+              </>
+            )}
+            {iconMode === "custom" && (
               <TextField
-                label="Gradient personnalisé (CSS)"
-                value={editForm.gradient}
-                onChange={(e) =>
-                  updateEditFormField("gradient", e.target.value)
-                }
+                label="URL de l'icône"
+                value={customIconUrl}
+                onChange={(e) => setCustomIconUrl(e.target.value)}
                 fullWidth
-                placeholder="linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
+                placeholder="https://example.com/icon.png"
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     color: "white",
+                    borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     "& fieldset": {
-                      borderColor: "rgba(255, 255, 255, 0.2)",
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                      borderWidth: "1px",
                     },
                     "&:hover fieldset": {
-                      borderColor: "rgba(255, 255, 255, 0.3)",
+                      borderColor: "rgba(255, 255, 255, 0.2)",
                     },
                     "&.Mui-focused fieldset": {
                       borderColor: "#3b82f6",
+                      borderWidth: "1.5px",
                     },
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
+                    fontWeight: 500,
                     "&.Mui-focused": {
                       color: "#3b82f6",
+                      fontWeight: 500,
                     },
+                  },
+                  "& .MuiInputBase-input": {
+                    padding: "16px 14px",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
+                    letterSpacing: "0.02em",
                   },
                 }}
               />
-            </Box>
+            )}
+            {iconMode === "manual" && (
+              <TextField
+                label="Classe FontAwesome (ex: fas fa-atom)"
+                value={editForm.icon}
+                onChange={(e) => updateEditFormField("icon", e.target.value)}
+                fullWidth
+                placeholder="fas fa-atom"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "white",
+                    borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                      borderWidth: "1px",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                      borderWidth: "1.5px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
+                    fontWeight: 500,
+                    "&.Mui-focused": {
+                      color: "#3b82f6",
+                      fontWeight: 500,
+                    },
+                  },
+                  "& .MuiInputBase-input": {
+                    padding: "16px 14px",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
+                    letterSpacing: "0.02em",
+                  },
+                }}
+              />
+            )}
           </Box>
         </DialogContent>
-        <DialogActions sx={{ p: 3, gap: 1 }}>
+        <DialogActions sx={{ p: 4, gap: 2 }}>
           <Button
             onClick={deleteCurrentLink}
             variant="outlined"
@@ -2030,6 +2075,13 @@ const LiensUtiles = () => {
             sx={{
               borderColor: "#ef4444",
               color: "#ef4444",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2.5,
+              letterSpacing: "0.02em",
+              textTransform: "none",
               "&:hover": {
                 borderColor: "#dc2626",
                 backgroundColor: "rgba(239, 68, 68, 0.1)",
@@ -2042,10 +2094,17 @@ const LiensUtiles = () => {
             onClick={closeEditModal}
             variant="outlined"
             sx={{
-              borderColor: "rgba(255, 255, 255, 0.3)",
-              color: "rgba(255, 255, 255, 0.7)",
+              borderColor: "rgba(255, 255, 255, 0.2)",
+              color: "rgba(255, 255, 255, 0.8)",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2.5,
+              letterSpacing: "0.02em",
+              textTransform: "none",
               "&:hover": {
-                borderColor: "rgba(255, 255, 255, 0.5)",
+                borderColor: "rgba(255, 255, 255, 0.3)",
                 backgroundColor: "rgba(255, 255, 255, 0.05)",
               },
             }}
@@ -2058,8 +2117,16 @@ const LiensUtiles = () => {
             sx={{
               background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
               color: "white",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2.5,
+              letterSpacing: "0.02em",
+              textTransform: "none",
               "&:hover": {
                 background: "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                transform: "translateY(-1px)",
               },
             }}
           >
@@ -2086,30 +2153,38 @@ const LiensUtiles = () => {
         <DialogTitle
           sx={{
             color: "white",
-            fontWeight: 600,
+            fontWeight: 500,
+            fontSize: { xs: "1.4rem", md: "1.6rem" },
             borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            pb: 4,
+            pt: 4,
+            px: 4,
+            letterSpacing: "0.02em",
+            lineHeight: 1.3,
           }}
         >
           Ajouter un nouveau lien
           <IconButton
             onClick={closeAddModal}
             sx={{
-              color: "rgba(255, 255, 255, 0.7)",
+              color: "rgba(255, 255, 255, 0.6)",
               ml: 1,
+              transition: "all 0.2s ease",
               "&:hover": {
                 color: "white",
-                background: "rgba(255, 255, 255, 0.1)",
+                background: "rgba(255, 255, 255, 0.08)",
+                transform: "scale(1.05)",
               },
             }}
           >
             <i className="fas fa-times"></i>
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ pt: 3 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <DialogContent sx={{ pt: 4, px: 4 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             <TextField
               label="Titre"
               value={addForm.title}
@@ -2118,25 +2193,36 @@ const LiensUtiles = () => {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   color: "white",
+                  borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                    borderWidth: "1px",
                   },
                   "&:hover fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused fieldset": {
                     borderColor: "#3b82f6",
+                    borderWidth: "1.5px",
                   },
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
+                  fontWeight: 500,
                   "&.Mui-focused": {
                     color: "#3b82f6",
+                    fontWeight: 500,
                   },
+                },
+                "& .MuiInputBase-input": {
+                  padding: "16px 14px",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                  letterSpacing: "0.02em",
                 },
               }}
             />
-
             <TextField
               label="URL"
               value={addForm.url}
@@ -2145,25 +2231,36 @@ const LiensUtiles = () => {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   color: "white",
+                  borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                    borderWidth: "1px",
                   },
                   "&:hover fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused fieldset": {
                     borderColor: "#3b82f6",
+                    borderWidth: "1.5px",
                   },
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
+                  fontWeight: 500,
                   "&.Mui-focused": {
                     color: "#3b82f6",
+                    fontWeight: 500,
                   },
+                },
+                "& .MuiInputBase-input": {
+                  padding: "16px 14px",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                  letterSpacing: "0.02em",
                 },
               }}
             />
-
             <TextField
               label="Description"
               value={addForm.description}
@@ -2176,31 +2273,45 @@ const LiensUtiles = () => {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   color: "white",
+                  borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                    borderWidth: "1px",
                   },
                   "&:hover fieldset": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused fieldset": {
                     borderColor: "#3b82f6",
+                    borderWidth: "1.5px",
                   },
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
+                  fontWeight: 500,
                   "&.Mui-focused": {
                     color: "#3b82f6",
+                    fontWeight: 500,
                   },
+                },
+                "& .MuiInputBase-input": {
+                  padding: "16px 14px",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
+                  letterSpacing: "0.02em",
                 },
               }}
             />
-
             <FormControl fullWidth>
               <InputLabel
                 sx={{
                   color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
+                  fontWeight: 500,
                   "&.Mui-focused": {
                     color: "#3b82f6",
+                    fontWeight: 500,
                   },
                 }}
               >
@@ -2211,20 +2322,39 @@ const LiensUtiles = () => {
                 onChange={(e) => updateAddFormField("category", e.target.value)}
                 sx={{
                   color: "white",
+                  borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
+                    borderWidth: "1px",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                     borderColor: "#3b82f6",
+                    borderWidth: "1.5px",
                   },
                   "& .MuiSvgIcon-root": {
                     color: "rgba(255, 255, 255, 0.7)",
                   },
                 }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      background: "rgba(30,41,59,0.98)",
+                      color: "white",
+                      maxHeight: 200,
+                      minWidth: 180,
+                      borderRadius: 2.5,
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                    },
+                  },
+                }}
               >
+                <MenuItem value="" disabled>
+                  Sélectionner une catégorie
+                </MenuItem>
                 {categories.slice(1).map((category) => (
                   <MenuItem
                     key={category}
@@ -2243,290 +2373,270 @@ const LiensUtiles = () => {
                 ))}
               </Select>
             </FormControl>
-
             {/* Icon Selection */}
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <Typography
-                variant="body2"
+            <Typography
+              variant="body2"
+              sx={{
+                color: "rgba(255, 255, 255, 0.8)",
+                fontWeight: 500,
+                mb: 2,
+                fontSize: "0.95rem",
+                letterSpacing: "0.02em",
+              }}
+            >
+              Icône
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1.5, mb: 3 }}>
+              <Button
+                variant={
+                  addIconMode === "predefined" ? "contained" : "outlined"
+                }
+                size="small"
+                onClick={() => setAddIconMode("predefined")}
                 sx={{
-                  color: "rgba(255, 255, 255, 0.7)",
+                  fontSize: "0.85rem",
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
                   fontWeight: 500,
-                  mb: 1,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
+                    background:
+                      addIconMode === "predefined"
+                        ? "rgba(59, 130, 246, 0.8)"
+                        : "rgba(59, 130, 246, 0.1)",
+                  },
                 }}
               >
-                Icône
-              </Typography>
-
-              {/* Icon Mode Toggle */}
-              <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-                <Button
-                  variant={
-                    addIconMode === "predefined" ? "contained" : "outlined"
-                  }
-                  size="small"
-                  onClick={() => setAddIconMode("predefined")}
-                  sx={{
-                    fontSize: "0.75rem",
-                    px: 2,
-                    py: 0.5,
-                    background:
-                      addIconMode === "predefined"
-                        ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                        : "transparent",
-                    borderColor:
-                      addIconMode === "predefined"
-                        ? "transparent"
-                        : "rgba(255, 255, 255, 0.3)",
-                    color:
-                      addIconMode === "predefined"
-                        ? "white"
-                        : "rgba(255, 255, 255, 0.7)",
-                    "&:hover": {
-                      background:
-                        addIconMode === "predefined"
-                          ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
-                          : "rgba(255, 255, 255, 0.05)",
-                    },
-                  }}
-                >
-                  Icônes prédéfinies
-                </Button>
-                <Button
-                  variant={addIconMode === "custom" ? "contained" : "outlined"}
-                  size="small"
-                  onClick={() => setAddIconMode("custom")}
-                  sx={{
-                    fontSize: "0.75rem",
-                    px: 2,
-                    py: 0.5,
+                Icônes prédéfinies
+              </Button>
+              <Button
+                variant={addIconMode === "custom" ? "contained" : "outlined"}
+                size="small"
+                onClick={() => setAddIconMode("custom")}
+                sx={{
+                  fontSize: "0.85rem",
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
                     background:
                       addIconMode === "custom"
-                        ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                        : "transparent",
-                    borderColor:
-                      addIconMode === "custom"
-                        ? "transparent"
-                        : "rgba(255, 255, 255, 0.3)",
-                    color:
-                      addIconMode === "custom"
-                        ? "white"
-                        : "rgba(255, 255, 255, 0.7)",
-                    "&:hover": {
-                      background:
-                        addIconMode === "custom"
-                          ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
-                          : "rgba(255, 255, 255, 0.05)",
-                    },
-                  }}
-                >
-                  URL personnalisée
-                </Button>
-                <Button
-                  variant={addIconMode === "manual" ? "contained" : "outlined"}
-                  size="small"
-                  onClick={() => setAddIconMode("manual")}
-                  sx={{
-                    fontSize: "0.75rem",
-                    px: 2,
-                    py: 0.5,
+                        ? "rgba(59, 130, 246, 0.8)"
+                        : "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
+              >
+                URL personnalisée
+              </Button>
+              <Button
+                variant={addIconMode === "manual" ? "contained" : "outlined"}
+                size="small"
+                onClick={() => setAddIconMode("manual")}
+                sx={{
+                  fontSize: "0.85rem",
+                  px: 2.5,
+                  py: 1,
+                  borderRadius: 2.5,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  textTransform: "none",
+                  "&:hover": {
                     background:
                       addIconMode === "manual"
-                        ? "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
-                        : "transparent",
-                    borderColor:
-                      addIconMode === "manual"
-                        ? "transparent"
-                        : "rgba(255, 255, 255, 0.3)",
-                    color:
-                      addIconMode === "manual"
-                        ? "white"
-                        : "rgba(255, 255, 255, 0.7)",
-                    "&:hover": {
-                      background:
-                        addIconMode === "manual"
-                          ? "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)"
-                          : "rgba(255, 255, 255, 0.05)",
-                    },
-                  }}
-                >
-                  Classe FontAwesome
-                </Button>
-              </Box>
-
-              {/* Predefined Icons Grid */}
-              {addIconMode === "predefined" && (
-                <>
-                  <TextField
-                    label="Rechercher une icône"
-                    value={addIconSearch}
-                    onChange={(e) => setAddIconSearch(e.target.value)}
-                    size="small"
-                    fullWidth
-                    sx={{
-                      mb: 1,
-                      input: { color: "white" },
-                      label: { color: "rgba(255,255,255,0.7)" },
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(6, 1fr)",
-                      gap: 1,
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                      p: 1,
-                      border: "1px solid rgba(255, 255, 255, 0.2)",
-                      borderRadius: 1,
-                      background: "rgba(255, 255, 255, 0.05)",
-                    }}
-                  >
-                    {getFilteredIconsForAdd().map((iconOption) => (
-                      <IconButton
-                        key={iconOption.value}
-                        onClick={() =>
-                          updateAddFormField("icon", iconOption.value)
-                        }
-                        sx={{
-                          width: 40,
-                          height: 40,
-                          border:
-                            addForm.icon === iconOption.value
-                              ? "2px solid #3b82f6"
-                              : "1px solid rgba(255, 255, 255, 0.2)",
-                          background:
-                            addForm.icon === iconOption.value
-                              ? "rgba(59, 130, 246, 0.2)"
-                              : "rgba(255, 255, 255, 0.05)",
-                          color: "white",
-                          fontSize: "1.2rem",
-                          "&:hover": {
-                            background: "rgba(59, 130, 246, 0.1)",
-                            border: "1px solid #3b82f6",
-                          },
-                        }}
-                      >
-                        <i className={iconOption.value}></i>
-                      </IconButton>
-                    ))}
-                  </Box>
-                </>
-              )}
-
-              {/* Custom Icon URL Input */}
-              {addIconMode === "custom" && (
-                <TextField
-                  label="URL de l'icône"
-                  value={addCustomIconUrl}
-                  onChange={(e) => setAddCustomIconUrl(e.target.value)}
-                  fullWidth
-                  placeholder="https://example.com/icon.png"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      color: "white",
-                      "& fieldset": {
-                        borderColor: "rgba(255, 255, 255, 0.2)",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "rgba(255, 255, 255, 0.3)",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#3b82f6",
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "rgba(255, 255, 255, 0.7)",
-                      "&.Mui-focused": {
-                        color: "#3b82f6",
-                      },
-                    },
-                  }}
-                />
-              )}
-
-              {addIconMode === "manual" && (
-                <TextField
-                  label="Classe FontAwesome (ex: fas fa-atom)"
-                  value={addForm.icon}
-                  onChange={(e) => updateAddFormField("icon", e.target.value)}
-                  fullWidth
-                  placeholder="fas fa-atom"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      color: "white",
-                      "& fieldset": {
-                        borderColor: "rgba(255, 255, 255, 0.2)",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "rgba(255, 255, 255, 0.3)",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#3b82f6",
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "rgba(255, 255, 255, 0.7)",
-                      "&.Mui-focused": {
-                        color: "#3b82f6",
-                      },
-                    },
-                  }}
-                />
-              )}
+                        ? "rgba(59, 130, 246, 0.8)"
+                        : "rgba(59, 130, 246, 0.1)",
+                  },
+                }}
+              >
+                Classe FontAwesome
+              </Button>
             </Box>
-
-            {/* Gradient Selection */}
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "rgba(255, 255, 255, 0.7)",
-                  fontWeight: 500,
-                  mb: 1,
-                }}
-              >
-                Gradient
-              </Typography>
-
+            {addIconMode === "predefined" && (
+              <>
+                <TextField
+                  label="Rechercher une icône"
+                  value={addIconSearch}
+                  onChange={(e) => setAddIconSearch(e.target.value)}
+                  size="small"
+                  fullWidth
+                  sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2.5,
+                      "& fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#3b82f6",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: "0.85rem",
+                      fontWeight: 500,
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                      fontSize: "0.9rem",
+                      letterSpacing: "0.02em",
+                    },
+                  }}
+                />
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(6, 1fr)",
+                    gap: 1.5,
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                    p: 2,
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 2.5,
+                    background: "rgba(255,255,255,0.02)",
+                  }}
+                >
+                  {getFilteredIconsForAdd().map((iconOption) => (
+                    <IconButton
+                      key={iconOption.value}
+                      onClick={() =>
+                        updateAddFormField("icon", iconOption.value)
+                      }
+                      sx={{
+                        width: 44,
+                        height: 44,
+                        border:
+                          addForm.icon === iconOption.value
+                            ? "2px solid #3b82f6"
+                            : "1px solid rgba(255,255,255,0.1)",
+                        background:
+                          addForm.icon === iconOption.value
+                            ? "rgba(59,130,246,0.15)"
+                            : "rgba(255,255,255,0.02)",
+                        color: "white",
+                        fontSize: "1.3rem",
+                        borderRadius: 2.5,
+                        transition: "all 0.2s ease",
+                        "&:hover": {
+                          background: "rgba(59,130,246,0.1)",
+                          border: "1px solid #3b82f6",
+                          transform: "scale(1.05)",
+                        },
+                      }}
+                    >
+                      <i className={iconOption.value}></i>
+                    </IconButton>
+                  ))}
+                </Box>
+              </>
+            )}
+            {addIconMode === "custom" && (
               <TextField
-                label="Gradient personnalisé (CSS)"
-                value={addForm.gradient}
-                onChange={(e) => updateAddFormField("gradient", e.target.value)}
+                label="URL de l'icône"
+                value={addCustomIconUrl}
+                onChange={(e) => setAddCustomIconUrl(e.target.value)}
                 fullWidth
-                placeholder="linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)"
+                placeholder="https://example.com/icon.png"
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     color: "white",
+                    borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     "& fieldset": {
-                      borderColor: "rgba(255, 255, 255, 0.2)",
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                      borderWidth: "1px",
                     },
                     "&:hover fieldset": {
-                      borderColor: "rgba(255, 255, 255, 0.3)",
+                      borderColor: "rgba(255, 255, 255, 0.2)",
                     },
                     "&.Mui-focused fieldset": {
                       borderColor: "#3b82f6",
+                      borderWidth: "1.5px",
                     },
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
+                    fontWeight: 500,
                     "&.Mui-focused": {
                       color: "#3b82f6",
+                      fontWeight: 500,
                     },
+                  },
+                  "& .MuiInputBase-input": {
+                    padding: "16px 14px",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
+                    letterSpacing: "0.02em",
                   },
                 }}
               />
-            </Box>
+            )}
+            {addIconMode === "manual" && (
+              <TextField
+                label="Classe FontAwesome (ex: fas fa-atom)"
+                value={addForm.icon}
+                onChange={(e) => updateAddFormField("icon", e.target.value)}
+                fullWidth
+                placeholder="fas fa-atom"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "white",
+                    borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
+                    "& fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                      borderWidth: "1px",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#3b82f6",
+                      borderWidth: "1.5px",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
+                    fontWeight: 500,
+                    "&.Mui-focused": {
+                      color: "#3b82f6",
+                      fontWeight: 500,
+                    },
+                  },
+                  "& .MuiInputBase-input": {
+                    padding: "16px 14px",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
+                    letterSpacing: "0.02em",
+                  },
+                }}
+              />
+            )}
           </Box>
         </DialogContent>
-        <DialogActions sx={{ p: 3, gap: 1 }}>
+        <DialogActions sx={{ p: 4, gap: 2 }}>
           <Button
             onClick={closeAddModal}
             variant="outlined"
             sx={{
-              borderColor: "rgba(255, 255, 255, 0.3)",
-              color: "rgba(255, 255, 255, 0.7)",
+              borderColor: "rgba(255, 255, 255, 0.2)",
+              color: "rgba(255, 255, 255, 0.8)",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2.5,
+              letterSpacing: "0.02em",
+              textTransform: "none",
               "&:hover": {
-                borderColor: "rgba(255, 255, 255, 0.5)",
+                borderColor: "rgba(255, 255, 255, 0.3)",
                 backgroundColor: "rgba(255, 255, 255, 0.05)",
               },
             }}
@@ -2539,8 +2649,16 @@ const LiensUtiles = () => {
             sx={{
               background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
               color: "white",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2.5,
+              letterSpacing: "0.02em",
+              textTransform: "none",
               "&:hover": {
                 background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                transform: "translateY(-1px)",
               },
             }}
           >

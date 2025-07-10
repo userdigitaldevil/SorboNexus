@@ -206,6 +206,10 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
     }
     // --- End file cleanup ---
 
+    // Delete all bookmarks for this ressource
+    await prisma.bookmark.deleteMany({
+      where: { itemId: Number(id), itemType: "ressource" },
+    });
     await prisma.ressource.delete({ where: { id: Number(id) } });
     res.json({ success: true });
   } catch (err) {

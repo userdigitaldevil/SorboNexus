@@ -734,11 +734,10 @@ export default function Ressources() {
                   },
                 }}
                 onClick={() => {
-                  const section = document.getElementById(
-                    "partagez-vos-ressources"
-                  );
-                  if (section) {
-                    section.scrollIntoView({ behavior: "smooth" });
+                  if (isLoggedIn) {
+                    openAddModal();
+                  } else {
+                    navigate("/connexion");
                   }
                 }}
               >

@@ -203,6 +203,10 @@ router.delete("/:id", isAdmin, async (req, res) => {
     await prisma.schoolApplied.deleteMany({ where: { alumniId } });
     // Delete all users associated with this alumni
     await prisma.user.deleteMany({ where: { alumniId } });
+    // Delete all bookmarks for this alumni
+    await prisma.bookmark.deleteMany({
+      where: { itemId: alumniId, itemType: "alumni" },
+    });
     // Delete the alumni
     await prisma.alumni.delete({ where: { id: alumniId } });
     res.json({ message: "Alumni deleted" });
