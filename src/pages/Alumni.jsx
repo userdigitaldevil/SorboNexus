@@ -57,6 +57,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { useAlumniEditModal } from "../components/AlumniEditModalContext";
 import useBookmarks from "../hooks/useBookmarks";
+import { getAlumni, getAlumniById, deleteAlumni } from "../api/alumni";
 
 export default function Alumni() {
   // Admin state (must be first)
@@ -121,10 +122,7 @@ export default function Alumni() {
 
   const fetchAlumni = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/alumni`
-      );
-      const data = await response.json();
+      const data = await getAlumni();
       setAlumni(data);
       setCurrentPage(1);
       setLoading(false);
@@ -394,12 +392,7 @@ export default function Alumni() {
     let alumniData = alum;
     if (isAdmin) {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/alumni/${alum.id}`
-        );
-        if (res.ok) {
-          alumniData = await res.json();
-        }
+        alumniData = await getAlumniById(alum.id);
       } catch (e) {}
     }
     openEditModal(alumniData);
@@ -414,15 +407,7 @@ export default function Alumni() {
       return;
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/alumni/${alum.id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await deleteAlumni(alum.id, token);
       if (res.ok) {
         await fetchAlumni();
         window.dispatchEvent(new Event("profileUpdated"));

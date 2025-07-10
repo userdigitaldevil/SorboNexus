@@ -41,6 +41,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AlumniProfileCard from "../components/AlumniProfileCard";
 import { DOMAIN_COLORS } from "../components/AlumniCard.jsx";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { getAlumni, getAlumniCount } from "../api/alumni";
+import { getAnnonces, addAnnonce, deleteAnnonce } from "../api/annonces";
 
 // Helper function to get alumni card color (same logic as Conseils page)
 function getAlumniCardColor(alumni) {
@@ -169,11 +171,14 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/alumni`)
-      .then((res) => res.json())
+    getAlumni()
       .then((data) => {
         setAlumniCount(data.length);
         setAlumni(data);
+      })
+      .catch(() => {
+        setAlumniCount(null);
+        setAlumni([]);
       });
   }, []);
 
@@ -227,13 +232,7 @@ export default function Home() {
     setAnnoncesLoading(true);
     setAnnoncesError("");
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/annonces?skip=${
-          (page - 1) * perPage
-        }&take=${perPage}`
-      );
-      if (!res.ok) throw new Error("Erreur lors du chargement des annonces.");
-      const data = await res.json();
+      const data = await getAnnonces(page, perPage);
       setAnnonces(data.annonces);
       setAnnoncesTotal(data.total);
     } catch (err) {
@@ -268,17 +267,10 @@ export default function Home() {
     setAddError("");
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/annonces`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: newAnnonceTitle,
-          content: newAnnonceContent,
-        }),
-      });
+      const res = await addAnnonce(
+        { title: newAnnonceTitle, content: newAnnonceContent },
+        token
+      );
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || "Erreur lors de l'ajout de l'annonce.");
@@ -298,13 +290,7 @@ export default function Home() {
     if (!window.confirm("Supprimer cette annonce ?")) return;
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/annonces/${id}`,
-        {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await deleteAnnonce(id, token);
       if (!res.ok) throw new Error("Erreur lors de la suppression.");
       fetchAnnonces(1, annoncesPerPage);
       if (annoncesModalOpen) fetchAnnonces(annoncesPage, annoncesPerPage);
