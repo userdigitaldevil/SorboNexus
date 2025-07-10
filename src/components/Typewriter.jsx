@@ -66,13 +66,19 @@ const Typewriter = ({
   // Pause typewriter when scrolling to improve performance
   useEffect(() => {
     let scrollTimeout;
+    let isScrolling = false;
 
     const handleScroll = () => {
-      setIsPaused(true);
+      if (!isScrolling) {
+        setIsPaused(true);
+        isScrolling = true;
+      }
+
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
         setIsPaused(false);
-      }, 150); // Resume after 150ms of no scrolling
+        isScrolling = false;
+      }, 100); // Reduced from 150ms for better responsiveness
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });

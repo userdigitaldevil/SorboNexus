@@ -177,11 +177,6 @@ export default function Home() {
       });
   }, []);
 
-  // Scroll to top when component mounts (especially important for mobile)
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
   // Format number as 1.5K if >= 1000
   function formatCount(n) {
     if (n == null) return "...";
@@ -659,20 +654,36 @@ export default function Home() {
   const [showArrow, setShowArrow] = useState(true);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      // Hide arrow if scrolled more than 80vh
-      if (window.scrollY > window.innerHeight * 0.8) {
-        setShowArrow(false);
-      } else {
-        setShowArrow(true);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          // Hide arrow if scrolled more than 80vh
+          if (window.scrollY > window.innerHeight * 0.8) {
+            setShowArrow(false);
+          } else {
+            setShowArrow(true);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
-    window.addEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <div className="glassy-bg min-h-screen">
+    <div
+      className="glassy-bg min-h-screen"
+      style={{
+        touchAction: "pan-y",
+        overscrollBehavior: "none",
+        WebkitOverflowScrolling: "touch",
+      }}
+    >
       {/* Hero Section */}
       <Box
         component="section"
