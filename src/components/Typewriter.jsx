@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 const Typewriter = ({
@@ -17,6 +17,8 @@ const Typewriter = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isInView, setIsInView] = useState(true);
+  const componentRef = useRef(null);
 
   // Default sequence if none provided
   const defaultSequence = [
@@ -28,6 +30,38 @@ const Typewriter = ({
   ];
 
   const sequenceToUse = sequence || defaultSequence;
+
+  // Intersection Observer to detect when component is in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+
+        // Reset animation when coming back into view
+        if (entry.isIntersecting && isComplete) {
+          setCurrentStep(0);
+          setCurrentIndex(0);
+          setIsDeleting(false);
+          setDisplayText("");
+          setIsComplete(false);
+        }
+      },
+      {
+        threshold: 0.3, // Trigger when 30% of the component is visible
+        rootMargin: "50px", // Add some margin for better detection
+      }
+    );
+
+    if (componentRef.current) {
+      observer.observe(componentRef.current);
+    }
+
+    return () => {
+      if (componentRef.current) {
+        observer.unobserve(componentRef.current);
+      }
+    };
+  }, [isComplete]);
 
   // Pause typewriter when scrolling to improve performance
   useEffect(() => {
@@ -50,7 +84,8 @@ const Typewriter = ({
   }, []);
 
   useEffect(() => {
-    if ((isComplete && !repeat) || isPaused) return;
+    // Don't animate if not in view, paused, or complete (and not repeating)
+    if (!isInView || isPaused || (isComplete && !repeat)) return;
 
     const currentSequence = sequenceToUse[currentStep];
     if (!currentSequence) {
@@ -139,10 +174,13 @@ const Typewriter = ({
     delay,
     repeat,
     isComplete,
+    isInView,
+    isPaused,
   ]);
 
   return (
     <motion.span
+      ref={componentRef}
       className={className}
       style={style}
       initial={{ opacity: 0 }}
