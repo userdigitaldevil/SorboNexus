@@ -1205,71 +1205,127 @@ export default function Ressources() {
 
       {/* Upload Section */}
       <motion.section
-        className="py-24 px-6 bg-gradient-to-r from-blue-900/40 to-teal-900/40 z-10 relative"
-        id="partagez-vos-ressources"
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: "center", position: "relative" }}>
-            {/* Floating shape */}
+          <Box
+            sx={{
+              textAlign: "center",
+              mt: { xs: 8, md: 12 },
+              position: "relative",
+              py: { xs: 6, md: 8 },
+              px: { xs: 2, md: 4 },
+              mb: { xs: 4, md: 6 },
+              background: "rgba(255, 255, 255, 0.02)",
+              borderRadius: 4,
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              backdropFilter: "blur(20px)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            {/* Background gradient effects */}
             <motion.div
-              className="absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 bg-gradient-to-br from-blue-500/30 to-teal-400/20 rounded-full blur-2xl z-0"
-              animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.3, 0.5, 0.3],
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 0.1, scale: 1 }}
+              transition={{ duration: 2, delay: 0.5 }}
+              style={{
+                position: "absolute",
+                top: "10%",
+                left: "10%",
+                width: "150px",
+                height: "150px",
+                background:
+                  "radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)",
+                borderRadius: "50%",
+                filter: "blur(30px)",
               }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 0.1, scale: 1 }}
+              transition={{ duration: 2, delay: 1 }}
+              style={{
+                position: "absolute",
+                bottom: "20%",
+                right: "15%",
+                width: "200px",
+                height: "200px",
+                background:
+                  "radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%)",
+                borderRadius: "50%",
+                filter: "blur(40px)",
               }}
             />
 
+            {/* Icon */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <Box
+                sx={{
+                  width: { xs: 50, md: 70 },
+                  height: { xs: 50, md: 70 },
+                  borderRadius: "50%",
+                  background:
+                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 24px",
+                  color: "white",
+                  fontSize: { xs: "1.2rem", md: "1.6rem" },
+                  boxShadow: "0 6px 20px rgba(59, 130, 246, 0.25)",
+                }}
+              >
+                <i className="fas fa-share-alt"></i>
+              </Box>
+            </motion.div>
+
+            {/* Title */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
             >
               <Typography
-                variant="h2"
+                variant="h3"
                 sx={{
                   fontWeight: 300,
-                  mb: 5,
-                  fontSize: { xs: "2.2rem", md: "2.8rem", lg: "3.5rem" },
+                  mb: { xs: 2, md: 3 },
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
-                  position: "relative",
-                  zIndex: 10,
-                  lineHeight: 1.2,
+                  fontSize: { xs: "1.4rem", sm: "1.8rem", md: "2.5rem" },
+                  lineHeight: 1.1,
                   letterSpacing: "-0.02em",
                 }}
               >
-                Partagez vos ressources
+                <span style={{ fontWeight: 600 }}>Partagez</span> vos ressources
               </Typography>
             </motion.div>
 
+            {/* Subtitle */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.9 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
             >
               <Typography
                 variant="h6"
                 sx={{
-                  color: "rgba(255, 255, 255, 0.9)",
-                  mb: 8,
                   fontWeight: 400,
-                  lineHeight: 1.7,
-                  maxWidth: 700,
-                  mx: "auto",
-                  position: "relative",
-                  zIndex: 10,
-                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.3rem" },
+                  color: "rgba(255, 255, 255, 0.8)",
+                  mb: { xs: 4, md: 5 },
+                  maxWidth: "700px",
+                  margin: "0 auto",
+                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+                  lineHeight: 1.4,
                   letterSpacing: "0.01em",
                 }}
               >

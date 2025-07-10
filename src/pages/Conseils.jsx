@@ -1024,53 +1024,135 @@ export default function Conseils() {
         </motion.div>
 
         {/* Join Network Section */}
-        <Box
-          sx={{
-            transform: { xs: "scale(0.88)", sm: "scale(1)", md: "scale(1)" },
-            transformOrigin: "top center",
-          }}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
           <Box
             sx={{
               textAlign: "center",
-              mt: 8,
+              mt: { xs: 8, md: 12 },
               position: "relative",
+              py: { xs: 6, md: 8 },
+              px: { xs: 2, md: 4 },
+              background: "rgba(255, 255, 255, 0.02)",
+              borderRadius: 4,
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              backdropFilter: "blur(20px)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
             }}
           >
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: 500,
-                mb: 3,
-                background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                fontSize: { xs: "1.3rem", sm: "1.6rem", md: "2.2rem" },
-                lineHeight: 1.2,
-                letterSpacing: "-0.01em",
+            {/* Background gradient effects */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 0.1, scale: 1 }}
+              transition={{ duration: 2, delay: 0.5 }}
+              style={{
+                position: "absolute",
+                top: "10%",
+                left: "10%",
+                width: "150px",
+                height: "150px",
+                background:
+                  "radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)",
+                borderRadius: "50%",
+                filter: "blur(30px)",
               }}
-            >
-              Partagez vos conseils
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "rgba(255, 255, 255, 0.8)",
-                mb: 5,
-                maxWidth: "700px",
-                margin: "0 auto",
-                fontSize: { xs: "1rem", sm: "1.15rem", md: "1.3rem" },
-                lineHeight: 1.5,
-                letterSpacing: "0.01em",
-                fontWeight: 400,
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 0.1, scale: 1 }}
+              transition={{ duration: 2, delay: 1 }}
+              style={{
+                position: "absolute",
+                bottom: "20%",
+                right: "15%",
+                width: "200px",
+                height: "200px",
+                background:
+                  "radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%)",
+                borderRadius: "50%",
+                filter: "blur(40px)",
               }}
+            />
+
+            {/* Icon */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
-              Remplissez votre profil et donnez de précieux conseils aux autres
-              étudiants. C'est le cœur du site et votre expérience peut vraiment
-              faire la différence pour les futurs étudiants de Sorbonne
-              Université.
-            </Typography>
+              <Box
+                sx={{
+                  width: { xs: 50, md: 70 },
+                  height: { xs: 50, md: 70 },
+                  borderRadius: "50%",
+                  background:
+                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 24px",
+                  color: "white",
+                  fontSize: { xs: "1.2rem", md: "1.6rem" },
+                  boxShadow: "0 6px 20px rgba(59, 130, 246, 0.25)",
+                }}
+              >
+                <LightbulbIcon />
+              </Box>
+            </motion.div>
+
+            {/* Title */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <Typography
+                variant="h3"
+                sx={{
+                  fontWeight: 300,
+                  mb: { xs: 2, md: 3 },
+                  background:
+                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  fontSize: { xs: "1.4rem", sm: "1.8rem", md: "2.5rem" },
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                <span style={{ fontWeight: 600 }}>Partagez</span> vos conseils
+              </Typography>
+            </motion.div>
+
+            {/* Subtitle */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 400,
+                  color: "rgba(255, 255, 255, 0.8)",
+                  mb: { xs: 4, md: 5 },
+                  maxWidth: "700px",
+                  margin: "0 auto",
+                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+                  lineHeight: 1.4,
+                  letterSpacing: "0.01em",
+                }}
+              >
+                Remplissez votre profil et donnez de précieux conseils aux
+                autres étudiants. C'est le cœur du site et votre expérience peut
+                vraiment faire la différence pour les futurs étudiants de
+                Sorbonne Université.
+              </Typography>
+            </motion.div>
             {!alumniId && (
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -1119,7 +1201,7 @@ export default function Conseils() {
               </motion.div>
             )}
           </Box>
-        </Box>
+        </motion.div>
       </Container>
 
       {/* Profile Modal */}

@@ -1166,71 +1166,137 @@ export default function Alumni() {
 
       {/* Join Alumni Section */}
       <motion.section
-        className="py-24 px-6 bg-gradient-to-r from-blue-900/40 to-teal-900/40 z-10 relative"
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: "center", position: "relative" }}>
-            {/* Floating shape */}
+          <Box
+            sx={{
+              textAlign: "center",
+              position: "relative",
+              py: { xs: 4, md: 6 },
+              px: { xs: 2, md: 4 },
+              mb: { xs: 4, md: 6 },
+              background: "rgba(255, 255, 255, 0.02)",
+              borderRadius: 4,
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              backdropFilter: "blur(20px)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            {/* Background gradient effects */}
             <motion.div
-              className="absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 bg-gradient-to-br from-blue-500/30 to-teal-400/20 rounded-full blur-2xl z-0"
-              animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.3, 0.5, 0.3],
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 0.1, scale: 1 }}
+              transition={{ duration: 2, delay: 0.5 }}
+              style={{
+                position: "absolute",
+                top: "10%",
+                left: "10%",
+                width: "150px",
+                height: "150px",
+                background:
+                  "radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)",
+                borderRadius: "50%",
+                filter: "blur(30px)",
               }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 0.1, scale: 1 }}
+              transition={{ duration: 2, delay: 1 }}
+              style={{
+                position: "absolute",
+                bottom: "20%",
+                right: "15%",
+                width: "200px",
+                height: "200px",
+                background:
+                  "radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%)",
+                borderRadius: "50%",
+                filter: "blur(40px)",
               }}
             />
 
+            {/* Icon */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <Box
+                sx={{
+                  width: { xs: 50, md: 70 },
+                  height: { xs: 50, md: 70 },
+                  borderRadius: "50%",
+                  background:
+                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 24px",
+                  color: "white",
+                  fontSize: { xs: "1.2rem", md: "1.6rem" },
+                  boxShadow: "0 6px 20px rgba(59, 130, 246, 0.25)",
+                }}
+              >
+                <i className="fas fa-users"></i>
+              </Box>
+            </motion.div>
+
+            {/* Title */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
             >
               <Typography
-                variant="h2"
+                variant="h3"
                 sx={{
-                  fontWeight: 500,
-                  mb: 5,
-                  fontSize: { xs: "2.1rem", md: "2.6rem", lg: "3.1rem" },
+                  fontWeight: 300,
+                  mb: { xs: 2, md: 3 },
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
-                  position: "relative",
-                  zIndex: 10,
-                  lineHeight: 1.2,
-                  letterSpacing: "-0.01em",
+                  fontSize: { xs: "1.4rem", sm: "1.8rem", md: "2.5rem" },
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.02em",
                 }}
               >
-                {alumniId
-                  ? "Faites grandir notre réseau"
-                  : "Faites partie de notre réseau"}
+                {alumniId ? (
+                  <>
+                    <span style={{ fontWeight: 600 }}>Faites grandir</span>{" "}
+                    notre réseau
+                  </>
+                ) : (
+                  <>
+                    <span style={{ fontWeight: 600 }}>Faites partie</span> de
+                    notre réseau
+                  </>
+                )}
               </Typography>
             </motion.div>
 
+            {/* Subtitle */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.9 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
             >
               <Typography
                 variant="h6"
                 sx={{
-                  color: "rgba(255, 255, 255, 0.8)",
-                  mb: 8,
                   fontWeight: 400,
-                  lineHeight: 1.6,
-                  maxWidth: 600,
-                  mx: "auto",
-                  position: "relative",
-                  zIndex: 10,
+                  color: "rgba(255, 255, 255, 0.8)",
+                  mb: { xs: 4, md: 5 },
+                  maxWidth: "700px",
+                  margin: "0 auto",
+                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+                  lineHeight: 1.4,
+                  letterSpacing: "0.01em",
                 }}
               >
                 {alumniId
@@ -1239,50 +1305,99 @@ export default function Alumni() {
               </Typography>
             </motion.div>
 
-            {!alumniId && (
+            {!alumniId ? (
               <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 1 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
               >
-                <Button
-                  variant="contained"
-                  size="large"
-                  sx={{
-                    background:
-                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                    color: "white",
-                    fontWeight: 500,
-                    fontSize: { xs: "1rem", md: "1.1rem" },
-                    px: 5,
-                    py: 2,
-                    borderRadius: 4,
-                    boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
-                    letterSpacing: "0.02em",
-                    lineHeight: 1.4,
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    position: "relative",
-                    zIndex: 10,
-                    "&:hover": {
+                <Box sx={{ pt: { xs: 2, sm: 3, md: 4 } }}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    sx={{
                       background:
-                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                      boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
-                      transform: "translateY(-3px)",
-                    },
-                    "&:active": {
-                      transform: "translateY(-1px)",
-                    },
-                  }}
-                  onClick={() => {
-                    if (!alumniId) {
-                      navigate("/connexion");
-                    } else {
+                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                      color: "white",
+                      fontWeight: 500,
+                      px: 5,
+                      py: 2,
+                      borderRadius: 4,
+                      textTransform: "none",
+                      fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+                      letterSpacing: "0.02em",
+                      lineHeight: 1.4,
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
+                      "&:hover": {
+                        background:
+                          "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                        transform: "translateY(-3px)",
+                        boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+                      },
+                      "&:active": {
+                        transform: "translateY(-1px)",
+                      },
+                    }}
+                    onClick={() => {
+                      if (!alumniId) {
+                        navigate("/connexion");
+                      } else {
+                        setAlreadyConnectedOpen(true);
+                      }
+                    }}
+                  >
+                    Rejoindre le réseau
+                  </Button>
+                </Box>
+              </motion.div>
+            ) : (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
+              >
+                <Box sx={{ pt: { xs: 2, sm: 3, md: 4 } }}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      background:
+                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                      color: "white",
+                      fontWeight: 500,
+                      px: 5,
+                      py: 2,
+                      borderRadius: 4,
+                      textTransform: "none",
+                      fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+                      letterSpacing: "0.02em",
+                      lineHeight: 1.4,
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
+                      "&:hover": {
+                        background:
+                          "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                        transform: "translateY(-3px)",
+                        boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+                      },
+                      "&:active": {
+                        transform: "translateY(-1px)",
+                      },
+                    }}
+                    onClick={() => {
+                      // Copy current URL to clipboard
+                      navigator.clipboard.writeText(window.location.href);
                       setAlreadyConnectedOpen(true);
-                    }
-                  }}
-                >
-                  Rejoindre le réseau
-                </Button>
+                    }}
+                  >
+                    Partager le site
+                  </Button>
+                </Box>
               </motion.div>
             )}
             <Snackbar
@@ -1292,11 +1407,13 @@ export default function Alumni() {
               anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
               <Alert
-                severity="info"
+                severity="success"
                 onClose={() => setAlreadyConnectedOpen(false)}
                 sx={{ width: "100%" }}
               >
-                Vous êtes déjà connecté.
+                {alumniId
+                  ? "Lien du site copié dans le presse-papiers !"
+                  : "Vous êtes déjà connecté."}
               </Alert>
             </Snackbar>
           </Box>
