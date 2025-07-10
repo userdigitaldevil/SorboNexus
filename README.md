@@ -447,6 +447,24 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+## 👨‍💻 Credits
+
+**SorboNexus** was created and developed by **Seth Aguila**.
+
+### About the Developer
+
+Seth Aguila is a passionate developer and Sorbonne University student who created SorboNexus to help fellow students connect with alumni and access valuable resources for their academic and professional journey.
+
+### Development
+
+- **Full-Stack Development**: React, Node.js, Express, PostgreSQL
+- **UI/UX Design**: Apple-inspired design with modern animations
+- **Cloud Infrastructure**: Railway deployment, Cloudflare R2 storage
+- **Database Design**: Prisma ORM with comprehensive data modeling
+- **Security Implementation**: JWT authentication, role-based access control
+
+---
+
 ## 📞 Contact
 
 - **Email**: sethaguila@icloud.com
