@@ -1379,3 +1379,11 @@ Seth Aguila is a passionate developer and Sorbonne University student who create
 
 - **Email**: sethaguila@icloud.com
 - **LinkedIn**: [https://www.linkedin.com/in/sethaguila/](https://www.linkedin.com/in/sethaguila/)
+
+### Centralized API Logic
+
+All frontend API calls are now centralized in `src/api/` (e.g., `src/api/bookmarks.js`, `src/api/links.js`, etc.). This replaces the previous pattern of using scattered services or hooks for API calls. Update your imports accordingly.
+
+### Global Bookmark Context
+
+Bookmark logic is now managed globally via a BookmarkContext, ensuring consistent state and logic across all pages and components.
