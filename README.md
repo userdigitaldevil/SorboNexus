@@ -447,21 +447,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🙏 Acknowledgments
-
-- **Sorbonne Université** - For inspiring this project
-- **React & Vite** - For the excellent development experience
-- **Material-UI** - For the beautiful component library
-- **Cloudflare** - For reliable cloud storage
-- **Railway** - For seamless deployment
-
----
-
 ## 📞 Contact
 
-- **Website**: [https://sorbonexus.com/](https://sorbonexus.com/)
-- **GitHub**: [https://github.com/userdigitaldevil/SorboNexus](https://github.com/userdigitaldevil/SorboNexus)
-
----
-
-_Built with ❤️ for the Sorbonne Université community_
+- **Email**: sethaguila@icloud.com
+- **LinkedIn**: [https://www.linkedin.com/in/sethaguila/](https://www.linkedin.com/in/sethaguila/)
