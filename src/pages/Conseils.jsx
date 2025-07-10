@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import useBookmarks from "../hooks/useBookmarks";
 import {
   Box,
@@ -150,6 +150,9 @@ export default function Conseils() {
   const [alreadyConnectedOpen, setAlreadyConnectedOpen] = useState(false);
   const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
 
+  // Refs to track card positions for smooth scrolling
+  const cardRefs = useRef({});
+
   // Use bookmark hook for alumni
   const {
     bookmarkedItems: bookmarkedAlumni,
@@ -272,15 +275,44 @@ export default function Conseils() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const toggleExpanded = (tipId) => {
-    const newExpanded = new Set(expandedTips);
-    if (newExpanded.has(tipId)) {
-      newExpanded.delete(tipId);
-    } else {
-      newExpanded.add(tipId);
-    }
-    setExpandedTips(newExpanded);
-  };
+  const toggleExpanded = useCallback(
+    (tipId) => {
+      const newExpanded = new Set(expandedTips);
+      const wasExpanded = newExpanded.has(tipId);
+
+      if (wasExpanded) {
+        // Collapsing - only scroll back if the content was long enough to require scrolling
+        newExpanded.delete(tipId);
+        setExpandedTips(newExpanded);
+
+        // Check if scrolling is needed by comparing card position before and after collapse
+        setTimeout(() => {
+          const cardElement = cardRefs.current[tipId];
+          if (cardElement) {
+            const rect = cardElement.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            const cardTop = rect.top;
+
+            // Only scroll if the card is not visible in the viewport (indicating long content was expanded)
+            if (cardTop < 0 || cardTop > viewportHeight) {
+              const scrollTop =
+                window.pageYOffset || document.documentElement.scrollTop;
+              const offset = viewportHeight / 2; // Center the card in the viewport
+              window.scrollTo({
+                top: rect.top + scrollTop - offset,
+                behavior: "smooth",
+              });
+            }
+          }
+        }, 100);
+      } else {
+        // Expanding
+        newExpanded.add(tipId);
+        setExpandedTips(newExpanded);
+      }
+    },
+    [expandedTips]
+  );
 
   /**
    * Toggle bookmark status for a specific alumni
@@ -715,6 +747,7 @@ export default function Conseils() {
                 viewport={{ once: true }}
               >
                 <Card
+                  ref={(el) => (cardRefs.current[tip.id] = el)}
                   elevation={0}
                   sx={{
                     background: "rgba(255, 255, 255, 0.05)",
