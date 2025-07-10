@@ -19,6 +19,7 @@ import Connexion from "./pages/Connexion";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import { AlumniEditModalProvider } from "./components/AlumniEditModalContext";
+import { BookmarkProvider } from "./context/BookmarkContext";
 
 // Create a dark theme inspired by Cursor AI
 const theme = createTheme({
@@ -186,92 +187,94 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <AlumniEditModalProvider>
-          <div
-            className="smooth-scroll-all"
-            style={{
-              scrollBehavior: "smooth",
-              overflowX: "hidden", // Prevent horizontal scroll during animations
-            }}
-          >
-            <TitleUpdater />
-            <Navbar />
-            <main>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <AnimatedPage>
-                      <Home />
-                    </AnimatedPage>
-                  }
-                />
-                <Route
-                  path="/ressources"
-                  element={
-                    <AnimatedPage>
-                      <Ressources />
-                    </AnimatedPage>
-                  }
-                />
-                <Route
-                  path="/conseils"
-                  element={
-                    <AnimatedPage>
-                      <Conseils />
-                    </AnimatedPage>
-                  }
-                />
-                <Route
-                  path="/alumni"
-                  element={
-                    <AnimatedPage>
-                      <Alumni />
-                    </AnimatedPage>
-                  }
-                />
-                <Route
-                  path="/liens-utiles"
-                  element={
-                    <AnimatedPage>
-                      <LiensUtiles />
-                    </AnimatedPage>
-                  }
-                />
-                <Route
-                  path="/connexion"
-                  element={
-                    <AnimatedPage>
-                      <Connexion />
-                    </AnimatedPage>
-                  }
-                />
-                <Route
-                  path="/terms"
-                  element={
-                    <AnimatedPage>
-                      <Terms />
-                    </AnimatedPage>
-                  }
-                />
-                <Route
-                  path="/privacy"
-                  element={
-                    <AnimatedPage>
-                      <Privacy />
-                    </AnimatedPage>
-                  }
-                />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        </AlumniEditModalProvider>
-      </Router>
-    </ThemeProvider>
+    <BookmarkProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <AlumniEditModalProvider>
+            <div
+              className="smooth-scroll-all"
+              style={{
+                scrollBehavior: "smooth",
+                overflowX: "hidden", // Prevent horizontal scroll during animations
+              }}
+            >
+              <TitleUpdater />
+              <Navbar />
+              <main>
+                <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      <AnimatedPage>
+                        <Home />
+                      </AnimatedPage>
+                    }
+                  />
+                  <Route
+                    path="/ressources"
+                    element={
+                      <AnimatedPage>
+                        <Ressources />
+                      </AnimatedPage>
+                    }
+                  />
+                  <Route
+                    path="/conseils"
+                    element={
+                      <AnimatedPage>
+                        <Conseils />
+                      </AnimatedPage>
+                    }
+                  />
+                  <Route
+                    path="/alumni"
+                    element={
+                      <AnimatedPage>
+                        <Alumni />
+                      </AnimatedPage>
+                    }
+                  />
+                  <Route
+                    path="/liens-utiles"
+                    element={
+                      <AnimatedPage>
+                        <LiensUtiles />
+                      </AnimatedPage>
+                    }
+                  />
+                  <Route
+                    path="/connexion"
+                    element={
+                      <AnimatedPage>
+                        <Connexion />
+                      </AnimatedPage>
+                    }
+                  />
+                  <Route
+                    path="/terms"
+                    element={
+                      <AnimatedPage>
+                        <Terms />
+                      </AnimatedPage>
+                    }
+                  />
+                  <Route
+                    path="/privacy"
+                    element={
+                      <AnimatedPage>
+                        <Privacy />
+                      </AnimatedPage>
+                    }
+                  />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </AlumniEditModalProvider>
+        </Router>
+      </ThemeProvider>
+    </BookmarkProvider>
   );
 }
 
