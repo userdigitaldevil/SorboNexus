@@ -389,7 +389,7 @@ export default function Alumni() {
   // Helper to open profile modal from grouped list
   const handleAlumniNameClick = (alum) => {
     openProfileModal(alum);
-    closeListModal();
+    // Don't close the list modal - let user keep browsing
   };
 
   const handleEditClick = async (alum) => {
@@ -1353,6 +1353,7 @@ export default function Alumni() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          backdropFilter: "blur(8px)",
         }}
       >
         <Box
@@ -1361,13 +1362,9 @@ export default function Alumni() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: { xs: "95vw", sm: 500, md: 600 },
+            width: { xs: "95vw", sm: 600, md: 700 },
             maxHeight: "90vh",
             overflowY: "auto",
-            bgcolor: "background.paper",
-            borderRadius: 4,
-            boxShadow: 24,
-            p: 0,
             outline: "none",
             display: "flex",
             flexDirection: "column",
@@ -1380,49 +1377,53 @@ export default function Alumni() {
             onClick={closeListModal}
             sx={{
               position: "absolute",
-              top: 16,
-              right: 16,
+              top: 20,
+              right: 20,
               zIndex: 10,
-              color: "rgba(255,255,255,0.7)",
+              color: "rgba(255, 255, 255, 0.7)",
               background: "rgba(0, 0, 0, 0.3)",
-              backdropFilter: "blur(8px)",
+              backdropFilter: "blur(20px)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
-              width: 36,
-              height: 36,
+              width: 40,
+              height: 40,
+              borderRadius: "12px",
               "&:hover": {
-                color: "#fff",
+                color: "rgba(255, 255, 255, 1)",
                 background: "rgba(0, 0, 0, 0.5)",
-                transform: "scale(1.1)",
+                transform: "scale(1.05)",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
               },
-              transition: "all 0.2s ease",
+              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
-            <CloseIcon sx={{ fontSize: "1.2rem" }} />
+            <CloseIcon sx={{ fontSize: "1.3rem" }} />
           </IconButton>
 
           <Card
-            elevation={24}
+            elevation={0}
             sx={{
-              background: "rgba(15, 23, 42, 0.98)",
-              backdropFilter: "blur(8px)",
+              background: "rgba(15, 23, 42, 0.95)",
+              backdropFilter: "blur(20px)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
               borderRadius: "24px",
-              maxWidth: 700,
+              maxWidth: 800,
               width: "100%",
               maxHeight: "90vh",
               overflow: "auto",
               position: "relative",
               p: 0,
               scrollBehavior: "smooth",
-              animation: isListModalOpen ? "modalFadeIn 0.1s ease-out" : "none",
+              animation: isListModalOpen
+                ? "modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                : "none",
               "@keyframes modalFadeIn": {
                 "0%": {
                   opacity: 0,
-                  transform: "scale(0.98)",
+                  transform: "scale(0.95) translateY(10px)",
                 },
                 "100%": {
                   opacity: 1,
-                  transform: "scale(1)",
+                  transform: "scale(1) translateY(0)",
                 },
               },
             }}
@@ -1432,19 +1433,27 @@ export default function Alumni() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                p: 3,
-                borderBottom: "1px solid rgba(255,255,255,0.08)",
+                p: 4,
+                borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+                background: "rgba(30, 41, 59, 0.8)",
+                borderRadius: "24px 24px 0 0",
               }}
             >
               <Typography
                 id="alumni-list-modal-title"
                 variant="h5"
-                sx={{ fontWeight: 800, color: "#3b82f6" }}
+                sx={{
+                  fontWeight: 600,
+                  color: "rgba(255, 255, 255, 0.95)",
+                  fontSize: "1.5rem",
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1.3,
+                }}
               >
                 Liste de tous les alumni par catégorie
               </Typography>
             </Box>
-            <Box sx={{ p: 3, pt: 0, minWidth: 320 }}>
+            <Box sx={{ p: 4, pt: 2, minWidth: 320 }}>
               {/* Group alumni by the 8 available domains, use Accordions */}
               {(() => {
                 const DOMAINES = [
@@ -1521,29 +1530,39 @@ export default function Alumni() {
                       key={domain}
                       defaultExpanded={false}
                       sx={{
-                        background: "rgba(59,130,246,0.07)",
-                        borderRadius: 2,
+                        background: "rgba(30, 41, 59, 0.8)",
+                        borderRadius: "16px",
                         mb: 2,
-                        boxShadow: "none",
-                        border: "1.5px solid rgba(59,130,246,0.13)",
+                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
                         "&:before": { display: "none" },
+                        "&:hover": {
+                          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+                          transform: "translateY(-1px)",
+                        },
+                        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                       }}
                     >
                       <AccordionSummary
                         expandIcon={
-                          <ExpandMoreIcon sx={{ color: "#3b82f6" }} />
+                          <ExpandMoreIcon
+                            sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+                          />
                         }
                         aria-controls={`panel-${domain}-content`}
                         id={`panel-${domain}-header`}
                         sx={{
-                          background:
-                            "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                          color: "white",
-                          borderRadius: 2,
-                          minHeight: 56,
-                          boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
-                          fontWeight: 700,
+                          background: "rgba(51, 65, 85, 0.9)",
+                          color: "rgba(255, 255, 255, 0.95)",
+                          borderRadius: "16px",
+                          minHeight: 64,
+                          boxShadow: "none",
+                          fontWeight: 500,
                           mb: 0,
+                          "&:hover": {
+                            background: "rgba(51, 65, 85, 1)",
+                          },
+                          transition: "background 0.2s ease",
                         }}
                       >
                         <Box
@@ -1551,10 +1570,14 @@ export default function Alumni() {
                         >
                           <Avatar
                             sx={{
-                              width: 32,
-                              height: 32,
-                              fontWeight: 700,
-                              background: domainColors[domain] || "#3b82f6",
+                              width: 36,
+                              height: 36,
+                              fontWeight: 600,
+                              background:
+                                domainColors[domain] ||
+                                "rgba(255, 255, 255, 0.1)",
+                              color: "rgba(255, 255, 255, 0.95)",
+                              fontSize: "0.9rem",
                             }}
                           >
                             {domain[0]}
@@ -1562,11 +1585,10 @@ export default function Alumni() {
                           <Typography
                             variant="h6"
                             sx={{
-                              color: "white",
-                              fontWeight: 700,
+                              color: "rgba(255, 255, 255, 0.95)",
+                              fontWeight: 500,
                               fontSize: "1.1rem",
-                              letterSpacing: 0.5,
-                              textShadow: "0 1px 4px #0002",
+                              letterSpacing: "-0.01em",
                             }}
                           >
                             {domain}
@@ -1576,17 +1598,19 @@ export default function Alumni() {
                             size="small"
                             sx={{
                               ml: 2,
-                              background: "rgba(255,255,255,0.13)",
-                              color: "#fff",
-                              fontWeight: 600,
+                              background: "rgba(255, 255, 255, 0.1)",
+                              color: "rgba(255, 255, 255, 0.9)",
+                              fontWeight: 500,
+                              fontSize: "0.75rem",
+                              height: "24px",
                             }}
                           />
                         </Box>
                       </AccordionSummary>
                       <AccordionDetails
                         sx={{
-                          background: "rgba(15,23,42,0.97)",
-                          borderRadius: 2,
+                          background: "rgba(15, 23, 42, 0.6)",
+                          borderRadius: "0 0 16px 16px",
                           p: 0,
                         }}
                       >
@@ -1612,24 +1636,30 @@ export default function Alumni() {
                                 button
                                 onClick={() => handleAlumniNameClick(alum)}
                                 sx={{
-                                  px: 1.5,
-                                  py: 1.2,
-                                  borderRadius: 2,
+                                  px: 2,
+                                  py: 1.5,
+                                  borderRadius: "12px",
+                                  margin: "4px 8px",
                                   cursor: "pointer",
-                                  transition: "background 0.1s ease",
+                                  transition:
+                                    "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                                   "&:hover": {
-                                    background: "rgba(59,130,246,0.1)",
+                                    background: "rgba(255, 255, 255, 0.05)",
+                                    transform: "translateX(2px)",
                                   },
                                   userSelect: "none",
                                 }}
                                 aria-label={`Voir la fiche de ${alum.name}`}
                               >
-                                <ListItemIcon sx={{ minWidth: 44 }}>
+                                <ListItemIcon sx={{ minWidth: 48 }}>
                                   <Avatar
                                     sx={{
                                       background: getAlumniCardColor(alum),
-                                      color: "#fff",
-                                      fontWeight: 700,
+                                      color: "rgba(255, 255, 255, 0.95)",
+                                      fontWeight: 600,
+                                      fontSize: "0.9rem",
+                                      width: 40,
+                                      height: 40,
                                     }}
                                   >
                                     {alum.avatar}
@@ -1639,9 +1669,10 @@ export default function Alumni() {
                                   primary={
                                     <span
                                       style={{
-                                        fontWeight: 600,
-                                        color: "#fff",
-                                        fontSize: "1.08rem",
+                                        fontWeight: 500,
+                                        color: "rgba(255, 255, 255, 0.95)",
+                                        fontSize: "1rem",
+                                        letterSpacing: "-0.01em",
                                       }}
                                     >
                                       {alum.name}
@@ -1650,8 +1681,9 @@ export default function Alumni() {
                                   secondary={
                                     <span
                                       style={{
-                                        color: "rgba(255,255,255,0.8)",
-                                        fontSize: "0.98rem",
+                                        color: "rgba(255, 255, 255, 0.7)",
+                                        fontSize: "0.875rem",
+                                        letterSpacing: "0.01em",
                                       }}
                                     >
                                       {/* Affiche : Licence/BSc | Master/École actuelle | Année de fin de L3 */}
