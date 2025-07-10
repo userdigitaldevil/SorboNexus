@@ -509,7 +509,7 @@ const LiensUtiles = () => {
   };
 
   return (
-    <div className="glassy-bg min-h-screen">
+    <div className="glassy-bg min-h-screen smooth-scroll-all">
       {/* Animated Gradient Background */}
       <motion.div
         className="absolute inset-0 z-0 pointer-events-none"

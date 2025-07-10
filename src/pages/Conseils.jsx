@@ -492,7 +492,7 @@ export default function Conseils() {
   };
 
   return (
-    <div className="glassy-bg min-h-screen">
+    <div className="glassy-bg min-h-screen smooth-scroll-all">
       {/* Background Elements */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}

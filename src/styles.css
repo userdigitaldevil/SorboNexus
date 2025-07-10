@@ -13,6 +13,9 @@ html {
   scroll-padding-top: 80px; /* Account for fixed navbar */
   /* Mobile scrolling fixes */
   -webkit-overflow-scrolling: touch;
+  /* Very smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
 }
 
 body {
@@ -28,17 +31,56 @@ body {
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
   overscroll-behavior: none;
+  /* Very smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
 }
 
-/* Mobile-specific scrolling fixes */
+/* Very smooth scrolling for all elements */
+* {
+  scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
+}
+
+/* Smooth scrolling utility classes */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.smooth-scroll-all {
+  scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced smooth scrolling for containers */
+.container,
+.MuiContainer-root {
+  scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth scrolling for all pages */
+.page-container {
+  scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-specific scrolling fixes with smooth behavior */
 @media (max-width: 768px) {
   html {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
   }
 
   body {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
     overscroll-behavior: none;
@@ -50,12 +92,16 @@ body {
   /* Prevent momentum scrolling issues on iOS */
   * {
     -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
   }
 
   /* Fix for scroll momentum issues */
   .glassy-bg {
     -webkit-overflow-scrolling: touch;
     overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
   }
 
   /* iOS momentum scrolling fix */
@@ -63,9 +109,9 @@ body {
   body {
     -webkit-overflow-scrolling: touch;
     overflow-scrolling: touch;
-    /* Prevent double scroll */
-    scroll-behavior: auto;
-    -webkit-scroll-behavior: auto;
+    /* Enable smooth scrolling on mobile */
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
   }
 
   /* Fix for alternating scroll direction issues */
@@ -75,6 +121,8 @@ body {
     /* Ensure proper touch handling */
     touch-action: pan-y;
     overscroll-behavior: none;
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
   }
 }
 
@@ -193,12 +241,6 @@ body {
 
 .btn-apple:active {
   transform: scale(0.98) translateY(0);
-}
-
-/* Smooth scroll animations */
-.smooth-scroll {
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
 /* Page transition animations */

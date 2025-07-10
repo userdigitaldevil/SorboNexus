@@ -191,6 +191,7 @@ function App() {
       <Router>
         <AlumniEditModalProvider>
           <div
+            className="smooth-scroll-all"
             style={{
               scrollBehavior: "smooth",
               overflowX: "hidden", // Prevent horizontal scroll during animations

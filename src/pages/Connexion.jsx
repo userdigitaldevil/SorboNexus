@@ -111,7 +111,7 @@ export default function Connexion() {
 
   return (
     <div
-      className="glassy-bg min-h-screen"
+      className="glassy-bg min-h-screen smooth-scroll-all"
       style={{
         minHeight: "100vh",
         display: "flex",

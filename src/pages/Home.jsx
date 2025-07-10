@@ -659,7 +659,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="glassy-bg min-h-screen">
+    <div className="glassy-bg min-h-screen smooth-scroll-all">
       {/* Hero Section */}
       <Box
         component="section"
