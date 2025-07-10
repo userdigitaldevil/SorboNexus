@@ -28,6 +28,7 @@ import {
   Person,
 } from "@mui/icons-material";
 import { Link as RouterLink } from "react-router-dom";
+import { login } from "../api/auth";
 
 // Admin credentials from environment
 const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME;
@@ -81,27 +82,12 @@ export default function Connexion() {
 
     // Call backend for login
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: formData.email,
-            password: formData.password,
-          }),
-        }
-      );
-      const data = await res.json();
-      if (res.ok && data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("isAdmin", data.user.isAdmin ? "true" : "false");
-        window.location.href = "/";
-      } else {
-        setErrors({ password: data.error || "Identifiants invalides" });
-      }
+      const data = await login(formData.email, formData.password);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("isAdmin", data.user.isAdmin ? "true" : "false");
+      window.location.href = "/";
     } catch (err) {
-      setErrors({ password: "Erreur de connexion au serveur" });
+      setErrors({ password: err.message || "Identifiants invalides" });
     }
   };
 
