@@ -917,15 +917,15 @@ export default function Conseils() {
                       component="div"
                       variant="body1"
                       sx={{
-                        color: "rgba(255,255,255,0.8)",
+                        color: "rgba(255,255,255,0.85)",
                         fontSize: { xs: "0.85rem", md: "0.95rem" },
-                        lineHeight: 1.7,
+                        lineHeight: 1.6,
                         whiteSpace: "pre-line",
                         wordBreak: "break-word",
                         fontFamily: "inherit",
                         minHeight: 48,
                         mb: 1.5,
-                        fontWeight: 400,
+                        fontWeight: 300,
                         letterSpacing: "0.01em",
                       }}
                     >
@@ -1112,7 +1112,7 @@ export default function Conseils() {
               <Typography
                 variant="h3"
                 sx={{
-                  fontWeight: 300,
+                  fontWeight: 400,
                   mb: { xs: 2, md: 3 },
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%)",
@@ -1120,8 +1120,8 @@ export default function Conseils() {
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                   fontSize: { xs: "1.4rem", sm: "1.8rem", md: "2.5rem" },
-                  lineHeight: 1.1,
-                  letterSpacing: "-0.02em",
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.01em",
                 }}
               >
                 <span style={{ fontWeight: 600 }}>Partagez</span> vos conseils

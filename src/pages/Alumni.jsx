@@ -1355,49 +1355,61 @@ export default function Alumni() {
               </motion.div>
             ) : (
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.0 }}
+                whileHover={{ scale: 1.045 }}
+                whileTap={{ scale: 0.98 }}
+                className="relative z-10"
               >
-                <Box sx={{ pt: { xs: 2, sm: 3, md: 4 } }}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    sx={{
+                <Button
+                  variant="contained"
+                  size="large"
+                  startIcon={<i className="fas fa-share-alt"></i>}
+                  sx={{
+                    fontWeight: 400,
+                    fontFamily: "inherit",
+                    letterSpacing: "0.01em",
+                    px: 5,
+                    py: 2,
+                    borderRadius: 4,
+                    background:
+                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                    color: "#fff",
+                    textTransform: "none",
+                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+                    boxShadow: "0 8px 32px rgba(59,130,246,0.13)",
+                    position: "relative",
+                    overflow: "hidden",
+                    backdropFilter: "blur(10px)",
+                    border: "1.5px solid rgba(59,130,246,0.18)",
+                    transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
+                    "&:hover": {
                       background:
-                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                      color: "white",
-                      fontWeight: 500,
-                      px: 5,
-                      py: 2,
+                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                      color: "#fff",
+                      boxShadow: "0 16px 48px 0 rgba(59,130,246,0.18)",
+                      border: "1.5px solid #3b82f6",
+                      "&::after": {
+                        opacity: 1,
+                      },
+                    },
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      inset: 0,
                       borderRadius: 4,
-                      textTransform: "none",
-                      fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
-                      letterSpacing: "0.02em",
-                      lineHeight: 1.4,
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
-                      "&:hover": {
-                        background:
-                          "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                        transform: "translateY(-3px)",
-                        boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
-                      },
-                      "&:active": {
-                        transform: "translateY(-1px)",
-                      },
-                    }}
-                    onClick={() => {
-                      // Copy current URL to clipboard
-                      navigator.clipboard.writeText(window.location.href);
-                      setAlreadyConnectedOpen(true);
-                    }}
-                  >
-                    Partager le site
-                  </Button>
-                </Box>
+                      pointerEvents: "none",
+                      boxShadow: "0 0 0 4px rgba(59,130,246,0.13)",
+                      opacity: 0,
+                      transition: "opacity 0.22s cubic-bezier(.4,0,.2,1)",
+                    },
+                  }}
+                  onClick={() => {
+                    // Copy current URL to clipboard
+                    navigator.clipboard.writeText(window.location.href);
+                    setAlreadyConnectedOpen(true);
+                  }}
+                >
+                  Partager le site
+                </Button>
               </motion.div>
             )}
             <Snackbar

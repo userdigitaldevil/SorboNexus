@@ -348,284 +348,341 @@ export default function Home() {
     const previewContent = isLong
       ? contentLines.slice(0, maxLines).join("\n").slice(0, maxChars)
       : annonce.content;
+
     return (
-      <>
-        <Card
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        style={{ width: "100%" }}
+      >
+        <Box
           sx={{
-            background: "rgba(59,130,246,0.08)",
-            border: "1.5px solid #3b82f6",
-            borderRadius: 3,
-            boxShadow: "0 2px 12px rgba(59,130,246,0.08)",
-            maxWidth: 600,
-            width: "100%",
-            mx: "auto",
-            p: 2,
-            textAlign: "left",
             position: "relative",
+            overflow: "visible",
+            mb: { xs: 2, md: 3 },
           }}
         >
-          <CardContent>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-              {alumniProfile && (
-                <Avatar
+          {/* Floating Gradient Orb */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 0.18, scale: 1 }}
+            transition={{ duration: 1.2, delay: 0.2 }}
+            style={{
+              position: "absolute",
+              top: "-30px",
+              left: "-40px",
+              width: "120px",
+              height: "120px",
+              background:
+                "radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 70%)",
+              borderRadius: "50%",
+              filter: "blur(24px)",
+              zIndex: 0,
+            }}
+          />
+          <Card
+            elevation={0}
+            sx={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1.5px solid rgba(59,130,246,0.13)",
+              borderRadius: 4,
+              boxShadow: "0 8px 32px rgba(59,130,246,0.10)",
+              backdropFilter: "blur(18px)",
+              maxWidth: 600,
+              width: "100%",
+              mx: "auto",
+              p: { xs: 2.5, sm: 3 },
+              position: "relative",
+              zIndex: 1,
+              overflow: "visible",
+              transition: "box-shadow 0.2s",
+              "&:hover": {
+                boxShadow: "0 16px 48px rgba(59,130,246,0.18)",
+                borderColor: "rgba(59,130,246,0.22)",
+              },
+            }}
+          >
+            {/* Header: Avatar, Name, Date, Delete */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mb: 1.5,
+                gap: 2,
+                flexWrap: "wrap",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                {alumniProfile && (
+                  <Avatar
+                    sx={{
+                      width: 44,
+                      height: 44,
+                      fontSize: "1.1rem",
+                      fontWeight: 700,
+                      background: getAlumniCardColor(alumniProfile),
+                      boxShadow: "0 4px 16px rgba(59,130,246,0.18)",
+                      cursor: alumniProfile ? "pointer" : "default",
+                      border: "2.5px solid #fff",
+                      transition: "transform 0.18s",
+                      "&:hover": alumniProfile
+                        ? { transform: "scale(1.08)" }
+                        : {},
+                    }}
+                    onClick={() => alumniProfile && setProfileModalOpen(true)}
+                  >
+                    {alumniProfile.avatar || name.substring(0, 2).toUpperCase()}
+                  </Avatar>
+                )}
+                <Box
                   sx={{
-                    width: 32,
-                    height: 32,
-                    mr: 1,
-                    fontSize: "0.875rem",
-                    fontWeight: 600,
-                    background: getAlumniCardColor(alumniProfile),
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
                   }}
                 >
-                  {alumniProfile.avatar || name.substring(0, 2).toUpperCase()}
-                </Avatar>
-              )}
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  fontWeight: 700,
-                  color: "#3b82f6",
-                  mr: 1,
-                  cursor: alumniProfile ? "pointer" : "default",
-                  textDecoration: alumniProfile ? "underline" : "none",
-                }}
-                onClick={() => alumniProfile && setProfileModalOpen(true)}
-              >
-                {name}
-              </Typography>
-              <Typography variant="caption" sx={{ color: "#64748b" }}>
-                {formatDate(annonce.createdAt)}
-              </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 400,
+                      color: "#3b82f6",
+                      fontSize: "0.98rem",
+                      cursor: alumniProfile ? "pointer" : "default",
+                      textDecoration: alumniProfile ? "underline" : "none",
+                      lineHeight: 1.1,
+                      letterSpacing: "0.01em",
+                      fontFamily: "inherit",
+                    }}
+                    onClick={() => alumniProfile && setProfileModalOpen(true)}
+                  >
+                    {name}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "rgba(255,255,255,0.7)",
+                      lineHeight: 1.1,
+                      pt: 0.5,
+                      fontWeight: 300,
+                      letterSpacing: "0.01em",
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    {formatDate(annonce.createdAt)}
+                  </Typography>
+                </Box>
+              </Box>
               {showDelete && (
                 <IconButton
                   size="small"
-                  sx={{ ml: "auto" }}
+                  sx={{ color: "#ef4444", alignSelf: "flex-start" }}
                   onClick={() => handleDeleteAnnonce(annonce.id)}
                 >
-                  <DeleteIcon fontSize="small" color="error" />
+                  <DeleteIcon fontSize="small" />
                 </IconButton>
               )}
             </Box>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 700,
-                color: "#f3f4f6",
-                mb: 0.5,
-                lineHeight: 1.4,
-                wordBreak: "break-word",
-              }}
-              component="div"
-            >
-              <ReactMarkdown
-                children={annonce.title}
-                components={{
-                  strong: ({ node, ...props }) => (
-                    <strong style={{ color: "#fff" }} {...props} />
-                  ),
-                  em: ({ node, ...props }) => (
-                    <em style={{ color: "#e0e7ef" }} {...props} />
-                  ),
-                  code: ({ node, ...props }) => (
-                    <code
-                      style={{
-                        background: "#222",
-                        color: "#fff",
-                        borderRadius: 4,
-                        padding: "2px 6px",
-                        fontSize: "0.98em",
-                      }}
-                      {...props}
-                    />
-                  ),
-                  h1: ({ node, ...props }) => (
-                    <h1
-                      style={{
-                        fontSize: "1.3em",
-                        color: "#fff",
-                        fontWeight: 800,
-                        margin: 0,
-                      }}
-                      {...props}
-                    />
-                  ),
-                  h2: ({ node, ...props }) => (
-                    <h2
-                      style={{
-                        fontSize: "1.15em",
-                        color: "#fff",
-                        fontWeight: 700,
-                        margin: 0,
-                      }}
-                      {...props}
-                    />
-                  ),
-                  h3: ({ node, ...props }) => (
-                    <h3
-                      style={{
-                        fontSize: "1.05em",
-                        color: "#fff",
-                        fontWeight: 700,
-                        margin: 0,
-                      }}
-                      {...props}
-                    />
-                  ),
-                  p: ({ node, ...props }) => (
-                    <span
-                      {...props}
-                      style={{ display: "block", marginBottom: 4 }}
-                    />
-                  ),
+            {/* Content */}
+            <Box sx={{ flex: 1, zIndex: 2 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 400,
+                  background:
+                    "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  mb: 1,
+                  fontSize: { xs: "1.25rem", sm: "1.4rem", md: "1.6rem" },
+                  lineHeight: 1.28,
+                  wordBreak: "break-word",
+                  letterSpacing: "-0.01em",
+                  fontFamily: "inherit",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.08)",
                 }}
-                skipHtml={false}
-              />
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: "#f3f4f6",
-                fontSize: "0.85rem",
-                lineHeight: 1.7,
-                wordBreak: "break-word",
-                whiteSpace: "pre-line",
-                mt: 1,
-                mb: 0.5,
-                minHeight: 0,
-              }}
-              component="div"
-            >
-              <ReactMarkdown
-                children={
-                  expanded || !isLong
-                    ? annonce.content
-                    : previewContent + (isLong ? "..." : "")
-                }
-                components={{
-                  p: ({ node, ...props }) => (
-                    <span
-                      {...props}
-                      style={{ display: "block", marginBottom: 8 }}
-                    />
-                  ),
-                  li: ({ node, ...props }) => (
-                    <li
-                      style={{ marginLeft: 16, marginBottom: 4 }}
-                      {...props}
-                    />
-                  ),
-                  ul: ({ node, ...props }) => (
-                    <ul
-                      style={{ marginLeft: 16, marginBottom: 8 }}
-                      {...props}
-                    />
-                  ),
-                  ol: ({ node, ...props }) => (
-                    <ol
-                      style={{ marginLeft: 16, marginBottom: 8 }}
-                      {...props}
-                    />
-                  ),
-                  code: ({ node, ...props }) => (
-                    <code
-                      style={{
-                        background: "#222",
-                        color: "#fff",
-                        borderRadius: 4,
-                        padding: "2px 6px",
-                        fontSize: "0.95em",
-                      }}
-                      {...props}
-                    />
-                  ),
-                  pre: ({ node, ...props }) => (
-                    <pre
-                      style={{
-                        background: "#222",
-                        color: "#fff",
-                        borderRadius: 6,
-                        padding: 12,
-                        fontSize: "0.98em",
-                        overflowX: "auto",
-                      }}
-                      {...props}
-                    />
-                  ),
-                  blockquote: ({ node, ...props }) => (
-                    <blockquote
-                      style={{
-                        borderLeft: "3px solid #3b82f6",
-                        margin: "8px 0",
-                        padding: "4px 16px",
-                        color: "#cbd5e1",
-                        fontStyle: "italic",
-                        background: "rgba(59,130,246,0.07)",
-                      }}
-                      {...props}
-                    />
-                  ),
-                  a: ({ node, ...props }) => (
-                    <a
-                      style={{ color: "#60a5fa", textDecoration: "underline" }}
-                      {...props}
-                    />
-                  ),
-                }}
-                skipHtml={false}
-              />
-              {isLong && (
-                <Button
-                  size="small"
-                  sx={{
-                    color: "#60a5fa",
-                    textTransform: "none",
-                    fontWeight: 600,
-                    ml: 0,
-                    mt: 1,
-                    fontSize: "0.85rem",
+                component="div"
+              >
+                <ReactMarkdown
+                  children={annonce.title}
+                  components={{
+                    strong: ({ node, ...props }) => (
+                      <strong style={{ color: "#fff" }} {...props} />
+                    ),
+                    em: ({ node, ...props }) => (
+                      <em style={{ color: "#e0e7ef" }} {...props} />
+                    ),
+                    code: ({ node, ...props }) => (
+                      <code
+                        style={{
+                          background: "#222",
+                          color: "#fff",
+                          borderRadius: 4,
+                          padding: "2px 6px",
+                          fontSize: "0.98em",
+                        }}
+                        {...props}
+                      />
+                    ),
+                    h1: ({ node, ...props }) => (
+                      <h1
+                        style={{
+                          fontSize: "1.3em",
+                          color: "#fff",
+                          fontWeight: 800,
+                          margin: 0,
+                        }}
+                        {...props}
+                      />
+                    ),
+                    h2: ({ node, ...props }) => (
+                      <h2
+                        style={{
+                          fontSize: "1.15em",
+                          color: "#fff",
+                          fontWeight: 700,
+                          margin: 0,
+                        }}
+                        {...props}
+                      />
+                    ),
+                    h3: ({ node, ...props }) => (
+                      <h3
+                        style={{
+                          fontSize: "1.05em",
+                          color: "#fff",
+                          fontWeight: 700,
+                          margin: 0,
+                        }}
+                        {...props}
+                      />
+                    ),
+                    p: ({ node, ...props }) => (
+                      <span
+                        {...props}
+                        style={{ display: "block", marginBottom: 4 }}
+                      />
+                    ),
                   }}
-                  onClick={() => setExpanded((v) => !v)}
-                >
-                  {expanded ? "Réduire" : "Lire la suite"}
-                </Button>
-              )}
-            </Typography>
-          </CardContent>
-        </Card>
-        {/* Alumni Profile Modal */}
-        {alumniProfile && (
-          <Modal
-            open={profileModalOpen}
-            onClose={() => setProfileModalOpen(false)}
-            aria-labelledby="alumni-profile-modal-title"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 2,
-            }}
-          >
-            <Box
+                  skipHtml={false}
+                />
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255,255,255,0.8)",
+                  fontWeight: 300,
+                  fontSize: { xs: "0.97rem", sm: "1.05rem" },
+                  lineHeight: 1.6,
+                  wordBreak: "break-word",
+                  whiteSpace: "pre-line",
+                  mt: 0.5,
+                  mb: 0.5,
+                  minHeight: 0,
+                  letterSpacing: "0.01em",
+                  fontFamily: "inherit",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.08)",
+                }}
+                component="div"
+              >
+                <ReactMarkdown
+                  children={
+                    expanded || !isLong
+                      ? annonce.content
+                      : previewContent + (isLong ? "..." : "")
+                  }
+                  components={{
+                    p: ({ node, ...props }) => (
+                      <span
+                        {...props}
+                        style={{ display: "block", marginBottom: 8 }}
+                      />
+                    ),
+                    li: ({ node, ...props }) => (
+                      <li
+                        style={{ marginLeft: 16, marginBottom: 4 }}
+                        {...props}
+                      />
+                    ),
+                    ul: ({ node, ...props }) => (
+                      <ul
+                        style={{ marginLeft: 16, marginBottom: 8 }}
+                        {...props}
+                      />
+                    ),
+                    ol: ({ node, ...props }) => (
+                      <ol
+                        style={{ marginLeft: 16, marginBottom: 8 }}
+                        {...props}
+                      />
+                    ),
+                    code: ({ node, ...props }) => (
+                      <code
+                        style={{
+                          background: "#222",
+                          color: "#fff",
+                          borderRadius: 4,
+                          padding: "2px 6px",
+                          fontSize: "0.95em",
+                        }}
+                        {...props}
+                      />
+                    ),
+                  }}
+                  skipHtml={false}
+                />
+                {isLong && (
+                  <Button
+                    size="small"
+                    sx={{
+                      color: "#3b82f6",
+                      textTransform: "none",
+                      fontWeight: 600,
+                      ml: 0,
+                      mt: 1,
+                      fontSize: "0.95rem",
+                    }}
+                    onClick={() => setExpanded((v) => !v)}
+                  >
+                    {expanded ? "Réduire" : "Lire la suite"}
+                  </Button>
+                )}
+              </Typography>
+            </Box>
+          </Card>
+          {/* Alumni Profile Modal */}
+          {alumniProfile && (
+            <Modal
+              open={profileModalOpen}
+              onClose={() => setProfileModalOpen(false)}
+              aria-labelledby="alumni-profile-modal-title"
               sx={{
-                maxWidth: 600,
-                width: "100%",
-                maxHeight: { xs: "90vh", md: "80vh" },
-                overflowY: "auto",
-                outline: "none",
-                bgcolor: "transparent",
-                borderRadius: 3,
-                boxShadow: 24,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                p: 2,
               }}
             >
-              <AlumniProfileCard
-                alum={alumniProfile}
-                isAdmin={false}
-                onClose={() => setProfileModalOpen(false)}
-              />
-            </Box>
-          </Modal>
-        )}
-      </>
+              <Box
+                sx={{
+                  maxWidth: 600,
+                  width: "100%",
+                  maxHeight: { xs: "90vh", md: "80vh" },
+                  overflowY: "auto",
+                  outline: "none",
+                  bgcolor: "transparent",
+                  borderRadius: 3,
+                  boxShadow: 24,
+                }}
+              >
+                <AlumniProfileCard alum={alumniProfile} />
+              </Box>
+            </Modal>
+          )}
+        </Box>
+      </motion.div>
     );
   }
 
@@ -876,8 +933,8 @@ export default function Home() {
                     }}
                   >
                     <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.045 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <Button
                         onClick={() => handleCardNavigation("/alumni")}
@@ -886,30 +943,49 @@ export default function Home() {
                         endIcon={<ArrowRight size={18} />}
                         sx={{
                           fontWeight: 500,
-                          px: { xs: 4, md: 5 },
-                          py: { xs: 1.5, md: 2 },
-                          borderRadius: "28px",
+                          px: { xs: 4.5, md: 6 },
+                          py: { xs: 1.7, md: 2.2 },
+                          borderRadius: "32px",
                           background:
                             "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                          boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                          fontSize: { xs: "1rem", md: "1.1rem" },
+                          color: "#fff",
+                          fontSize: { xs: "1.08rem", md: "1.18rem" },
                           textTransform: "none",
                           letterSpacing: "0.01em",
+                          boxShadow: "0 8px 32px rgba(59,130,246,0.13)",
+                          position: "relative",
+                          overflow: "hidden",
+                          backdropFilter: "blur(10px)",
+                          border: "1.5px solid rgba(59,130,246,0.18)",
+                          transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
                           "&:hover": {
                             background:
                               "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                            boxShadow: "0 15px 40px rgba(59, 130, 246, 0.4)",
-                            transform: "scale(1.02)",
+                            color: "#fff",
+                            boxShadow: "0 16px 48px 0 rgba(59,130,246,0.18)",
+                            border: "1.5px solid #3b82f6",
+                            "&::after": {
+                              opacity: 1,
+                            },
                           },
-                          transition: "all 0.2s ease",
+                          "&::after": {
+                            content: '""',
+                            position: "absolute",
+                            inset: 0,
+                            borderRadius: "32px",
+                            pointerEvents: "none",
+                            boxShadow: "0 0 0 4px rgba(59,130,246,0.13)",
+                            opacity: 0,
+                            transition: "opacity 0.22s cubic-bezier(.4,0,.2,1)",
+                          },
                         }}
                       >
                         Découvrez nos alumni
                       </Button>
                     </motion.div>
                     <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.045 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <Button
                         variant="outlined"
@@ -917,23 +993,40 @@ export default function Home() {
                         onClick={handleScrollToSorboNexus}
                         sx={{
                           fontWeight: 500,
-                          px: { xs: 4, md: 5 },
-                          py: { xs: 1.5, md: 2 },
-                          borderRadius: "28px",
+                          px: { xs: 4.5, md: 6 },
+                          py: { xs: 1.7, md: 2.2 },
+                          borderRadius: "32px",
                           color: "#3b82f6",
                           borderColor: "#3b82f6",
                           borderWidth: 2,
                           background: "rgba(59, 130, 246, 0.05)",
-                          fontSize: { xs: "1rem", md: "1.1rem" },
+                          fontSize: { xs: "1.08rem", md: "1.18rem" },
                           textTransform: "none",
                           letterSpacing: "0.01em",
+                          boxShadow: "0 8px 32px rgba(59,130,246,0.07)",
+                          position: "relative",
+                          overflow: "hidden",
+                          backdropFilter: "blur(10px)",
+                          transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
                           "&:hover": {
-                            background: "rgba(59, 130, 246, 0.1)",
-                            borderColor: "#1e40af",
-                            borderWidth: 2,
-                            transform: "scale(1.02)",
+                            background: "rgba(59, 130, 246, 0.10)",
+                            color: "#3b82f6",
+                            boxShadow: "0 16px 48px 0 rgba(59,130,246,0.10)",
+                            border: "1.5px solid #3b82f6",
+                            "&::after": {
+                              opacity: 1,
+                            },
                           },
-                          transition: "all 0.2s ease",
+                          "&::after": {
+                            content: '""',
+                            position: "absolute",
+                            inset: 0,
+                            borderRadius: "32px",
+                            pointerEvents: "none",
+                            boxShadow: "0 0 0 4px rgba(59,130,246,0.10)",
+                            opacity: 0,
+                            transition: "opacity 0.22s cubic-bezier(.4,0,.2,1)",
+                          },
                         }}
                       >
                         En savoir plus
@@ -1348,115 +1441,137 @@ export default function Home() {
               </Typography>
 
               {/* Conseil Section Card */}
-              <Card
-                elevation={0}
-                sx={{
-                  background: "rgba(255,255,255,0.03)",
-                  backdropFilter: "blur(20px)",
-                  borderRadius: 3,
-                  p: { xs: 4, md: 5 },
-                  mb: 5,
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  textAlign: "center",
-                  maxWidth: 700,
-                  mx: "auto",
+              <motion.div
+                whileHover={{ scale: 1.017 }}
+                whileTap={{ scale: 0.995 }}
+                transition={{ type: "spring", stiffness: 320, damping: 32 }}
+                style={{
+                  marginBottom: 32,
+                  borderRadius: 24,
                   position: "relative",
-                  overflow: "hidden",
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: "1px",
-                    background:
-                      "linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.3) 50%, transparent 100%)",
-                  },
                 }}
               >
-                <Typography
-                  variant="h5"
+                <Card
+                  elevation={0}
                   sx={{
-                    background:
-                      "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    fontWeight: 400,
-                    mb: 3,
-                    fontSize: { xs: "1.2rem", md: "1.4rem" },
-                    letterSpacing: "-0.01em",
+                    background: "rgba(255,255,255,0.03)",
+                    backdropFilter: "blur(20px)",
+                    borderRadius: 3,
+                    overflow: "visible",
+                    p: { xs: 4, md: 5 },
+                    boxShadow: "0 8px 32px rgba(59,130,246,0.10)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    textAlign: "center",
+                    maxWidth: 700,
+                    mx: "auto",
+                    position: "relative",
+                    overflow: "visible",
+                    transition:
+                      "box-shadow 0.32s cubic-bezier(0.4,0.2,0.2,1), border-color 0.32s cubic-bezier(0.4,0.2,0.2,1)",
                   }}
                 >
-                  Section Conseil
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: 300,
-                    color: "rgba(255,255,255,0.8)",
-                    mb: 4,
-                    fontSize: { xs: "0.95rem", md: "1.05rem" },
-                    lineHeight: 1.6,
-                    letterSpacing: "0.01em",
-                    fontStyle: "normal",
-                  }}
-                >
-                  Dans la section Conseil, tu peux partager tout ce qui pourrait
-                  être utile à d'autres utilisateurs. Même si t'es encore en L2
-                  ou L3, tu pourrais déjà donner des conseils pour les L1 qui
-                  arrive la rentrée prochaine! Ils pourront plus facilement
-                  s'intégrer avec vos conseils et retours!
-                </Typography>
-                <Box sx={{ display: "flex", justifyContent: "center" }}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    onClick={handleScrollToAnnonces}
-                    endIcon={
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        style={{ verticalAlign: "middle" }}
-                      >
-                        <path
-                          d="M12 5v14m0 0l-7-7m7 7l7-7"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    }
+                  <Typography
+                    variant="h5"
                     sx={{
-                      fontWeight: 600,
-                      px: { xs: 1.2, md: 2 },
-                      py: { xs: 0.3, md: 0.6 },
-                      minHeight: { xs: 28, md: 32 },
-                      borderRadius: 3,
                       background:
-                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                      boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                      fontSize: { xs: "0.70rem", md: "0.80rem" },
-                      color: "#fff",
-                      textTransform: "none",
-                      letterSpacing: 0.5,
-                      transition: "all 0.2s",
-                      "&:hover": {
-                        background:
-                          "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                        color: "#fff",
-                        transform: "scale(1.07)",
-                      },
+                        "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      fontWeight: 400,
+                      mb: 3,
+                      fontSize: { xs: "1.2rem", md: "1.4rem" },
+                      letterSpacing: "-0.01em",
                     }}
                   >
-                    Voir les idées/exemples en bas
-                  </Button>
-                </Box>
-              </Card>
+                    Section Conseil
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: 300,
+                      color: "rgba(255,255,255,0.8)",
+                      mb: 4,
+                      fontSize: { xs: "0.95rem", md: "1.05rem" },
+                      lineHeight: 1.6,
+                      letterSpacing: "0.01em",
+                      fontStyle: "normal",
+                    }}
+                  >
+                    Dans la section Conseil, tu peux partager tout ce qui
+                    pourrait être utile à d'autres utilisateurs. Même si t'es
+                    encore en L2 ou L3, tu pourrais déjà donner des conseils
+                    pour les L1 qui arrive la rentrée prochaine! Ils pourront
+                    plus facilement s'intégrer avec vos conseils et retours!
+                  </Typography>
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      onClick={handleScrollToAnnonces}
+                      endIcon={
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          style={{ verticalAlign: "middle" }}
+                        >
+                          <path
+                            d="M12 5v14m0 0l-7-7m7 7l7-7"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      }
+                      sx={{
+                        fontWeight: 400,
+                        fontFamily: "inherit",
+                        letterSpacing: "0.01em",
+                        px: { xs: 2, md: 3 },
+                        py: { xs: 0.7, md: 1.1 },
+                        minHeight: { xs: 32, md: 38 },
+                        borderRadius: 3,
+                        background:
+                          "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                        color: "#fff",
+                        textTransform: "none",
+                        fontSize: { xs: "0.85rem", md: "0.98rem" },
+                        boxShadow: "0 8px 32px rgba(59,130,246,0.13)",
+                        position: "relative",
+                        overflow: "hidden",
+                        backdropFilter: "blur(10px)",
+                        border: "1.5px solid rgba(59,130,246,0.18)",
+                        transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
+                        "&:hover": {
+                          background:
+                            "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                          color: "#fff",
+                          boxShadow: "0 16px 48px 0 rgba(59,130,246,0.18)",
+                          border: "1.5px solid #3b82f6",
+                          "&::after": {
+                            opacity: 1,
+                          },
+                        },
+                        "&::after": {
+                          content: '""',
+                          position: "absolute",
+                          inset: 0,
+                          borderRadius: 3,
+                          pointerEvents: "none",
+                          boxShadow: "0 0 0 4px rgba(59,130,246,0.13)",
+                          opacity: 0,
+                          transition: "opacity 0.22s cubic-bezier(.4,0,.2,1)",
+                        },
+                      }}
+                    >
+                      Voir les idées/exemples en bas
+                    </Button>
+                  </Box>
+                </Card>
+              </motion.div>
 
               {/* Conseils Philosophy */}
               <Typography
@@ -1486,237 +1601,249 @@ export default function Home() {
               </Typography>
 
               {/* Resources Section */}
-              <Card
-                elevation={0}
-                sx={{
-                  background: "rgba(255,255,255,0.03)",
-                  backdropFilter: "blur(20px)",
-                  borderRadius: 3,
-                  p: { xs: 4, md: 5 },
-                  mb: 5,
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  textAlign: "left",
-                  maxWidth: 700,
-                  mx: "auto",
+              <motion.div
+                whileHover={{ scale: 1.017 }}
+                whileTap={{ scale: 0.995 }}
+                transition={{ type: "spring", stiffness: 320, damping: 32 }}
+                style={{
+                  marginBottom: 32,
+                  borderRadius: 24,
                   position: "relative",
-                  overflow: "hidden",
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: "1px",
-                    background:
-                      "linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.3) 50%, transparent 100%)",
-                  },
                 }}
               >
-                <Typography
-                  variant="h5"
+                <Card
+                  elevation={0}
                   sx={{
-                    background:
-                      "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    fontWeight: 400,
-                    mb: 4,
-                    fontSize: { xs: "1.2rem", md: "1.4rem" },
-                    letterSpacing: "-0.01em",
-                    textAlign: "center",
+                    background: "rgba(255,255,255,0.03)",
+                    backdropFilter: "blur(20px)",
+                    borderRadius: 3,
+                    overflow: "visible",
+                    p: { xs: 4, md: 5 },
+                    boxShadow: "0 8px 32px rgba(59,130,246,0.10)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    textAlign: "left",
+                    maxWidth: 700,
+                    mx: "auto",
+                    position: "relative",
+                    overflow: "visible",
+                    transition:
+                      "box-shadow 0.32s cubic-bezier(0.4,0.2,0.2,1), border-color 0.32s cubic-bezier(0.4,0.2,0.2,1)",
                   }}
                 >
-                  Ressources Utiles
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: "rgba(255,255,255,0.8)",
-                    mb: 4,
-                    fontSize: { xs: "0.95rem", md: "1.05rem" },
-                    lineHeight: 1.6,
-                    fontWeight: 300,
-                    letterSpacing: "0.01em",
-                  }}
-                >
-                  Vous y trouverez une multitude de{" "}
-                  <span style={{ color: "#3b82f6", fontWeight: 500 }}>
-                    ressources utiles
-                  </span>{" "}
-                  :{" "}
-                  <span style={{ fontWeight: 500 }}>
-                    modèles de lettres de motivation
-                  </span>
-                  ,{" "}
-                  <span style={{ fontWeight: 500 }}>
-                    informations détaillées sur les UE
-                  </span>
-                  ,{" "}
-                  <span style={{ fontWeight: 500 }}>
-                    guides pour constituer vos dossiers
-                  </span>
-                  , et{" "}
-                  <span style={{ fontWeight: 500 }}>conseils pratiques</span>{" "}
-                  pour chaque étape de votre cursus.
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: "rgba(255,255,255,0.8)",
-                    fontSize: { xs: "0.95rem", md: "1.05rem" },
-                    lineHeight: 1.6,
-                    fontWeight: 300,
-                    letterSpacing: "0.01em",
-                  }}
-                >
-                  Le site propose aussi des fiches sur les écoles, des astuces
-                  pour les candidatures à l'étranger, exemples de CV, ainsi que
-                  des conseils pour les entretiens.
-                </Typography>
-              </Card>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      background:
+                        "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      fontWeight: 400,
+                      mb: 4,
+                      fontSize: { xs: "1.2rem", md: "1.4rem" },
+                      letterSpacing: "-0.01em",
+                      textAlign: "center",
+                    }}
+                  >
+                    Ressources Utiles
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "rgba(255,255,255,0.8)",
+                      mb: 4,
+                      fontSize: { xs: "0.95rem", md: "1.05rem" },
+                      lineHeight: 1.6,
+                      fontWeight: 300,
+                      letterSpacing: "0.01em",
+                      textAlign: "center",
+                    }}
+                  >
+                    Vous y trouverez une multitude de{" "}
+                    <span style={{ color: "#3b82f6", fontWeight: 500 }}>
+                      ressources utiles
+                    </span>{" "}
+                    :{" "}
+                    <span style={{ fontWeight: 500 }}>
+                      modèles de lettres de motivation
+                    </span>
+                    ,{" "}
+                    <span style={{ fontWeight: 500 }}>
+                      informations détaillées sur les UE
+                    </span>
+                    ,{" "}
+                    <span style={{ fontWeight: 500 }}>
+                      guides pour constituer vos dossiers
+                    </span>
+                    , et{" "}
+                    <span style={{ fontWeight: 500 }}>conseils pratiques</span>{" "}
+                    pour chaque étape de votre cursus.
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "rgba(255,255,255,0.8)",
+                      fontSize: { xs: "0.95rem", md: "1.05rem" },
+                      lineHeight: 1.6,
+                      fontWeight: 300,
+                      letterSpacing: "0.01em",
+                      textAlign: "center",
+                    }}
+                  >
+                    Le site propose aussi des fiches sur les écoles, des astuces
+                    pour les candidatures à l'étranger, exemples de CV, ainsi
+                    que des conseils pour les entretiens.
+                  </Typography>
+                </Card>
+              </motion.div>
 
               {/* Testimonials Section */}
-              <Card
-                elevation={0}
-                sx={{
-                  background: "rgba(255,255,255,0.03)",
-                  backdropFilter: "blur(20px)",
-                  borderRadius: 3,
-                  p: { xs: 4, md: 5 },
-                  mb: 5,
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  textAlign: "left",
-                  maxWidth: 700,
-                  mx: "auto",
+              <motion.div
+                whileHover={{ scale: 1.017 }}
+                whileTap={{ scale: 0.995 }}
+                transition={{ type: "spring", stiffness: 320, damping: 32 }}
+                style={{
+                  marginBottom: 32,
+                  borderRadius: 24,
                   position: "relative",
-                  overflow: "hidden",
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: "1px",
-                    background:
-                      "linear-gradient(90deg, transparent 0%, rgba(139,92,246,0.3) 50%, transparent 100%)",
-                  },
                 }}
               >
-                <Typography
-                  variant="h5"
+                <Card
+                  elevation={0}
                   sx={{
-                    background:
-                      "linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    fontWeight: 400,
-                    mb: 4,
-                    fontSize: { xs: "1.2rem", md: "1.4rem" },
-                    letterSpacing: "-0.01em",
-                    textAlign: "center",
+                    background: "rgba(255,255,255,0.03)",
+                    backdropFilter: "blur(20px)",
+                    borderRadius: 3,
+                    overflow: "visible",
+                    p: { xs: 4, md: 5 },
+                    boxShadow: "0 8px 32px rgba(139,92,246,0.10)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    textAlign: "left",
+                    maxWidth: 700,
+                    mx: "auto",
+                    position: "relative",
+                    overflow: "visible",
+                    transition:
+                      "box-shadow 0.32s cubic-bezier(0.4,0.2,0.2,1), border-color 0.32s cubic-bezier(0.4,0.2,0.2,1)",
                   }}
                 >
-                  Retours d'Expérience
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: "rgba(255,255,255,0.8)",
-                    fontSize: { xs: "0.95rem", md: "1.05rem" },
-                    lineHeight: 1.6,
-                    fontWeight: 300,
-                    letterSpacing: "0.01em",
-                  }}
-                >
-                  Découvrez également des{" "}
-                  <span style={{ color: "#8b5cf6", fontWeight: 500 }}>
-                    retours d'expérience et témoignages d'élèves sur les
-                    licences de SU (simple, bi-disciplinaire, intensives) et
-                    masters dans differentes universités
-                  </span>{" "}
-                  que vous souhaitez suivre, ainsi que des témoignages d'élèves
-                  ayant réussi des concours comme{" "}
-                  <span style={{ fontWeight: 500 }}>GEI-UNIV</span> (admissions
-                  parallèles), des oraux, et des intégrations dans des écoles
-                  (en{" "}
-                  <span style={{ color: "#8b5cf6", fontWeight: 500 }}>
-                    France comme à l'international
-                  </span>
-                  ) telles que{" "}
-                  <span style={{ fontWeight: 500 }}>
-                    Polytechnique, ENS, Princeton, CentraleSupélec, Télécom,
-                    Dauphine, Sorbonne, Paris-Saclay, ESPCI, Paris Cité
-                  </span>{" "}
-                  et bien d'autres.
-                </Typography>
-              </Card>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      background:
+                        "linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      fontWeight: 400,
+                      mb: 4,
+                      fontSize: { xs: "1.2rem", md: "1.4rem" },
+                      letterSpacing: "-0.01em",
+                      textAlign: "center",
+                    }}
+                  >
+                    Retours d'Expérience
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "rgba(255,255,255,0.8)",
+                      fontSize: { xs: "0.95rem", md: "1.05rem" },
+                      lineHeight: 1.6,
+                      fontWeight: 300,
+                      letterSpacing: "0.01em",
+                      textAlign: "center",
+                    }}
+                  >
+                    Découvrez également des{" "}
+                    <span style={{ color: "#8b5cf6", fontWeight: 500 }}>
+                      retours d'expérience et témoignages d'élèves sur les
+                      licences de SU (simple, bi-disciplinaire, intensives) et
+                      masters dans differentes universités
+                    </span>{" "}
+                    que vous souhaitez suivre, ainsi que des témoignages
+                    d'élèves ayant réussi des concours comme{" "}
+                    <span style={{ fontWeight: 500 }}>GEI-UNIV</span>{" "}
+                    (admissions parallèles), des oraux, et des intégrations dans
+                    des écoles (en{" "}
+                    <span style={{ color: "#8b5cf6", fontWeight: 500 }}>
+                      France comme à l'international
+                    </span>
+                    ) telles que{" "}
+                    <span style={{ fontWeight: 500 }}>
+                      Polytechnique, ENS, Princeton, CentraleSupélec, Télécom,
+                      Dauphine, Sorbonne, Paris-Saclay, ESPCI, Paris Cité
+                    </span>{" "}
+                    et bien d'autres.
+                  </Typography>
+                </Card>
+              </motion.div>
 
               {/* Contribution Call */}
-              <Card
-                elevation={0}
-                sx={{
-                  background: "rgba(255,255,255,0.03)",
-                  backdropFilter: "blur(20px)",
-                  borderRadius: 3,
-                  p: { xs: 4, md: 5 },
-                  mb: 5,
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  textAlign: "center",
-                  maxWidth: 600,
-                  mx: "auto",
+              <motion.div
+                whileHover={{ scale: 1.017 }}
+                whileTap={{ scale: 0.995 }}
+                transition={{ type: "spring", stiffness: 320, damping: 32 }}
+                style={{
+                  marginBottom: 32,
+                  borderRadius: 24,
                   position: "relative",
-                  overflow: "hidden",
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: "1px",
-                    background:
-                      "linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.3) 50%, transparent 100%)",
-                  },
                 }}
               >
-                <Typography
-                  variant="h5"
+                <Card
+                  elevation={0}
                   sx={{
-                    background:
-                      "linear-gradient(90deg, #22c55e 0%, #16a34a 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    fontWeight: 400,
-                    mb: 4,
-                    fontSize: { xs: "1.2rem", md: "1.4rem" },
-                    letterSpacing: "-0.01em",
+                    background: "rgba(255,255,255,0.03)",
+                    backdropFilter: "blur(20px)",
+                    borderRadius: 3,
+                    overflow: "visible",
+                    p: { xs: 4, md: 5 },
+                    boxShadow: "0 8px 32px rgba(34,197,94,0.10)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    textAlign: "center",
+                    maxWidth: 600,
+                    mx: "auto",
+                    position: "relative",
+                    overflow: "visible",
+                    transition:
+                      "box-shadow 0.32s cubic-bezier(0.4,0.2,0.2,1), border-color 0.32s cubic-bezier(0.4,0.2,0.2,1)",
                   }}
                 >
-                  Contribuez à la Communauté
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: "rgba(255,255,255,0.8)",
-                    fontSize: { xs: "0.95rem", md: "1.05rem" },
-                    lineHeight: 1.6,
-                    fontWeight: 300,
-                    letterSpacing: "0.01em",
-                  }}
-                >
-                  Ton parcours aidera et motivera les nouveaux L1, mais aussi
-                  les L2 et les L3 qui souhaitent faire le même parcours que
-                  toi. Le site a besoin des parcours comme le tien, et on
-                  aimerait bien recevoir des conseils, témoignages venant de toi
-                  mais aussi des ressources utiles qui t'ont aidé durant ton
-                  parcours.
-                </Typography>
-              </Card>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      background:
+                        "linear-gradient(90deg, #22c55e 0%, #16a34a 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      fontWeight: 400,
+                      mb: 4,
+                      fontSize: { xs: "1.2rem", md: "1.4rem" },
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    Contribuez à la Communauté
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "rgba(255,255,255,0.8)",
+                      fontSize: { xs: "0.95rem", md: "1.05rem" },
+                      lineHeight: 1.6,
+                      fontWeight: 300,
+                      letterSpacing: "0.01em",
+                    }}
+                  >
+                    Ton parcours aidera et motivera les nouveaux L1, mais aussi
+                    les L2 et les L3 qui souhaitent faire le même parcours que
+                    toi. Le site a besoin des parcours comme le tien, et on
+                    aimerait bien recevoir des conseils, témoignages venant de
+                    toi mais aussi des ressources utiles qui t'ont aidé durant
+                    ton parcours.
+                  </Typography>
+                </Card>
+              </motion.div>
 
               {/* Development Note */}
               <Typography
@@ -1775,33 +1902,57 @@ export default function Home() {
                   zIndex: 2,
                 }}
               >
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => navigate("/conseils")}
-                  sx={{
-                    fontWeight: 600,
-                    px: { xs: 3, md: 4 },
-                    py: { xs: 1.2, md: 1.5 },
-                    borderRadius: 3,
-                    background:
-                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                    boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-                    fontSize: { xs: "0.9rem", md: "1rem" },
-                    color: "#fff",
-                    textTransform: "none",
-                    letterSpacing: 0.5,
-                    transition: "all 0.2s",
-                    "&:hover": {
-                      background:
-                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                      color: "#fff",
-                      transform: "scale(1.07)",
-                    },
-                  }}
+                <motion.div
+                  whileHover={{ scale: 1.045 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  Voir les conseils
-                </Button>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={() => navigate("/conseils")}
+                    sx={{
+                      fontWeight: 400,
+                      fontFamily: "inherit",
+                      letterSpacing: "0.01em",
+                      px: { xs: 3, md: 4 },
+                      py: { xs: 1.2, md: 1.5 },
+                      borderRadius: 3,
+                      background:
+                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                      color: "#fff",
+                      textTransform: "none",
+                      fontSize: { xs: "0.9rem", md: "1rem" },
+                      boxShadow: "0 8px 32px rgba(59,130,246,0.13)",
+                      position: "relative",
+                      overflow: "hidden",
+                      backdropFilter: "blur(10px)",
+                      border: "1.5px solid rgba(59,130,246,0.18)",
+                      transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
+                      "&:hover": {
+                        background:
+                          "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                        color: "#fff",
+                        boxShadow: "0 16px 48px 0 rgba(59,130,246,0.18)",
+                        border: "1.5px solid #3b82f6",
+                        "&::after": {
+                          opacity: 1,
+                        },
+                      },
+                      "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        inset: 0,
+                        borderRadius: 3,
+                        pointerEvents: "none",
+                        boxShadow: "0 0 0 4px rgba(59,130,246,0.13)",
+                        opacity: 0,
+                        transition: "opacity 0.22s cubic-bezier(.4,0,.2,1)",
+                      },
+                    }}
+                  >
+                    Voir les conseils
+                  </Button>
+                </motion.div>
               </Box>
             </Card>
           </motion.div>
@@ -2382,8 +2533,8 @@ export default function Home() {
                     alignItems="center"
                   >
                     <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.045 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       <Button
                         variant="contained"
@@ -2395,22 +2546,43 @@ export default function Home() {
                           background:
                             "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
                           color: "white",
-                          fontWeight: 600,
+                          fontWeight: 400,
+                          fontFamily: "inherit",
                           px: { xs: 3, md: 4 },
                           py: { xs: 1, md: 1.5 },
                           borderRadius: 3,
-                          boxShadow: "0 8px 25px rgba(59, 130, 246, 0.3)",
-                          fontSize: { xs: "0.8rem", md: "1rem" },
+                          boxShadow: "0 8px 32px rgba(59,130,246,0.13)",
+                          textTransform: "none",
+                          fontSize: { xs: "0.95rem", md: "1.08rem" },
+                          letterSpacing: "0.01em",
+                          position: "relative",
+                          overflow: "hidden",
+                          backdropFilter: "blur(10px)",
+                          border: "1.5px solid rgba(59,130,246,0.18)",
+                          transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
                           "&:hover": {
                             background:
                               "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                            boxShadow: "0 12px 35px rgba(59, 130, 246, 0.4)",
-                            transform: "translateY(-2px)",
+                            color: "#fff",
+                            boxShadow: "0 16px 48px 0 rgba(59,130,246,0.18)",
+                            border: "1.5px solid #3b82f6",
+                            "&::after": {
+                              opacity: 1,
+                            },
                           },
-                          transition: "all 0.3s ease",
+                          "&::after": {
+                            content: '""',
+                            position: "absolute",
+                            inset: 0,
+                            borderRadius: 3,
+                            pointerEvents: "none",
+                            boxShadow: "0 0 0 4px rgba(59,130,246,0.13)",
+                            opacity: 0,
+                            transition: "opacity 0.22s cubic-bezier(.4,0,.2,1)",
+                          },
                         }}
                       >
-                        Voir le GitHub Repository
+                        Voir le Github Repository
                       </Button>
                     </motion.div>
 
@@ -2421,17 +2593,9 @@ export default function Home() {
                       <Button
                         variant="outlined"
                         size="large"
-                        href="mailto:sethaguila@icloud.com"
+                        href="mailto:sorbonexus@gmail.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        startIcon={
-                          <Box
-                            component="span"
-                            sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}
-                          >
-                            ✉️
-                          </Box>
-                        }
                         sx={{
                           color: "#3b82f6",
                           borderColor: "#3b82f6",
@@ -2449,7 +2613,7 @@ export default function Home() {
                           transition: "all 0.3s ease",
                         }}
                       >
-                        Envoyer un Feedback
+                        Envoyer un feedback
                       </Button>
                     </motion.div>
                   </Stack>

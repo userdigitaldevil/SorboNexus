@@ -1349,42 +1349,54 @@ export default function Ressources() {
 
             {isLoggedIn && (
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.045 }}
+                whileTap={{ scale: 0.98 }}
                 className="relative z-10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 1.0 }}
               >
                 <Button
                   variant="contained"
                   size="large"
                   startIcon={<i className="fas fa-plus"></i>}
-                  endIcon={<ArrowRight size={20} />}
-                  onClick={openAddModal}
                   sx={{
-                    fontWeight: 500,
+                    fontWeight: 400,
+                    fontFamily: "inherit",
+                    letterSpacing: "0.01em",
                     px: 5,
                     py: 2,
                     borderRadius: 4,
                     background:
                       "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                    boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
-                    fontSize: { xs: "0.9rem", md: "1.1rem" },
+                    color: "#fff",
                     textTransform: "none",
-                    letterSpacing: "0.02em",
-                    lineHeight: 1.4,
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    fontSize: { xs: "0.9rem", md: "1.1rem" },
+                    boxShadow: "0 8px 32px rgba(59,130,246,0.13)",
+                    position: "relative",
+                    overflow: "hidden",
+                    backdropFilter: "blur(10px)",
+                    border: "1.5px solid rgba(59,130,246,0.18)",
+                    transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
                     "&:hover": {
                       background:
                         "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                      boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
-                      transform: "translateY(-3px)",
+                      color: "#fff",
+                      boxShadow: "0 16px 48px 0 rgba(59,130,246,0.18)",
+                      border: "1.5px solid #3b82f6",
+                      "&::after": {
+                        opacity: 1,
+                      },
                     },
-                    "&:active": {
-                      transform: "translateY(-1px)",
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: 4,
+                      pointerEvents: "none",
+                      boxShadow: "0 0 0 4px rgba(59,130,246,0.13)",
+                      opacity: 0,
+                      transition: "opacity 0.22s cubic-bezier(.4,0,.2,1)",
                     },
                   }}
+                  onClick={openAddModal}
                 >
                   Ajouter une ressource
                 </Button>
@@ -1392,42 +1404,54 @@ export default function Ressources() {
             )}
             {!isLoggedIn && (
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.045 }}
+                whileTap={{ scale: 0.98 }}
                 className="relative z-10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 1.0 }}
               >
                 <Button
                   variant="contained"
                   size="large"
                   startIcon={<i className="fas fa-plus"></i>}
-                  endIcon={<ArrowRight size={20} />}
-                  onClick={() => navigate("/connexion")}
                   sx={{
-                    fontWeight: 500,
+                    fontWeight: 400,
+                    fontFamily: "inherit",
+                    letterSpacing: "0.01em",
                     px: 5,
                     py: 2,
                     borderRadius: 4,
                     background:
                       "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                    boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
-                    fontSize: { xs: "0.9rem", md: "1.1rem" },
+                    color: "#fff",
                     textTransform: "none",
-                    letterSpacing: "0.02em",
-                    lineHeight: 1.4,
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    fontSize: { xs: "0.9rem", md: "1.1rem" },
+                    boxShadow: "0 8px 32px rgba(59,130,246,0.13)",
+                    position: "relative",
+                    overflow: "hidden",
+                    backdropFilter: "blur(10px)",
+                    border: "1.5px solid rgba(59,130,246,0.18)",
+                    transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
                     "&:hover": {
                       background:
                         "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
-                      boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
-                      transform: "translateY(-3px)",
+                      color: "#fff",
+                      boxShadow: "0 16px 48px 0 rgba(59,130,246,0.18)",
+                      border: "1.5px solid #3b82f6",
+                      "&::after": {
+                        opacity: 1,
+                      },
                     },
-                    "&:active": {
-                      transform: "translateY(-1px)",
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: 4,
+                      pointerEvents: "none",
+                      boxShadow: "0 0 0 4px rgba(59,130,246,0.13)",
+                      opacity: 0,
+                      transition: "opacity 0.22s cubic-bezier(.4,0,.2,1)",
                     },
                   }}
+                  onClick={() => navigate("/connexion")}
                 >
                   Ajouter une ressource
                 </Button>
