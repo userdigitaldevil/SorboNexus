@@ -34,6 +34,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNavigate } from "react-router-dom";
 import useBookmarks from "../hooks/useBookmarks";
+import {
+  getRessources,
+  addRessource,
+  editRessource,
+  deleteRessource,
+} from "../api/ressources";
 
 // CATEGORY_STYLES for resource categories
 const CATEGORY_STYLES = {
@@ -168,12 +174,7 @@ export default function Ressources() {
 
   // Fetch resources from backend, with error handling
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL || ""}/api/ressources`)
-      .then((res) => {
-        if (!res.ok)
-          throw new Error("Erreur lors du chargement des ressources");
-        return res.json();
-      })
+    getRessources()
       .then((data) => setResources(data))
       .catch((err) => {
         alert("Erreur lors du chargement des ressources: " + err.message);
@@ -307,19 +308,8 @@ export default function Ressources() {
           ? addForm.filter.join(",")
           : addForm.filter,
       };
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL || ""}/api/ressources`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-      if (!res.ok) throw new Error("Erreur lors de l'ajout de la ressource");
-      const data = await res.json();
+      const token = localStorage.getItem("token");
+      const data = await addRessource(payload, token);
       setResources((prev) => [data, ...prev]);
       setAddModalOpen(false);
     } catch (err) {
@@ -361,20 +351,8 @@ export default function Ressources() {
           ? editForm.filter.join(",")
           : editForm.filter,
       };
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL || ""}/api/ressources/${editForm.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-      if (!res.ok)
-        throw new Error("Erreur lors de la modification de la ressource");
-      const data = await res.json();
+      const token = localStorage.getItem("token");
+      const data = await editRessource(editForm.id, payload, token);
       setResources((prev) => prev.map((r) => (r.id === data.id ? data : r)));
       setEditModalOpen(false);
     } catch (err) {
@@ -392,29 +370,17 @@ export default function Ressources() {
   const closeDeleteDialog = () => setDeleteDialogOpen(false);
   const handleDeleteResource = async () => {
     if (!resourceToDelete) return;
+    setEditLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL || ""}/api/ressources/${
-          resourceToDelete.id
-        }`,
-        {
-          method: "DELETE",
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        }
-      );
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(
-          errData.error || "Erreur lors de la suppression de la ressource."
-        );
-      }
+      await deleteRessource(resourceToDelete.id, token);
       setResources((prev) => prev.filter((r) => r.id !== resourceToDelete.id));
-      closeDeleteDialog();
+      setDeleteDialogOpen(false);
+      setResourceToDelete(null);
     } catch (err) {
       alert(err.message);
+    } finally {
+      setEditLoading(false);
     }
   };
 
