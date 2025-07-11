@@ -208,19 +208,11 @@ function App() {
         if (targetElement) {
           e.preventDefault();
 
-          // Try to use inertia scrolling if available
-          import("./utils/scrollInertia.js")
-            .then((module) => {
-              // Use inertia scrolling with offset for navbar
-              module.default.scrollTo(targetElement, { offset: -80 });
-            })
-            .catch(() => {
-              // Fallback to native smooth scrolling
-              targetElement.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
-            });
+          // Use native smooth scrolling like Apple's website
+          targetElement.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }
       }
     };

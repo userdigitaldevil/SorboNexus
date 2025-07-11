@@ -5,7 +5,7 @@ import App from "./App.jsx";
 
 // Check if we should enable ice-skating scroll effect
 // This adds a momentum effect that feels like gliding on ice
-const ENABLE_ICE_SCROLL = true; // Re-enabled with mobile-friendly settings
+const ENABLE_ICE_SCROLL = false; // Disabled to use native scrolling like Apple
 
 // Dynamically import scroll inertia only if enabled
 // This approach prevents unused code from being bundled
