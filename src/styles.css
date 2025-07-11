@@ -10,6 +10,7 @@
 
 /* Smooth scrolling styles */
 html {
+  scroll-behavior: smooth;
   scroll-padding-top: 80px; /* Account for fixed navbar */
   scrollbar-width: thin; /* For Firefox */
 }
@@ -23,57 +24,84 @@ body {
   line-height: 1.7;
   min-height: 100vh;
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 /* Root container styles */
 #root {
   min-height: 100vh;
+  scroll-behavior: smooth;
 }
 
 /* Basic scrolling utility classes */
 .smooth-scroll {
-  /* Normal scrolling for better performance */
+  scroll-behavior: smooth;
 }
 
 .smooth-scroll-all {
-  /* Normal scrolling for better performance */
+  scroll-behavior: smooth;
 }
 
 /* Smooth scrolling for containers */
 .container,
 .MuiContainer-root {
-  /* Normal scrolling for better performance */
+  scroll-behavior: smooth;
 }
 
 /* Smooth scrolling for all pages */
 .page-container {
-  /* Normal scrolling for better performance */
+  scroll-behavior: smooth;
 }
 
-/* Mobile-specific scrolling - NO smooth scrolling */
+/* Glassy dark background utility */
+.glassy-bg {
+  background: linear-gradient(
+    135deg,
+    rgba(24, 28, 38, 0.85) 0%,
+    rgba(35, 40, 59, 0.85) 40%,
+    rgba(16, 19, 26, 0.85) 100%
+  );
+  backdrop-filter: blur(24px) saturate(120%);
+  -webkit-backdrop-filter: blur(24px) saturate(120%);
+  border-radius: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  scroll-behavior: smooth;
+}
+
+/* Mobile-specific scrolling - Use auto for better performance */
 @media (max-width: 768px) {
   html {
-    /* Normal scrolling for better performance */
+    scroll-behavior: auto; /* Better performance on mobile */
   }
 
   body {
-    /* Normal scrolling for better performance */
+    scroll-behavior: auto; /* Better performance on mobile */
   }
 
   /* Fix for double scroll issue */
   .glassy-bg {
-    /* Normal scrolling for better performance */
+    scroll-behavior: auto; /* Better performance on mobile */
   }
 
-  /* iOS momentum scrolling fix - NO smooth scrolling */
+  /* iOS momentum scrolling fix - Use auto for stability */
   html,
   body {
-    /* Normal scrolling for better performance */
+    scroll-behavior: auto; /* Better performance on mobile */
   }
 
   /* Fix for alternating scroll direction issues */
   .min-h-screen {
-    /* Normal scrolling for better performance */
+    scroll-behavior: auto; /* Better performance on mobile */
+  }
+
+  /* Disable smooth scrolling on mobile for all elements */
+  .smooth-scroll,
+  .smooth-scroll-all,
+  .container,
+  .MuiContainer-root,
+  .page-container {
+    scroll-behavior: auto; /* Better performance on mobile */
   }
 }
 
@@ -104,21 +132,6 @@ body {
     width: 4px;
     height: 4px;
   }
-}
-
-/* Glassy dark background utility */
-.glassy-bg {
-  background: linear-gradient(
-    135deg,
-    rgba(24, 28, 38, 0.85) 0%,
-    rgba(35, 40, 59, 0.85) 40%,
-    rgba(16, 19, 26, 0.85) 100%
-  );
-  backdrop-filter: blur(24px) saturate(120%);
-  -webkit-backdrop-filter: blur(24px) saturate(120%);
-  border-radius: 24px;
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
 }
 
 /* Glassmorphism effect */

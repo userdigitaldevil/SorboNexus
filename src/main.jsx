@@ -5,7 +5,7 @@ import App from "./App.jsx";
 
 // Check if we should enable ice-skating scroll effect
 // This adds a momentum effect that feels like gliding on ice
-const ENABLE_ICE_SCROLL = true;
+const ENABLE_ICE_SCROLL = true; // Re-enabled with mobile-friendly settings
 
 // Dynamically import scroll inertia only if enabled
 // This approach prevents unused code from being bundled
@@ -18,12 +18,12 @@ if (ENABLE_ICE_SCROLL) {
       // Log that ice-like scrolling is enabled
       console.log("✨ Ice-skating scroll effect enabled");
 
-      // Configure for perfect ice-skating feel with reduced sensitivity
-      scrollInertia.options.damping = 0.055; // Lower = longer glide (0.04-0.06 is very ice-like)
-      scrollInertia.options.wheelMultiplier = 0.2; // Much lower sensitivity on initial movement
-      scrollInertia.options.touchMultiplier = 0.4; // Much reduced touch sensitivity
-      scrollInertia.options.maxSpeed = 28; // Lower maximum speed for better control
-      scrollInertia.options.minVelocityToAnimate = 0.025; // Keep animating for longer
+      // Configure for mobile-friendly scrolling with reduced sensitivity
+      scrollInertia.options.damping = 0.15; // Higher = less inertia, more responsive
+      scrollInertia.options.wheelMultiplier = 0.8; // Higher = more responsive wheel scrolling
+      scrollInertia.options.touchMultiplier = 1.2; // Higher = more responsive touch scrolling
+      scrollInertia.options.maxSpeed = 15; // Lower max speed for better control
+      scrollInertia.options.minVelocityToAnimate = 0.1; // Stop animating sooner
     })
     .catch((err) => {
       console.warn("Could not load ice-skating scroll effect:", err);
