@@ -47,6 +47,7 @@ import { useAlumniEditModal } from "./AlumniEditModalContext";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { SketchPicker } from "react-color";
+import usePageScrollLock from "../hooks/usePageScrollLock";
 
 const DOMAINES = [
   "Mathématiques",
@@ -811,6 +812,9 @@ const Navbar = () => {
       ? (addAlumniForm.conseil || "").slice(0, conseilMaxLength) + "..."
       : addAlumniForm.conseil || "";
 
+  const anyModalOpen = isAlumniProfileModalOpen || isAddAlumniModalOpen;
+  usePageScrollLock(anyModalOpen);
+
   return (
     <>
       <AppBar
@@ -819,6 +823,7 @@ const Navbar = () => {
         sx={{
           width: "100vw",
           left: 0,
+          top: 0,
           background: "rgba(30, 41, 59, 0.7)",
           backdropFilter: "blur(24px) saturate(180%)",
           borderBottom: "1.5px solid rgba(255, 255, 255, 0.13)",
@@ -1001,6 +1006,8 @@ const Navbar = () => {
           )}
         </Toolbar>
       </AppBar>
+      {/* Spacer for fixed navbar */}
+      <Toolbar />
 
       {/* Mobile Drawer */}
       <Drawer
@@ -1023,9 +1030,6 @@ const Navbar = () => {
         {drawer}
       </Drawer>
 
-      {/* Spacer for fixed navbar */}
-      <Toolbar />
-
       {/* Alumni Profile Modal */}
       <Modal
         open={isAlumniProfileModalOpen}
@@ -1040,9 +1044,10 @@ const Navbar = () => {
             bgcolor: "transparent",
             p: 0,
             borderRadius: 2,
-            minWidth: 420,
-            maxWidth: 600,
-            maxHeight: "90vh",
+            minWidth: { xs: "auto", sm: "auto", md: "420px" },
+            width: { xs: "95vw", sm: "90vw", md: "600px" },
+            maxWidth: { xs: "95vw", sm: "90vw", md: "600px" },
+            maxHeight: { xs: "90vh", sm: "85vh", md: "90vh" },
             overflowY: "auto",
             boxShadow: 24,
             scrollBehavior: "smooth",
@@ -1070,32 +1075,6 @@ const Navbar = () => {
         onClose={() => setIsAddAlumniModalOpen(false)}
       >
         <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
-          {/* Fixed Close Button - positioned relative to viewport */}
-          <IconButton
-            onClick={() => setIsAddAlumniModalOpen(false)}
-            sx={{
-              position: "fixed",
-              top: "5vh",
-              right: "5vw",
-              zIndex: 1500,
-              color: "rgba(255, 255, 255, 0.6)",
-              background: "rgba(0, 0, 0, 0.2)",
-              backdropFilter: "blur(12px)",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-              width: 40,
-              height: 40,
-              borderRadius: 2.5,
-              "&:hover": {
-                color: "#fff",
-                background: "rgba(0, 0, 0, 0.4)",
-                transform: "scale(1.05)",
-              },
-              transition: "all 0.2s ease",
-            }}
-          >
-            <CloseIcon sx={{ fontSize: "1.1rem" }} />
-          </IconButton>
-
           <Box
             sx={{
               position: "absolute",
@@ -1104,11 +1083,12 @@ const Navbar = () => {
               transform: "translate(-50%, -50%)",
               bgcolor: "rgba(30, 41, 59, 0.95)",
               backdropFilter: "blur(20px)",
-              p: 5,
+              p: { xs: 2, sm: 3, md: 5 },
               borderRadius: 3,
-              minWidth: 360,
-              maxWidth: 640,
-              maxHeight: "85vh",
+              minWidth: { xs: "auto", sm: "auto", md: "360px" },
+              width: { xs: "95vw", sm: "90vw", md: "640px" },
+              maxWidth: { xs: "95vw", sm: "90vw", md: "640px" },
+              maxHeight: { xs: "90vh", sm: "85vh", md: "85vh" },
               overflowY: "auto",
               boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
               scrollBehavior: "smooth",
@@ -1117,6 +1097,30 @@ const Navbar = () => {
             onWheel={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
           >
+            <IconButton
+              onClick={() => setIsAddAlumniModalOpen(false)}
+              sx={{
+                position: "absolute",
+                top: { xs: 12, sm: 14, md: 16 },
+                right: { xs: 12, sm: 14, md: 16 },
+                zIndex: 10,
+                color: "rgba(255, 255, 255, 0.6)",
+                background: "rgba(0, 0, 0, 0.2)",
+                backdropFilter: "blur(12px)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                width: { xs: 36, sm: 38, md: 40 },
+                height: { xs: 36, sm: 38, md: 40 },
+                borderRadius: 2.5,
+                "&:hover": {
+                  color: "#fff",
+                  background: "rgba(0, 0, 0, 0.4)",
+                  transform: "scale(1.05)",
+                },
+                transition: "all 0.2s ease",
+              }}
+            >
+              <CloseIcon sx={{ fontSize: "1.1rem" }} />
+            </IconButton>
             <Typography
               variant="h6"
               sx={{
