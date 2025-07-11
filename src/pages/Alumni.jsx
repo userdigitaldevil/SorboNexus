@@ -58,6 +58,7 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { useAlumniEditModal } from "../components/AlumniEditModalContext";
 import useBookmarks from "../hooks/useBookmarks";
 import { getAlumni, getAlumniById, deleteAlumni } from "../api/alumni";
+import usePageScrollLock from "../hooks/usePageScrollLock";
 
 export default function Alumni() {
   // Admin state (must be first)
@@ -223,7 +224,9 @@ export default function Alumni() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { openEditModal } = useAlumniEditModal();
+  const { open: editModalOpen, openEditModal } = useAlumniEditModal();
+  const anyModalOpen = isProfileModalOpen || isListModalOpen || editModalOpen;
+  usePageScrollLock(anyModalOpen);
 
   const sectionRef = useRef(null);
   const filtersRef = useRef(null);
@@ -1528,8 +1531,8 @@ export default function Alumni() {
           style={{
             maxHeight: "90vh",
             overflowY: "auto",
-            maxWidth: 600,
-            width: "100%",
+            maxWidth: "95vw",
+            width: "95vw",
             borderRadius: 16,
             scrollBehavior: "smooth",
           }}
@@ -1596,15 +1599,15 @@ export default function Alumni() {
             onClick={closeListModal}
             sx={{
               position: "absolute",
-              top: 20,
-              right: 20,
+              top: { xs: 12, sm: 16, md: 20 },
+              right: { xs: 12, sm: 16, md: 20 },
               zIndex: 10,
               color: "rgba(255, 255, 255, 0.7)",
               background: "rgba(0, 0, 0, 0.3)",
               backdropFilter: "blur(20px)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
-              width: 40,
-              height: 40,
+              width: { xs: 36, sm: 38, md: 40 },
+              height: { xs: 36, sm: 38, md: 40 },
               borderRadius: "12px",
               "&:hover": {
                 color: "rgba(255, 255, 255, 1)",
@@ -1615,7 +1618,9 @@ export default function Alumni() {
               transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
-            <CloseIcon sx={{ fontSize: "1.3rem" }} />
+            <CloseIcon
+              sx={{ fontSize: { xs: "1.1rem", sm: "1.2rem", md: "1.3rem" } }}
+            />
           </IconButton>
 
           <Card

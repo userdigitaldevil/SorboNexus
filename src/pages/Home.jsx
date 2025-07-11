@@ -43,6 +43,7 @@ import { DOMAIN_COLORS } from "../components/AlumniCard.jsx";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { getAlumni, getAlumniCount } from "../api/alumni";
 import { getAnnonces, addAnnonce, deleteAnnonce } from "../api/annonces";
+import usePageScrollLock from "../hooks/usePageScrollLock";
 
 // Helper function to get alumni card color (same logic as Conseils page)
 function getAlumniCardColor(alumni) {
@@ -564,9 +565,9 @@ export default function Home() {
             >
               <Box
                 sx={{
-                  maxWidth: 600,
-                  width: "100%",
-                  maxHeight: { xs: "90vh", md: "80vh" },
+                  maxWidth: { xs: "95vw", sm: "90vw", md: "600px" },
+                  width: { xs: "95vw", sm: "90vw", md: "100%" },
+                  maxHeight: { xs: "90vh", sm: "85vh", md: "80vh" },
                   overflowY: "auto",
                   outline: "none",
                   bgcolor: "transparent",
@@ -673,6 +674,9 @@ export default function Home() {
       }
     }
   }, [annoncesModalOpen]);
+
+  const anyModalOpen = annoncesModalOpen;
+  usePageScrollLock(anyModalOpen);
 
   return (
     <div
@@ -2095,11 +2099,12 @@ export default function Home() {
                   left: "50%",
                   transform: "translate(-50%, -50%)",
                   bgcolor: "#18181b",
-                  p: 4,
+                  p: { xs: 2, sm: 3, md: 4 },
                   borderRadius: 2,
-                  minWidth: 320,
-                  maxWidth: 600,
-                  maxHeight: "80vh",
+                  minWidth: { xs: "auto", sm: "auto", md: "320px" },
+                  width: { xs: "95vw", sm: "90vw", md: "600px" },
+                  maxWidth: { xs: "95vw", sm: "90vw", md: "600px" },
+                  maxHeight: { xs: "90vh", sm: "85vh", md: "80vh" },
                   overflowY: "auto",
                   boxShadow: 24,
                   scrollBehavior: "smooth",

@@ -12,7 +12,6 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* Account for fixed navbar */
-  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin; /* For Firefox */
 }
 
@@ -28,7 +27,10 @@ body {
 
   /* Basic smooth scrolling */
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
+
+  /* Prevent horizontal swiping on mobile */
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
 }
 
 /* Root container styles */
@@ -39,56 +41,60 @@ body {
 /* Basic scrolling utility classes */
 .smooth-scroll {
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
 .smooth-scroll-all {
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
 /* Smooth scrolling for containers */
 .container,
 .MuiContainer-root {
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
 /* Smooth scrolling for all pages */
 .page-container {
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
 /* Mobile-specific scrolling */
 @media (max-width: 768px) {
   html {
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
   }
 
   body {
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+    touch-action: pan-y;
+    overscroll-behavior-x: none;
   }
 
   /* Fix for double scroll issue */
   .glassy-bg {
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
   }
 
   /* iOS momentum scrolling fix */
   html,
   body {
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
   }
 
   /* Fix for alternating scroll direction issues */
   .min-h-screen {
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+  }
+
+  /* Prevent horizontal swiping on all containers */
+  * {
+    touch-action: pan-y;
+    overscroll-behavior-x: none;
   }
 }
 

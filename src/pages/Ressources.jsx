@@ -41,6 +41,7 @@ import {
   deleteRessource,
 } from "../api/ressources";
 import { uploadFile } from "../api/upload";
+import usePageScrollLock from "../hooks/usePageScrollLock";
 
 // CATEGORY_STYLES for resource categories
 const CATEGORY_STYLES = {
@@ -160,6 +161,9 @@ export default function Ressources() {
   // Add a state to store the original uploaded file name
   const [uploadedOriginalName, setUploadedOriginalName] = useState("");
   const mainScrollContainerRef = useRef(null);
+
+  const anyModalOpen = addModalOpen || editModalOpen;
+  usePageScrollLock(anyModalOpen);
 
   // Lock scrolling when add modal is open
   useEffect(() => {
@@ -1533,6 +1537,9 @@ export default function Ressources() {
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             borderRadius: 3,
+            width: { xs: "95vw", sm: "90vw", md: "auto" },
+            maxWidth: { xs: "95vw", sm: "90vw", md: "600px" },
+            margin: { xs: "16px", sm: "24px", md: "auto" },
           },
         }}
       >
@@ -1540,14 +1547,14 @@ export default function Ressources() {
           sx={{
             color: "white",
             fontWeight: 500,
-            fontSize: { xs: "1.4rem", md: "1.6rem" },
+            fontSize: { xs: "1.2rem", sm: "1.3rem", md: "1.6rem" },
             borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            pb: 4,
-            pt: 4,
-            px: 4,
+            pb: { xs: 3, sm: 3.5, md: 4 },
+            pt: { xs: 3, sm: 3.5, md: 4 },
+            px: { xs: 3, sm: 3.5, md: 4 },
             letterSpacing: "0.02em",
             lineHeight: 1.3,
           }}
@@ -1569,7 +1576,11 @@ export default function Ressources() {
             <i className="fas fa-times"></i>
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ pt: 4, px: 4 }}>
+        <DialogContent
+          sx={{ pt: { xs: 3, sm: 3.5, md: 4 }, px: { xs: 3, sm: 3.5, md: 4 } }}
+          onTouchMove={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
+        >
           <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             <TextField
               label="Titre"
@@ -2429,6 +2440,9 @@ export default function Ressources() {
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             borderRadius: 3,
+            width: { xs: "95vw", sm: "90vw", md: "auto" },
+            maxWidth: { xs: "95vw", sm: "90vw", md: "600px" },
+            margin: { xs: "16px", sm: "24px", md: "auto" },
           },
         }}
       >
@@ -2457,7 +2471,11 @@ export default function Ressources() {
             <i className="fas fa-times"></i>
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ pt: 3 }}>
+        <DialogContent
+          sx={{ pt: 3 }}
+          onTouchMove={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
+        >
           {editForm && (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <TextField

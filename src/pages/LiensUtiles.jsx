@@ -61,6 +61,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import useBookmarks from "../hooks/useBookmarks";
 import { getLinks, addLink, editLink, deleteLink } from "../api/links";
 import { useNavigate } from "react-router-dom";
+import usePageScrollLock from "../hooks/usePageScrollLock";
 
 const LiensUtiles = () => {
   // ============================================================================
@@ -506,6 +507,9 @@ const LiensUtiles = () => {
 
   const navigate = useNavigate();
   const mainScrollContainerRef = useRef(null);
+
+  const anyModalOpen = editModalOpen || addModalOpen;
+  usePageScrollLock(anyModalOpen);
 
   // Lock scrolling when edit modal is open
   useEffect(() => {
@@ -1688,6 +1692,9 @@ const LiensUtiles = () => {
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             borderRadius: 3,
+            width: { xs: "95vw", sm: "90vw", md: "auto" },
+            maxWidth: { xs: "95vw", sm: "90vw", md: "600px" },
+            margin: { xs: "16px", sm: "24px", md: "auto" },
           },
         }}
       >
@@ -1724,7 +1731,11 @@ const LiensUtiles = () => {
             <i className="fas fa-times"></i>
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ pt: 4, px: 4 }}>
+        <DialogContent
+          sx={{ pt: { xs: 3, sm: 3.5, md: 4 }, px: { xs: 3, sm: 3.5, md: 4 } }}
+          onTouchMove={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
+        >
           <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             <TextField
               label="Titre"
@@ -2242,6 +2253,9 @@ const LiensUtiles = () => {
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             borderRadius: 3,
+            width: { xs: "95vw", sm: "90vw", md: "auto" },
+            maxWidth: { xs: "95vw", sm: "90vw", md: "600px" },
+            margin: { xs: "16px", sm: "24px", md: "auto" },
           },
         }}
       >
@@ -2278,7 +2292,11 @@ const LiensUtiles = () => {
             <i className="fas fa-times"></i>
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ pt: 4, px: 4 }}>
+        <DialogContent
+          sx={{ pt: { xs: 3, sm: 3.5, md: 4 }, px: { xs: 3, sm: 3.5, md: 4 } }}
+          onTouchMove={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
+        >
           <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             <TextField
               label="Titre"

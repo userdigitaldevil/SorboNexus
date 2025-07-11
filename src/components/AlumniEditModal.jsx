@@ -347,11 +347,12 @@ export default function AlumniEditModal({
             transform: "translate(-50%, -50%)",
             bgcolor: "rgba(30, 41, 59, 0.95)",
             backdropFilter: "blur(20px)",
-            p: 5,
+            p: { xs: 2, sm: 3, md: 5 },
             borderRadius: 3,
-            minWidth: 360,
-            maxWidth: 480,
-            maxHeight: "85vh",
+            width: { xs: "95vw", sm: "90vw", md: "480px" },
+            maxWidth: { xs: "95vw", sm: "90vw", md: "480px" },
+            minWidth: { xs: "auto", sm: "auto", md: "360px" },
+            maxHeight: { xs: "90vh", sm: "85vh", md: "85vh" },
             overflowY: "auto",
             boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
             scrollBehavior: "smooth",
@@ -365,15 +366,15 @@ export default function AlumniEditModal({
             onClick={onClose}
             sx={{
               position: "absolute",
-              top: 20,
-              right: 20,
+              top: { xs: 12, sm: 16, md: 20 },
+              right: { xs: 12, sm: 16, md: 20 },
               zIndex: 10,
               color: "rgba(255, 255, 255, 0.6)",
               background: "rgba(0, 0, 0, 0.2)",
               backdropFilter: "blur(12px)",
               border: "1px solid rgba(255, 255, 255, 0.08)",
-              width: 40,
-              height: 40,
+              width: { xs: 36, sm: 38, md: 40 },
+              height: { xs: 36, sm: 38, md: 40 },
               borderRadius: 2.5,
               "&:hover": {
                 color: "#fff",
@@ -383,7 +384,9 @@ export default function AlumniEditModal({
               transition: "all 0.2s ease",
             }}
           >
-            <CloseIcon sx={{ fontSize: "1.1rem" }} />
+            <CloseIcon
+              sx={{ fontSize: { xs: "1rem", sm: "1.05rem", md: "1.1rem" } }}
+            />
           </IconButton>
           <form onSubmit={handleEditSubmit}>
             {/* Admins can edit username */}
@@ -1710,8 +1713,9 @@ export default function AlumniEditModal({
             <Box
               sx={{
                 display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
                 justifyContent: "flex-end",
-                gap: 2,
+                gap: { xs: 1.5, sm: 2 },
                 mt: 4,
               }}
             >
@@ -1719,10 +1723,10 @@ export default function AlumniEditModal({
                 onClick={onClose}
                 sx={{
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
                   fontWeight: 500,
-                  px: 3,
-                  py: 1.5,
+                  px: { xs: 2, sm: 3 },
+                  py: { xs: 1.2, sm: 1.5 },
                   borderRadius: 2.5,
                   letterSpacing: "0.02em",
                   textTransform: "none",
@@ -1741,10 +1745,10 @@ export default function AlumniEditModal({
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
                   fontWeight: 500,
-                  px: 4,
-                  py: 1.5,
+                  px: { xs: 3, sm: 4 },
+                  py: { xs: 1.2, sm: 1.5 },
                   borderRadius: 2.5,
                   letterSpacing: "0.02em",
                   textTransform: "none",

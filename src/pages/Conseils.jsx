@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import useBookmarks from "../hooks/useBookmarks";
+import usePageScrollLock from "../hooks/usePageScrollLock";
 import {
   Box,
   Container,
@@ -444,6 +445,9 @@ export default function Conseils() {
       }
     }
   }, [isProfileModalOpen]);
+
+  const anyModalOpen = editModalOpen || isProfileModalOpen;
+  usePageScrollLock(anyModalOpen);
 
   return (
     <div
@@ -1181,8 +1185,8 @@ export default function Conseils() {
           style={{
             maxHeight: "90vh",
             overflowY: "auto",
-            maxWidth: 600,
-            width: "100%",
+            maxWidth: "95vw",
+            width: "95vw",
             borderRadius: 16,
             scrollBehavior: "smooth",
           }}
