@@ -88,6 +88,115 @@ export default function Alumni() {
   const [shuffledOrder, setShuffledOrder] = useState(null);
   const [alreadyConnectedOpen, setAlreadyConnectedOpen] = useState(false);
   const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
+  const [forceRerender, setForceRerender] = useState(0);
+
+  // Add after isProfileModalOpen state is defined
+  useEffect(() => {
+    if (isProfileModalOpen) {
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalContainerOverflow =
+        mainScrollContainerRef.current?.style.overflow;
+
+      document.body.style.overflow = "hidden";
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.style.overflow = "hidden";
+      }
+
+      // Prevent scroll on the main container
+      const preventScroll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.addEventListener(
+          "wheel",
+          preventScroll,
+          { passive: false }
+        );
+        mainScrollContainerRef.current.addEventListener(
+          "touchmove",
+          preventScroll,
+          { passive: false }
+        );
+      }
+
+      return () => {
+        document.body.style.overflow = originalBodyOverflow;
+        if (mainScrollContainerRef.current) {
+          mainScrollContainerRef.current.style.overflow =
+            originalContainerOverflow;
+          mainScrollContainerRef.current.removeEventListener(
+            "wheel",
+            preventScroll
+          );
+          mainScrollContainerRef.current.removeEventListener(
+            "touchmove",
+            preventScroll
+          );
+        }
+      };
+    } else {
+      document.body.style.overflow = "";
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.style.overflow = "";
+      }
+    }
+  }, [isProfileModalOpen]);
+
+  // Lock scrolling when list modal is open
+  useEffect(() => {
+    if (isListModalOpen) {
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalContainerOverflow =
+        mainScrollContainerRef.current?.style.overflow;
+
+      document.body.style.overflow = "hidden";
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.style.overflow = "hidden";
+      }
+
+      // Prevent scroll on the main container
+      const preventScroll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.addEventListener(
+          "wheel",
+          preventScroll,
+          { passive: false }
+        );
+        mainScrollContainerRef.current.addEventListener(
+          "touchmove",
+          preventScroll,
+          { passive: false }
+        );
+      }
+
+      return () => {
+        document.body.style.overflow = originalBodyOverflow;
+        if (mainScrollContainerRef.current) {
+          mainScrollContainerRef.current.style.overflow =
+            originalContainerOverflow;
+          mainScrollContainerRef.current.removeEventListener(
+            "wheel",
+            preventScroll
+          );
+          mainScrollContainerRef.current.removeEventListener(
+            "touchmove",
+            preventScroll
+          );
+        }
+      };
+    } else {
+      document.body.style.overflow = "";
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.style.overflow = "";
+      }
+    }
+  }, [isListModalOpen]);
 
   // Use bookmark hook
   const {
@@ -119,6 +228,7 @@ export default function Alumni() {
   const sectionRef = useRef(null);
   const filtersRef = useRef(null);
   const listButtonRef = useRef(null);
+  const mainScrollContainerRef = useRef(null);
 
   const fetchAlumni = async () => {
     try {
@@ -346,10 +456,8 @@ export default function Alumni() {
     searchQuery,
     selectedDomains,
     showBookmarkedOnly,
-    bookmarkedAlumni,
-    alumni,
-    isAdmin,
-    alumniId,
+    bookmarkedAlumni.size, // Use size instead of the Set object to prevent constant re-renders
+    // Removed alumni, isAdmin, alumniId to prevent unwanted resets
   ]);
 
   const openProfileModal = (alum) => {
@@ -483,21 +591,11 @@ export default function Alumni() {
     }
   };
 
-  // Dedicated shuffle for logged-out users
-  function shuffleForLoggedOut(ordered) {
-    const isSeth = (a) => a.id === 26;
-    const isAdmin = (a) => a.isAdmin && !isSeth(a);
-    // Seth and admins in order
-    const sethAndAdmins = ordered.filter((a) => isSeth(a) || isAdmin(a));
-    // All others
-    const others = ordered.filter((a) => !isSeth(a) && !isAdmin(a));
-    // Shuffle others
-    const shuffledOthers = shuffleArray(others);
-    return [...sethAndAdmins, ...shuffledOthers];
-  }
-
   return (
-    <div className="glassy-bg min-h-screen smooth-scroll-all">
+    <div
+      ref={mainScrollContainerRef}
+      className="glassy-bg min-h-screen smooth-scroll-all"
+    >
       {/* Animated Gradient Background */}
       <motion.div
         className="absolute inset-0 z-0 pointer-events-none"
@@ -1011,46 +1109,44 @@ export default function Alumni() {
                 },
               }}
               onClick={() => {
-                // Helper to check if two alumni are the same
-                const isSameAlumni = (a, b) => {
-                  return (
-                    (a._id && b._id && String(a._id) === String(b._id)) ||
-                    (a.id && b.id && String(a.id) === String(b.id))
-                  );
-                };
-                if (alumniId && selfCard) {
-                  // Logged in: self always first, Seth second (if not self), shuffle all others
+                const token = localStorage.getItem("token");
+                if (token && alumniId && selfCard) {
                   let fixed = [selfCard];
-                  if (sethCard && !isSameAlumni(sethCard, selfCard)) {
+                  if (
+                    sethCard &&
+                    sethCard._id !== selfCard._id &&
+                    sethCard.id !== selfCard.id
+                  ) {
                     fixed.push(sethCard);
                   }
-                  // All others (not self, not Seth)
-                  const rest = ordered.filter(
-                    (a) => !fixed.some((f) => isSameAlumni(f, a))
+                  let rest = ordered.filter(
+                    (a) => !fixed.some((f) => f._id === a._id && f.id === a.id)
                   );
-                  const shuffled = shuffleArray(rest);
-                  setShuffledOrder([...fixed, ...shuffled]);
+                  const shuffledRest = shuffleArray(rest);
+                  const newShuffledOrder = [...fixed, ...shuffledRest];
+                  setShuffledOrder(newShuffledOrder);
                 } else {
-                  // Logged out: use dedicated function
-                  setShuffledOrder(shuffleForLoggedOut(ordered));
+                  const newShuffledOrder = shuffleArray(ordered);
+                  setShuffledOrder(newShuffledOrder);
                 }
                 setCurrentPage(1);
+                setForceRerender((prev) => prev + 1);
               }}
             >
               Mélanger les cartes
             </Button>
           </Box>
 
+          {/* Restore the original <Grid> rendering for alumni cards: */}
           <Grid
             container
             rowSpacing={{ xs: 2, md: 6 }}
             columnSpacing={1}
             justifyContent="center"
-            sx={{
-              maxWidth: "100%",
-              width: "100%",
-            }}
+            sx={{ maxWidth: "100%", width: "100%" }}
           >
+            {/* Force re-render on shuffle */}
+            <span style={{ display: "none" }}>{forceRerender}</span>
             {currentAlumni.map((alum, index) => (
               <Grid
                 gridColumn={{
@@ -1060,7 +1156,7 @@ export default function Alumni() {
                   lg: "span 3",
                   xl: "span 3",
                 }}
-                key={alum.id || alum._id}
+                key={`${alum._id || alum.id}-${index}`}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -1437,6 +1533,14 @@ export default function Alumni() {
             borderRadius: 16,
             scrollBehavior: "smooth",
           }}
+          onWheel={(e) => {
+            // Prevent scroll from bubbling up to parent containers
+            e.stopPropagation();
+          }}
+          onTouchMove={(e) => {
+            // Prevent touch scroll from bubbling up to parent containers
+            e.stopPropagation();
+          }}
         >
           {selectedAlumni ? (
             <AlumniProfileCard
@@ -1484,6 +1588,8 @@ export default function Alumni() {
             alignItems: "center",
             justifyContent: "center",
           }}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
         >
           {/* Close Button - positioned in upper right of modal */}
           <IconButton

@@ -126,6 +126,7 @@ export default function Conseils() {
   const [expandedTips, setExpandedTips] = useState(new Set());
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const mainScrollContainerRef = useRef(null);
   const [editForm, setEditForm] = useState({
     name: "",
     degree: "",
@@ -390,8 +391,65 @@ export default function Conseils() {
     return preview;
   };
 
+  // Add scroll locking for modal
+  useEffect(() => {
+    if (isProfileModalOpen) {
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalContainerOverflow =
+        mainScrollContainerRef.current?.style.overflow;
+
+      document.body.style.overflow = "hidden";
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.style.overflow = "hidden";
+      }
+
+      // Prevent scroll on the main container
+      const preventScroll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.addEventListener(
+          "wheel",
+          preventScroll,
+          { passive: false }
+        );
+        mainScrollContainerRef.current.addEventListener(
+          "touchmove",
+          preventScroll,
+          { passive: false }
+        );
+      }
+
+      return () => {
+        document.body.style.overflow = originalBodyOverflow;
+        if (mainScrollContainerRef.current) {
+          mainScrollContainerRef.current.style.overflow =
+            originalContainerOverflow;
+          mainScrollContainerRef.current.removeEventListener(
+            "wheel",
+            preventScroll
+          );
+          mainScrollContainerRef.current.removeEventListener(
+            "touchmove",
+            preventScroll
+          );
+        }
+      };
+    } else {
+      document.body.style.overflow = "";
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.style.overflow = "";
+      }
+    }
+  }, [isProfileModalOpen]);
+
   return (
-    <div className="glassy-bg min-h-screen smooth-scroll-all">
+    <div
+      ref={mainScrollContainerRef}
+      className="glassy-bg min-h-screen smooth-scroll-all"
+    >
       {/* Background Elements */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -1127,6 +1185,14 @@ export default function Conseils() {
             width: "100%",
             borderRadius: 16,
             scrollBehavior: "smooth",
+          }}
+          onWheel={(e) => {
+            // Prevent scroll from bubbling up to parent containers
+            e.stopPropagation();
+          }}
+          onTouchMove={(e) => {
+            // Prevent touch scroll from bubbling up to parent containers
+            e.stopPropagation();
           }}
         >
           {selectedProfile ? (

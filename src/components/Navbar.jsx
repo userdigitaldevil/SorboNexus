@@ -709,6 +709,100 @@ const Navbar = () => {
 
   const { openEditSelfModal } = useAlumniEditModal();
 
+  // Lock scrolling when alumni profile modal is open
+  useEffect(() => {
+    if (isAlumniProfileModalOpen) {
+      // Lock body scrolling
+      document.body.style.overflow = "hidden";
+
+      // Lock main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "hidden";
+      }
+
+      // Prevent scroll on the main container
+      const preventScroll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      if (mainContainer) {
+        mainContainer.addEventListener("wheel", preventScroll, {
+          passive: false,
+        });
+        mainContainer.addEventListener("touchmove", preventScroll, {
+          passive: false,
+        });
+      }
+
+      return () => {
+        document.body.style.overflow = "";
+        if (mainContainer) {
+          mainContainer.style.overflow = "";
+          mainContainer.removeEventListener("wheel", preventScroll);
+          mainContainer.removeEventListener("touchmove", preventScroll);
+        }
+      };
+    } else {
+      // Restore body scrolling
+      document.body.style.overflow = "";
+
+      // Restore main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "";
+      }
+    }
+  }, [isAlumniProfileModalOpen]);
+
+  // Lock scrolling when add alumni modal is open
+  useEffect(() => {
+    if (isAddAlumniModalOpen) {
+      // Lock body scrolling
+      document.body.style.overflow = "hidden";
+
+      // Lock main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "hidden";
+      }
+
+      // Prevent scroll on the main container
+      const preventScroll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      if (mainContainer) {
+        mainContainer.addEventListener("wheel", preventScroll, {
+          passive: false,
+        });
+        mainContainer.addEventListener("touchmove", preventScroll, {
+          passive: false,
+        });
+      }
+
+      return () => {
+        document.body.style.overflow = "";
+        if (mainContainer) {
+          mainContainer.style.overflow = "";
+          mainContainer.removeEventListener("wheel", preventScroll);
+          mainContainer.removeEventListener("touchmove", preventScroll);
+        }
+      };
+    } else {
+      // Restore body scrolling
+      document.body.style.overflow = "";
+
+      // Restore main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "";
+      }
+    }
+  }, [isAddAlumniModalOpen]);
+
   const [showFullConseil, setShowFullConseil] = useState(false);
   const conseilMaxLength = 180;
   const conseilIsLong = (addAlumniForm.conseil || "").length > conseilMaxLength;
@@ -953,6 +1047,8 @@ const Navbar = () => {
             boxShadow: 24,
             scrollBehavior: "smooth",
           }}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
         >
           {alumniUser ? (
             <AlumniProfileCard
@@ -1018,6 +1114,8 @@ const Navbar = () => {
               scrollBehavior: "smooth",
               border: "1px solid rgba(255, 255, 255, 0.1)",
             }}
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
           >
             <Typography
               variant="h6"

@@ -53,6 +53,53 @@ export default function AlumniEditModal({
       : editForm.conseil || "";
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Lock scrolling when modal is open
+  useEffect(() => {
+    if (open) {
+      // Lock body scrolling
+      document.body.style.overflow = "hidden";
+
+      // Lock main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "hidden";
+      }
+
+      // Prevent scroll on the main container
+      const preventScroll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      if (mainContainer) {
+        mainContainer.addEventListener("wheel", preventScroll, {
+          passive: false,
+        });
+        mainContainer.addEventListener("touchmove", preventScroll, {
+          passive: false,
+        });
+      }
+
+      return () => {
+        document.body.style.overflow = "";
+        if (mainContainer) {
+          mainContainer.style.overflow = "";
+          mainContainer.removeEventListener("wheel", preventScroll);
+          mainContainer.removeEventListener("touchmove", preventScroll);
+        }
+      };
+    } else {
+      // Restore body scrolling
+      document.body.style.overflow = "";
+
+      // Restore main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "";
+      }
+    }
+  }, [open]);
+
   useEffect(() => {
     if (alumni) {
       setEditForm({
@@ -311,6 +358,8 @@ export default function AlumniEditModal({
             border: "1px solid rgba(255, 255, 255, 0.1)",
           }}
           onClick={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
         >
           <IconButton
             onClick={onClose}

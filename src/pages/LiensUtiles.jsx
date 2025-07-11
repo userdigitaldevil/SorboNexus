@@ -505,6 +505,101 @@ const LiensUtiles = () => {
   const [userId, setUserId] = useState(null);
 
   const navigate = useNavigate();
+  const mainScrollContainerRef = useRef(null);
+
+  // Lock scrolling when edit modal is open
+  useEffect(() => {
+    if (editModalOpen) {
+      // Lock body scrolling
+      document.body.style.overflow = "hidden";
+
+      // Lock main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "hidden";
+      }
+
+      // Prevent scroll on the main container
+      const preventScroll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      if (mainContainer) {
+        mainContainer.addEventListener("wheel", preventScroll, {
+          passive: false,
+        });
+        mainContainer.addEventListener("touchmove", preventScroll, {
+          passive: false,
+        });
+      }
+
+      return () => {
+        document.body.style.overflow = "";
+        if (mainContainer) {
+          mainContainer.style.overflow = "";
+          mainContainer.removeEventListener("wheel", preventScroll);
+          mainContainer.removeEventListener("touchmove", preventScroll);
+        }
+      };
+    } else {
+      // Restore body scrolling
+      document.body.style.overflow = "";
+
+      // Restore main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "";
+      }
+    }
+  }, [editModalOpen]);
+
+  // Lock scrolling when add modal is open
+  useEffect(() => {
+    if (addModalOpen) {
+      // Lock body scrolling
+      document.body.style.overflow = "hidden";
+
+      // Lock main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "hidden";
+      }
+
+      // Prevent scroll on the main container
+      const preventScroll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      if (mainContainer) {
+        mainContainer.addEventListener("wheel", preventScroll, {
+          passive: false,
+        });
+        mainContainer.addEventListener("touchmove", preventScroll, {
+          passive: false,
+        });
+      }
+
+      return () => {
+        document.body.style.overflow = "";
+        if (mainContainer) {
+          mainContainer.style.overflow = "";
+          mainContainer.removeEventListener("wheel", preventScroll);
+          mainContainer.removeEventListener("touchmove", preventScroll);
+        }
+      };
+    } else {
+      // Restore body scrolling
+      document.body.style.overflow = "";
+
+      // Restore main scroll container
+      const mainContainer = document.querySelector(".main-scroll-container");
+      if (mainContainer) {
+        mainContainer.style.overflow = "";
+      }
+    }
+  }, [addModalOpen]);
 
   return (
     <div className="glassy-bg min-h-screen smooth-scroll-all">

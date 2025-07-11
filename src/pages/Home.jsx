@@ -146,6 +146,7 @@ export default function Home() {
   const [alumniCount, setAlumniCount] = useState(null);
   const [alumni, setAlumni] = useState([]);
   const navigate = useNavigate();
+  const mainScrollContainerRef = useRef(null);
 
   // Get current year
   const currentYear = new Date().getFullYear();
@@ -313,6 +314,61 @@ export default function Home() {
   function AnnonceCard({ annonce, showDelete }) {
     const [expanded, setExpanded] = useState(false);
     const [profileModalOpen, setProfileModalOpen] = useState(false);
+
+    // Add scroll locking for profile modal
+    useEffect(() => {
+      if (profileModalOpen) {
+        const originalBodyOverflow = document.body.style.overflow;
+        const originalContainerOverflow =
+          mainScrollContainerRef.current?.style.overflow;
+
+        document.body.style.overflow = "hidden";
+        if (mainScrollContainerRef.current) {
+          mainScrollContainerRef.current.style.overflow = "hidden";
+        }
+
+        // Prevent scroll on the main container
+        const preventScroll = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        };
+
+        if (mainScrollContainerRef.current) {
+          mainScrollContainerRef.current.addEventListener(
+            "wheel",
+            preventScroll,
+            { passive: false }
+          );
+          mainScrollContainerRef.current.addEventListener(
+            "touchmove",
+            preventScroll,
+            { passive: false }
+          );
+        }
+
+        return () => {
+          document.body.style.overflow = originalBodyOverflow;
+          if (mainScrollContainerRef.current) {
+            mainScrollContainerRef.current.style.overflow =
+              originalContainerOverflow;
+            mainScrollContainerRef.current.removeEventListener(
+              "wheel",
+              preventScroll
+            );
+            mainScrollContainerRef.current.removeEventListener(
+              "touchmove",
+              preventScroll
+            );
+          }
+        };
+      } else {
+        document.body.style.overflow = "";
+        if (mainScrollContainerRef.current) {
+          mainScrollContainerRef.current.style.overflow = "";
+        }
+      }
+    }, [profileModalOpen]);
+
     // Find the alumni in the main alumni list by user ID (any user in users array)
     const alumniFromList = alumni.find(
       (a) =>
@@ -396,247 +452,102 @@ export default function Home() {
                 alignItems: "center",
                 justifyContent: "space-between",
                 mb: 1.5,
-                gap: 2,
-                flexWrap: "wrap",
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                {alumniProfile && (
-                  <Avatar
-                    sx={{
-                      width: 44,
-                      height: 44,
-                      fontSize: "1.1rem",
-                      fontWeight: 700,
-                      background: getAlumniCardColor(alumniProfile),
-                      boxShadow: "0 4px 16px rgba(59,130,246,0.18)",
-                      cursor: alumniProfile ? "pointer" : "default",
-                      border: "2.5px solid #fff",
-                      transition: "transform 0.18s",
-                      "&:hover": alumniProfile
-                        ? { transform: "scale(1.08)" }
-                        : {},
-                    }}
-                    onClick={() => alumniProfile && setProfileModalOpen(true)}
-                  >
-                    {alumniProfile.avatar || name.substring(0, 2).toUpperCase()}
-                  </Avatar>
-                )}
-                <Box
+              {/* Avatar and Name */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1.5,
+                  cursor: "pointer",
+                  transition: "opacity 0.2s",
+                  "&:hover": {
+                    opacity: 0.8,
+                  },
+                }}
+                onClick={() => setProfileModalOpen(true)}
+              >
+                <Avatar
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
+                    width: 40,
+                    height: 40,
+                    background: alumniProfile?.color || "#3b82f6",
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
                   }}
                 >
+                  {alumniProfile?.avatar || name.charAt(0).toUpperCase()}
+                </Avatar>
+                <Box>
                   <Typography
                     variant="subtitle2"
                     sx={{
-                      fontWeight: 400,
-                      color: "#3b82f6",
-                      fontSize: "0.98rem",
-                      cursor: alumniProfile ? "pointer" : "default",
-                      textDecoration: alumniProfile ? "underline" : "none",
-                      lineHeight: 1.1,
-                      letterSpacing: "0.01em",
-                      fontFamily: "inherit",
+                      fontWeight: 600,
+                      color: "rgba(255,255,255,0.9)",
+                      fontSize: "0.95rem",
+                      lineHeight: 1.2,
                     }}
-                    onClick={() => alumniProfile && setProfileModalOpen(true)}
                   >
                     {name}
                   </Typography>
                   <Typography
                     variant="caption"
                     sx={{
-                      color: "rgba(255,255,255,0.7)",
-                      lineHeight: 1.1,
-                      pt: 0.5,
-                      fontWeight: 300,
-                      letterSpacing: "0.01em",
-                      fontFamily: "inherit",
+                      color: "rgba(255,255,255,0.6)",
+                      fontSize: "0.8rem",
                     }}
                   >
                     {formatDate(annonce.createdAt)}
                   </Typography>
                 </Box>
               </Box>
+              {/* Delete Button (Admin) */}
               {showDelete && (
                 <IconButton
                   size="small"
-                  sx={{ color: "#ef4444", alignSelf: "flex-start" }}
                   onClick={() => handleDeleteAnnonce(annonce.id)}
+                  sx={{
+                    color: "rgba(255,255,255,0.6)",
+                    "&:hover": {
+                      color: "#ef4444",
+                      background: "rgba(239,68,68,0.1)",
+                    },
+                  }}
                 >
-                  <DeleteIcon fontSize="small" />
+                  <DeleteIcon sx={{ fontSize: "1.1rem" }} />
                 </IconButton>
               )}
             </Box>
             {/* Content */}
-            <Box sx={{ flex: 1, zIndex: 2 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 400,
-                  background:
-                    "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  mb: 1,
-                  fontSize: { xs: "1.25rem", sm: "1.4rem", md: "1.6rem" },
-                  lineHeight: 1.28,
-                  wordBreak: "break-word",
-                  letterSpacing: "-0.01em",
-                  fontFamily: "inherit",
-                  textShadow: "0 1px 2px rgba(0,0,0,0.08)",
-                }}
-                component="div"
-              >
-                <ReactMarkdown
-                  children={annonce.title}
-                  components={{
-                    strong: ({ node, ...props }) => (
-                      <strong style={{ color: "#fff" }} {...props} />
-                    ),
-                    em: ({ node, ...props }) => (
-                      <em style={{ color: "#e0e7ef" }} {...props} />
-                    ),
-                    code: ({ node, ...props }) => (
-                      <code
-                        style={{
-                          background: "#222",
-                          color: "#fff",
-                          borderRadius: 4,
-                          padding: "2px 6px",
-                          fontSize: "0.98em",
-                        }}
-                        {...props}
-                      />
-                    ),
-                    h1: ({ node, ...props }) => (
-                      <h1
-                        style={{
-                          fontSize: "1.3em",
-                          color: "#fff",
-                          fontWeight: 800,
-                          margin: 0,
-                        }}
-                        {...props}
-                      />
-                    ),
-                    h2: ({ node, ...props }) => (
-                      <h2
-                        style={{
-                          fontSize: "1.15em",
-                          color: "#fff",
-                          fontWeight: 700,
-                          margin: 0,
-                        }}
-                        {...props}
-                      />
-                    ),
-                    h3: ({ node, ...props }) => (
-                      <h3
-                        style={{
-                          fontSize: "1.05em",
-                          color: "#fff",
-                          fontWeight: 700,
-                          margin: 0,
-                        }}
-                        {...props}
-                      />
-                    ),
-                    p: ({ node, ...props }) => (
-                      <span
-                        {...props}
-                        style={{ display: "block", marginBottom: 4 }}
-                      />
-                    ),
+            <Typography
+              variant="body1"
+              sx={{
+                color: "rgba(255,255,255,0.9)",
+                lineHeight: 1.6,
+                fontSize: "0.95rem",
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+              }}
+            >
+              {expanded ? annonce.content : previewContent}
+              {isLong && (
+                <Button
+                  size="small"
+                  sx={{
+                    color: "#3b82f6",
+                    textTransform: "none",
+                    fontWeight: 600,
+                    ml: 0,
+                    mt: 1,
+                    fontSize: "0.95rem",
                   }}
-                  skipHtml={false}
-                />
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "rgba(255,255,255,0.8)",
-                  fontWeight: 300,
-                  fontSize: { xs: "0.97rem", sm: "1.05rem" },
-                  lineHeight: 1.6,
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                  mt: 0.5,
-                  mb: 0.5,
-                  minHeight: 0,
-                  letterSpacing: "0.01em",
-                  fontFamily: "inherit",
-                  textShadow: "0 1px 2px rgba(0,0,0,0.08)",
-                }}
-                component="div"
-              >
-                <ReactMarkdown
-                  children={
-                    expanded || !isLong
-                      ? annonce.content
-                      : previewContent + (isLong ? "..." : "")
-                  }
-                  components={{
-                    p: ({ node, ...props }) => (
-                      <span
-                        {...props}
-                        style={{ display: "block", marginBottom: 8 }}
-                      />
-                    ),
-                    li: ({ node, ...props }) => (
-                      <li
-                        style={{ marginLeft: 16, marginBottom: 4 }}
-                        {...props}
-                      />
-                    ),
-                    ul: ({ node, ...props }) => (
-                      <ul
-                        style={{ marginLeft: 16, marginBottom: 8 }}
-                        {...props}
-                      />
-                    ),
-                    ol: ({ node, ...props }) => (
-                      <ol
-                        style={{ marginLeft: 16, marginBottom: 8 }}
-                        {...props}
-                      />
-                    ),
-                    code: ({ node, ...props }) => (
-                      <code
-                        style={{
-                          background: "#222",
-                          color: "#fff",
-                          borderRadius: 4,
-                          padding: "2px 6px",
-                          fontSize: "0.95em",
-                        }}
-                        {...props}
-                      />
-                    ),
-                  }}
-                  skipHtml={false}
-                />
-                {isLong && (
-                  <Button
-                    size="small"
-                    sx={{
-                      color: "#3b82f6",
-                      textTransform: "none",
-                      fontWeight: 600,
-                      ml: 0,
-                      mt: 1,
-                      fontSize: "0.95rem",
-                    }}
-                    onClick={() => setExpanded((v) => !v)}
-                  >
-                    {expanded ? "Réduire" : "Lire la suite"}
-                  </Button>
-                )}
-              </Typography>
-            </Box>
+                  onClick={() => setExpanded((v) => !v)}
+                >
+                  {expanded ? "Réduire" : "Lire la suite"}
+                </Button>
+              )}
+            </Typography>
           </Card>
           {/* Alumni Profile Modal */}
           {alumniProfile && (
@@ -661,6 +572,14 @@ export default function Home() {
                   bgcolor: "transparent",
                   borderRadius: 3,
                   boxShadow: 24,
+                }}
+                onWheel={(e) => {
+                  // Prevent scroll from bubbling up to parent containers
+                  e.stopPropagation();
+                }}
+                onTouchMove={(e) => {
+                  // Prevent touch scroll from bubbling up to parent containers
+                  e.stopPropagation();
                 }}
               >
                 <AlumniProfileCard alum={alumniProfile} />
@@ -701,8 +620,65 @@ export default function Home() {
     setShowArrow(true);
   }, []);
 
+  // Add scroll locking for modals
+  useEffect(() => {
+    if (annoncesModalOpen) {
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalContainerOverflow =
+        mainScrollContainerRef.current?.style.overflow;
+
+      document.body.style.overflow = "hidden";
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.style.overflow = "hidden";
+      }
+
+      // Prevent scroll on the main container
+      const preventScroll = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.addEventListener(
+          "wheel",
+          preventScroll,
+          { passive: false }
+        );
+        mainScrollContainerRef.current.addEventListener(
+          "touchmove",
+          preventScroll,
+          { passive: false }
+        );
+      }
+
+      return () => {
+        document.body.style.overflow = originalBodyOverflow;
+        if (mainScrollContainerRef.current) {
+          mainScrollContainerRef.current.style.overflow =
+            originalContainerOverflow;
+          mainScrollContainerRef.current.removeEventListener(
+            "wheel",
+            preventScroll
+          );
+          mainScrollContainerRef.current.removeEventListener(
+            "touchmove",
+            preventScroll
+          );
+        }
+      };
+    } else {
+      document.body.style.overflow = "";
+      if (mainScrollContainerRef.current) {
+        mainScrollContainerRef.current.style.overflow = "";
+      }
+    }
+  }, [annoncesModalOpen]);
+
   return (
-    <div className="glassy-bg min-h-screen smooth-scroll-all">
+    <div
+      ref={mainScrollContainerRef}
+      className="glassy-bg min-h-screen smooth-scroll-all"
+    >
       {/* Hero Section */}
       <Box
         component="section"
@@ -2101,7 +2077,17 @@ export default function Home() {
               </Box>
             )}
             {/* Modal for past annonces */}
-            <Modal open={annoncesModalOpen} onClose={handleCloseAnnoncesModal}>
+            <Modal
+              open={annoncesModalOpen}
+              onClose={handleCloseAnnoncesModal}
+              aria-labelledby="annonces-modal-title"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                p: 2,
+              }}
+            >
               <Box
                 sx={{
                   position: "absolute",
@@ -2117,6 +2103,14 @@ export default function Home() {
                   overflowY: "auto",
                   boxShadow: 24,
                   scrollBehavior: "smooth",
+                }}
+                onWheel={(e) => {
+                  // Prevent scroll from bubbling up to parent containers
+                  e.stopPropagation();
+                }}
+                onTouchMove={(e) => {
+                  // Prevent touch scroll from bubbling up to parent containers
+                  e.stopPropagation();
                 }}
               >
                 <Typography
