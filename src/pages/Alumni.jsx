@@ -483,6 +483,19 @@ export default function Alumni() {
     }
   };
 
+  // Dedicated shuffle for logged-out users
+  function shuffleForLoggedOut(ordered) {
+    const isSeth = (a) => a.id === 26;
+    const isAdmin = (a) => a.isAdmin && !isSeth(a);
+    // Seth and admins in order
+    const sethAndAdmins = ordered.filter((a) => isSeth(a) || isAdmin(a));
+    // All others
+    const others = ordered.filter((a) => !isSeth(a) && !isAdmin(a));
+    // Shuffle others
+    const shuffledOthers = shuffleArray(others);
+    return [...sethAndAdmins, ...shuffledOthers];
+  }
+
   return (
     <div className="glassy-bg min-h-screen smooth-scroll-all">
       {/* Animated Gradient Background */}
@@ -1018,9 +1031,8 @@ export default function Alumni() {
                   const shuffled = shuffleArray(rest);
                   setShuffledOrder([...fixed, ...shuffled]);
                 } else {
-                  // Logged out: shuffle ALL cards (including Seth and admins)
-                  const shuffled = shuffleArray(ordered);
-                  setShuffledOrder(shuffled);
+                  // Logged out: use dedicated function
+                  setShuffledOrder(shuffleForLoggedOut(ordered));
                 }
                 setCurrentPage(1);
               }}
