@@ -347,12 +347,13 @@ export default function AlumniEditModal({
             transform: "translate(-50%, -50%)",
             bgcolor: "rgba(30, 41, 59, 0.95)",
             backdropFilter: "blur(20px)",
-            p: 5,
+            p: { xs: 2, sm: 3, md: 5 },
             borderRadius: 3,
-            minWidth: 360,
+            width: { xs: "95vw", sm: "90vw", md: 480 },
             maxWidth: 480,
-            maxHeight: "85vh",
+            maxHeight: "90vh",
             overflowY: "auto",
+            overflowX: "hidden",
             boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
             scrollBehavior: "smooth",
             border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -365,15 +366,15 @@ export default function AlumniEditModal({
             onClick={onClose}
             sx={{
               position: "absolute",
-              top: 20,
-              right: 20,
+              top: { xs: 16, md: 20 },
+              right: { xs: 16, md: 20 },
               zIndex: 10,
               color: "rgba(255, 255, 255, 0.6)",
               background: "rgba(0, 0, 0, 0.2)",
               backdropFilter: "blur(12px)",
               border: "1px solid rgba(255, 255, 255, 0.08)",
-              width: 40,
-              height: 40,
+              width: { xs: 36, md: 40 },
+              height: { xs: 36, md: 40 },
               borderRadius: 2.5,
               "&:hover": {
                 color: "#fff",
@@ -383,8 +384,22 @@ export default function AlumniEditModal({
               transition: "all 0.2s ease",
             }}
           >
-            <CloseIcon sx={{ fontSize: "1.1rem" }} />
+            <CloseIcon sx={{ fontSize: { xs: "1rem", md: "1.1rem" } }} />
           </IconButton>
+          <Typography
+            variant="h6"
+            sx={{
+              mb: { xs: 2, md: 3 },
+              fontSize: { xs: "1.4rem", md: "1.6rem" },
+              fontWeight: 500,
+              letterSpacing: "-0.01em",
+              color: "#fff",
+              lineHeight: 1.2,
+              pr: { xs: 4, md: 5 },
+            }}
+          >
+            Modifier ma carte
+          </Typography>
           <form onSubmit={handleEditSubmit}>
             {/* Admins can edit username */}
             {isAdmin && (
@@ -398,6 +413,7 @@ export default function AlumniEditModal({
                   mb: 3,
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     "& fieldset": {
                       borderColor: "rgba(255, 255, 255, 0.1)",
                     },
@@ -410,13 +426,14 @@ export default function AlumniEditModal({
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
               />
@@ -431,6 +448,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -443,13 +461,14 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
+                  padding: { xs: "14px", md: "16px" },
                 },
               }}
             />
@@ -463,6 +482,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -475,13 +495,14 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
+                  padding: { xs: "14px", md: "16px" },
                 },
               }}
             />
@@ -495,6 +516,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -507,17 +529,18 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
+                  padding: { xs: "14px", md: "16px" },
                 },
                 "& .MuiFormHelperText-root": {
                   color: "rgba(255, 255, 255, 0.5)",
-                  fontSize: "0.8rem",
+                  fontSize: { xs: "0.8rem", md: "0.85rem" },
                   fontWeight: 400,
                 },
               }}
@@ -531,6 +554,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -543,13 +567,14 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
+                  padding: { xs: "14px", md: "16px" },
                 },
               }}
             >
@@ -634,6 +659,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -646,13 +672,14 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
+                  padding: { xs: "14px", md: "16px" },
                 },
               }}
             />
@@ -666,6 +693,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -678,13 +706,14 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
+                  padding: { xs: "14px", md: "16px" },
                 },
               }}
             />
@@ -709,7 +738,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiFormControlLabel-label": {
                   color: "rgba(255, 255, 255, 0.8)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
               }}
@@ -737,6 +766,7 @@ export default function AlumniEditModal({
                 mb: 1,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -749,12 +779,12 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
                   lineHeight: 1.5,
                 },
@@ -785,7 +815,7 @@ export default function AlumniEditModal({
                 color: "#3b82f6",
                 mb: 2,
                 display: "block",
-                fontSize: "0.8rem",
+                fontSize: { xs: "0.8rem", md: "0.85rem" },
                 fontWeight: 500,
                 letterSpacing: "0.02em",
               }}
@@ -803,6 +833,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -815,13 +846,14 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
+                  padding: { xs: "14px", md: "16px" },
                 },
               }}
             />
@@ -837,6 +869,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -849,12 +882,12 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
                   lineHeight: 1.5,
                 },
@@ -870,6 +903,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -882,13 +916,14 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
+                  padding: { xs: "14px", md: "16px" },
                 },
               }}
             />
@@ -902,6 +937,7 @@ export default function AlumniEditModal({
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 2.5,
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   "& fieldset": {
                     borderColor: "rgba(255, 255, 255, 0.1)",
                   },
@@ -914,13 +950,14 @@ export default function AlumniEditModal({
                 },
                 "& .MuiInputLabel-root": {
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                 },
                 "& .MuiInputBase-input": {
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "1rem" },
                   letterSpacing: "0.02em",
+                  padding: { xs: "14px", md: "16px" },
                 },
               }}
               inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
@@ -931,7 +968,7 @@ export default function AlumniEditModal({
                 variant="subtitle1"
                 sx={{
                   mb: 2,
-                  fontSize: "1.1rem",
+                  fontSize: { xs: "1rem", md: "1.1rem" },
                   fontWeight: 500,
                   color: "#fff",
                   letterSpacing: "0.02em",
@@ -952,6 +989,7 @@ export default function AlumniEditModal({
                       flex: 1,
                       "& .MuiOutlinedInput-root": {
                         borderRadius: 2.5,
+                        fontSize: { xs: "0.9rem", md: "0.95rem" },
                         "& fieldset": {
                           borderColor: "rgba(255, 255, 255, 0.1)",
                         },
@@ -964,12 +1002,12 @@ export default function AlumniEditModal({
                       },
                       "& .MuiInputLabel-root": {
                         color: "rgba(255, 255, 255, 0.7)",
-                        fontSize: "0.85rem",
+                        fontSize: { xs: "0.85rem", md: "0.85rem" },
                         fontWeight: 500,
                       },
                       "& .MuiInputBase-input": {
                         color: "#fff",
-                        fontSize: "0.9rem",
+                        fontSize: { xs: "0.9rem", md: "0.95rem" },
                         letterSpacing: "0.02em",
                       },
                     }}
@@ -985,6 +1023,7 @@ export default function AlumniEditModal({
                       flex: 1,
                       "& .MuiOutlinedInput-root": {
                         borderRadius: 2.5,
+                        fontSize: { xs: "0.9rem", md: "0.95rem" },
                         "& fieldset": {
                           borderColor: "rgba(255, 255, 255, 0.1)",
                         },
@@ -997,12 +1036,12 @@ export default function AlumniEditModal({
                       },
                       "& .MuiInputLabel-root": {
                         color: "rgba(255, 255, 255, 0.7)",
-                        fontSize: "0.85rem",
+                        fontSize: { xs: "0.85rem", md: "0.85rem" },
                         fontWeight: 500,
                       },
                       "& .MuiInputBase-input": {
                         color: "#fff",
-                        fontSize: "0.9rem",
+                        fontSize: { xs: "0.9rem", md: "0.95rem" },
                         letterSpacing: "0.02em",
                       },
                     }}
@@ -1013,7 +1052,7 @@ export default function AlumniEditModal({
                     size="small"
                     sx={{
                       color: "#ef4444",
-                      fontSize: "0.85rem",
+                      fontSize: { xs: "0.85rem", md: "0.85rem" },
                       fontWeight: 500,
                       px: 2,
                       py: 1,
@@ -1035,7 +1074,7 @@ export default function AlumniEditModal({
                 sx={{
                   mt: 1,
                   color: "#3b82f6",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.9rem" },
                   fontWeight: 500,
                   px: 2.5,
                   py: 1,
@@ -1056,7 +1095,7 @@ export default function AlumniEditModal({
                 variant="subtitle1"
                 sx={{
                   mb: 2,
-                  fontSize: "1.1rem",
+                  fontSize: { xs: "1rem", md: "1.1rem" },
                   fontWeight: 500,
                   color: "#fff",
                   letterSpacing: "0.02em",
@@ -1070,7 +1109,7 @@ export default function AlumniEditModal({
                   mb: 2,
                   color: "#3b82f6",
                   fontWeight: 500,
-                  fontSize: "0.85rem",
+                  fontSize: { xs: "0.85rem", md: "0.85rem" },
                   letterSpacing: "0.02em",
                   lineHeight: 1.4,
                 }}
@@ -1096,6 +1135,7 @@ export default function AlumniEditModal({
                         minWidth: 250,
                         "& .MuiOutlinedInput-root": {
                           borderRadius: 2.5,
+                          fontSize: { xs: "0.9rem", md: "0.95rem" },
                           "& fieldset": {
                             borderColor: "rgba(255, 255, 255, 0.1)",
                           },
@@ -1108,12 +1148,12 @@ export default function AlumniEditModal({
                         },
                         "& .MuiInputLabel-root": {
                           color: "rgba(255, 255, 255, 0.7)",
-                          fontSize: "0.85rem",
+                          fontSize: { xs: "0.85rem", md: "0.85rem" },
                           fontWeight: 500,
                         },
                         "& .MuiInputBase-input": {
                           color: "#fff",
-                          fontSize: "0.9rem",
+                          fontSize: { xs: "0.9rem", md: "0.95rem" },
                           letterSpacing: "0.02em",
                         },
                       }}
@@ -1131,6 +1171,7 @@ export default function AlumniEditModal({
                         minWidth: 120,
                         "& .MuiOutlinedInput-root": {
                           borderRadius: 2.5,
+                          fontSize: { xs: "0.9rem", md: "0.95rem" },
                           "& fieldset": {
                             borderColor: "rgba(255, 255, 255, 0.1)",
                           },
@@ -1143,12 +1184,12 @@ export default function AlumniEditModal({
                         },
                         "& .MuiInputLabel-root": {
                           color: "rgba(255, 255, 255, 0.7)",
-                          fontSize: "0.85rem",
+                          fontSize: { xs: "0.85rem", md: "0.85rem" },
                           fontWeight: 500,
                         },
                         "& .MuiInputBase-input": {
                           color: "#fff",
-                          fontSize: "0.9rem",
+                          fontSize: { xs: "0.9rem", md: "0.95rem" },
                           letterSpacing: "0.02em",
                         },
                       }}
@@ -1165,7 +1206,7 @@ export default function AlumniEditModal({
                       size="small"
                       sx={{
                         color: "#ef4444",
-                        fontSize: "0.85rem",
+                        fontSize: { xs: "0.85rem", md: "0.85rem" },
                         fontWeight: 500,
                         px: 2,
                         py: 1,
@@ -1196,7 +1237,7 @@ export default function AlumniEditModal({
                       disabled={idx === 0}
                       sx={{
                         color: "rgba(255, 255, 255, 0.6)",
-                        fontSize: "0.85rem",
+                        fontSize: { xs: "0.85rem", md: "0.85rem" },
                         fontWeight: 500,
                         px: 1.5,
                         py: 1,
@@ -1230,7 +1271,7 @@ export default function AlumniEditModal({
                       disabled={idx === editForm.schoolsApplied.length - 1}
                       sx={{
                         color: "rgba(255, 255, 255, 0.6)",
-                        fontSize: "0.85rem",
+                        fontSize: { xs: "0.85rem", md: "0.85rem" },
                         fontWeight: 500,
                         px: 1.5,
                         py: 1,
@@ -1256,7 +1297,7 @@ export default function AlumniEditModal({
                 sx={{
                   mt: 1,
                   color: "#3b82f6",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.9rem" },
                   fontWeight: 500,
                   px: 2.5,
                   py: 1,
@@ -1287,7 +1328,7 @@ export default function AlumniEditModal({
                   mb: 2,
                   color: "#3b82f6",
                   fontWeight: 600,
-                  fontSize: "1.1rem",
+                  fontSize: { xs: "1rem", md: "1.1rem" },
                   letterSpacing: "0.02em",
                 }}
               >
@@ -1298,7 +1339,7 @@ export default function AlumniEditModal({
                 sx={{
                   mb: 3,
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.85rem",
+                  fontSize: { xs: "0.85rem", md: "0.85rem" },
                   letterSpacing: "0.02em",
                 }}
               >
@@ -1315,6 +1356,7 @@ export default function AlumniEditModal({
                   mb: 3,
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     "& fieldset": {
                       borderColor: "rgba(255, 255, 255, 0.1)",
                     },
@@ -1327,17 +1369,18 @@ export default function AlumniEditModal({
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                   "& .MuiFormHelperText-root": {
                     color: "rgba(255, 255, 255, 0.5)",
-                    fontSize: "0.8rem",
+                    fontSize: { xs: "0.8rem", md: "0.85rem" },
                     fontWeight: 400,
                   },
                 }}
@@ -1381,6 +1424,7 @@ export default function AlumniEditModal({
                   mb: 1,
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     "& fieldset": {
                       borderColor: "rgba(255, 255, 255, 0.1)",
                     },
@@ -1393,17 +1437,18 @@ export default function AlumniEditModal({
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                   "& .MuiFormHelperText-root": {
                     color: "#ef4444",
-                    fontSize: "0.8rem",
+                    fontSize: { xs: "0.8rem", md: "0.85rem" },
                     fontWeight: 400,
                   },
                 }}
@@ -1461,6 +1506,7 @@ export default function AlumniEditModal({
                     mb: 3,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: 2.5,
+                      fontSize: { xs: "0.95rem", md: "1rem" },
                       "& fieldset": {
                         borderColor: "rgba(255, 255, 255, 0.1)",
                       },
@@ -1473,13 +1519,14 @@ export default function AlumniEditModal({
                     },
                     "& .MuiInputLabel-root": {
                       color: "rgba(255, 255, 255, 0.7)",
-                      fontSize: "0.9rem",
+                      fontSize: { xs: "0.9rem", md: "0.95rem" },
                       fontWeight: 500,
                     },
                     "& .MuiInputBase-input": {
                       color: "#fff",
-                      fontSize: "0.95rem",
+                      fontSize: { xs: "0.95rem", md: "1rem" },
                       letterSpacing: "0.02em",
+                      padding: { xs: "14px", md: "16px" },
                     },
                   }}
                 />
@@ -1511,7 +1558,7 @@ export default function AlumniEditModal({
                       mb: 2,
                       "& .MuiFormControlLabel-label": {
                         color: "rgba(255, 255, 255, 0.8)",
-                        fontSize: "0.9rem",
+                        fontSize: { xs: "0.9rem", md: "0.95rem" },
                         fontWeight: 500,
                       },
                     }}
@@ -1526,6 +1573,7 @@ export default function AlumniEditModal({
                       mt: 1,
                       "& .MuiOutlinedInput-root": {
                         borderRadius: 2.5,
+                        fontSize: { xs: "0.95rem", md: "1rem" },
                         "& fieldset": {
                           borderColor: "rgba(255, 255, 255, 0.1)",
                         },
@@ -1538,13 +1586,14 @@ export default function AlumniEditModal({
                       },
                       "& .MuiInputLabel-root": {
                         color: "rgba(255, 255, 255, 0.7)",
-                        fontSize: "0.9rem",
+                        fontSize: { xs: "0.9rem", md: "0.95rem" },
                         fontWeight: 500,
                       },
                       "& .MuiInputBase-input": {
                         color: "#fff",
-                        fontSize: "0.95rem",
+                        fontSize: { xs: "0.95rem", md: "1rem" },
                         letterSpacing: "0.02em",
+                        padding: { xs: "14px", md: "16px" },
                       },
                     }}
                     disabled={!editForm.color}
@@ -1586,6 +1635,7 @@ export default function AlumniEditModal({
                     mb: 3,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: 2.5,
+                      fontSize: { xs: "0.95rem", md: "1rem" },
                       "& fieldset": {
                         borderColor: "rgba(255, 255, 255, 0.1)",
                       },
@@ -1598,13 +1648,14 @@ export default function AlumniEditModal({
                     },
                     "& .MuiInputLabel-root": {
                       color: "rgba(255, 255, 255, 0.7)",
-                      fontSize: "0.9rem",
+                      fontSize: { xs: "0.9rem", md: "0.95rem" },
                       fontWeight: 500,
                     },
                     "& .MuiInputBase-input": {
                       color: "#fff",
-                      fontSize: "0.95rem",
+                      fontSize: { xs: "0.95rem", md: "1rem" },
                       letterSpacing: "0.02em",
+                      padding: { xs: "14px", md: "16px" },
                     },
                   }}
                 />
@@ -1633,7 +1684,7 @@ export default function AlumniEditModal({
                     mb: 3,
                     "& .MuiFormControlLabel-label": {
                       color: "rgba(255, 255, 255, 0.8)",
-                      fontSize: "0.9rem",
+                      fontSize: { xs: "0.9rem", md: "0.95rem" },
                       fontWeight: 500,
                     },
                   }}
@@ -1655,12 +1706,12 @@ export default function AlumniEditModal({
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.5)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "rgba(255, 255, 255, 0.5)",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
                   },
                 }}
@@ -1683,12 +1734,12 @@ export default function AlumniEditModal({
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.5)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "rgba(255, 255, 255, 0.5)",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
                   },
                 }}
@@ -1699,7 +1750,7 @@ export default function AlumniEditModal({
                 color="error"
                 sx={{
                   mb: 3,
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.9rem", md: "0.95rem" },
                   fontWeight: 500,
                   letterSpacing: "0.02em",
                 }}
@@ -1719,7 +1770,7 @@ export default function AlumniEditModal({
                 onClick={onClose}
                 sx={{
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "0.95rem" },
                   fontWeight: 500,
                   px: 3,
                   py: 1.5,
@@ -1741,7 +1792,7 @@ export default function AlumniEditModal({
                   background:
                     "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
                   color: "#fff",
-                  fontSize: "0.95rem",
+                  fontSize: { xs: "0.95rem", md: "0.95rem" },
                   fontWeight: 500,
                   px: 4,
                   py: 1.5,

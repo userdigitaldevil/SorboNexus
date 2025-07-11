@@ -168,7 +168,7 @@ const Navbar = () => {
   const drawer = (
     <Box
       sx={{
-        width: 280,
+        width: "100%",
         pt: 2,
         height: "100%",
         display: "flex",
@@ -177,10 +177,9 @@ const Navbar = () => {
         alignItems: "center",
         background: "rgba(20, 30, 48, 0.85)",
         backdropFilter: "blur(16px)",
-        borderTopRightRadius: 24,
-        borderBottomRightRadius: 24,
         boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
         transition: "background 0.3s",
+        overflowX: "hidden",
       }}
     >
       <Box
@@ -250,25 +249,36 @@ const Navbar = () => {
           </ListItem>
         ))}
         {alumniUser ? (
-          <Box sx={{ display: "flex", alignItems: "center", ml: 3, mt: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mx: 2,
+              mt: 2,
+              width: "calc(100% - 32px)",
+              overflow: "hidden",
+            }}
+          >
             <Button
               onClick={handleProfileClick}
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: 1.5,
+                gap: 1,
                 background: "rgba(255,255,255,0.08)",
                 border: "1px solid rgba(59,130,246,0.3)",
                 color: "#fff",
                 fontWeight: 500,
-                px: 3,
+                px: { xs: 2, sm: 3 },
                 py: 1.5,
                 borderRadius: 2.5,
                 boxShadow: "0 2px 8px rgba(59,130,246,0.06)",
                 textTransform: "none",
-                fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                fontSize: { xs: "0.85rem", sm: "0.95rem" },
                 letterSpacing: "0.02em",
                 transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                maxWidth: "100%",
+                overflow: "hidden",
                 "&:hover": {
                   background: "rgba(59,130,246,0.12)",
                   borderColor: "#3b82f6",
@@ -278,12 +288,13 @@ const Navbar = () => {
             >
               <Avatar
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: { xs: 28, sm: 32 },
+                  height: { xs: 28, sm: 32 },
                   fontWeight: 700,
                   background: alumniUser.color || "#3b82f6",
                   color: "#fff",
                   mr: 1,
+                  flexShrink: 0,
                 }}
               >
                 {alumniUser.avatar}
@@ -342,7 +353,9 @@ const Navbar = () => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  openEditSelfModal([alumniUser]);
+                  if (openEditSelfModal) {
+                    openEditSelfModal([alumniUser]);
+                  }
                   handleProfileClose();
                 }}
                 sx={{
@@ -707,7 +720,8 @@ const Navbar = () => {
   const [isAlumniProfileModalOpen, setIsAlumniProfileModalOpen] =
     useState(false);
 
-  const { openEditSelfModal } = useAlumniEditModal();
+  const alumniEditModal = useAlumniEditModal();
+  const { openEditSelfModal } = alumniEditModal || {};
 
   // Lock scrolling when alumni profile modal is open
   useEffect(() => {
@@ -818,6 +832,7 @@ const Navbar = () => {
         className="glass"
         sx={{
           width: "100vw",
+          top: 0,
           left: 0,
           background: "rgba(30, 41, 59, 0.7)",
           backdropFilter: "blur(24px) saturate(180%)",
@@ -926,7 +941,7 @@ const Navbar = () => {
                       textTransform: "none",
                       fontSize: { xs: "0.9rem", sm: "0.95rem" },
                       letterSpacing: "0.02em",
-                      transition: "all 0.2s ease",
+                      transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                       "&:hover": {
                         background: "rgba(59,130,246,0.12)",
                         borderColor: "#3b82f6",
@@ -1016,7 +1031,9 @@ const Navbar = () => {
             background: "rgba(0, 0, 0, 0.9)",
             backdropFilter: "blur(20px)",
             border: "none",
-            width: 250,
+            width: { xs: "85vw", sm: 280 },
+            maxWidth: 280,
+            overflowX: "hidden",
           },
         }}
       >
@@ -1030,25 +1047,35 @@ const Navbar = () => {
       <Modal
         open={isAlumniProfileModalOpen}
         onClose={() => setIsAlumniProfileModalOpen(false)}
+        aria-labelledby="profile-modal-title"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 2,
+        }}
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "transparent",
-            p: 0,
-            borderRadius: 2,
-            minWidth: 420,
-            maxWidth: 600,
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ duration: 0.2 }}
+          style={{
             maxHeight: "90vh",
             overflowY: "auto",
-            boxShadow: 24,
+            maxWidth: 600,
+            width: "100%",
+            borderRadius: 16,
             scrollBehavior: "smooth",
           }}
-          onWheel={(e) => e.stopPropagation()}
-          onTouchMove={(e) => e.stopPropagation()}
+          onWheel={(e) => {
+            // Prevent scroll from bubbling up to parent containers
+            e.stopPropagation();
+          }}
+          onTouchMove={(e) => {
+            // Prevent touch scroll from bubbling up to parent containers
+            e.stopPropagation();
+          }}
         >
           {alumniUser ? (
             <AlumniProfileCard
@@ -1057,11 +1084,13 @@ const Navbar = () => {
               onClose={() => setIsAlumniProfileModalOpen(false)}
               handleEditClick={() => {
                 setIsAlumniProfileModalOpen(false);
-                openEditSelfModal([alumniUser]);
+                if (openEditSelfModal) {
+                  openEditSelfModal([alumniUser]);
+                }
               }}
             />
           ) : null}
-        </Box>
+        </motion.div>
       </Modal>
 
       {/* Add Alumni Modal */}
@@ -1075,15 +1104,15 @@ const Navbar = () => {
             onClick={() => setIsAddAlumniModalOpen(false)}
             sx={{
               position: "fixed",
-              top: "5vh",
-              right: "5vw",
+              top: { xs: "4vh", md: "5vh" },
+              right: { xs: "4vw", md: "5vw" },
               zIndex: 1500,
               color: "rgba(255, 255, 255, 0.6)",
               background: "rgba(0, 0, 0, 0.2)",
               backdropFilter: "blur(12px)",
               border: "1px solid rgba(255, 255, 255, 0.08)",
-              width: 40,
-              height: 40,
+              width: { xs: 36, md: 40 },
+              height: { xs: 36, md: 40 },
               borderRadius: 2.5,
               "&:hover": {
                 color: "#fff",
@@ -1093,7 +1122,7 @@ const Navbar = () => {
               transition: "all 0.2s ease",
             }}
           >
-            <CloseIcon sx={{ fontSize: "1.1rem" }} />
+            <CloseIcon sx={{ fontSize: { xs: "1rem", md: "1.1rem" } }} />
           </IconButton>
 
           <Box
@@ -1104,12 +1133,13 @@ const Navbar = () => {
               transform: "translate(-50%, -50%)",
               bgcolor: "rgba(30, 41, 59, 0.95)",
               backdropFilter: "blur(20px)",
-              p: 5,
+              p: { xs: 2, sm: 3, md: 5 },
               borderRadius: 3,
-              minWidth: 360,
+              width: { xs: "95vw", sm: "90vw", md: 640 },
               maxWidth: 640,
-              maxHeight: "85vh",
+              maxHeight: "90vh",
               overflowY: "auto",
+              overflowX: "hidden",
               boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
               scrollBehavior: "smooth",
               border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -1120,12 +1150,13 @@ const Navbar = () => {
             <Typography
               variant="h6"
               sx={{
-                mb: 3,
-                fontSize: "1.4rem",
+                mb: { xs: 2, md: 3 },
+                fontSize: { xs: "1.4rem", md: "1.6rem" },
                 fontWeight: 500,
                 letterSpacing: "-0.01em",
                 color: "#fff",
                 lineHeight: 1.2,
+                pr: { xs: 4, md: 5 },
               }}
             >
               Ajouter un alumni
@@ -1141,6 +1172,7 @@ const Navbar = () => {
                   mb: 3,
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     "& fieldset": {
                       borderColor: "rgba(255, 255, 255, 0.1)",
                     },
@@ -1153,13 +1185,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
                 required
@@ -1174,6 +1207,7 @@ const Navbar = () => {
                   mb: 3,
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     "& fieldset": {
                       borderColor: "rgba(255, 255, 255, 0.1)",
                     },
@@ -1186,13 +1220,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
                 required
@@ -1207,6 +1242,7 @@ const Navbar = () => {
                   mb: 3,
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     "& fieldset": {
                       borderColor: "rgba(255, 255, 255, 0.1)",
                     },
@@ -1219,17 +1255,18 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                   "& .MuiFormHelperText-root": {
                     color: "rgba(255, 255, 255, 0.5)",
-                    fontSize: "0.8rem",
+                    fontSize: { xs: "0.8rem", md: "0.85rem" },
                     fontWeight: 400,
                   },
                 }}
@@ -1244,6 +1281,7 @@ const Navbar = () => {
                   mb: 3,
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 2.5,
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     "& fieldset": {
                       borderColor: "rgba(255, 255, 255, 0.1)",
                     },
@@ -1256,13 +1294,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
               >
@@ -1367,13 +1406,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
                 required
@@ -1400,13 +1440,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
                 required
@@ -1433,13 +1474,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
                 required
@@ -1467,17 +1509,18 @@ const Navbar = () => {
                     },
                     "& .MuiInputLabel-root": {
                       color: "rgba(255, 255, 255, 0.7)",
-                      fontSize: "0.9rem",
+                      fontSize: { xs: "0.9rem", md: "0.95rem" },
                       fontWeight: 500,
                     },
                     "& .MuiInputBase-input": {
                       color: "#fff",
-                      fontSize: "0.95rem",
+                      fontSize: { xs: "0.95rem", md: "1rem" },
                       letterSpacing: "0.02em",
+                      padding: { xs: "14px", md: "16px" },
                     },
                     "& .MuiFormHelperText-root": {
                       color: "rgba(255, 255, 255, 0.5)",
-                      fontSize: "0.8rem",
+                      fontSize: { xs: "0.8rem", md: "0.85rem" },
                       fontWeight: 400,
                     },
                   }}
@@ -1867,14 +1910,15 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
                     lineHeight: 1.5,
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
                 multiline
@@ -1925,13 +1969,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
               />
@@ -1959,14 +2004,15 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
                     lineHeight: 1.5,
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
               />
@@ -1992,13 +2038,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
               />
@@ -2024,13 +2071,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
                 inputProps={{ maxLength: 4, pattern: "\\d{4}" }}
@@ -2060,13 +2108,14 @@ const Navbar = () => {
                     },
                     "& .MuiInputLabel-root": {
                       color: "rgba(255, 255, 255, 0.7)",
-                      fontSize: "0.9rem",
+                      fontSize: { xs: "0.9rem", md: "0.95rem" },
                       fontWeight: 500,
                     },
                     "& .MuiInputBase-input": {
                       color: "#fff",
-                      fontSize: "0.95rem",
+                      fontSize: { xs: "0.95rem", md: "1rem" },
                       letterSpacing: "0.02em",
+                      padding: { xs: "14px", md: "16px" },
                     },
                   }}
                   required
@@ -2098,13 +2147,14 @@ const Navbar = () => {
                     },
                     "& .MuiInputLabel-root": {
                       color: "rgba(255, 255, 255, 0.7)",
-                      fontSize: "0.9rem",
+                      fontSize: { xs: "0.9rem", md: "0.95rem" },
                       fontWeight: 500,
                     },
                     "& .MuiInputBase-input": {
                       color: "#fff",
-                      fontSize: "0.95rem",
+                      fontSize: { xs: "0.95rem", md: "1rem" },
                       letterSpacing: "0.02em",
+                      padding: { xs: "14px", md: "16px" },
                     },
                   }}
                   required
@@ -2138,7 +2188,7 @@ const Navbar = () => {
                     mb: 2,
                     "& .MuiFormControlLabel-label": {
                       color: "rgba(255, 255, 255, 0.8)",
-                      fontSize: "0.9rem",
+                      fontSize: { xs: "0.9rem", md: "0.95rem" },
                       fontWeight: 500,
                     },
                   }}
@@ -2165,13 +2215,14 @@ const Navbar = () => {
                     },
                     "& .MuiInputLabel-root": {
                       color: "rgba(255, 255, 255, 0.7)",
-                      fontSize: "0.9rem",
+                      fontSize: { xs: "0.9rem", md: "0.95rem" },
                       fontWeight: 500,
                     },
                     "& .MuiInputBase-input": {
                       color: "#fff",
-                      fontSize: "0.95rem",
+                      fontSize: { xs: "0.95rem", md: "1rem" },
                       letterSpacing: "0.02em",
+                      padding: { xs: "14px", md: "16px" },
                     },
                   }}
                   disabled={!addAlumniForm.color}
@@ -2224,13 +2275,14 @@ const Navbar = () => {
                   },
                   "& .MuiInputLabel-root": {
                     color: "rgba(255, 255, 255, 0.7)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                   "& .MuiInputBase-input": {
                     color: "#fff",
-                    fontSize: "0.95rem",
+                    fontSize: { xs: "0.95rem", md: "1rem" },
                     letterSpacing: "0.02em",
+                    padding: { xs: "14px", md: "16px" },
                   },
                 }}
               >
@@ -2299,13 +2351,14 @@ const Navbar = () => {
                       },
                       "& .MuiInputLabel-root": {
                         color: "rgba(255, 255, 255, 0.7)",
-                        fontSize: "0.9rem",
+                        fontSize: { xs: "0.9rem", md: "0.95rem" },
                         fontWeight: 500,
                       },
                       "& .MuiInputBase-input": {
                         color: "#fff",
-                        fontSize: "0.95rem",
+                        fontSize: { xs: "0.95rem", md: "1rem" },
                         letterSpacing: "0.02em",
+                        padding: { xs: "14px", md: "16px" },
                       },
                     }}
                   />
@@ -2336,7 +2389,7 @@ const Navbar = () => {
                   mb: 3,
                   "& .MuiFormControlLabel-label": {
                     color: "rgba(255, 255, 255, 0.8)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                 }}
@@ -2366,7 +2419,7 @@ const Navbar = () => {
                   mb: 3,
                   "& .MuiFormControlLabel-label": {
                     color: "rgba(255, 255, 255, 0.8)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.9rem", md: "0.95rem" },
                     fontWeight: 500,
                   },
                 }}

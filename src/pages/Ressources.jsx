@@ -1533,6 +1533,10 @@ export default function Ressources() {
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             borderRadius: 3,
+            width: { xs: "95vw", sm: "90vw", md: "auto" },
+            maxWidth: { xs: "95vw", sm: "90vw", md: 600 },
+            maxHeight: "90vh",
+            overflowX: "hidden",
           },
         }}
       >
@@ -1569,8 +1573,14 @@ export default function Ressources() {
             <i className="fas fa-times"></i>
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ pt: 4, px: 4 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <DialogContent sx={{ pt: 4, px: { xs: 2, sm: 3, md: 4 } }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: { xs: 2, md: 3 },
+            }}
+          >
             <TextField
               label="Titre"
               value={addForm.title}
@@ -2370,7 +2380,9 @@ export default function Ressources() {
             )}
           </Box>
         </DialogContent>
-        <DialogActions sx={{ p: 4, gap: 2 }}>
+        <DialogActions
+          sx={{ p: { xs: 2, sm: 3, md: 4 }, gap: { xs: 1, md: 2 } }}
+        >
           <Button
             onClick={closeAddModal}
             variant="outlined"
@@ -2429,575 +2441,73 @@ export default function Ressources() {
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             borderRadius: 3,
+            width: { xs: "95vw", sm: "90vw", md: "auto" },
+            maxWidth: { xs: "95vw", sm: "90vw", md: 600 },
+            maxHeight: "90vh",
+            overflowX: "hidden",
           },
         }}
       >
-        <DialogTitle
-          sx={{
-            color: "white",
-            fontWeight: 600,
-            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          Modifier la ressource
-          <IconButton
-            onClick={closeEditModal}
-            sx={{
-              color: "rgba(255, 255, 255, 0.7)",
-              ml: 1,
-              "&:hover": {
+        {editForm && (
+          <>
+            <DialogTitle
+              sx={{
                 color: "white",
-                background: "rgba(255, 255, 255, 0.1)",
-              },
-            }}
-          >
-            <i className="fas fa-times"></i>
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ pt: 3 }}>
-          {editForm && (
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <TextField
-                label="Titre"
-                value={editForm.title}
-                onChange={(e) => updateEditFormField("title", e.target.value)}
-                fullWidth
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "white",
-                    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
-                    "&:hover fieldset": {
-                      borderColor: "rgba(255, 255, 255, 0.3)",
-                    },
-                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255, 255, 255, 0.7)",
-                    "&.Mui-focused": { color: "#3b82f6" },
-                  },
-                }}
-              />
-              <TextField
-                label="Sujet"
-                value={editForm.subject}
-                onChange={(e) => updateEditFormField("subject", e.target.value)}
-                fullWidth
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "white",
-                    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
-                    "&:hover fieldset": {
-                      borderColor: "rgba(255, 255, 255, 0.3)",
-                    },
-                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255, 255, 255, 0.7)",
-                    "&.Mui-focused": { color: "#3b82f6" },
-                  },
-                }}
-              />
-              <TextField
-                label="Description"
-                value={editForm.description}
-                onChange={(e) =>
-                  updateEditFormField("description", e.target.value)
-                }
-                fullWidth
-                multiline
-                minRows={2}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "white",
-                    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
-                    "&:hover fieldset": {
-                      borderColor: "rgba(255, 255, 255, 0.3)",
-                    },
-                    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "rgba(255, 255, 255, 0.7)",
-                    "&.Mui-focused": { color: "#3b82f6" },
-                  },
-                }}
-              />
-              <Typography variant="caption" sx={{ color: "#3b82f6", mt: 0.5 }}>
-                Markdown supporté (titres, listes, gras, italique, liens, etc.)
-              </Typography>
-              <FormControl fullWidth>
-                <InputLabel
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.7)",
-                    "&.Mui-focused": { color: "#3b82f6" },
-                  }}
-                >
-                  Catégorie
-                </InputLabel>
-                <Select
-                  multiple
-                  value={editForm.category}
-                  onChange={(e) =>
-                    updateEditFormField(
-                      "category",
-                      typeof e.target.value === "string"
-                        ? e.target.value.split(",")
-                        : e.target.value
-                    )
-                  }
-                  sx={{
-                    color: "white",
-                    background: "rgba(30, 41, 59, 0.95)",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "rgba(255, 255, 255, 0.2)",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "rgba(255, 255, 255, 0.3)",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#3b82f6",
-                    },
-                    "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        background: "rgba(30, 41, 59, 0.98)",
-                        color: "white",
-                        maxHeight: 200,
-                        minWidth: 180,
-                        borderRadius: 2.5,
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                      },
-                    },
-                  }}
-                  renderValue={(selected) =>
-                    Array.isArray(selected) ? selected.join(", ") : selected
-                  }
-                >
-                  {categories.slice(1).map((category) => (
-                    <MenuItem
-                      key={category}
-                      value={category}
-                      sx={{
-                        background: "none !important",
-                        color: "white",
-                        fontSize: "0.9rem",
-                        "&:hover": {
-                          background: "rgba(59, 130, 246, 0.1) !important",
-                          borderRadius: 1.5,
-                          mx: 0.5,
-                        },
-                      }}
-                    >
-                      <Checkbox
-                        checked={editForm.category.indexOf(category) > -1}
-                        sx={{
-                          color: "#3b82f6",
-                          p: 0.5,
-                          mr: 1,
-                          "&.Mui-checked": {
-                            color: "#3b82f6",
-                          },
-                        }}
-                      />
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              {/* Icon Selection */}
-              <Typography
-                variant="body2"
+                fontWeight: 600,
+                borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              Modifier la ressource
+              <IconButton
+                onClick={closeEditModal}
                 sx={{
                   color: "rgba(255, 255, 255, 0.7)",
-                  fontWeight: 500,
-                  mb: 1,
+                  ml: 1,
+                  "&:hover": {
+                    color: "white",
+                    background: "rgba(255, 255, 255, 0.1)",
+                  },
                 }}
               >
-                Icône
-              </Typography>
-              <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-                <Button
-                  variant={
-                    editIconMode === "predefined" ? "contained" : "outlined"
-                  }
-                  size="small"
-                  onClick={() => setEditIconMode("predefined")}
-                  sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
-                >
-                  Icônes prédéfinies
-                </Button>
-                <Button
-                  variant={editIconMode === "custom" ? "contained" : "outlined"}
-                  size="small"
-                  onClick={() => setEditIconMode("custom")}
-                  sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
-                >
-                  URL personnalisée
-                </Button>
-                <Button
-                  variant={editIconMode === "manual" ? "contained" : "outlined"}
-                  size="small"
-                  onClick={() => setEditIconMode("manual")}
-                  sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
-                >
-                  Classe FontAwesome
-                </Button>
-              </Box>
-              {editIconMode === "predefined" && (
-                <>
-                  <TextField
-                    label="Rechercher une icône"
-                    value={editIconSearch}
-                    onChange={(e) => setEditIconSearch(e.target.value)}
-                    size="small"
-                    fullWidth
-                    sx={{
-                      mb: 1,
-                      input: { color: "white" },
-                      label: { color: "rgba(255,255,255,0.7)" },
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(6, 1fr)",
-                      gap: 1,
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                      p: 1,
-                      border: "1px solid rgba(255,255,255,0.2)",
-                      borderRadius: 1,
-                      background: "rgba(255,255,255,0.05)",
-                    }}
-                  >
-                    {getFilteredIconsForEdit().map((iconOption) => (
-                      <IconButton
-                        key={iconOption.value}
-                        onClick={() =>
-                          updateEditFormField("icon", iconOption.value)
-                        }
-                        sx={{
-                          width: 40,
-                          height: 40,
-                          border:
-                            editForm.icon === iconOption.value
-                              ? "2px solid #3b82f6"
-                              : "1px solid rgba(255,255,255,0.2)",
-                          background:
-                            editForm.icon === iconOption.value
-                              ? "rgba(59,130,246,0.2)"
-                              : "rgba(255,255,255,0.05)",
-                          color: "white",
-                          fontSize: "1.2rem",
-                          "&:hover": {
-                            background: "rgba(59,130,246,0.1)",
-                            border: "1px solid #3b82f6",
-                          },
-                        }}
-                      >
-                        <i className={iconOption.value}></i>
-                      </IconButton>
-                    ))}
-                  </Box>
-                </>
-              )}
-              {editIconMode === "custom" && (
+                <i className="fas fa-times"></i>
+              </IconButton>
+            </DialogTitle>
+            <DialogContent sx={{ pt: 4, px: { xs: 2, sm: 3, md: 4 } }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: { xs: 2, md: 3 },
+                }}
+              >
                 <TextField
-                  label="URL de l'icône"
-                  value={editCustomIconUrl}
-                  onChange={(e) => setEditCustomIconUrl(e.target.value)}
+                  label="Titre"
+                  value={editForm.title}
+                  onChange={(e) => updateEditFormField("title", e.target.value)}
                   fullWidth
-                  placeholder="https://example.com/icon.png"
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       color: "white",
-                      "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
+                      "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
                       "&:hover fieldset": {
-                        borderColor: "rgba(255,255,255,0.3)",
+                        borderColor: "rgba(255, 255, 255, 0.3)",
                       },
                       "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
                     },
                     "& .MuiInputLabel-root": {
-                      color: "rgba(255,255,255,0.7)",
+                      color: "rgba(255, 255, 255, 0.7)",
                       "&.Mui-focused": { color: "#3b82f6" },
                     },
                   }}
                 />
-              )}
-              {editIconMode === "manual" && (
                 <TextField
-                  label="Classe FontAwesome (ex: fas fa-atom)"
-                  value={editForm.icon}
-                  onChange={(e) => updateEditFormField("icon", e.target.value)}
-                  fullWidth
-                  placeholder="fas fa-atom"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      color: "white",
-                      "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
-                      "&:hover fieldset": {
-                        borderColor: "rgba(255,255,255,0.3)",
-                      },
-                      "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "rgba(255,255,255,0.7)",
-                      "&.Mui-focused": { color: "#3b82f6" },
-                    },
-                  }}
-                />
-              )}
-              <FormControl fullWidth sx={{ mt: 2 }}>
-                <InputLabel
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.7)",
-                    "&.Mui-focused": { color: "#3b82f6" },
-                  }}
-                >
-                  Type
-                </InputLabel>
-                <Select
-                  value={editForm.type}
-                  onChange={(e) => updateEditFormField("type", e.target.value)}
-                  sx={{
-                    color: "white",
-                    background: "rgba(30, 41, 59, 0.95)",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "rgba(255, 255, 255, 0.2)",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "rgba(255, 255, 255, 0.3)",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#3b82f6",
-                    },
-                    "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        background: "rgba(30, 41, 59, 0.98)",
-                        color: "white",
-                        borderRadius: 2.5,
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                      },
-                    },
-                  }}
-                >
-                  <MenuItem
-                    value="PDF"
-                    sx={{
-                      background: "none !important",
-                      color: "white",
-                      fontSize: "0.9rem",
-                      "&:hover": {
-                        background: "rgba(59, 130, 246, 0.1) !important",
-                        borderRadius: 1.5,
-                        mx: 0.5,
-                      },
-                    }}
-                  >
-                    PDF
-                  </MenuItem>
-                  <MenuItem
-                    value="Image"
-                    sx={{
-                      background: "none !important",
-                      color: "white",
-                      fontSize: "0.9rem",
-                      "&:hover": {
-                        background: "rgba(59, 130, 246, 0.1) !important",
-                        borderRadius: 1.5,
-                        mx: 0.5,
-                      },
-                    }}
-                  >
-                    Image
-                  </MenuItem>
-                  <MenuItem
-                    value="Lien"
-                    sx={{
-                      background: "none !important",
-                      color: "white",
-                      fontSize: "0.9rem",
-                      "&:hover": {
-                        background: "rgba(59, 130, 246, 0.1) !important",
-                        borderRadius: 1.5,
-                        mx: 0.5,
-                      },
-                    }}
-                  >
-                    Lien
-                  </MenuItem>
-                  <MenuItem
-                    value="Text"
-                    sx={{
-                      background: "none !important",
-                      color: "white",
-                      fontSize: "0.9rem",
-                      "&:hover": {
-                        background: "rgba(59, 130, 246, 0.1) !important",
-                        borderRadius: 1.5,
-                        mx: 0.5,
-                      },
-                    }}
-                  >
-                    Text
-                  </MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ mt: 2 }}>
-                <InputLabel
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.7)",
-                    "&.Mui-focused": { color: "#3b82f6" },
-                  }}
-                >
-                  Filtre
-                </InputLabel>
-                <Select
-                  multiple
-                  value={editForm.filter}
+                  label="Sujet"
+                  value={editForm.subject}
                   onChange={(e) =>
-                    updateEditFormField(
-                      "filter",
-                      typeof e.target.value === "string"
-                        ? e.target.value.split(",")
-                        : e.target.value
-                    )
-                  }
-                  sx={{
-                    color: "white",
-                    background: "rgba(30, 41, 59, 0.95)",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "rgba(255, 255, 255, 0.2)",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "rgba(255, 255, 255, 0.3)",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#3b82f6",
-                    },
-                    "& .MuiSvgIcon-root": { color: "rgba(255, 255, 255, 0.7)" },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        background: "rgba(30, 41, 59, 0.98)",
-                        color: "white",
-                        maxHeight: 200,
-                        minWidth: 180,
-                        borderRadius: 2.5,
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                      },
-                    },
-                  }}
-                  renderValue={(selected) => selected.join(", ")}
-                >
-                  {[
-                    "Cours",
-                    "TD",
-                    "Examens",
-                    "Livres",
-                    "Exercices",
-                    "Vidéos",
-                    "Témoignages",
-                    "Concours",
-                    "CV",
-                    "Lettres",
-                    "Astuces",
-                    "Codes",
-                    "Autres",
-                  ].map((filter) => (
-                    <MenuItem
-                      key={filter}
-                      value={filter}
-                      sx={{
-                        background: "none !important",
-                        color: "white",
-                        fontSize: "0.9rem",
-                        "&:hover": {
-                          background: "rgba(59, 130, 246, 0.1) !important",
-                          borderRadius: 1.5,
-                          mx: 0.5,
-                        },
-                      }}
-                    >
-                      <Checkbox
-                        checked={editForm.filter.indexOf(filter) > -1}
-                        sx={{
-                          color: "#3b82f6",
-                          p: 0.5,
-                          mr: 1,
-                          "&.Mui-checked": {
-                            color: "#3b82f6",
-                          },
-                        }}
-                      />
-                      {filter}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              {editForm.type === "PDF" || editForm.type === "Image" ? (
-                <Box sx={{ mt: 2 }}>
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    disabled={uploading}
-                    sx={{
-                      color: uploading ? "#aaa" : "#3b82f6",
-                      borderColor: uploading ? "#aaa" : "#3b82f6",
-                      mb: 1,
-                    }}
-                  >
-                    {uploading ? "Uploading..." : "Upload your file"}
-                    <input
-                      type="file"
-                      accept={editForm.type === "PDF" ? ".pdf" : "image/*"}
-                      hidden
-                      ref={fileInputRef}
-                      onChange={async (e) => {
-                        setUploadError("");
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        setUploading(true);
-                        try {
-                          const token = localStorage.getItem("token");
-                          const data = await uploadFile(file, token);
-                          const fileUrl =
-                            data.url || `/api/files/${data.filename}`;
-                          updateEditFormField("resourceUrl", fileUrl);
-                        } catch (err) {
-                          setUploadError(err.message);
-                        } finally {
-                          setUploading(false);
-                        }
-                      }}
-                    />
-                  </Button>
-                  {editForm.resourceUrl && (
-                    <Typography variant="caption" sx={{ color: "#10b981" }}>
-                      Fichier prêt à être ajouté :{" "}
-                      {editForm.resourceUrl.split("/").pop()}
-                    </Typography>
-                  )}
-                  {uploadError && (
-                    <Typography variant="caption" sx={{ color: "red" }}>
-                      {uploadError}
-                    </Typography>
-                  )}
-                </Box>
-              ) : editForm.type === "Text" ? null : (
-                <TextField
-                  label="URL de la ressource"
-                  value={editForm.resourceUrl}
-                  onChange={(e) =>
-                    updateEditFormField("resourceUrl", e.target.value)
+                    updateEditFormField("subject", e.target.value)
                   }
                   fullWidth
                   sx={{
@@ -3015,41 +2525,581 @@ export default function Ressources() {
                     },
                   }}
                 />
-              )}
-              {editError && <Typography color="error">{editError}</Typography>}
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions sx={{ p: 3, gap: 1 }}>
-          <Button
-            onClick={closeEditModal}
-            variant="outlined"
-            sx={{
-              borderColor: "rgba(255, 255, 255, 0.3)",
-              color: "rgba(255, 255, 255, 0.7)",
-              "&:hover": {
-                borderColor: "rgba(255, 255, 255, 0.5)",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-              },
-            }}
-          >
-            Annuler
-          </Button>
-          <Button
-            onClick={handleEditResource}
-            variant="contained"
-            sx={{
-              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-              color: "white",
-              "&:hover": {
-                background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
-              },
-            }}
-            disabled={editLoading}
-          >
-            {editLoading ? "Modification..." : "Enregistrer"}
-          </Button>
-        </DialogActions>
+                <TextField
+                  label="Description"
+                  value={editForm.description}
+                  onChange={(e) =>
+                    updateEditFormField("description", e.target.value)
+                  }
+                  fullWidth
+                  multiline
+                  minRows={2}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      color: "white",
+                      "& fieldset": { borderColor: "rgba(255, 255, 255, 0.2)" },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                      },
+                      "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-focused": { color: "#3b82f6" },
+                    },
+                  }}
+                />
+                <Typography
+                  variant="caption"
+                  sx={{ color: "#3b82f6", mt: 0.5 }}
+                >
+                  Markdown supporté (titres, listes, gras, italique, liens,
+                  etc.)
+                </Typography>
+                <FormControl fullWidth>
+                  <InputLabel
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-focused": { color: "#3b82f6" },
+                    }}
+                  >
+                    Catégorie
+                  </InputLabel>
+                  <Select
+                    multiple
+                    value={editForm.category}
+                    onChange={(e) =>
+                      updateEditFormField(
+                        "category",
+                        typeof e.target.value === "string"
+                          ? e.target.value.split(",")
+                          : e.target.value
+                      )
+                    }
+                    sx={{
+                      color: "white",
+                      background: "rgba(30, 41, 59, 0.95)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#3b82f6",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                      },
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          background: "rgba(30, 41, 59, 0.98)",
+                          color: "white",
+                          maxHeight: 200,
+                          minWidth: 180,
+                          borderRadius: 2.5,
+                          border: "1px solid rgba(255, 255, 255, 0.1)",
+                        },
+                      },
+                    }}
+                    renderValue={(selected) =>
+                      Array.isArray(selected) ? selected.join(", ") : selected
+                    }
+                  >
+                    {categories.slice(1).map((category) => (
+                      <MenuItem
+                        key={category}
+                        value={category}
+                        sx={{
+                          background: "none !important",
+                          color: "white",
+                          fontSize: "0.9rem",
+                          "&:hover": {
+                            background: "rgba(59, 130, 246, 0.1) !important",
+                            borderRadius: 1.5,
+                            mx: 0.5,
+                          },
+                        }}
+                      >
+                        <Checkbox
+                          checked={editForm.category.indexOf(category) > -1}
+                          sx={{
+                            color: "#3b82f6",
+                            p: 0.5,
+                            mr: 1,
+                            "&.Mui-checked": {
+                              color: "#3b82f6",
+                            },
+                          }}
+                        />
+                        {category}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {/* Icon Selection */}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontWeight: 500,
+                    mb: 1,
+                  }}
+                >
+                  Icône
+                </Typography>
+                <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+                  <Button
+                    variant={
+                      editIconMode === "predefined" ? "contained" : "outlined"
+                    }
+                    size="small"
+                    onClick={() => setEditIconMode("predefined")}
+                    sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+                  >
+                    Icônes prédéfinies
+                  </Button>
+                  <Button
+                    variant={
+                      editIconMode === "custom" ? "contained" : "outlined"
+                    }
+                    size="small"
+                    onClick={() => setEditIconMode("custom")}
+                    sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+                  >
+                    URL personnalisée
+                  </Button>
+                  <Button
+                    variant={
+                      editIconMode === "manual" ? "contained" : "outlined"
+                    }
+                    size="small"
+                    onClick={() => setEditIconMode("manual")}
+                    sx={{ fontSize: "0.75rem", px: 2, py: 0.5 }}
+                  >
+                    Classe FontAwesome
+                  </Button>
+                </Box>
+                {editIconMode === "predefined" && (
+                  <>
+                    <TextField
+                      label="Rechercher une icône"
+                      value={editIconSearch}
+                      onChange={(e) => setEditIconSearch(e.target.value)}
+                      size="small"
+                      fullWidth
+                      sx={{
+                        mb: 1,
+                        input: { color: "white" },
+                        label: { color: "rgba(255,255,255,0.7)" },
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(6, 1fr)",
+                        gap: 1,
+                        maxHeight: "200px",
+                        overflowY: "auto",
+                        p: 1,
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        borderRadius: 1,
+                        background: "rgba(255,255,255,0.05)",
+                      }}
+                    >
+                      {getFilteredIconsForEdit().map((iconOption) => (
+                        <IconButton
+                          key={iconOption.value}
+                          onClick={() =>
+                            updateEditFormField("icon", iconOption.value)
+                          }
+                          sx={{
+                            width: 40,
+                            height: 40,
+                            border:
+                              editForm.icon === iconOption.value
+                                ? "2px solid #3b82f6"
+                                : "1px solid rgba(255,255,255,0.2)",
+                            background:
+                              editForm.icon === iconOption.value
+                                ? "rgba(59,130,246,0.2)"
+                                : "rgba(255,255,255,0.05)",
+                            color: "white",
+                            fontSize: "1.2rem",
+                            "&:hover": {
+                              background: "rgba(59,130,246,0.1)",
+                              border: "1px solid #3b82f6",
+                            },
+                          }}
+                        >
+                          <i className={iconOption.value}></i>
+                        </IconButton>
+                      ))}
+                    </Box>
+                  </>
+                )}
+                {editIconMode === "custom" && (
+                  <TextField
+                    label="URL de l'icône"
+                    value={editCustomIconUrl}
+                    onChange={(e) => setEditCustomIconUrl(e.target.value)}
+                    fullWidth
+                    placeholder="https://example.com/icon.png"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        color: "white",
+                        "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255,255,255,0.3)",
+                        },
+                        "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "rgba(255,255,255,0.7)",
+                        "&.Mui-focused": { color: "#3b82f6" },
+                      },
+                    }}
+                  />
+                )}
+                {editIconMode === "manual" && (
+                  <TextField
+                    label="Classe FontAwesome (ex: fas fa-atom)"
+                    value={editForm.icon}
+                    onChange={(e) =>
+                      updateEditFormField("icon", e.target.value)
+                    }
+                    fullWidth
+                    placeholder="fas fa-atom"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        color: "white",
+                        "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255,255,255,0.3)",
+                        },
+                        "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "rgba(255,255,255,0.7)",
+                        "&.Mui-focused": { color: "#3b82f6" },
+                      },
+                    }}
+                  />
+                )}
+                <FormControl fullWidth sx={{ mt: 2 }}>
+                  <InputLabel
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-focused": { color: "#3b82f6" },
+                    }}
+                  >
+                    Type
+                  </InputLabel>
+                  <Select
+                    value={editForm.type}
+                    onChange={(e) =>
+                      updateEditFormField("type", e.target.value)
+                    }
+                    sx={{
+                      color: "white",
+                      background: "rgba(30, 41, 59, 0.95)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#3b82f6",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                      },
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          background: "rgba(30, 41, 59, 0.98)",
+                          color: "white",
+                          borderRadius: 2.5,
+                          border: "1px solid rgba(255, 255, 255, 0.1)",
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      value="PDF"
+                      sx={{
+                        background: "none !important",
+                        color: "white",
+                        fontSize: "0.9rem",
+                        "&:hover": {
+                          background: "rgba(59, 130, 246, 0.1) !important",
+                          borderRadius: 1.5,
+                          mx: 0.5,
+                        },
+                      }}
+                    >
+                      PDF
+                    </MenuItem>
+                    <MenuItem
+                      value="Image"
+                      sx={{
+                        background: "none !important",
+                        color: "white",
+                        fontSize: "0.9rem",
+                        "&:hover": {
+                          background: "rgba(59, 130, 246, 0.1) !important",
+                          borderRadius: 1.5,
+                          mx: 0.5,
+                        },
+                      }}
+                    >
+                      Image
+                    </MenuItem>
+                    <MenuItem
+                      value="Lien"
+                      sx={{
+                        background: "none !important",
+                        color: "white",
+                        fontSize: "0.9rem",
+                        "&:hover": {
+                          background: "rgba(59, 130, 246, 0.1) !important",
+                          borderRadius: 1.5,
+                          mx: 0.5,
+                        },
+                      }}
+                    >
+                      Lien
+                    </MenuItem>
+                    <MenuItem
+                      value="Text"
+                      sx={{
+                        background: "none !important",
+                        color: "white",
+                        fontSize: "0.9rem",
+                        "&:hover": {
+                          background: "rgba(59, 130, 246, 0.1) !important",
+                          borderRadius: 1.5,
+                          mx: 0.5,
+                        },
+                      }}
+                    >
+                      Text
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth sx={{ mt: 2 }}>
+                  <InputLabel
+                    sx={{
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-focused": { color: "#3b82f6" },
+                    }}
+                  >
+                    Filtre
+                  </InputLabel>
+                  <Select
+                    multiple
+                    value={editForm.filter}
+                    onChange={(e) =>
+                      updateEditFormField(
+                        "filter",
+                        typeof e.target.value === "string"
+                          ? e.target.value.split(",")
+                          : e.target.value
+                      )
+                    }
+                    sx={{
+                      color: "white",
+                      background: "rgba(30, 41, 59, 0.95)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#3b82f6",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                      },
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          background: "rgba(30, 41, 59, 0.98)",
+                          color: "white",
+                          maxHeight: 200,
+                          minWidth: 180,
+                          borderRadius: 2.5,
+                          border: "1px solid rgba(255, 255, 255, 0.1)",
+                        },
+                      },
+                    }}
+                    renderValue={(selected) => selected.join(", ")}
+                  >
+                    {[
+                      "Cours",
+                      "TD",
+                      "Examens",
+                      "Livres",
+                      "Exercices",
+                      "Vidéos",
+                      "Témoignages",
+                      "Concours",
+                      "CV",
+                      "Lettres",
+                      "Astuces",
+                      "Codes",
+                      "Autres",
+                    ].map((filter) => (
+                      <MenuItem
+                        key={filter}
+                        value={filter}
+                        sx={{
+                          background: "none !important",
+                          color: "white",
+                          fontSize: "0.9rem",
+                          "&:hover": {
+                            background: "rgba(59, 130, 246, 0.1) !important",
+                            borderRadius: 1.5,
+                            mx: 0.5,
+                          },
+                        }}
+                      >
+                        <Checkbox
+                          checked={editForm.filter.indexOf(filter) > -1}
+                          sx={{
+                            color: "#3b82f6",
+                            p: 0.5,
+                            mr: 1,
+                            "&.Mui-checked": {
+                              color: "#3b82f6",
+                            },
+                          }}
+                        />
+                        {filter}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {editForm.type === "PDF" || editForm.type === "Image" ? (
+                  <Box sx={{ mt: 2 }}>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      disabled={uploading}
+                      sx={{
+                        color: uploading ? "#aaa" : "#3b82f6",
+                        borderColor: uploading ? "#aaa" : "#3b82f6",
+                        mb: 1,
+                      }}
+                    >
+                      {uploading ? "Uploading..." : "Upload your file"}
+                      <input
+                        type="file"
+                        accept={editForm.type === "PDF" ? ".pdf" : "image/*"}
+                        hidden
+                        ref={fileInputRef}
+                        onChange={async (e) => {
+                          setUploadError("");
+                          const file = e.target.files[0];
+                          if (!file) return;
+                          setUploading(true);
+                          try {
+                            const token = localStorage.getItem("token");
+                            const data = await uploadFile(file, token);
+                            const fileUrl =
+                              data.url || `/api/files/${data.filename}`;
+                            updateEditFormField("resourceUrl", fileUrl);
+                          } catch (err) {
+                            setUploadError(err.message);
+                          } finally {
+                            setUploading(false);
+                          }
+                        }}
+                      />
+                    </Button>
+                    {editForm.resourceUrl && (
+                      <Typography variant="caption" sx={{ color: "#10b981" }}>
+                        Fichier prêt à être ajouté :{" "}
+                        {editForm.resourceUrl.split("/").pop()}
+                      </Typography>
+                    )}
+                    {uploadError && (
+                      <Typography variant="caption" sx={{ color: "red" }}>
+                        {uploadError}
+                      </Typography>
+                    )}
+                  </Box>
+                ) : editForm.type === "Text" ? null : (
+                  <TextField
+                    label="URL de la ressource"
+                    value={editForm.resourceUrl}
+                    onChange={(e) =>
+                      updateEditFormField("resourceUrl", e.target.value)
+                    }
+                    fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        color: "white",
+                        "& fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "rgba(255, 255, 255, 0.3)",
+                        },
+                        "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                        "&.Mui-focused": { color: "#3b82f6" },
+                      },
+                    }}
+                  />
+                )}
+                {editError && (
+                  <Typography color="error">{editError}</Typography>
+                )}
+              </Box>
+            </DialogContent>
+            <DialogActions sx={{ p: 3, gap: 1 }}>
+              <Button
+                onClick={closeEditModal}
+                variant="outlined"
+                sx={{
+                  borderColor: "rgba(255, 255, 255, 0.3)",
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&:hover": {
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                    backgroundColor: "rgba(255, 255, 255, 0.05)",
+                  },
+                }}
+              >
+                Annuler
+              </Button>
+              <Button
+                onClick={handleEditResource}
+                variant="contained"
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                  color: "white",
+                  "&:hover": {
+                    background:
+                      "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                  },
+                }}
+                disabled={editLoading}
+              >
+                {editLoading ? "Modification..." : "Enregistrer"}
+              </Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
 
       {/* Delete confirmation dialog */}

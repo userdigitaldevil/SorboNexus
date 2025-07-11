@@ -223,7 +223,8 @@ export default function Alumni() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { openEditModal } = useAlumniEditModal();
+  const alumniEditModal = useAlumniEditModal();
+  const { openEditModal } = alumniEditModal || {};
 
   const sectionRef = useRef(null);
   const filtersRef = useRef(null);
@@ -503,7 +504,9 @@ export default function Alumni() {
         alumniData = await getAlumniById(alum.id);
       } catch (e) {}
     }
-    openEditModal(alumniData);
+    if (openEditModal) {
+      openEditModal(alumniData);
+    }
   };
 
   const handleDeleteClick = async (alum) => {
