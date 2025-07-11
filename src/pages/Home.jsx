@@ -520,17 +520,86 @@ export default function Home() {
               )}
             </Box>
             {/* Content */}
-            <Typography
-              variant="body1"
+            <Box
               sx={{
                 color: "rgba(255,255,255,0.9)",
                 lineHeight: 1.6,
                 fontSize: "0.95rem",
-                whiteSpace: "pre-line",
                 wordBreak: "break-word",
+                "& .markdown-content": {
+                  color: "rgba(255,255,255,0.9)",
+                  lineHeight: 1.6,
+                  fontSize: "0.95rem",
+                  "& h1, & h2, & h3, & h4, & h5, & h6": {
+                    color: "rgba(255,255,255,0.95)",
+                    fontWeight: 600,
+                    marginTop: 2,
+                    marginBottom: 1,
+                  },
+                  "& h1": { fontSize: "1.4rem" },
+                  "& h2": { fontSize: "1.3rem" },
+                  "& h3": { fontSize: "1.2rem" },
+                  "& h4": { fontSize: "1.1rem" },
+                  "& h5, & h6": { fontSize: "1rem" },
+                  "& p": {
+                    marginBottom: 1,
+                    marginTop: 0,
+                  },
+                  "& ul, & ol": {
+                    marginLeft: 2,
+                    marginBottom: 1,
+                    marginTop: 0,
+                  },
+                  "& li": {
+                    marginBottom: 0.5,
+                  },
+                  "& strong, & b": {
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.95)",
+                  },
+                  "& em, & i": {
+                    fontStyle: "italic",
+                  },
+                  "& code": {
+                    background: "rgba(59,130,246,0.2)",
+                    color: "#3b82f6",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    fontSize: "0.9em",
+                    fontFamily: "monospace",
+                  },
+                  "& pre": {
+                    background: "rgba(0,0,0,0.3)",
+                    color: "rgba(255,255,255,0.9)",
+                    padding: "12px",
+                    borderRadius: "6px",
+                    overflowX: "auto",
+                    margin: "8px 0",
+                    fontSize: "0.9em",
+                    fontFamily: "monospace",
+                  },
+                  "& blockquote": {
+                    borderLeft: "4px solid #3b82f6",
+                    paddingLeft: "12px",
+                    margin: "8px 0",
+                    color: "rgba(255,255,255,0.8)",
+                    fontStyle: "italic",
+                  },
+                  "& a": {
+                    color: "#3b82f6",
+                    textDecoration: "none",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  },
+                },
               }}
             >
-              {expanded ? annonce.content : previewContent}
+              <div className="markdown-content">
+                <ReactMarkdown>
+                  {expanded ? annonce.content : previewContent}
+                </ReactMarkdown>
+              </div>
               {isLong && (
                 <Button
                   size="small"
@@ -547,7 +616,7 @@ export default function Home() {
                   {expanded ? "Réduire" : "Lire la suite"}
                 </Button>
               )}
-            </Typography>
+            </Box>
           </Card>
           {/* Alumni Profile Modal */}
           {alumniProfile && (
