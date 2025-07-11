@@ -1,0 +1,23 @@
+# Node modules and dependencies
+node_modules
+npm-debug.log
+
+# Git related files
+.git
+.gitignore
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Development files
+*.log
+*.md
+.DS_Store
+
+# Upload directories (if you're storing uploads elsewhere)
+uploads/*
+!uploads/.gitkeep 

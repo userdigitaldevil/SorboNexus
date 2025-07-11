@@ -5,11 +5,10 @@
       "name": "backend",
       "root": "backend/",
       "build": {
-        "builder": "NIXPACKS",
-        "buildCommand": "npm install"
+        "builder": "DOCKERFILE",
+        "dockerfile": "Dockerfile"
       },
       "deploy": {
-        "startCommand": "node index.js",
         "healthcheckPath": "/",
         "healthcheckTimeout": 100,
         "restartPolicyType": "ON_FAILURE",
