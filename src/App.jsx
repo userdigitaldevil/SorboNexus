@@ -145,6 +145,7 @@ const pageVariants = {
   },
 };
 
+// Page transition settings
 const pageTransition = {
   type: "tween",
   ease: [0.4, 0, 0.2, 1],
@@ -169,20 +170,65 @@ const AnimatedPage = ({ children }) => (
 );
 
 function App() {
-  // Add smooth scrolling to the entire app
+  // Basic smooth scrolling for anchor links
   useEffect(() => {
-    // Enable smooth scrolling for the entire document
-    document.documentElement.style.scrollBehavior = "smooth";
+    // Fix iOS viewport height issue
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+      const fixIOSScroll = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      };
 
-    // Add custom scroll behavior for better performance
-    const handleScroll = () => {
-      // This will be used for scroll-triggered animations
+      window.addEventListener("resize", fixIOSScroll);
+      fixIOSScroll();
+
+      return () => window.removeEventListener("resize", fixIOSScroll);
+    }
+
+    // Handle anchor link clicks with inertia scrolling if available
+    const handleAnchorClick = (e) => {
+      const isLink = e.target.tagName === "A" || e.target.closest("a");
+      const isInternalLink =
+        isLink &&
+        e.target.href &&
+        e.target.href.startsWith(window.location.origin);
+      const isAnchorLink =
+        isInternalLink &&
+        !e.target.download &&
+        !e.target.target &&
+        (e.target.getAttribute("href")?.startsWith("#") ||
+          e.target.closest("a")?.getAttribute("href")?.startsWith("#"));
+
+      if (isAnchorLink) {
+        const href =
+          e.target.getAttribute("href") ||
+          e.target.closest("a")?.getAttribute("href");
+
+        const targetElement = document.querySelector(href);
+        if (targetElement) {
+          e.preventDefault();
+
+          // Try to use inertia scrolling if available
+          import("./utils/scrollInertia.js")
+            .then((module) => {
+              // Use inertia scrolling with offset for navbar
+              module.default.scrollTo(targetElement, { offset: -80 });
+            })
+            .catch(() => {
+              // Fallback to native smooth scrolling
+              targetElement.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            });
+        }
+      }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    document.addEventListener("click", handleAnchorClick);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("click", handleAnchorClick);
     };
   }, []);
 
