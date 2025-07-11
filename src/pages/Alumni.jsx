@@ -998,22 +998,30 @@ export default function Alumni() {
                 },
               }}
               onClick={() => {
-                // Find the fixed cards (self, sethaguila) as above
-                let fixed = [];
-                if (alumniId && selfCard) fixed.push(selfCard);
-                if (
-                  sethCard &&
-                  (!selfCard ||
-                    (sethCard._id !== selfCard._id &&
-                      sethCard.id !== selfCard.id))
-                )
-                  fixed.push(sethCard);
-                // The rest are all other cards (admins and others, already in order)
-                let rest = ordered.filter(
-                  (a) => !fixed.some((f) => f._id === a._id && f.id === a.id)
-                );
-                const shuffledRest = shuffleArray(rest);
-                setShuffledOrder([...fixed, ...shuffledRest]);
+                // Helper to check if two alumni are the same
+                const isSameAlumni = (a, b) => {
+                  return (
+                    (a._id && b._id && String(a._id) === String(b._id)) ||
+                    (a.id && b.id && String(a.id) === String(b.id))
+                  );
+                };
+                if (alumniId && selfCard) {
+                  // Logged in: self always first, Seth second (if not self), shuffle all others
+                  let fixed = [selfCard];
+                  if (sethCard && !isSameAlumni(sethCard, selfCard)) {
+                    fixed.push(sethCard);
+                  }
+                  // All others (not self, not Seth)
+                  const rest = ordered.filter(
+                    (a) => !fixed.some((f) => isSameAlumni(f, a))
+                  );
+                  const shuffled = shuffleArray(rest);
+                  setShuffledOrder([...fixed, ...shuffled]);
+                } else {
+                  // Logged out: shuffle ALL cards (including Seth and admins)
+                  const shuffled = shuffleArray(ordered);
+                  setShuffledOrder(shuffled);
+                }
                 setCurrentPage(1);
               }}
             >
@@ -1426,8 +1434,12 @@ export default function Alumni() {
               handleEditClick={handleEditClick}
               handleDeleteClick={handleDeleteClick}
               onClose={closeProfileModal}
-              bookmarkedAlumni={bookmarkedAlumni}
-              onToggleBookmark={toggleBookmarkForAlumni}
+              isBookmarked={isAlumniBookmarked(
+                selectedAlumni.id || selectedAlumni._id
+              )}
+              onToggleBookmark={() =>
+                toggleBookmarkForAlumni(selectedAlumni.id || selectedAlumni._id)
+              }
             />
           ) : null}
         </motion.div>
