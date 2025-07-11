@@ -815,7 +815,7 @@ const LiensUtiles = () => {
           overflow: "hidden",
         }}
       >
-        <Container maxWidth="lg" sx={{ overflow: "hidden" }}>
+        <Container maxWidth="lg">
           {isMobile ? (
             // MOBILE: always 2 columns x 3 rows grid carousel
             <Box

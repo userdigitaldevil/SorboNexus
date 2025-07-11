@@ -326,9 +326,10 @@ If you prefer to set up manually or need to configure environment variables:
 3. **Install Command:** `npm install`
 4. **Start Command:** `node index.js`
 5. **Environment Variables:**
-   - `DATABASE_URL` (from Railway Postgres plugin)
-   - `JWT_SECRET` (set a strong secret)
-   - `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_CUSTOM_DOMAIN` (Cloudflare R2 credentials)
+
+- `DATABASE_URL` (from Railway Postgres plugin)
+- `JWT_SECRET` (set a strong secret)
+- `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_CUSTOM_DOMAIN` (Cloudflare R2 credentials)
 
 #### Frontend Deployment
 
@@ -338,15 +339,17 @@ If you prefer to set up manually or need to configure environment variables:
 4. **Build Command:** `npm run build`
 5. **Start Command:** `npm run preview`
 6. **Environment Variables:**
-   - `VITE_API_URL` (set to your backend's Railway URL)
+
+- `VITE_API_URL` (set to your backend's Railway URL)
 
 #### Database Setup
 
 1. Add PostgreSQL plugin to your Railway project
 2. Run migrations in the Railway backend service shell:
-   ```bash
-   npx prisma migrate deploy
-   ```
+
+```bash
+npx prisma migrate deploy
+```
 
 ### Alternative Deployment Options
 

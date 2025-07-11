@@ -714,7 +714,6 @@ export default function Home() {
           px: 2,
           pt: { xs: "72px", sm: "72px" },
           position: "relative",
-          overflow: "hidden",
         }}
       >
         {/* Background Elements */}
@@ -1451,7 +1450,7 @@ export default function Home() {
                     maxWidth: 700,
                     mx: "auto",
                     position: "relative",
-                    overflow: "visible",
+
                     transition:
                       "box-shadow 0.32s cubic-bezier(0.4,0.2,0.2,1), border-color 0.32s cubic-bezier(0.4,0.2,0.2,1)",
                   }}
@@ -1603,7 +1602,7 @@ export default function Home() {
                     background: "rgba(255,255,255,0.03)",
                     backdropFilter: "blur(20px)",
                     borderRadius: 3,
-                    overflow: "visible",
+
                     p: { xs: 4, md: 5 },
                     boxShadow: "0 8px 32px rgba(59,130,246,0.10)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -1700,7 +1699,7 @@ export default function Home() {
                     background: "rgba(255,255,255,0.03)",
                     backdropFilter: "blur(20px)",
                     borderRadius: 3,
-                    overflow: "visible",
+
                     p: { xs: 4, md: 5 },
                     boxShadow: "0 8px 32px rgba(139,92,246,0.10)",
                     border: "1px solid rgba(255,255,255,0.08)",
@@ -1782,7 +1781,7 @@ export default function Home() {
                     background: "rgba(255,255,255,0.03)",
                     backdropFilter: "blur(20px)",
                     borderRadius: 3,
-                    overflow: "visible",
+
                     p: { xs: 4, md: 5 },
                     boxShadow: "0 8px 32px rgba(34,197,94,0.10)",
                     border: "1px solid rgba(255,255,255,0.08)",
