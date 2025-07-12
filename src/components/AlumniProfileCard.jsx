@@ -26,6 +26,7 @@ import {
   Close as CloseIcon,
   BookmarkBorder as BookmarkIcon,
   Bookmark as BookmarkFilledIcon,
+  Edit as EditIcon,
 } from "@mui/icons-material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ReactMarkdown from "react-markdown";
@@ -209,7 +210,9 @@ export default function AlumniProfileCard({
             )}
 
           {/* Edit Button */}
-          {(alum._id === alumniId || isAdmin) && (
+          {(isAdmin ||
+            String(alum._id) === String(alumniId) ||
+            String(alum.id) === String(alumniId)) && (
             <IconButton
               size="medium"
               sx={{
@@ -234,13 +237,7 @@ export default function AlumniProfileCard({
                 handleEditClick(alum);
               }}
             >
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-                <path
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  d="M16.474 5.474a2.5 2.5 0 1 1 3.536 3.536l-9.193 9.193a2 2 0 0 1-.707.464l-3.5 1.167a.5.5 0 0 1-.633-.633l1.167-3.5a2 2 0 0 1 .464-.707l9.192-9.192Z"
-                />
-              </svg>
+              <EditIcon sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }} />
             </IconButton>
           )}
         </Box>

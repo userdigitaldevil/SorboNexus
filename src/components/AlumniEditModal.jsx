@@ -53,6 +53,14 @@ export default function AlumniEditModal({
       : editForm.conseil || "";
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Calculate the number of rows to show based on content length and expand state
+  const getConseilRows = () => {
+    if (!conseilIsLong) return 3; // Default minimum rows
+    if (showFullConseil)
+      return Math.max(3, Math.ceil((editForm.conseil || "").length / 50)); // Dynamic rows based on content
+    return 3; // Show minimum rows when collapsed
+  };
+
   // Lock scrolling when modal is open
   useEffect(() => {
     if (open) {
@@ -334,7 +342,13 @@ export default function AlumniEditModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      sx={{
+        zIndex: 9999,
+      }}
+    >
       <Box
         sx={{ position: "relative", width: "100%", height: "100%" }}
         onClick={onClose}
@@ -753,15 +767,12 @@ export default function AlumniEditModal({
                 </span>
               }
               name="conseil"
-              value={
-                showFullConseil || !conseilIsLong
-                  ? editForm.conseil || ""
-                  : conseilPreview
-              }
+              value={editForm.conseil || ""}
               onChange={handleEditFormChange}
               fullWidth
               multiline
               minRows={3}
+              maxRows={showFullConseil ? undefined : 3}
               sx={{
                 mb: 1,
                 "& .MuiOutlinedInput-root": {

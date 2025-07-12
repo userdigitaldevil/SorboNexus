@@ -23,20 +23,30 @@ export function AlumniEditModalProvider({ children }) {
 
   // Open modal for the current user
   const openEditSelfModal = useCallback(async (alumniList) => {
+    console.log("openEditSelfModal called with:", alumniList);
     const token = localStorage.getItem("token");
     if (token && alumniList) {
       try {
         const decoded = jwtDecode(token);
+        console.log("Decoded token:", decoded);
         const myAlumni = alumniList.find(
           (a) =>
             String(a._id) === String(decoded.alumniId) ||
             String(a.id) === String(decoded.alumniId)
         );
+        console.log("Found myAlumni:", myAlumni);
         if (myAlumni) {
           setEditAlumni(myAlumni);
           setOpen(true);
+          console.log("Modal opened successfully");
+        } else {
+          console.error("Could not find myAlumni in the list");
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error("Error in openEditSelfModal:", e);
+      }
+    } else {
+      console.error("No token or alumniList provided");
     }
   }, []);
 

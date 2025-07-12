@@ -353,8 +353,13 @@ const Navbar = () => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
+                  console.log("Modifier ma carte clicked");
+                  console.log("openEditSelfModal:", openEditSelfModal);
+                  console.log("alumniUser:", alumniUser);
                   if (openEditSelfModal) {
                     openEditSelfModal([alumniUser]);
+                  } else {
+                    console.error("openEditSelfModal is not available");
                   }
                   handleProfileClose();
                 }}
