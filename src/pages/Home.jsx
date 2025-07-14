@@ -32,7 +32,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { jwtDecode } from "jwt-decode";
 import ReactMarkdown from "react-markdown";
 import FeatureCard from "../components/FeatureCard";
@@ -315,6 +315,12 @@ export default function Home() {
     const [expanded, setExpanded] = useState(false);
     const [profileModalOpen, setProfileModalOpen] = useState(false);
 
+    // Use a stable preventScroll function for scroll locking
+    const preventScroll = useCallback((e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, []);
+
     // Add scroll locking for profile modal
     useEffect(() => {
       if (profileModalOpen) {
@@ -325,15 +331,6 @@ export default function Home() {
         document.body.style.overflow = "hidden";
         if (mainScrollContainerRef.current) {
           mainScrollContainerRef.current.style.overflow = "hidden";
-        }
-
-        // Prevent scroll on the main container
-        const preventScroll = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        };
-
-        if (mainScrollContainerRef.current) {
           mainScrollContainerRef.current.addEventListener(
             "wheel",
             preventScroll,
@@ -365,9 +362,17 @@ export default function Home() {
         document.body.style.overflow = "";
         if (mainScrollContainerRef.current) {
           mainScrollContainerRef.current.style.overflow = "";
+          mainScrollContainerRef.current.removeEventListener(
+            "wheel",
+            preventScroll
+          );
+          mainScrollContainerRef.current.removeEventListener(
+            "touchmove",
+            preventScroll
+          );
         }
       }
-    }, [profileModalOpen]);
+    }, [profileModalOpen, preventScroll]);
 
     // Find the alumni in the main alumni list by user ID (any user in users array)
     const alumniFromList = alumni.find(
@@ -689,6 +694,12 @@ export default function Home() {
     setShowArrow(true);
   }, []);
 
+  // Use a stable preventScroll function for scroll locking
+  const preventScroll = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
   // Add scroll locking for modals
   useEffect(() => {
     if (annoncesModalOpen) {
@@ -699,15 +710,6 @@ export default function Home() {
       document.body.style.overflow = "hidden";
       if (mainScrollContainerRef.current) {
         mainScrollContainerRef.current.style.overflow = "hidden";
-      }
-
-      // Prevent scroll on the main container
-      const preventScroll = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      };
-
-      if (mainScrollContainerRef.current) {
         mainScrollContainerRef.current.addEventListener(
           "wheel",
           preventScroll,
@@ -739,9 +741,17 @@ export default function Home() {
       document.body.style.overflow = "";
       if (mainScrollContainerRef.current) {
         mainScrollContainerRef.current.style.overflow = "";
+        mainScrollContainerRef.current.removeEventListener(
+          "wheel",
+          preventScroll
+        );
+        mainScrollContainerRef.current.removeEventListener(
+          "touchmove",
+          preventScroll
+        );
       }
     }
-  }, [annoncesModalOpen]);
+  }, [annoncesModalOpen, preventScroll]);
 
   return (
     <div
