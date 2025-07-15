@@ -49,6 +49,7 @@ router.post("/", isAuthenticated, sanitizeContent, async (req, res) => {
       filter,
       resourceUrl,
       format,
+      loginRequired, // new field
     } = req.body;
 
     if (!title || !type || !category || !filter || !format) {
@@ -84,6 +85,7 @@ router.post("/", isAuthenticated, sanitizeContent, async (req, res) => {
         format,
         createdById,
         gradient: "",
+        loginRequired: !!loginRequired, // save field
       },
     });
     res.status(201).json(newResource);
@@ -120,6 +122,7 @@ router.put(
         filter,
         resourceUrl,
         format,
+        loginRequired, // new field
       } = req.body;
       // Ensure category is always an array
       const categoryArray = Array.isArray(category)
@@ -140,6 +143,7 @@ router.put(
           resourceUrl,
           format,
           gradient: "", // or keep previous if you want
+          loginRequired: !!loginRequired, // save field
         },
       });
       res.json(updated);
