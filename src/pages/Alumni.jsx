@@ -28,6 +28,10 @@ import {
   Snackbar,
   Tooltip,
   Switch,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import {
   ArrowRight,
@@ -96,6 +100,7 @@ export default function Alumni() {
     const stored = localStorage.getItem("publicAlumni");
     return stored === null ? false : stored === "true";
   });
+  const [loginPopupOpen, setLoginPopupOpen] = useState(false);
 
   // Add after isProfileModalOpen state is defined
   useEffect(() => {
@@ -756,7 +761,13 @@ export default function Alumni() {
               <Box sx={{ mt: { xs: 2, md: 3 }, textAlign: "center" }}>
                 <Button
                   variant="outlined"
-                  onClick={openListModal}
+                  onClick={() => {
+                    if (!publicAlumni && !alumniId) {
+                      setLoginPopupOpen(true);
+                    } else {
+                      openListModal();
+                    }
+                  }}
                   ref={listButtonRef}
                   sx={{
                     color: "#3b82f6",
@@ -2058,6 +2069,98 @@ export default function Alumni() {
           </Card>
         </Box>
       </Modal>
+
+      {/* Add the login-required modal at the end of the component */}
+      <Dialog
+        open={loginPopupOpen}
+        onClose={() => setLoginPopupOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            background: "linear-gradient(135deg, #23272f 0%, #1a1d23 100%)",
+            color: "#fff",
+            borderRadius: 5,
+            boxShadow: "0 8px 40px 0 rgba(0,0,0,0.32)",
+            p: 0,
+            overflow: "visible",
+            position: "relative",
+          },
+        }}
+      >
+        <IconButton
+          aria-label="close"
+          onClick={() => setLoginPopupOpen(false)}
+          sx={{
+            position: "absolute",
+            right: 12,
+            top: 12,
+            color: "#cbd5e1",
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 2,
+            transition: "background 0.2s",
+            "&:hover": {
+              background: "rgba(59,130,246,0.12)",
+              color: "#3b82f6",
+            },
+            zIndex: 2,
+          }}
+        >
+          <CloseIcon fontSize="medium" />
+        </IconButton>
+        <DialogTitle
+          sx={{
+            color: "#3b82f6",
+            fontWeight: 700,
+            textAlign: "center",
+            pt: 4,
+            pb: 1,
+            fontSize: "1.4rem",
+            letterSpacing: 0.2,
+          }}
+        >
+          Connexion requise
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            textAlign: "center",
+            pb: 1,
+            color: "#e0e7ef",
+            fontSize: "1.1rem",
+          }}
+        >
+          <span>Connectez-vous pour voir les alumni.</span>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center", pb: 3 }}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => {
+              setLoginPopupOpen(false);
+              navigate("/connexion");
+            }}
+            sx={{
+              background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+              color: "white",
+              fontWeight: 600,
+              px: 5,
+              py: 1.5,
+              borderRadius: 3,
+              textTransform: "none",
+              fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+              letterSpacing: "0.02em",
+              lineHeight: 1.4,
+              boxShadow: "0 8px 25px rgba(59, 130, 246, 0.18)",
+              mt: 1,
+              "&:hover": {
+                background: "linear-gradient(135deg, #2563eb 0%, #0891b2 100%)",
+              },
+            }}
+          >
+            Se connecter
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
