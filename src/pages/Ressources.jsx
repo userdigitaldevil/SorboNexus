@@ -22,6 +22,9 @@ import {
   Select,
   MenuItem,
   Checkbox,
+  Tooltip,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import { ArrowRight, Search } from "lucide-react";
 import {
@@ -41,6 +44,7 @@ import {
   deleteRessource,
 } from "../api/ressources";
 import { uploadFile } from "../api/upload";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 // CATEGORY_STYLES for resource categories
 const CATEGORY_STYLES = {
@@ -160,6 +164,10 @@ export default function Ressources() {
   // Add a state to store the original uploaded file name
   const [uploadedOriginalName, setUploadedOriginalName] = useState("");
   const mainScrollContainerRef = useRef(null);
+  const [publicRessources, setPublicRessources] = useState(() => {
+    const stored = localStorage.getItem("publicRessources");
+    return stored === null ? false : stored === "true";
+  });
 
   // Lock scrolling when add modal is open
   useEffect(() => {
@@ -479,6 +487,11 @@ export default function Ressources() {
       setEditLoading(false);
     }
   };
+
+  // Add effect to persist toggle
+  useEffect(() => {
+    localStorage.setItem("publicRessources", publicRessources);
+  }, [publicRessources]);
 
   return (
     <div className="glassy-bg min-h-screen smooth-scroll-all">
@@ -843,425 +856,517 @@ export default function Ressources() {
         </Container>
       </Box>
 
-      {/* Resource Grid */}
-      <motion.section
-        className="py-20 px-6 z-10 relative"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        style={{
-          paddingTop: window.innerWidth < 600 ? "80px" : "100px",
-          paddingBottom: window.innerWidth < 600 ? "80px" : "100px",
-        }}
-      >
-        <Container maxWidth="lg">
-          <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
-            {filteredResources.map((resource, index) => (
-              <Grid
-                gridColumn={{ xs: "span 12", sm: "span 6", md: "span 4" }}
-                key={resource.id}
-                sx={{
-                  display: "flex",
-                  height: "100%",
-                }}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02 }}
+      {isAdmin && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            mb: 3,
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={publicRessources}
+                  onChange={() => setPublicRessources((v) => !v)}
+                  color="primary"
+                  sx={{
+                    "& .MuiSwitch-switchBase.Mui-checked": {
+                      color: "#3b82f6",
+                    },
+                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                      backgroundColor: "#3b82f6",
+                    },
+                    "& .MuiSwitch-track": {
+                      backgroundColor: "#e5e7eb",
+                    },
+                  }}
+                />
+              }
+              label={
+                <span
+                  style={{
+                    fontWeight: 500,
+                    color: publicRessources ? "#3b82f6" : "#888",
+                  }}
                 >
-                  <Card
-                    onClick={() => {
-                      if (resource.resourceUrl) {
-                        window.open(
-                          getResourceUrl(resource.resourceUrl),
-                          "_blank"
-                        );
-                      }
-                    }}
-                    sx={{
-                      height: expandedDescriptions.has(resource.id)
-                        ? "auto"
-                        : { xs: 480, md: 520 },
-                      minHeight: { xs: 480, md: 520 },
-                      width: "100%",
-                      maxWidth: { xs: 280, md: 320 },
-                      mx: "auto",
-                      background: "rgba(255,255,255,0.05)",
-                      backdropFilter: "blur(20px)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: 3,
-                      transition: "all 0.3s ease",
-                      cursor: resource.resourceUrl ? "pointer" : "default",
-                      position: "relative",
-                      overflow: "visible",
-                      display: "flex",
-                      flexDirection: "column",
-                      "&:hover": {
-                        transform: "translateY(-8px)",
-                        boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                        background: "rgba(255,255,255,0.08)",
-                        border: "1px solid rgba(59, 130, 246, 0.3)",
-                        "& .resource-icon": {
-                          transform: "scale(1.1) rotate(5deg)",
-                        },
-                        "& .resource-title": {
-                          background:
-                            "linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%)",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          backgroundClip: "text",
-                        },
-                      },
-                      "&::before": {
-                        content: '""',
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: "2px",
-                        background: resource.gradient,
-                        opacity: 0,
-                        transition: "opacity 0.3s ease",
-                      },
-                      "&:hover::before": {
-                        opacity: 1,
-                      },
-                    }}
+                  Ressources publiques
+                </span>
+              }
+              labelPlacement="start"
+              sx={{ mr: 1 }}
+            />
+            <Tooltip
+              title="Permettre aux visiteurs non connectés de voir les ressources"
+              arrow
+            >
+              <InfoOutlinedIcon
+                sx={{ color: "#3b82f6", fontSize: 20, ml: 0.5 }}
+              />
+            </Tooltip>
+          </Box>
+          <Typography
+            variant="caption"
+            sx={{ color: "#888", textAlign: "center" }}
+          >
+            {publicRessources
+              ? "Les ressources sont visibles par tous les visiteurs."
+              : "Seuls les utilisateurs connectés peuvent voir les ressources."}
+          </Typography>
+        </Box>
+      )}
+
+      {/* Resource Grid */}
+      {isLoggedIn || publicRessources ? (
+        <motion.section
+          className="py-20 px-6 z-10 relative"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          style={{
+            paddingTop: window.innerWidth < 600 ? "80px" : "100px",
+            paddingBottom: window.innerWidth < 600 ? "80px" : "100px",
+          }}
+        >
+          <Container maxWidth="lg">
+            <Grid container spacing={{ xs: 2, md: 4 }} justifyContent="center">
+              {filteredResources.map((resource, index) => (
+                <Grid
+                  gridColumn={{ xs: "span 12", sm: "span 6", md: "span 4" }}
+                  key={resource.id}
+                  sx={{
+                    display: "flex",
+                    height: "100%",
+                  }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    whileHover={{ scale: 1.02 }}
                   >
-                    <CardContent
+                    <Card
+                      onClick={() => {
+                        if (resource.resourceUrl) {
+                          window.open(
+                            getResourceUrl(resource.resourceUrl),
+                            "_blank"
+                          );
+                        }
+                      }}
                       sx={{
-                        p: { xs: 2, md: 4 },
+                        height: expandedDescriptions.has(resource.id)
+                          ? "auto"
+                          : { xs: 480, md: 520 },
+                        minHeight: { xs: 480, md: 520 },
+                        width: "100%",
+                        maxWidth: { xs: 280, md: 320 },
+                        mx: "auto",
+                        background: "rgba(255,255,255,0.05)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: 3,
+                        transition: "all 0.3s ease",
+                        cursor: resource.resourceUrl ? "pointer" : "default",
+                        position: "relative",
+                        overflow: "visible",
                         display: "flex",
                         flexDirection: "column",
-                        height: "100%",
-                        overflow: "hidden",
                       }}
                     >
-                      <Box
-                        className="resource-icon"
+                      <CardContent
                         sx={{
-                          width: { xs: 40, md: 48 },
-                          height: { xs: 40, md: 48 },
-                          borderRadius: 2,
-                          background:
-                            CATEGORY_STYLES[resource.category]?.gradient ||
-                            "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          mb: { xs: 2, md: 3 },
-                          color: "white",
-                          transition: "all 0.3s ease",
-                        }}
-                      >
-                        <i className={`${resource.icon} text-xl`}></i>
-                      </Box>
-                      <Typography
-                        variant="h6"
-                        className="resource-title"
-                        sx={{
-                          fontWeight: 500,
-                          mb: { xs: 1.5, md: 2.5 },
-                          transition: "all 0.3s ease",
-                          fontSize: { xs: "1rem", md: "1.3rem" },
-                          lineHeight: 1.3,
-                          letterSpacing: "-0.01em",
-                        }}
-                      >
-                        {resource.title}
-                      </Typography>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: 0.5,
-                          mb: { xs: 1, md: 2 },
-                        }}
-                      >
-                        {Array.isArray(resource.category) &&
-                          resource.category.map((cat) => (
-                            <Chip
-                              key={cat}
-                              label={cat}
-                              size="small"
-                              sx={{
-                                background: "#3b82f6",
-                                color: "white",
-                                fontWeight: 400,
-                                fontSize: { xs: "0.65rem", md: "0.75rem" },
-                                height: { xs: "20px", md: "24px" },
-                                borderRadius: 1.5,
-                                letterSpacing: "0.01em",
-                              }}
-                            />
-                          ))}
-                      </Box>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#3b82f6",
-                          fontWeight: 400,
-                          mb: { xs: 1.5, md: 2.5 },
-                          fontSize: { xs: "0.75rem", md: "0.9rem" },
-                          letterSpacing: "0.02em",
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {resource.subject}
-                      </Typography>
-                      <Box
-                        sx={{
-                          flexGrow: 1,
-                          overflow: expandedDescriptions.has(resource.id)
-                            ? "visible"
-                            : "hidden",
+                          p: { xs: 2, md: 4 },
                           display: "flex",
                           flexDirection: "column",
+                          height: "100%",
+                          overflow: "hidden",
                         }}
                       >
-                        <ReactMarkdown
-                          remarkPlugins={[remarkGfm]}
-                          components={{
-                            p: ({ node, ...props }) => (
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  color: "rgba(255, 255, 255, 0.7)",
-                                  mb: { xs: 2.5, md: 3.5 },
-                                  lineHeight: 1.7,
-                                  fontSize: { xs: "0.8rem", md: "0.9rem" },
-                                  whiteSpace: "pre-line",
-                                  wordBreak: "break-word",
-                                  overflow: expandedDescriptions.has(
-                                    resource.id
-                                  )
-                                    ? "visible"
-                                    : "hidden",
-                                  display: "block",
-                                  fontWeight: 400,
-                                  letterSpacing: "0.01em",
-                                }}
-                                {...props}
-                              />
-                            ),
+                        <Box
+                          className="resource-icon"
+                          sx={{
+                            width: { xs: 40, md: 48 },
+                            height: { xs: 40, md: 48 },
+                            borderRadius: 2,
+                            background:
+                              CATEGORY_STYLES[resource.category]?.gradient ||
+                              "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            mb: { xs: 2, md: 3 },
+                            color: "white",
+                            transition: "all 0.3s ease",
                           }}
                         >
-                          {expandedDescriptions.has(resource.id)
-                            ? resource.description
-                            : getPreviewDescription(resource.description)}
-                        </ReactMarkdown>
-                        {isLongDescription(resource.description) && (
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleDescriptionExpansion(resource.id);
-                            }}
-                            sx={{
-                              color: "#3b82f6",
-                              textTransform: "none",
-                              fontWeight: 500,
-                              p: 0,
-                              minWidth: "auto",
-                              fontSize: { xs: "0.8rem", md: "0.9rem" },
-                              mb: 1,
-                              mt: expandedDescriptions.has(resource.id)
-                                ? 2
-                                : "auto",
-                              letterSpacing: "0.02em",
-                              transition: "all 0.2s ease",
-                              "&:hover": {
-                                background: "rgba(59, 130, 246, 0.08)",
-                                color: "#2563eb",
-                              },
+                          <i className={`${resource.icon} text-xl`}></i>
+                        </Box>
+                        <Typography
+                          variant="h6"
+                          className="resource-title"
+                          sx={{
+                            fontWeight: 500,
+                            mb: { xs: 1.5, md: 2.5 },
+                            transition: "all 0.3s ease",
+                            fontSize: { xs: "1rem", md: "1.3rem" },
+                            lineHeight: 1.3,
+                            letterSpacing: "-0.01em",
+                          }}
+                        >
+                          {resource.title}
+                        </Typography>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 0.5,
+                            mb: { xs: 1, md: 2 },
+                          }}
+                        >
+                          {Array.isArray(resource.category) &&
+                            resource.category.map((cat) => (
+                              <Chip
+                                key={cat}
+                                label={cat}
+                                size="small"
+                                sx={{
+                                  background: "#3b82f6",
+                                  color: "white",
+                                  fontWeight: 400,
+                                  fontSize: { xs: "0.65rem", md: "0.75rem" },
+                                  height: { xs: "20px", md: "24px" },
+                                  borderRadius: 1.5,
+                                  letterSpacing: "0.01em",
+                                }}
+                              />
+                            ))}
+                        </Box>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#3b82f6",
+                            fontWeight: 400,
+                            mb: { xs: 1.5, md: 2.5 },
+                            fontSize: { xs: "0.75rem", md: "0.9rem" },
+                            letterSpacing: "0.02em",
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {resource.subject}
+                        </Typography>
+                        <Box
+                          sx={{
+                            flexGrow: 1,
+                            overflow: expandedDescriptions.has(resource.id)
+                              ? "visible"
+                              : "hidden",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              p: ({ node, ...props }) => (
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    color: "rgba(255, 255, 255, 0.7)",
+                                    mb: { xs: 2.5, md: 3.5 },
+                                    lineHeight: 1.7,
+                                    fontSize: { xs: "0.8rem", md: "0.9rem" },
+                                    whiteSpace: "pre-line",
+                                    wordBreak: "break-word",
+                                    overflow: expandedDescriptions.has(
+                                      resource.id
+                                    )
+                                      ? "visible"
+                                      : "hidden",
+                                    display: "block",
+                                    fontWeight: 400,
+                                    letterSpacing: "0.01em",
+                                  }}
+                                  {...props}
+                                />
+                              ),
                             }}
                           >
                             {expandedDescriptions.has(resource.id)
-                              ? "Voir moins"
-                              : "Lire la suite"}
-                          </Button>
-                        )}
-                      </Box>
-                      {/* Spacer to push bottom elements to the bottom */}
-                      <Box sx={{ flexGrow: 1 }} />
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Chip
-                          label={resource.type}
-                          size="small"
-                          sx={{
-                            background: "rgba(59, 130, 246, 0.08)",
-                            color: "#3b82f6",
-                            border: "1px solid rgba(59, 130, 246, 0.15)",
-                            fontSize: { xs: "0.65rem", md: "0.75rem" },
-                            height: { xs: "22px", md: "26px" },
-                            fontWeight: 400,
-                            borderRadius: 1.5,
-                            letterSpacing: "0.01em",
-                          }}
-                        />
+                              ? resource.description
+                              : getPreviewDescription(resource.description)}
+                          </ReactMarkdown>
+                          {isLongDescription(resource.description) && (
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleDescriptionExpansion(resource.id);
+                              }}
+                              sx={{
+                                color: "#3b82f6",
+                                textTransform: "none",
+                                fontWeight: 500,
+                                p: 0,
+                                minWidth: "auto",
+                                fontSize: { xs: "0.8rem", md: "0.9rem" },
+                                mb: 1,
+                                mt: expandedDescriptions.has(resource.id)
+                                  ? 2
+                                  : "auto",
+                                letterSpacing: "0.02em",
+                                transition: "all 0.2s ease",
+                                "&:hover": {
+                                  background: "rgba(59, 130, 246, 0.08)",
+                                  color: "#2563eb",
+                                },
+                              }}
+                            >
+                              {expandedDescriptions.has(resource.id)
+                                ? "Voir moins"
+                                : "Lire la suite"}
+                            </Button>
+                          )}
+                        </Box>
+                        {/* Spacer to push bottom elements to the bottom */}
+                        <Box sx={{ flexGrow: 1 }} />
                         <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
                         >
-                          <IconButton
+                          <Chip
+                            label={resource.type}
                             size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleBookmarkForResource(resource.id);
-                            }}
                             sx={{
-                              color: isResourceBookmarked(resource.id)
-                                ? "#f59e0b"
-                                : "rgba(255, 255, 255, 0.6)",
-                              transition: "all 0.2s ease",
-                              "&:hover": {
-                                color: isResourceBookmarked(resource.id)
-                                  ? "#d97706"
-                                  : "#f59e0b",
-                                transform: "scale(1.1)",
-                              },
+                              background: "rgba(59, 130, 246, 0.08)",
+                              color: "#3b82f6",
+                              border: "1px solid rgba(59, 130, 246, 0.15)",
+                              fontSize: { xs: "0.65rem", md: "0.75rem" },
+                              height: { xs: "22px", md: "26px" },
+                              fontWeight: 400,
+                              borderRadius: 1.5,
+                              letterSpacing: "0.01em",
                             }}
-                            title={
-                              isResourceBookmarked(resource.id)
-                                ? "Retirer des favoris"
-                                : "Ajouter aux favoris"
-                            }
+                          />
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
                           >
-                            {isResourceBookmarked(resource.id) ? (
-                              <BookmarkFilledIcon
-                                sx={{
-                                  fontSize: { xs: "1.1rem", md: "1.3rem" },
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleBookmarkForResource(resource.id);
+                              }}
+                              sx={{
+                                color: isResourceBookmarked(resource.id)
+                                  ? "#f59e0b"
+                                  : "rgba(255, 255, 255, 0.6)",
+                                transition: "all 0.2s ease",
+                                "&:hover": {
+                                  color: isResourceBookmarked(resource.id)
+                                    ? "#d97706"
+                                    : "#f59e0b",
+                                  transform: "scale(1.1)",
+                                },
+                              }}
+                              title={
+                                isResourceBookmarked(resource.id)
+                                  ? "Retirer des favoris"
+                                  : "Ajouter aux favoris"
+                              }
+                            >
+                              {isResourceBookmarked(resource.id) ? (
+                                <BookmarkFilledIcon
+                                  sx={{
+                                    fontSize: { xs: "1.1rem", md: "1.3rem" },
+                                  }}
+                                />
+                              ) : (
+                                <BookmarkIcon
+                                  sx={{
+                                    fontSize: { xs: "1.1rem", md: "1.3rem" },
+                                  }}
+                                />
+                              )}
+                            </IconButton>
+                            {resource.resourceUrl && (
+                              <i
+                                className="fas fa-download"
+                                style={{
+                                  color: "#10b981",
+                                  fontSize: "0.7rem",
+                                  cursor: "pointer",
                                 }}
-                              />
-                            ) : (
-                              <BookmarkIcon
-                                sx={{
-                                  fontSize: { xs: "1.1rem", md: "1.3rem" },
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  window.open(
+                                    getResourceUrl(resource.resourceUrl),
+                                    "_blank"
+                                  );
                                 }}
                               />
                             )}
-                          </IconButton>
-                          {resource.resourceUrl && (
-                            <i
-                              className="fas fa-download"
-                              style={{
-                                color: "#10b981",
-                                fontSize: "0.7rem",
-                                cursor: "pointer",
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                window.open(
-                                  getResourceUrl(resource.resourceUrl),
-                                  "_blank"
-                                );
-                              }}
-                            />
-                          )}
-                          {(isAdmin || userId === resource.createdById) && (
-                            <Box sx={{ display: "flex", gap: 1, ml: 1 }}>
-                              <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openEditModal(resource);
-                                }}
-                                sx={{ color: "#f59e42" }}
-                                title="Modifier"
-                              >
-                                <i className="fas fa-edit"></i>
-                              </IconButton>
-                              <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openDeleteDialog(resource);
-                                }}
-                                sx={{ color: "#ef4444" }}
-                                title="Supprimer"
-                              >
-                                <i className="fas fa-trash"></i>
-                              </IconButton>
-                            </Box>
-                          )}
+                            {(isAdmin || userId === resource.createdById) && (
+                              <Box sx={{ display: "flex", gap: 1, ml: 1 }}>
+                                <IconButton
+                                  size="small"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openEditModal(resource);
+                                  }}
+                                  sx={{ color: "#f59e42" }}
+                                  title="Modifier"
+                                >
+                                  <i className="fas fa-edit"></i>
+                                </IconButton>
+                                <IconButton
+                                  size="small"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openDeleteDialog(resource);
+                                  }}
+                                  sx={{ color: "#ef4444" }}
+                                  title="Supprimer"
+                                >
+                                  <i className="fas fa-trash"></i>
+                                </IconButton>
+                              </Box>
+                            )}
+                          </Box>
                         </Box>
-                      </Box>
-                      {resource.createdAt && (
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            display: "block",
-                            color: "#888",
-                            mt: 2,
-                            textAlign: "right",
-                            fontSize: "0.75rem",
-                          }}
-                        >
-                          Ajouté le{" "}
-                          {new Date(resource.createdAt).toLocaleDateString(
-                            "fr-FR",
-                            { year: "numeric", month: "long", day: "numeric" }
-                          )}
-                        </Typography>
-                      )}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </Grid>
-            ))}
-          </Grid>
+                        {resource.createdAt && (
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              display: "block",
+                              color: "#888",
+                              mt: 2,
+                              textAlign: "right",
+                              fontSize: "0.75rem",
+                            }}
+                          >
+                            Ajouté le{" "}
+                            {new Date(resource.createdAt).toLocaleDateString(
+                              "fr-FR",
+                              { year: "numeric", month: "long", day: "numeric" }
+                            )}
+                          </Typography>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
+        </motion.section>
+      ) : (
+        <Box
+          sx={{
+            minHeight: "40vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            py: 8,
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#3b82f6",
+              fontWeight: 600,
+              mb: 2,
+              textAlign: "center",
+            }}
+          >
+            Connectez-vous pour découvrir les ressources
+          </Typography>
+          <Button
+            variant="contained"
+            size="large"
+            sx={{
+              background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+              color: "white",
+              fontWeight: 500,
+              px: 5,
+              py: 2,
+              borderRadius: 4,
+              textTransform: "none",
+              fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+              letterSpacing: "0.02em",
+              lineHeight: 1.4,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
+              mt: 2,
+              "&:hover": {
+                background: "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                transform: "translateY(-3px)",
+                boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+              },
+              "&:active": {
+                transform: "translateY(-1px)",
+              },
+            }}
+            onClick={() => navigate("/connexion")}
+          >
+            Se connecter
+          </Button>
+        </Box>
+      )}
 
-          {/* Pagination */}
-          {filteredResources.length > itemsPerPage && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                mt: { xs: 3, md: 6 },
-              }}
-            >
-              <Pagination
-                count={Math.ceil(filteredResources.length / itemsPerPage)}
-                page={currentPage}
-                onChange={(event, value) => {
-                  setCurrentPage(value);
-                  if (categoriesRef.current) {
-                    categoriesRef.current.scrollIntoView({
-                      behavior: "smooth",
-                      block: "start",
-                    });
-                  }
-                }}
-                color="primary"
-                size={window.innerWidth < 600 ? "small" : "medium"}
-                sx={{
-                  "& .MuiPaginationItem-root": {
-                    color: "rgba(255, 255, 255, 0.8)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    background: "rgba(255, 255, 255, 0.05)",
-                    "&:hover": {
-                      background: "rgba(59, 130, 246, 0.2)",
-                      border: "1px solid rgba(59, 130, 246, 0.3)",
-                    },
-                    "&.Mui-selected": {
-                      background:
-                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                      color: "white",
-                      border: "none",
-                    },
-                  },
-                }}
-              />
-            </Box>
-          )}
-        </Container>
-      </motion.section>
+      {/* Pagination */}
+      {filteredResources.length > itemsPerPage && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: { xs: 3, md: 6 },
+          }}
+        >
+          <Pagination
+            count={Math.ceil(filteredResources.length / itemsPerPage)}
+            page={currentPage}
+            onChange={(event, value) => {
+              setCurrentPage(value);
+              if (categoriesRef.current) {
+                categoriesRef.current.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
+            }}
+            color="primary"
+            size={window.innerWidth < 600 ? "small" : "medium"}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                color: "rgba(255, 255, 255, 0.8)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                background: "rgba(255, 255, 255, 0.05)",
+                "&:hover": {
+                  background: "rgba(59, 130, 246, 0.2)",
+                  border: "1px solid rgba(59, 130, 246, 0.3)",
+                },
+                "&.Mui-selected": {
+                  background:
+                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                  color: "white",
+                  border: "none",
+                },
+              },
+            }}
+          />
+        </Box>
+      )}
 
       {/* Upload Section */}
       <motion.section

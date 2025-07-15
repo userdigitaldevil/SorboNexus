@@ -26,6 +26,8 @@ import {
   Checkbox,
   Alert,
   Snackbar,
+  Tooltip,
+  Switch,
 } from "@mui/material";
 import {
   ArrowRight,
@@ -58,6 +60,7 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { useAlumniEditModal } from "../components/AlumniEditModalContext";
 import useBookmarks from "../hooks/useBookmarks";
 import { getAlumni, getAlumniById, deleteAlumni } from "../api/alumni";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 export default function Alumni() {
   // Admin state (must be first)
@@ -89,6 +92,10 @@ export default function Alumni() {
   const [alreadyConnectedOpen, setAlreadyConnectedOpen] = useState(false);
   const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
   const [forceRerender, setForceRerender] = useState(0);
+  const [publicAlumni, setPublicAlumni] = useState(() => {
+    const stored = localStorage.getItem("publicAlumni");
+    return stored === null ? false : stored === "true";
+  });
 
   // Add after isProfileModalOpen state is defined
   useEffect(() => {
@@ -336,6 +343,10 @@ export default function Alumni() {
     return () =>
       window.removeEventListener("profileUpdated", handleProfileUpdated);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("publicAlumni", publicAlumni);
+  }, [publicAlumni]);
 
   // Compute visibleAlumni: only show non-hidden, or self, or admin
   const visibleAlumni = alumni.filter(
@@ -1038,210 +1049,331 @@ export default function Alumni() {
       </motion.section>
 
       {/* Alumni Grid Section */}
-      <motion.section
-        className="pb-24 px-6 bg-gradient-to-r from-blue-900/40 to-teal-900/40 z-10 relative"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        style={{
-          paddingTop: window.innerWidth < 600 ? "16px" : "16px",
-          paddingBottom: window.innerWidth < 600 ? "80px" : "96px",
-        }}
-      >
-        <Container maxWidth="xl">
-          <Box sx={{ textAlign: "center", mb: { xs: 4, md: 8 } }}>
-            <Typography
-              variant="h2"
-              sx={{
-                fontWeight: 300,
-                mb: { xs: 2, md: 5 },
-                fontSize: {
-                  xs: "1.6rem",
-                  sm: "2.1rem",
-                  md: "2.6rem",
-                  lg: "3.1rem",
-                },
-                background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                lineHeight: 1.2,
-                letterSpacing: "-0.01em",
-              }}
-            >
-              Nos <span style={{ fontWeight: 600 }}>Anciens</span> Étudiants
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{
-                color: "rgba(255, 255, 255, 0.4)",
-                fontSize: { xs: "0.7rem", md: "0.8rem" },
-                fontStyle: "italic",
-                mb: 2,
-                display: "block",
-                textAlign: "center",
-              }}
-            >
-              Certains profils sont masqués
-            </Typography>
-            <Button
-              variant="outlined"
-              color="primary"
-              sx={{
-                mb: 3,
-                fontWeight: 500,
-                borderRadius: 3,
-                px: { xs: 2, md: 3.5 },
-                py: { xs: 1, md: 1.5 },
-                background: "rgba(59, 130, 246, 0.05)",
-                boxShadow: "0 4px 12px rgba(59, 130, 246, 0.1)",
-                fontSize: { xs: "0.8rem", md: "1rem" },
-                border: "1px solid #3b82f6",
-                color: "#3b82f6",
-                letterSpacing: "0.02em",
-                lineHeight: 1.4,
-                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                "&:hover": {
-                  background: "rgba(59, 130, 246, 0.08)",
-                  borderColor: "#2563eb",
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 6px 20px rgba(59, 130, 246, 0.15)",
-                },
-                "&:active": {
-                  transform: "translateY(-1px)",
-                },
-              }}
-              onClick={() => {
-                const token = localStorage.getItem("token");
-                if (token && alumniId && selfCard) {
-                  let fixed = [selfCard];
-                  if (
-                    sethCard &&
-                    sethCard._id !== selfCard._id &&
-                    sethCard.id !== selfCard.id
-                  ) {
-                    fixed.push(sethCard);
-                  }
-                  let rest = ordered.filter(
-                    (a) => !fixed.some((f) => f._id === a._id && f.id === a.id)
-                  );
-                  const shuffledRest = shuffleArray(rest);
-                  const newShuffledOrder = [...fixed, ...shuffledRest];
-                  setShuffledOrder(newShuffledOrder);
-                } else {
-                  const newShuffledOrder = shuffleArray(ordered);
-                  setShuffledOrder(newShuffledOrder);
-                }
-                setCurrentPage(1);
-                setForceRerender((prev) => prev + 1);
-              }}
-            >
-              Mélanger les cartes
-            </Button>
-          </Box>
-
-          {/* Restore the original <Grid> rendering for alumni cards: */}
-          <Grid
-            container
-            rowSpacing={{ xs: 2, md: 6 }}
-            columnSpacing={1}
-            justifyContent="center"
-            sx={{ maxWidth: "100%", width: "100%" }}
-          >
-            {/* Force re-render on shuffle */}
-            <span style={{ display: "none" }}>{forceRerender}</span>
-            {currentAlumni.map((alum, index) => (
-              <Grid
-                gridColumn={{
-                  xs: "span 12",
-                  sm: "span 6",
-                  md: "span 3",
-                  lg: "span 3",
-                  xl: "span 3",
-                }}
-                key={`${alum._id || alum.id}-${index}`}
+      {alumniId || publicAlumni ? (
+        <motion.section
+          className="pb-24 px-6 bg-gradient-to-r from-blue-900/40 to-teal-900/40 z-10 relative"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          style={{
+            paddingTop: window.innerWidth < 600 ? "16px" : "16px",
+            paddingBottom: window.innerWidth < 600 ? "80px" : "96px",
+          }}
+        >
+          <Container maxWidth="xl">
+            <Box sx={{ textAlign: "center", mb: { xs: 4, md: 8 } }}>
+              <Typography
+                variant="h2"
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  maxWidth: { xs: "100%", sm: "50%", md: "25%" },
-                  height: "100%",
+                  fontWeight: 300,
+                  mb: { xs: 2, md: 5 },
+                  fontSize: {
+                    xs: "1.6rem",
+                    sm: "2.1rem",
+                    md: "2.6rem",
+                    lg: "3.1rem",
+                  },
+                  background:
+                    "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.01em",
                 }}
               >
-                <Box
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    opacity:
-                      (String(alum._id) === String(alumniId) ||
-                        String(alum.id) === String(alumniId)) &&
-                      alum.hidden
-                        ? 0.5
-                        : 1,
-                  }}
-                >
-                  <AlumniCard
-                    alum={alum}
-                    index={index}
-                    onCardClick={openProfileModal}
-                    adminGlow={adminGlow}
-                    isAdmin={isAdmin}
-                    onEditClick={handleEditClick}
-                    alumniId={alumniId}
-                    isBookmarked={isAlumniBookmarked(alum.id || alum._id)}
-                    onToggleBookmark={() =>
-                      toggleBookmarkForAlumni(alum.id || alum._id)
-                    }
-                  />
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-
-          {/* Pagination (always visible) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.2 }}
-          >
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
-              <Pagination
-                count={totalPages}
-                page={currentPage}
-                onChange={handlePageChange}
-                size="large"
+                Nos <span style={{ fontWeight: 600 }}>Anciens</span> Étudiants
+              </Typography>
+              <Typography
+                variant="caption"
                 sx={{
-                  "& .MuiPaginationItem-root": {
-                    color: "rgba(255, 255, 255, 0.6)",
-                    border: "1px solid rgba(255, 255, 255, 0.15)",
-                    background: "rgba(255, 255, 255, 0.03)",
-                    borderRadius: 2,
-                    fontWeight: 400,
-                    fontSize: { xs: "0.85rem", md: "0.95rem" },
-                    transition: "all 0.2s ease",
-                    "&:hover": {
-                      background: "rgba(255, 255, 255, 0.08)",
-                      border: "1px solid rgba(255, 255, 255, 0.25)",
-                      transform: "translateY(-1px)",
-                    },
+                  color: "rgba(255, 255, 255, 0.4)",
+                  fontSize: { xs: "0.7rem", md: "0.8rem" },
+                  fontStyle: "italic",
+                  mb: 2,
+                  display: "block",
+                  textAlign: "center",
+                }}
+              >
+                Certains profils sont masqués
+              </Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{
+                  mb: 3,
+                  fontWeight: 500,
+                  borderRadius: 3,
+                  px: { xs: 2, md: 3.5 },
+                  py: { xs: 1, md: 1.5 },
+                  background: "rgba(59, 130, 246, 0.05)",
+                  boxShadow: "0 4px 12px rgba(59, 130, 246, 0.1)",
+                  fontSize: { xs: "0.8rem", md: "1rem" },
+                  border: "1px solid #3b82f6",
+                  color: "#3b82f6",
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.4,
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  "&:hover": {
+                    background: "rgba(59, 130, 246, 0.08)",
+                    borderColor: "#2563eb",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 6px 20px rgba(59, 130, 246, 0.15)",
                   },
-                  "& .Mui-selected": {
-                    background:
-                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important",
-                    color: "white !important",
-                    border: "1px solid #3b82f6 !important",
-                    fontWeight: 500,
-                    "&:hover": {
-                      background:
-                        "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%) !important",
-                      transform: "translateY(-1px)",
-                    },
+                  "&:active": {
+                    transform: "translateY(-1px)",
                   },
                 }}
-              />
+                onClick={() => {
+                  const token = localStorage.getItem("token");
+                  if (token && alumniId && selfCard) {
+                    let fixed = [selfCard];
+                    if (
+                      sethCard &&
+                      sethCard._id !== selfCard._id &&
+                      sethCard.id !== selfCard.id
+                    ) {
+                      fixed.push(sethCard);
+                    }
+                    let rest = ordered.filter(
+                      (a) =>
+                        !fixed.some((f) => f._id === a._id && f.id === a.id)
+                    );
+                    const shuffledRest = shuffleArray(rest);
+                    const newShuffledOrder = [...fixed, ...shuffledRest];
+                    setShuffledOrder(newShuffledOrder);
+                  } else {
+                    const newShuffledOrder = shuffleArray(ordered);
+                    setShuffledOrder(newShuffledOrder);
+                  }
+                  setCurrentPage(1);
+                  setForceRerender((prev) => prev + 1);
+                }}
+              >
+                Mélanger les cartes
+              </Button>
             </Box>
-          </motion.div>
-        </Container>
-      </motion.section>
+
+            {isAdmin && (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mb: 3,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={publicAlumni}
+                        onChange={() => setPublicAlumni((v) => !v)}
+                        color="primary"
+                        sx={{
+                          "& .MuiSwitch-switchBase.Mui-checked": {
+                            color: "#3b82f6",
+                          },
+                          "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                            {
+                              backgroundColor: "#3b82f6",
+                            },
+                          "& .MuiSwitch-track": {
+                            backgroundColor: "#e5e7eb",
+                          },
+                        }}
+                      />
+                    }
+                    label={
+                      <span
+                        style={{
+                          fontWeight: 500,
+                          color: publicAlumni ? "#3b82f6" : "#888",
+                        }}
+                      >
+                        Alumni publics
+                      </span>
+                    }
+                    labelPlacement="start"
+                    sx={{ mr: 1 }}
+                  />
+                  <Tooltip
+                    title="Permettre aux visiteurs non connectés de voir les alumni"
+                    arrow
+                  >
+                    <InfoOutlinedIcon
+                      sx={{ color: "#3b82f6", fontSize: 20, ml: 0.5 }}
+                    />
+                  </Tooltip>
+                </Box>
+                <Typography
+                  variant="caption"
+                  sx={{ color: "#888", textAlign: "center" }}
+                >
+                  {publicAlumni
+                    ? "Les alumni sont visibles par tous les visiteurs."
+                    : "Seuls les utilisateurs connectés peuvent voir les alumni."}
+                </Typography>
+              </Box>
+            )}
+
+            {/* Restore the original <Grid> rendering for alumni cards: */}
+            <Grid
+              container
+              rowSpacing={{ xs: 2, md: 6 }}
+              columnSpacing={1}
+              justifyContent="center"
+              sx={{ maxWidth: "100%", width: "100%" }}
+            >
+              {/* Force re-render on shuffle */}
+              <span style={{ display: "none" }}>{forceRerender}</span>
+              {currentAlumni.map((alum, index) => (
+                <Grid
+                  gridColumn={{
+                    xs: "span 12",
+                    sm: "span 6",
+                    md: "span 3",
+                    lg: "span 3",
+                    xl: "span 3",
+                  }}
+                  key={`${alum._id || alum.id}-${index}`}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    maxWidth: { xs: "100%", sm: "50%", md: "25%" },
+                    height: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      opacity:
+                        (String(alum._id) === String(alumniId) ||
+                          String(alum.id) === String(alumniId)) &&
+                        alum.hidden
+                          ? 0.5
+                          : 1,
+                    }}
+                  >
+                    <AlumniCard
+                      alum={alum}
+                      index={index}
+                      onCardClick={openProfileModal}
+                      adminGlow={adminGlow}
+                      isAdmin={isAdmin}
+                      onEditClick={handleEditClick}
+                      alumniId={alumniId}
+                      isBookmarked={isAlumniBookmarked(alum.id || alum._id)}
+                      onToggleBookmark={() =>
+                        toggleBookmarkForAlumni(alum.id || alum._id)
+                      }
+                    />
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Pagination (always visible) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
+                <Pagination
+                  count={totalPages}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  size="large"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      color: "rgba(255, 255, 255, 0.6)",
+                      border: "1px solid rgba(255, 255, 255, 0.15)",
+                      background: "rgba(255, 255, 255, 0.03)",
+                      borderRadius: 2,
+                      fontWeight: 400,
+                      fontSize: { xs: "0.85rem", md: "0.95rem" },
+                      transition: "all 0.2s ease",
+                      "&:hover": {
+                        background: "rgba(255, 255, 255, 0.08)",
+                        border: "1px solid rgba(255, 255, 255, 0.25)",
+                        transform: "translateY(-1px)",
+                      },
+                    },
+                    "& .Mui-selected": {
+                      background:
+                        "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important",
+                      color: "white !important",
+                      border: "1px solid #3b82f6 !important",
+                      fontWeight: 500,
+                      "&:hover": {
+                        background:
+                          "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%) !important",
+                        transform: "translateY(-1px)",
+                      },
+                    },
+                  }}
+                />
+              </Box>
+            </motion.div>
+          </Container>
+        </motion.section>
+      ) : (
+        <Box
+          sx={{
+            minHeight: "40vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            py: 8,
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#3b82f6",
+              fontWeight: 600,
+              mb: 2,
+              textAlign: "center",
+            }}
+          >
+            Connectez-vous pour découvrir les alumni
+          </Typography>
+          <Button
+            variant="contained"
+            size="large"
+            sx={{
+              background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+              color: "white",
+              fontWeight: 500,
+              px: 5,
+              py: 2,
+              borderRadius: 4,
+              textTransform: "none",
+              fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+              letterSpacing: "0.02em",
+              lineHeight: 1.4,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              boxShadow: "0 8px 25px rgba(59, 130, 246, 0.25)",
+              mt: 2,
+              "&:hover": {
+                background: "linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%)",
+                transform: "translateY(-3px)",
+                boxShadow: "0 12px 35px rgba(59, 130, 246, 0.35)",
+              },
+              "&:active": {
+                transform: "translateY(-1px)",
+              },
+            }}
+            onClick={() => navigate("/connexion")}
+          >
+            Se connecter
+          </Button>
+        </Box>
+      )}
 
       {/* Join Alumni Section */}
       <motion.section
