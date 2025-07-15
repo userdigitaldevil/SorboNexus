@@ -25,6 +25,8 @@ import {
   Tooltip,
   Switch,
   FormControlLabel,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { ArrowRight, Search } from "lucide-react";
 import {
@@ -45,6 +47,7 @@ import {
 } from "../api/ressources";
 import { uploadFile } from "../api/upload";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 
 // CATEGORY_STYLES for resource categories
 const CATEGORY_STYLES = {
@@ -110,6 +113,7 @@ export default function Ressources() {
     filter: ["Livres"],
     resourceUrl: "",
     format: "pdf",
+    loginRequired: false,
   });
   const [addLoading, setAddLoading] = useState(false);
   const [addError, setAddError] = useState("");
@@ -168,6 +172,7 @@ export default function Ressources() {
     const stored = localStorage.getItem("publicRessources");
     return stored === null ? false : stored === "true";
   });
+  const [loginPopupOpen, setLoginPopupOpen] = useState(false);
 
   // Lock scrolling when add modal is open
   useEffect(() => {
@@ -408,6 +413,7 @@ export default function Ressources() {
     try {
       const payload = {
         ...addForm,
+        loginRequired: !!addForm.loginRequired,
         filter: Array.isArray(addForm.filter)
           ? addForm.filter.join(",")
           : addForm.filter,
@@ -451,6 +457,7 @@ export default function Ressources() {
     try {
       const payload = {
         ...editForm,
+        loginRequired: !!editForm.loginRequired,
         filter: Array.isArray(editForm.filter)
           ? editForm.filter.join(",")
           : editForm.filter,
@@ -950,6 +957,10 @@ export default function Ressources() {
                   >
                     <Card
                       onClick={() => {
+                        if (!isLoggedIn && resource.loginRequired) {
+                          setLoginPopupOpen(true);
+                          return;
+                        }
                         if (resource.resourceUrl) {
                           window.open(
                             getResourceUrl(resource.resourceUrl),
@@ -2483,6 +2494,23 @@ export default function Ressources() {
                 {addError}
               </Typography>
             )}
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={addForm.loginRequired}
+                  onChange={(e) =>
+                    updateAddFormField("loginRequired", e.target.checked)
+                  }
+                  color="primary"
+                />
+              }
+              label={
+                <Typography sx={{ color: "#3b82f6", fontWeight: 500 }}>
+                  Connexion requise pour accéder à la ressource
+                </Typography>
+              }
+              sx={{ mb: 1, mt: 1 }}
+            />
           </Box>
         </DialogContent>
         <DialogActions
@@ -3169,6 +3197,25 @@ export default function Ressources() {
                 {editError && (
                   <Typography color="error">{editError}</Typography>
                 )}
+                {editForm && (
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={!!editForm.loginRequired}
+                        onChange={(e) =>
+                          updateEditFormField("loginRequired", e.target.checked)
+                        }
+                        color="primary"
+                      />
+                    }
+                    label={
+                      <Typography sx={{ color: "#3b82f6", fontWeight: 500 }}>
+                        Connexion requise pour accéder à la ressource
+                      </Typography>
+                    }
+                    sx={{ mb: 1, mt: 1 }}
+                  />
+                )}
               </Box>
             </DialogContent>
             <DialogActions sx={{ p: 3, gap: 1 }}>
@@ -3211,28 +3258,196 @@ export default function Ressources() {
       <Dialog
         open={deleteDialogOpen}
         onClose={closeDeleteDialog}
+        maxWidth="xs"
+        fullWidth
         PaperProps={{
           sx: {
-            background: "rgba(30,41,59,1)",
-            color: "white",
-            borderRadius: 3,
-            boxShadow: 24,
+            background: "linear-gradient(135deg, #23272f 0%, #1a1d23 100%)",
+            color: "#fff",
+            borderRadius: 5,
+            boxShadow: "0 8px 40px 0 rgba(0,0,0,0.32)",
+            p: 0,
+            overflow: "visible",
+            position: "relative",
           },
         }}
       >
-        <DialogTitle>Confirmer la suppression</DialogTitle>
-        <DialogContent>
+        <IconButton
+          aria-label="close"
+          onClick={closeDeleteDialog}
+          sx={{
+            position: "absolute",
+            right: 12,
+            top: 12,
+            color: "#cbd5e1",
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 2,
+            transition: "background 0.2s",
+            "&:hover": {
+              background: "rgba(59,130,246,0.12)",
+              color: "#3b82f6",
+            },
+            zIndex: 2,
+          }}
+        >
+          <CloseIcon fontSize="medium" />
+        </IconButton>
+        <DialogTitle
+          sx={{
+            color: "#ef4444",
+            fontWeight: 700,
+            textAlign: "center",
+            pt: 4,
+            pb: 1,
+            fontSize: "1.3rem",
+            letterSpacing: 0.2,
+          }}
+        >
+          Confirmer la suppression
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            textAlign: "center",
+            pb: 1,
+            color: "#e0e7ef",
+            fontSize: "1.08rem",
+          }}
+        >
           Voulez-vous vraiment supprimer cette ressource ? Cette action est
           irréversible.
         </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDeleteDialog}>Annuler</Button>
+        <DialogActions sx={{ justifyContent: "center", pb: 3, gap: 2 }}>
+          <Button
+            onClick={closeDeleteDialog}
+            variant="outlined"
+            sx={{
+              borderColor: "rgba(255,255,255,0.18)",
+              color: "#cbd5e1",
+              fontWeight: 500,
+              borderRadius: 3,
+              px: 4,
+              py: 1.2,
+              fontSize: { xs: "1rem", sm: "1.08rem" },
+              textTransform: "none",
+              background: "rgba(255,255,255,0.03)",
+              "&:hover": {
+                background: "rgba(255,255,255,0.08)",
+                borderColor: "#3b82f6",
+                color: "#3b82f6",
+              },
+            }}
+          >
+            Annuler
+          </Button>
           <Button
             onClick={handleDeleteResource}
-            color="error"
             variant="contained"
+            sx={{
+              background: "linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)",
+              color: "white",
+              fontWeight: 600,
+              borderRadius: 3,
+              px: 4,
+              py: 1.2,
+              fontSize: { xs: "1rem", sm: "1.08rem" },
+              textTransform: "none",
+              boxShadow: "0 8px 25px rgba(239, 68, 68, 0.13)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #b91c1c 0%, #ef4444 100%)",
+              },
+            }}
           >
             Supprimer
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={loginPopupOpen}
+        onClose={() => setLoginPopupOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            background: "linear-gradient(135deg, #23272f 0%, #1a1d23 100%)",
+            color: "#fff",
+            borderRadius: 5,
+            boxShadow: "0 8px 40px 0 rgba(0,0,0,0.32)",
+            p: 0,
+            overflow: "visible",
+            position: "relative",
+          },
+        }}
+      >
+        <IconButton
+          aria-label="close"
+          onClick={() => setLoginPopupOpen(false)}
+          sx={{
+            position: "absolute",
+            right: 12,
+            top: 12,
+            color: "#cbd5e1",
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 2,
+            transition: "background 0.2s",
+            "&:hover": {
+              background: "rgba(59,130,246,0.12)",
+              color: "#3b82f6",
+            },
+            zIndex: 2,
+          }}
+        >
+          <CloseIcon fontSize="medium" />
+        </IconButton>
+        <DialogTitle
+          sx={{
+            color: "#3b82f6",
+            fontWeight: 700,
+            textAlign: "center",
+            pt: 4,
+            pb: 1,
+            fontSize: "1.4rem",
+            letterSpacing: 0.2,
+          }}
+        >
+          Connexion requise
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            textAlign: "center",
+            pb: 1,
+            color: "#e0e7ef",
+            fontSize: "1.1rem",
+          }}
+        >
+          <span>Connectez-vous pour voir la ressource.</span>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center", pb: 3 }}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => {
+              setLoginPopupOpen(false);
+              navigate("/connexion");
+            }}
+            sx={{
+              background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+              color: "white",
+              fontWeight: 600,
+              px: 5,
+              py: 1.5,
+              borderRadius: 3,
+              textTransform: "none",
+              fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+              letterSpacing: "0.02em",
+              lineHeight: 1.4,
+              boxShadow: "0 8px 25px rgba(59, 130, 246, 0.18)",
+              mt: 1,
+              "&:hover": {
+                background: "linear-gradient(135deg, #2563eb 0%, #0891b2 100%)",
+              },
+            }}
+          >
+            Se connecter
           </Button>
         </DialogActions>
       </Dialog>
