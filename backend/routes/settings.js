@@ -20,9 +20,13 @@ router.get("/:key", async (req, res) => {
 
 // Set a setting by key (admin only)
 router.post("/:key", isAuthenticated, isAdmin, async (req, res) => {
+  console.log("POST /api/settings/:key called");
+  console.log("Params:", req.params);
+  console.log("Body:", req.body);
   const { key } = req.params;
   const { value } = req.body;
   if (typeof value !== "string") {
+    console.log("Invalid value:", value);
     return res.status(400).json({ error: "Value must be a string" });
   }
   try {
@@ -31,8 +35,10 @@ router.post("/:key", isAuthenticated, isAdmin, async (req, res) => {
       update: { value },
       create: { key, value },
     });
+    console.log("Setting updated:", setting);
     res.json({ key: setting.key, value: setting.value });
   } catch (error) {
+    console.error("Error in settings POST:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
