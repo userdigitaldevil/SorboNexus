@@ -48,6 +48,7 @@ import {
 import { uploadFile } from "../api/upload";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import axios from "axios";
 
 // CATEGORY_STYLES for resource categories
 const CATEGORY_STYLES = {
@@ -168,10 +169,9 @@ export default function Ressources() {
   // Add a state to store the original uploaded file name
   const [uploadedOriginalName, setUploadedOriginalName] = useState("");
   const mainScrollContainerRef = useRef(null);
-  const [publicRessources, setPublicRessources] = useState(() => {
-    const stored = localStorage.getItem("publicRessources");
-    return stored === null ? false : stored === "true";
-  });
+  const [publicRessources, setPublicRessources] = useState(false);
+  const [publicRessourcesLoading, setPublicRessourcesLoading] = useState(true);
+  const [publicRessourcesError, setPublicRessourcesError] = useState("");
   const [loginPopupOpen, setLoginPopupOpen] = useState(false);
 
   // Lock scrolling when add modal is open
@@ -495,10 +495,44 @@ export default function Ressources() {
     }
   };
 
-  // Add effect to persist toggle
+  // Fetch global publicRessources setting from backend
   useEffect(() => {
-    localStorage.setItem("publicRessources", publicRessources);
-  }, [publicRessources]);
+    async function fetchPublicRessources() {
+      setPublicRessourcesLoading(true);
+      setPublicRessourcesError("");
+      try {
+        const res = await axios.get("/api/settings/ressourcesPublic");
+        setPublicRessources(res.data.value === "true");
+      } catch (err) {
+        setPublicRessourcesError(
+          "Erreur lors du chargement du paramètre global."
+        );
+      } finally {
+        setPublicRessourcesLoading(false);
+      }
+    }
+    fetchPublicRessources();
+  }, []);
+
+  const handleTogglePublicRessources = async (checked) => {
+    setPublicRessourcesLoading(true);
+    setPublicRessourcesError("");
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        "/api/settings/ressourcesPublic",
+        { value: checked ? "true" : "false" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setPublicRessources(checked);
+    } catch (err) {
+      setPublicRessourcesError(
+        "Erreur lors de la mise à jour du paramètre global."
+      );
+    } finally {
+      setPublicRessourcesLoading(false);
+    }
+  };
 
   return (
     <div className="glassy-bg min-h-screen smooth-scroll-all">
@@ -878,33 +912,30 @@ export default function Ressources() {
               control={
                 <Switch
                   checked={publicRessources}
-                  onChange={() => setPublicRessources((v) => !v)}
+                  onChange={(e) =>
+                    handleTogglePublicRessources(e.target.checked)
+                  }
                   color="primary"
-                  sx={{
-                    "& .MuiSwitch-switchBase.Mui-checked": {
-                      color: "#3b82f6",
-                    },
-                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                      backgroundColor: "#3b82f6",
-                    },
-                    "& .MuiSwitch-track": {
-                      backgroundColor: "#e5e7eb",
-                    },
-                  }}
+                  disabled={publicRessourcesLoading}
                 />
               }
               label={
-                <span
-                  style={{
-                    fontWeight: 500,
-                    color: publicRessources ? "#3b82f6" : "#888",
-                  }}
-                >
+                <Typography sx={{ color: "#3b82f6", fontWeight: 500 }}>
                   Ressources publiques
-                </span>
+                  <br />
+                  <span
+                    style={{
+                      fontWeight: 400,
+                      color: "#94a3b8",
+                      fontSize: "0.95em",
+                    }}
+                  >
+                    Seuls les utilisateurs connectés peuvent voir les
+                    ressources.
+                  </span>
+                </Typography>
               }
-              labelPlacement="start"
-              sx={{ mr: 1 }}
+              sx={{ mb: 1, mt: 1 }}
             />
             <Tooltip
               title="Permettre aux visiteurs non connectés de voir les ressources"
@@ -915,14 +946,11 @@ export default function Ressources() {
               />
             </Tooltip>
           </Box>
-          <Typography
-            variant="caption"
-            sx={{ color: "#888", textAlign: "center" }}
-          >
-            {publicRessources
-              ? "Les ressources sont visibles par tous les visiteurs."
-              : "Seuls les utilisateurs connectés peuvent voir les ressources."}
-          </Typography>
+          {publicRessourcesError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {publicRessourcesError}
+            </Alert>
+          )}
         </Box>
       )}
 

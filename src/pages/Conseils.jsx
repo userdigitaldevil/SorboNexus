@@ -179,7 +179,9 @@ export default function Conseils() {
   // Style constants for alignment
   const LEFT_COL_WIDTH = 220;
 
-  useEffect(() => {
+  // Add a function to fetch alumni
+  const fetchAlumni = useCallback(() => {
+    setLoading(true);
     fetch(`${import.meta.env.VITE_API_URL}/api/alumni`)
       .then((res) => res.json())
       .then((data) => {
@@ -187,6 +189,21 @@ export default function Conseils() {
         setLoading(false);
       });
   }, []);
+
+  // Use fetchAlumni on mount
+  useEffect(() => {
+    fetchAlumni();
+  }, [fetchAlumni]);
+
+  // Listen for 'profileUpdated' event and refetch alumni
+  useEffect(() => {
+    const handleProfileUpdated = () => {
+      fetchAlumni();
+    };
+    window.addEventListener("profileUpdated", handleProfileUpdated);
+    return () =>
+      window.removeEventListener("profileUpdated", handleProfileUpdated);
+  }, [fetchAlumni]);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -456,6 +473,13 @@ export default function Conseils() {
     }
   }, [isProfileModalOpen]);
 
+  // When closing the edit modal after a save, refetch alumni
+  const handleEditModalClose = (updated) => {
+    setEditModalOpen(false);
+    setEditAlumni(null);
+    if (updated) fetchAlumni();
+  };
+
   return (
     <div
       ref={mainScrollContainerRef}
@@ -698,6 +722,41 @@ export default function Conseils() {
             />
           </Box>
         </motion.div>
+
+        {alumniId && (
+          <Box sx={{ textAlign: "center", mt: 2, mb: 2 }}>
+            <Button
+              variant="contained"
+              size="large"
+              sx={{
+                background: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                color: "white",
+                fontWeight: 600,
+                px: 5,
+                py: 2,
+                borderRadius: 4,
+                textTransform: "none",
+                fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+                letterSpacing: "0.02em",
+                lineHeight: 1.4,
+                boxShadow: "0 8px 25px rgba(59, 130, 246, 0.18)",
+                mt: 1,
+                "&:hover": {
+                  background:
+                    "linear-gradient(135deg, #2563eb 0%, #0891b2 100%)",
+                },
+              }}
+              onClick={() => {
+                const alum = alumni.find(
+                  (a) => a._id === alumniId || a.id === alumniId
+                );
+                if (alum) handleEditClick(alum);
+              }}
+            >
+              Ajouter un conseil
+            </Button>
+          </Box>
+        )}
 
         {isAdmin && (
           <Box
@@ -1255,6 +1314,41 @@ export default function Conseils() {
                 Sorbonne Université.
               </Typography>
             </motion.div>
+            {alumniId && (
+              <Box sx={{ textAlign: "center", mt: 2, mb: 4 }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+                    color: "white",
+                    fontWeight: 600,
+                    px: 5,
+                    py: 2,
+                    borderRadius: 4,
+                    textTransform: "none",
+                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+                    letterSpacing: "0.02em",
+                    lineHeight: 1.4,
+                    boxShadow: "0 8px 25px rgba(59, 130, 246, 0.18)",
+                    mt: 1,
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #2563eb 0%, #0891b2 100%)",
+                    },
+                  }}
+                  onClick={() => {
+                    const alum = alumni.find(
+                      (a) => a._id === alumniId || a.id === alumniId
+                    );
+                    if (alum) handleEditClick(alum);
+                  }}
+                >
+                  Ajouter un conseil
+                </Button>
+              </Box>
+            )}
             {!alumniId && (
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -1362,10 +1456,12 @@ export default function Conseils() {
       {/* Edit Modal */}
       <AlumniEditModal
         open={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
+        onClose={handleEditModalClose}
         alumni={editAlumni}
         setAlumni={setEditAlumni}
         isAdmin={isAdmin}
+        editForm={editForm}
+        setEditForm={setEditForm}
       />
 
       <Snackbar
