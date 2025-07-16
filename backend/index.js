@@ -95,7 +95,6 @@ const uploadRouter = require("./routes/upload");
 app.use("/api/ressources", ressourcesRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/bookmarks", require("./routes/bookmarks"));
-app.use("/api/settings", require("./routes/settings"));
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 
 // Temporary debug endpoint for R2 testing

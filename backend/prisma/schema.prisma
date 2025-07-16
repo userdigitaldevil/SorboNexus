@@ -130,9 +130,3 @@ model Bookmark {
   @@index([itemId, itemType])
   @@index([userId])
 }
-
-model Setting {
-  id    Int    @id @default(autoincrement())
-  key   String @unique
-  value String
-}
