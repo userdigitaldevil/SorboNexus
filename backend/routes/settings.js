@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const { authenticateToken, requireAdmin } = require("../middleware/auth");
+const { isAuthenticated, isAdmin } = require("../middleware/auth");
 
 // Get a setting by key
 router.get("/:key", async (req, res) => {
@@ -19,7 +19,7 @@ router.get("/:key", async (req, res) => {
 });
 
 // Set a setting by key (admin only)
-router.post("/:key", authenticateToken, requireAdmin, async (req, res) => {
+router.post("/:key", isAuthenticated, isAdmin, async (req, res) => {
   const { key } = req.params;
   const { value } = req.body;
   if (typeof value !== "string") {
