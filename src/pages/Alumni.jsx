@@ -754,11 +754,7 @@ export default function Alumni() {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    if (!alumniId) {
-                      setLoginPopupOpen(true);
-                    } else {
-                      openListModal();
-                    }
+                    openListModal();
                   }}
                   ref={listButtonRef}
                   sx={{
