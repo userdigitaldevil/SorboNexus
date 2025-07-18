@@ -440,6 +440,7 @@ const Navbar = () => {
               fullWidth
               component={Link}
               to="/connexion"
+              onClick={() => setMobileOpen(false)}
               sx={{
                 background: "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)",
                 fontWeight: 500,
