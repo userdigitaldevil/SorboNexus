@@ -46,3 +46,7 @@ dump/
 # Alumni users
 backend/alumniUsers.json
 backend/alumniSeed.json
+
+#database backup
+backend/railway_backup_2025-07-29.dump
+backend/railway_backup_2025-07-29.sql
