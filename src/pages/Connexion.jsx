@@ -480,9 +480,25 @@ export default function Connexion() {
                     letterSpacing: "0.01em",
                   }}
                 >
-                  Si vous voulez créer un compte, envoyez un message à{" "}
-                  <b>sethaguila@icloud.com</b> ou contactez <b>Seth Aguila</b>{" "}
-                  sur LinkedIn.
+                  Si vous voulez créer un compte,{" "}
+                  <Link
+                    href="https://forms.gle/Sh7a24yupFTp92DEA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      color: "#3b82f6",
+                      textDecoration: "none",
+                      fontWeight: 500,
+                      "&:hover": {
+                        color: "#1e40af",
+                        textDecoration: "underline",
+                      },
+                    }}
+                  >
+                    remplissez ce formulaire
+                  </Link>
+                  , envoyez un message à <b>sethaguila@icloud.com</b> ou
+                  contactez <b>Seth Aguila</b> sur LinkedIn.
                 </Typography>
               </Box>
             </motion.div>
