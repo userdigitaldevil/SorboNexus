@@ -480,7 +480,7 @@ export default function Connexion() {
                     letterSpacing: "0.01em",
                   }}
                 >
-                  Si vous voulez créer un compte,{" "}
+                  Si vous voulez créer un compte, vous pouvez soit{" "}
                   <Link
                     href="https://forms.gle/Sh7a24yupFTp92DEA"
                     target="_blank"
@@ -495,10 +495,10 @@ export default function Connexion() {
                       },
                     }}
                   >
-                    remplissez ce formulaire
+                    remplir ce formulaire
                   </Link>
-                  , envoyez un message à <b>sethaguila@icloud.com</b> ou
-                  contactez <b>Seth Aguila</b> sur LinkedIn.
+                  , soit envoyer un message à <b>sethaguila@icloud.com</b>, soit
+                  contacter <b>Seth Aguila</b> sur LinkedIn.
                 </Typography>
               </Box>
             </motion.div>
