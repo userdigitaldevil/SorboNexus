@@ -539,14 +539,14 @@ export default function Alumni() {
   };
 
   // Place this at the top of the component (inside the function, before return)
-  const adminGlow = {
-    boxShadow: "0 0 36px 8px #3b82f6cc",
-    transition: "filter 0.3s, box-shadow 0.3s",
-    filter: "none",
-    "&:hover": {
-      filter: "hue-rotate(30deg)",
-    },
-  };
+  // const adminGlow = {
+  //   boxShadow: "0 0 36px 8px #3b82f6cc",
+  //   transition: "filter 0.3s, box-shadow 0.3s",
+  //   filter: "none",
+  //   "&:hover": {
+  //     filter: "hue-rotate(30deg)",
+  //   },
+  // };
 
   // Generic handler for simple fields
   const handleEditFormChange = (e) => {
@@ -1193,7 +1193,7 @@ export default function Alumni() {
                     alum={alum}
                     index={index}
                     onCardClick={openProfileModal}
-                    adminGlow={adminGlow}
+                    // adminGlow={adminGlow}
                     isAdmin={isAdmin}
                     onEditClick={handleEditClick}
                     alumniId={alumniId}
