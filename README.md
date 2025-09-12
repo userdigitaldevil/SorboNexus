@@ -8,11 +8,10 @@ The goal is truly to inspire Sorbonne University students so that they, in turn,
 
 You'll find a wealth of useful resources: cover letter templates, detailed information on course units, guides for assembling your applications, and practical advice for every stage of your studies.
 
-You'll also discover feedback and testimonials from students about the bachelor's and master's programs you're interested in, as well as stories from students who have succeeded in competitive exams like GEI-UNIV (parallel admissions), oral exams, and admissions to prestigious schools (in France and internationally) such as Polytechnique, ENS, Princeton, CentraleSupélec, Télécom, Dauphine, Sorbonne, Paris-Saclay, and many more.
+You'll also discover feedback, testimonials and insights from students about the bachelor's and master's programs you're interested in, as well as stories from students who have succeeded in competitive exams like GEI-UNIV (parallel admissions), oral exams, and admissions to prestigious universities in France and internationally.
 
-The site also offers school profiles, tips for applying abroad, CV examples, and interview advice.
+The site also offers school profiles, tips for applying abroad and CV examples.
 
-The site is still under development, but you can already create your account, personalize your profile, and help enrich the knowledge base to support future generations.
 
 [Explore, share, and help grow the community!]
 
@@ -92,11 +91,10 @@ L'objectif, c'est vraiment d'inspirer les élèves de Sorbonne Université, afin
 
 Vous y trouverez une multitude de ressources utiles : modèles de lettres de motivation, informations détaillées sur les UE, guides pour constituer vos dossiers, et conseils pratiques pour chaque étape de votre cursus.
 
-Découvrez également des retours d'expérience et témoignages d'élèves sur les licences et masters que vous souhaitez suivre, ainsi que des témoignages d'élèves ayant réussi des concours comme GEI-UNIV (admissions parallèles), des oraux, et des intégrations dans des écoles prestigieuses (en France comme à l'international) telles que Polytechnique, ENS, Princeton, CentraleSupélec, Télécom, Dauphine, Sorbonne, Paris-Saclay et bien d'autres.
+Découvrez également des retours d'expérience et témoignages d'élèves sur les licences et masters que vous souhaitez suivre, ainsi que des témoignages d'élèves ayant réussi des concours comme GEI-UNIV (admissions parallèles), des oraux, et des intégrations dans des écoles prestigieuses en France comme à l'international.
 
 Le site propose aussi des fiches sur les écoles, des astuces pour les candidatures à l'étranger, des exemples de CV, ainsi que des conseils pour les entretiens.
 
-Le site est encore en développement, mais vous pouvez dès maintenant créer votre compte, personnaliser votre profil et contribuer à enrichir la base de connaissances pour aider les générations futures.
 
 [Explorez, partagez, et faites grandir la communauté !]
 
