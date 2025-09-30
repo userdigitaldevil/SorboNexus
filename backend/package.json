@@ -14,11 +14,11 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.844.0",
-    "@prisma/client": "^6.10.1",
+    "@aws-sdk/client-s3": "^3.899.0",
+    "@prisma/client": "^6.16.3",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
     "helmet": "^8.1.0",
@@ -30,6 +30,6 @@
   "devDependencies": {
     "node-fetch": "^3.3.2",
     "nodemon": "^3.0.0",
-    "prisma": "^6.10.1"
+    "prisma": "^6.16.3"
   }
 }
