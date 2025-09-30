@@ -13,7 +13,10 @@ function auth(req, res, next) {
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
     next();
-  } catch {
+  } catch (err) {
+    if (err && err.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Token expired" });
+    }
     res.status(401).json({ error: "Invalid token" });
   }
 }
@@ -30,7 +33,10 @@ function canEditAlumni(req, res, next) {
       return next();
     }
     return res.status(403).json({ error: "Forbidden" });
-  } catch {
+  } catch (err) {
+    if (err && err.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Token expired" });
+    }
     return res.status(401).json({ error: "Invalid token" });
   }
 }
