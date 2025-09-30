@@ -116,3 +116,25 @@ router.post("/login", loginLimiter, async (req, res) => {
 });
 
 module.exports = router;
+ 
+// Debug: verify current token and return decoded payload
+router.get("/me", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "No token" });
+    }
+    const token = authHeader.split(" ")[1];
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return res.json({ ok: true, decoded });
+    } catch (err) {
+      if (err.name === "TokenExpiredError") {
+        return res.status(401).json({ error: "Token expired" });
+      }
+      return res.status(401).json({ error: "Invalid token" });
+    }
+  } catch (err) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
